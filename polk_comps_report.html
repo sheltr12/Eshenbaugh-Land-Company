@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Polk County Vacant Land Comps</title>
+<style>
+  body {
+    font-family: 'Segoe UI', Arial, sans-serif;
+    margin: 0;
+    padding: 20px;
+    background: #f8fafc;
+    color: #222;
+  }
+
+  .report-header {
+    background: linear-gradient(135deg, #1a3a5c 0%, #2a6496 100%);
+    color: white;
+    padding: 24px 30px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+  }
+
+  .report-header h1 {
+    margin: 0 0 8px;
+    font-size: 24px;
+  }
+
+  .report-header p {
+    margin: 0;
+    font-size: 13px;
+    opacity: .9;
+  }
+
+  .map-link {
+    display: inline-block;
+    margin-bottom: 20px;
+    padding: 10px 18px;
+    background: #1a3a5c;
+    color: white;
+    text-decoration: none;
+    border-radius: 6px;
+    font-weight: 600;
+  }
+
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+
+  .stat-card {
+    background: white;
+    padding: 16px;
+    border-radius: 8px;
+    box-shadow: 0 1px 4px rgba(0,0,0,.08);
+    text-align: center;
+  }
+
+  .stat-card .val {
+    font-size: 22px;
+    font-weight: 700;
+    color: #1a3a5c;
+  }
+
+  .stat-card .lbl {
+    font-size: 11px;
+    text-transform: uppercase;
+    color: #888;
+    margin-top: 4px;
+  }
+
+  .section {
+    background: white;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 1px 4px rgba(0,0,0,.08);
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12px;
+  }
+
+  th {
+    background: #1a3a5c;
+    color: white;
+    padding: 8px;
+    text-align: left;
+  }
+
+  td {
+    padding: 8px;
+    border-bottom: 1px solid #eee;
+  }
+
+  tr:nth-child(even) td {
+    background: #fafbfd;
+  }
+
+  tr:hover td {
+    background: #eef5ff;
+  }
+
+  a {
+    color: #1d4ed8;
+    text-decoration: none;
+  }
+</style>
+</head>
+<body>
+
+<div class="report-header">
+  <h1 id="title">Loading...</h1>
+  <p id="subtitle"></p>
+</div>
+
+<a href="polk_comps_map.html" class="map-link" target="_blank">
+  🗺 Open Interactive Map
+</a>
+
+<div class="stats-grid" id="stats"></div>
+
+<div class="section">
+  <h2>Comp Detail Table</h2>
+  <div style="overflow-x:auto;">
+    <table>
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Parcel ID</th>
+          <th>Address</th>
+          <th>Sale Date</th>
+          <th>Price</th>
+          <th>Acres</th>
+          <th>$/Acre</th>
+          <th>Buyer</th>
+          <th>Book/Page</th>
+        </tr>
+      </thead>
+      <tbody id="table-body"></tbody>
+    </table>
+  </div>
+</div>
+
+<script>
+async function loadReport() {
+  const response = await fetch('./comps.json');
+  const data = await response.json();
+
+  const comps = data.comps;
+  const meta = data.meta;
+
+  document.getElementById('title').textContent =
+    `${meta.title} — ${meta.period}`;
+
+  document.getElementById('subtitle').textContent =
+    `Source: ${meta.source} | Criteria: ${meta.criteria} | Generated ${meta.generated}`;
+
+  renderStats(comps);
+  renderTable(comps);
+}
+
+function renderStats(comps) {
+  const totalVolume = comps.reduce((sum, c) => sum + c.price, 0);
+  const totalAcres = comps.reduce((sum, c) => sum + c.acreage, 0);
+  const avgPPA = comps.reduce((sum, c) => sum + c.price_per_acre, 0) / comps.length;
+
+  document.getElementById('stats').innerHTML = `
+    <div class="stat-card">
+      <div class="val">${comps.length}</div>
+      <div class="lbl">Total Comps</div>
+    </div>
+    <div class="stat-card">
+      <div class="val">$${(totalVolume/1000000).toFixed(1)}M</div>
+      <div class="lbl">Volume</div>
+    </div>
+    <div class="stat-card">
+      <div class="val">${totalAcres.toFixed(1)}</div>
+      <div class="lbl">Total Acres</div>
+    </div>
+    <div class="stat-card">
+      <div class="val">$${Math.round(avgPPA).toLocaleString()}</div>
+      <div class="lbl">Avg $/Acre</div>
+    </div>
+  `;
+}
+
+function renderTable(comps) {
+  document.getElementById('table-body').innerHTML = comps.map(comp => `
+    <tr>
+      <td>${comp.num}</td>
+      <td>${comp.parcel_id}</td>
+      <td>${comp.address}</td>
+      <td>${comp.sale_date}</td>
+      <td>$${comp.price.toLocaleString()}</td>
+      <td>${comp.acreage}</td>
+      <td>$${Math.round(comp.price_per_acre).toLocaleString()}</td>
+      <td>${comp.grantee}</td>
+      <td><a href="${comp.deed_url}" target="_blank">${comp.book_page}</a></td>
+    </tr>
+  `).join('');
+}
+
+loadReport();
+</script>
+</body>
+</html>

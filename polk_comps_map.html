@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="initial-scale=1, maximum-scale=1">
+<title>Polk County Comps Map</title>
+
+<link rel="stylesheet" href="https://js.arcgis.com/4.31/esri/themes/light/main.css">
+<script src="https://js.arcgis.com/4.31/"></script>
+
+<style>
+html, body, #viewDiv {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+}
+
+#panel {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 350px;
+  height: 100%;
+  background: white;
+  overflow-y: auto;
+  z-index: 99;
+  box-shadow: 2px 0 10px rgba(0,0,0,.15);
+}
+
+#panel h2 {
+  background: #1a3a5c;
+  color: white;
+  margin: 0;
+  padding: 16px;
+  font-size: 18px;
+}
+
+.comp {
+  padding: 12px;
+  border-bottom: 1px solid #eee;
+  cursor: pointer;
+}
+
+.comp:hover {
+  background: #eef5ff;
+}
+</style>
+</head>
+<body>
+
+<div id="viewDiv"></div>
+
+<div id="panel">
+  <h2>Polk County Comps</h2>
+  <div id="comp-list"></div>
+</div>
+
+<script>
+let view;
+let graphicsLayer;
+
+require([
+  "esri/Map",
+  "esri/views/MapView",
+  "esri/Graphic",
+  "esri/layers/GraphicsLayer"
+], function(Map, MapView, Graphic, GraphicsLayer) {
+
+  async function init() {
+    const response = await fetch('./comps.json');
+    const data = await response.json();
+    const comps = data.comps;
+
+    graphicsLayer = new GraphicsLayer();
+
+    const map = new Map({
+      basemap: "streets-navigation-vector",
+      layers: [graphicsLayer]
+    });
+
+    view = new MapView({
+      container: "viewDiv",
+      map: map,
+      center: [-81.9, 28.1],
+      zoom: 10
+    });
+
+    renderList(comps);
+    addPoints(comps, Graphic);
+  }
+
+  function renderList(comps) {
+    document.getElementById('comp-list').innerHTML = comps.map(comp => `
+      <div class="comp" onclick="zoomTo(${comp.lon}, ${comp.lat})">
+        <strong>${comp.address}</strong><br>
+        $${comp.price.toLocaleString()} | ${comp.acreage} ac
+      </div>
+    `).join('');
+  }
+
+  function addPoints(comps, Graphic) {
+    comps.forEach(comp => {
+      const pointGraphic = new Graphic({
+        geometry: {
+          type: "point",
+          longitude: comp.lon,
+          latitude: comp.lat
+        },
+        symbol: {
+          type: "simple-marker",
+          size: 8
+        },
+        popupTemplate: {
+          title: comp.address,
+          content: `
+            Price: $${comp.price.toLocaleString()}<br>
+            Acres: ${comp.acreage}<br>
+            $/Acre: $${Math.round(comp.price_per_acre).toLocaleString()}
+          `
+        }
+      });
+
+      graphicsLayer.add(pointGraphic);
+    });
+  }
+
+  window.zoomTo = function(lon, lat) {
+    view.goTo({
+      center: [lon, lat],
+      zoom: 16
+    });
+  };
+
+  init();
+});
+</script>
+</body>
+</html>
