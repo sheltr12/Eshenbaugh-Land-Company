@@ -101,16 +101,19 @@ a:hover{text-decoration:underline}
       <label>Sale Date To<input type="date" id="sale-date-to"></label>
       <label>Property Type<select id="filter-type"><option value="">All</option></select></label>
       <label>Source<select id="filter-source"><option value="">All</option></select></label>
+      <label>ELC Deal<select id="filter-elc"><option value="">All</option><option value="yes">Yes</option><option value="no">No</option></select></label>
       <label>Transaction Type<select id="filter-transaction"><option value="">All</option></select></label>
       <label>Aerial<select id="filter-aerial"><option value="">All</option><option value="yes">Has Aerial</option><option value="no">No Aerial</option></select></label>
       <label>Min Price<input type="number" id="min-price" placeholder="500000"></label>
       <label>Max Price<input type="number" id="max-price" placeholder="5000000"></label>
       <label>Min Acres<input type="number" id="min-acres" placeholder="0.5" step="0.1"></label>
       <label>Max Acres<input type="number" id="max-acres" placeholder="50" step="0.1"></label>
+      <label>Min $/Acre<input type="number" id="min-ppa" placeholder="100000"></label>
+      <label>Max $/Acre<input type="number" id="max-ppa" placeholder="500000"></label>
       <label>Min Units<input type="number" id="min-units" placeholder="50"></label>
       <label>Max Units<input type="number" id="max-units" placeholder="400"></label>
-      <label>Min $/Unit<input type="number" id="min-ppu" placeholder="50000"></label>
-      <label>Max $/Unit<input type="number" id="max-ppu" placeholder="150000"></label>
+      <label class="ppu-filter">Min $/Unit<input type="number" id="min-ppu" placeholder="50000"></label>
+      <label class="ppu-filter">Max $/Unit<input type="number" id="max-ppu" placeholder="150000"></label>
     </div>
   </div>
 
@@ -136,7 +139,7 @@ a:hover{text-decoration:underline}
 const PAGE_SIZE = 500;
 const DISPLAY_COLUMNS = [
   ['num','#'],['property_type','Property Type'],['address','Address'],['sale_date','Sale Date'],
-  ['price','Price'],['acreage','Acres'],['price_per_acre','$/Acre'],['unit_count','Units'],['price_per_unit','$/Unit'],['grantor','Seller'],
+  ['price','Price'],['acreage','Acres'],['price_per_acre','$/Acre'],['unit_count','Units'],['price_per_unit','$/Unit'],['elc_deal','ELC Deal'],['grantor','Seller'],
   ['grantee','Buyer'],['zoning','Zoning'],['land_use','Land Use'],['source','Source'],['aerial','Aerial']
 ];
 const FIELD_LABELS = {
@@ -144,7 +147,7 @@ const FIELD_LABELS = {
   price:'Price',acreage:'Acres',price_per_acre:'$/Acre',book_page:'Book/Page',transaction_type:'Transaction Type',
   grantor:'Seller',grantee:'Buyer',deed_type:'Deed Type',property_type:'Property Type',zoning:'Zoning',
   land_use:'Land Use',source:'Source',comments:'Comments',lat:'Latitude',lon:'Longitude',
-  coords_approx:'Coordinates Approximate',deed_url:'Deed URL',aerial:'Aerial',sale_date_iso:'Sale Date ISO',unit_count:'Unit Count',price_per_unit:'$/Unit'
+  coords_approx:'Coordinates Approximate',deed_url:'Deed URL',aerial:'Aerial',sale_date_iso:'Sale Date ISO',unit_count:'Unit Count',price_per_unit:'$/Unit',elc_deal:'ELC Deal'
 };
 const currencyFields = new Set(['price','price_per_acre','price_per_unit']);
 const numericFields = new Set(['price','price_per_acre','price_per_unit','acreage','unit_count','lat','lon','num']);
@@ -194,8 +197,8 @@ function populateFilters(){
   populateSelect('filter-transaction', allComps.map(c=>c.transaction_type));
 }
 function addFilterListeners(){
-  ['search','field-filter','field-value','sale-date-from','sale-date-to','filter-type','filter-source','filter-transaction','filter-aerial','min-price','max-price','min-acres','max-acres','min-units','max-units','min-ppu','max-ppu'].forEach(id=>{
-    document.getElementById(id).addEventListener('input',()=>{currentPage=1;applyFilters();});
+  ['search','field-filter','field-value','sale-date-from','sale-date-to','filter-type','filter-source','filter-elc','filter-transaction','filter-aerial','min-price','max-price','min-acres','max-acres','min-ppa','max-ppa','min-units','max-units','min-ppu','max-ppu'].forEach(id=>{
+    document.getElementById(id).addEventListener('input',()=>{if(id==='filter-type') toggleUnitPriceFilters(); currentPage=1;applyFilters();});
   });
 }
 function passesSearch(c,q){
@@ -215,6 +218,7 @@ function applyFilters(){
   const type=document.getElementById('filter-type').value;
   const source=document.getElementById('filter-source').value;
   const trans=document.getElementById('filter-transaction').value;
+  const elc=document.getElementById('filter-elc').value;
   const aerial=document.getElementById('filter-aerial').value;
   const dateFromVal=document.getElementById('sale-date-from').value;
   const dateToVal=document.getElementById('sale-date-to').value;
@@ -224,6 +228,8 @@ function applyFilters(){
   const maxPrice=parseFloat(document.getElementById('max-price').value);
   const minAcres=parseFloat(document.getElementById('min-acres').value);
   const maxAcres=parseFloat(document.getElementById('max-acres').value);
+  const minPPA=parseFloat(document.getElementById('min-ppa').value);
+  const maxPPA=parseFloat(document.getElementById('max-ppa').value);
   const minUnits=parseFloat(document.getElementById('min-units').value);
   const maxUnits=parseFloat(document.getElementById('max-units').value);
   const minPPU=parseFloat(document.getElementById('min-ppu').value);
@@ -232,6 +238,8 @@ function applyFilters(){
     if(type && c.property_type!==type) return false;
     if(source && c.source!==source) return false;
     if(trans && c.transaction_type!==trans) return false;
+    if(elc==='yes' && c.elc_deal!=='Yes') return false;
+    if(elc==='no' && c.elc_deal==='Yes') return false;
     if(aerial==='yes' && !hasValue(c.aerial)) return false;
     if(aerial==='no' && hasValue(c.aerial)) return false;
     const compDate = parseCompDate(c);
@@ -241,6 +249,8 @@ function applyFilters(){
     if(!Number.isNaN(maxPrice) && (!hasValue(c.price) || Number(c.price)>maxPrice)) return false;
     if(!Number.isNaN(minAcres) && (!hasValue(c.acreage) || Number(c.acreage)<minAcres)) return false;
     if(!Number.isNaN(maxAcres) && (!hasValue(c.acreage) || Number(c.acreage)>maxAcres)) return false;
+    if(!Number.isNaN(minPPA) && (!hasValue(c.price_per_acre) || Number(c.price_per_acre)<minPPA)) return false;
+    if(!Number.isNaN(maxPPA) && (!hasValue(c.price_per_acre) || Number(c.price_per_acre)>maxPPA)) return false;
     if(!Number.isNaN(minUnits) && (!hasValue(c.unit_count) || Number(c.unit_count)<minUnits)) return false;
     if(!Number.isNaN(maxUnits) && (!hasValue(c.unit_count) || Number(c.unit_count)>maxUnits)) return false;
     if(!Number.isNaN(minPPU) && (!hasValue(c.price_per_unit) || Number(c.price_per_unit)<minPPU)) return false;
@@ -283,6 +293,11 @@ function renderStats(comps){
     <div class="stat-card"><div class="val">$${Math.round(avgPPA).toLocaleString()}</div><div class="lbl">Avg $/Acre</div></div>
     <div class="stat-card"><div class="val">${aerialCount.toLocaleString()}</div><div class="lbl">Aerial Links</div></div>`;
 }
+function toggleUnitPriceFilters(){
+  const show = document.getElementById('filter-type')?.value === 'Multifamily';
+  document.querySelectorAll('.ppu-filter').forEach(el=>{el.style.display = show ? '' : 'none';});
+  if(!show){['min-ppu','max-ppu'].forEach(id=>{const el=document.getElementById(id); if(el) el.value='';});}
+}
 function fmtCell(c,key){
   const v=c[key];
   if(key==='price' || key==='price_per_acre' || key==='price_per_unit') return fmtMoney(v);
@@ -304,6 +319,7 @@ function buildMobileCard(c){
       <div class="mobile-card-field"><span>$/Acre</span>${fmtMoney(c.price_per_acre)}</div>
       <div class="mobile-card-field"><span>Units</span>${hasValue(c.unit_count) ? Number(c.unit_count).toLocaleString() : '<span class="null-val">—</span>'}</div>
       <div class="mobile-card-field"><span>$/Unit</span>${fmtMoney(c.price_per_unit)}</div>
+      <div class="mobile-card-field"><span>ELC Deal</span>${fmtStr(c.elc_deal)}</div>
       <div class="mobile-card-field"><span>Aerial</span>${fmtLink(c.aerial,'View Aerial')}</div>
       <div class="mobile-card-field"><span>Seller</span>${fmtStr(c.grantor)}</div>
       <div class="mobile-card-field"><span>Buyer</span>${fmtStr(c.grantee)}</div>
@@ -327,9 +343,9 @@ function renderPage(){
 }
 function changePage(dir){currentPage+=dir;renderPage();window.scrollTo({top:0,behavior:'smooth'});}
 function resetFilters(){
-  ['search','field-value','sale-date-from','sale-date-to','min-price','max-price','min-acres','max-acres','min-units','max-units','min-ppu','max-ppu'].forEach(id=>document.getElementById(id).value='');
-  ['field-filter','filter-type','filter-source','filter-transaction','filter-aerial'].forEach(id=>document.getElementById(id).value='');
-  currentPage=1;applyFilters();
+  ['search','field-value','sale-date-from','sale-date-to','min-price','max-price','min-acres','max-acres','min-ppa','max-ppa','min-units','max-units','min-ppu','max-ppu'].forEach(id=>document.getElementById(id).value='');
+  ['field-filter','filter-type','filter-source','filter-elc','filter-transaction','filter-aerial'].forEach(id=>document.getElementById(id).value='');
+  currentPage=1;toggleUnitPriceFilters();applyFilters();
 }
 loadReport();
 </script>
