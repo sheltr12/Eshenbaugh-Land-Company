@@ -6,8 +6,8 @@
 <title>Eshenbaugh Land Company Comps</title>
 <style>
 :root{
-  --elc-navy:#071b2f;
-  --elc-blue:#12365a;
+  --elc-navy:#000000;
+  --elc-blue:#111111;
   --elc-red:#ef1f25;
   --elc-ink:#17212f;
   --elc-muted:#687385;
@@ -18,7 +18,7 @@
 *{box-sizing:border-box}
 body{font-family:"Segoe UI",Arial,sans-serif;margin:0;background:var(--elc-bg);color:var(--elc-ink)}
 .page{padding:20px;max-width:1600px;margin:0 auto}
-.report-header{background:linear-gradient(135deg,var(--elc-navy),var(--elc-blue));color:#fff;border-radius:14px;margin-bottom:18px;box-shadow:0 8px 24px rgba(7,27,47,.18);overflow:hidden}
+.report-header{background:#000;color:#fff;border-radius:14px;margin-bottom:18px;box-shadow:0 8px 24px rgba(7,27,47,.18);overflow:hidden}
 .header-inner{display:flex;gap:22px;align-items:center;padding:22px 26px}
 .logo-wrap{background:#fff;border-radius:10px;padding:10px 14px;min-width:260px;max-width:360px}
 .logo-wrap img{display:block;width:100%;height:auto}
@@ -97,6 +97,8 @@ a:hover{text-decoration:underline}
       <label class="filter-wide">Search All Fields<input type="text" id="search" placeholder="Address, buyer, seller, zoning, comments, aerial URL..."></label>
       <label>Filter Any Field<select id="field-filter"><option value="">Select field</option></select></label>
       <label>Field Contains<input type="text" id="field-value" placeholder="Value"></label>
+      <label>Sale Date From<input type="date" id="sale-date-from"></label>
+      <label>Sale Date To<input type="date" id="sale-date-to"></label>
       <label>Property Type<select id="filter-type"><option value="">All</option></select></label>
       <label>Source<select id="filter-source"><option value="">All</option></select></label>
       <label>Transaction Type<select id="filter-transaction"><option value="">All</option></select></label>
@@ -105,6 +107,10 @@ a:hover{text-decoration:underline}
       <label>Max Price<input type="number" id="max-price" placeholder="5000000"></label>
       <label>Min Acres<input type="number" id="min-acres" placeholder="0.5" step="0.1"></label>
       <label>Max Acres<input type="number" id="max-acres" placeholder="50" step="0.1"></label>
+      <label>Min Units<input type="number" id="min-units" placeholder="50"></label>
+      <label>Max Units<input type="number" id="max-units" placeholder="400"></label>
+      <label>Min $/Unit<input type="number" id="min-ppu" placeholder="50000"></label>
+      <label>Max $/Unit<input type="number" id="max-ppu" placeholder="150000"></label>
     </div>
   </div>
 
@@ -130,7 +136,7 @@ a:hover{text-decoration:underline}
 const PAGE_SIZE = 500;
 const DISPLAY_COLUMNS = [
   ['num','#'],['property_type','Property Type'],['address','Address'],['sale_date','Sale Date'],
-  ['price','Price'],['acreage','Acres'],['price_per_acre','$/Acre'],['grantor','Seller'],
+  ['price','Price'],['acreage','Acres'],['price_per_acre','$/Acre'],['unit_count','Units'],['price_per_unit','$/Unit'],['grantor','Seller'],
   ['grantee','Buyer'],['zoning','Zoning'],['land_use','Land Use'],['source','Source'],['aerial','Aerial']
 ];
 const FIELD_LABELS = {
@@ -138,16 +144,22 @@ const FIELD_LABELS = {
   price:'Price',acreage:'Acres',price_per_acre:'$/Acre',book_page:'Book/Page',transaction_type:'Transaction Type',
   grantor:'Seller',grantee:'Buyer',deed_type:'Deed Type',property_type:'Property Type',zoning:'Zoning',
   land_use:'Land Use',source:'Source',comments:'Comments',lat:'Latitude',lon:'Longitude',
-  coords_approx:'Coordinates Approximate',deed_url:'Deed URL',aerial:'Aerial'
+  coords_approx:'Coordinates Approximate',deed_url:'Deed URL',aerial:'Aerial',sale_date_iso:'Sale Date ISO',unit_count:'Unit Count',price_per_unit:'$/Unit'
 };
-const currencyFields = new Set(['price','price_per_acre']);
-const numericFields = new Set(['price','price_per_acre','acreage','lat','lon','num']);
+const currencyFields = new Set(['price','price_per_acre','price_per_unit']);
+const numericFields = new Set(['price','price_per_acre','price_per_unit','acreage','unit_count','lat','lon','num']);
 const escapeHtml = s => String(s ?? '').replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
 const hasValue = v => v !== null && v !== undefined && v !== '';
 const fmtMoney = n => hasValue(n) ? '$' + Math.round(Number(n)).toLocaleString() : '<span class="null-val">—</span>';
 const fmtAcres = n => hasValue(n) ? Number(n).toLocaleString(undefined,{maximumFractionDigits:2}) : '<span class="null-val">—</span>';
 const fmtStr = s => hasValue(s) ? escapeHtml(s) : '<span class="null-val">—</span>';
 const fmtLink = (url,label='Aerial') => hasValue(url) ? `<a href="${escapeHtml(url)}" target="_blank" rel="noopener noreferrer">${label}</a>` : '<span class="null-val">—</span>';
+const parseCompDate = c => {
+  const raw = c.sale_date_iso || c.sale_date;
+  if(!hasValue(raw)) return null;
+  const d = new Date(raw);
+  return Number.isNaN(d.getTime()) ? null : d;
+};
 let allComps=[], filteredComps=[], currentPage=1, sortKey='num', sortDir='asc';
 
 async function loadReport(){
@@ -182,7 +194,7 @@ function populateFilters(){
   populateSelect('filter-transaction', allComps.map(c=>c.transaction_type));
 }
 function addFilterListeners(){
-  ['search','field-filter','field-value','filter-type','filter-source','filter-transaction','filter-aerial','min-price','max-price','min-acres','max-acres'].forEach(id=>{
+  ['search','field-filter','field-value','sale-date-from','sale-date-to','filter-type','filter-source','filter-transaction','filter-aerial','min-price','max-price','min-acres','max-acres','min-units','max-units','min-ppu','max-ppu'].forEach(id=>{
     document.getElementById(id).addEventListener('input',()=>{currentPage=1;applyFilters();});
   });
 }
@@ -204,20 +216,35 @@ function applyFilters(){
   const source=document.getElementById('filter-source').value;
   const trans=document.getElementById('filter-transaction').value;
   const aerial=document.getElementById('filter-aerial').value;
+  const dateFromVal=document.getElementById('sale-date-from').value;
+  const dateToVal=document.getElementById('sale-date-to').value;
+  const dateFrom=dateFromVal ? new Date(dateFromVal + 'T00:00:00') : null;
+  const dateTo=dateToVal ? new Date(dateToVal + 'T23:59:59') : null;
   const minPrice=parseFloat(document.getElementById('min-price').value);
   const maxPrice=parseFloat(document.getElementById('max-price').value);
   const minAcres=parseFloat(document.getElementById('min-acres').value);
   const maxAcres=parseFloat(document.getElementById('max-acres').value);
+  const minUnits=parseFloat(document.getElementById('min-units').value);
+  const maxUnits=parseFloat(document.getElementById('max-units').value);
+  const minPPU=parseFloat(document.getElementById('min-ppu').value);
+  const maxPPU=parseFloat(document.getElementById('max-ppu').value);
   filteredComps=allComps.filter(c=>{
     if(type && c.property_type!==type) return false;
     if(source && c.source!==source) return false;
     if(trans && c.transaction_type!==trans) return false;
     if(aerial==='yes' && !hasValue(c.aerial)) return false;
     if(aerial==='no' && hasValue(c.aerial)) return false;
+    const compDate = parseCompDate(c);
+    if(dateFrom && (!compDate || compDate < dateFrom)) return false;
+    if(dateTo && (!compDate || compDate > dateTo)) return false;
     if(!Number.isNaN(minPrice) && (!hasValue(c.price) || Number(c.price)<minPrice)) return false;
     if(!Number.isNaN(maxPrice) && (!hasValue(c.price) || Number(c.price)>maxPrice)) return false;
     if(!Number.isNaN(minAcres) && (!hasValue(c.acreage) || Number(c.acreage)<minAcres)) return false;
     if(!Number.isNaN(maxAcres) && (!hasValue(c.acreage) || Number(c.acreage)>maxAcres)) return false;
+    if(!Number.isNaN(minUnits) && (!hasValue(c.unit_count) || Number(c.unit_count)<minUnits)) return false;
+    if(!Number.isNaN(maxUnits) && (!hasValue(c.unit_count) || Number(c.unit_count)>maxUnits)) return false;
+    if(!Number.isNaN(minPPU) && (!hasValue(c.price_per_unit) || Number(c.price_per_unit)<minPPU)) return false;
+    if(!Number.isNaN(maxPPU) && (!hasValue(c.price_per_unit) || Number(c.price_per_unit)>maxPPU)) return false;
     return passesSearch(c,q) && passesFieldFilter(c,field,fieldVal);
   });
   sortComps();
@@ -258,8 +285,9 @@ function renderStats(comps){
 }
 function fmtCell(c,key){
   const v=c[key];
-  if(key==='price' || key==='price_per_acre') return fmtMoney(v);
+  if(key==='price' || key==='price_per_acre' || key==='price_per_unit') return fmtMoney(v);
   if(key==='acreage') return fmtAcres(v);
+  if(key==='unit_count') return hasValue(v) ? Number(v).toLocaleString() : '<span class="null-val">—</span>';
   if(key==='aerial') return fmtLink(v,'Aerial');
   return fmtStr(v);
 }
@@ -274,6 +302,8 @@ function buildMobileCard(c){
       <div class="mobile-card-field"><span>Price</span>${fmtMoney(c.price)}</div>
       <div class="mobile-card-field"><span>Acres</span>${fmtAcres(c.acreage)}</div>
       <div class="mobile-card-field"><span>$/Acre</span>${fmtMoney(c.price_per_acre)}</div>
+      <div class="mobile-card-field"><span>Units</span>${hasValue(c.unit_count) ? Number(c.unit_count).toLocaleString() : '<span class="null-val">—</span>'}</div>
+      <div class="mobile-card-field"><span>$/Unit</span>${fmtMoney(c.price_per_unit)}</div>
       <div class="mobile-card-field"><span>Aerial</span>${fmtLink(c.aerial,'View Aerial')}</div>
       <div class="mobile-card-field"><span>Seller</span>${fmtStr(c.grantor)}</div>
       <div class="mobile-card-field"><span>Buyer</span>${fmtStr(c.grantee)}</div>
@@ -297,7 +327,7 @@ function renderPage(){
 }
 function changePage(dir){currentPage+=dir;renderPage();window.scrollTo({top:0,behavior:'smooth'});}
 function resetFilters(){
-  ['search','field-value','min-price','max-price','min-acres','max-acres'].forEach(id=>document.getElementById(id).value='');
+  ['search','field-value','sale-date-from','sale-date-to','min-price','max-price','min-acres','max-acres','min-units','max-units','min-ppu','max-ppu'].forEach(id=>document.getElementById(id).value='');
   ['field-filter','filter-type','filter-source','filter-transaction','filter-aerial'].forEach(id=>document.getElementById(id).value='');
   currentPage=1;applyFilters();
 }
