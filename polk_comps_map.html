@@ -73,6 +73,15 @@ button:hover{background:#f0f4f8}
 .popup-table td:nth-child(2){font-weight:700}
 .popup-table a{color:var(--elc-red);font-weight:900;text-decoration:none}
 .popup-table a:hover{text-decoration:underline}
+
+.pin-edit-link,.pin-edit-btn{color:var(--elc-red);font-weight:900;text-decoration:none;background:transparent;border:none;padding:0;font-size:11px;cursor:pointer}
+.pin-edit-link:hover,.pin-edit-btn:hover{text-decoration:underline;background:transparent}
+#pin-edit-banner{display:none;position:absolute;left:395px;top:16px;right:16px;z-index:120;background:#111;color:#fff;border-left:5px solid var(--elc-red);border-radius:10px;box-shadow:0 4px 18px rgba(0,0,0,.28);padding:12px 14px;font-size:13px;line-height:1.35}
+#pin-edit-banner strong{display:block;margin-bottom:2px}
+#pin-edit-banner button{margin-left:8px;border-color:rgba(255,255,255,.35);background:rgba(255,255,255,.12);color:#fff;font-weight:800}
+#pin-edit-banner button:hover{background:rgba(255,255,255,.22)}
+body.pin-editing #viewDiv{cursor:crosshair}
+#pin-edit-banner .banner-actions{margin-top:8px}
 @media(max-width:760px){
   html,body,#viewDiv{height:100dvh}
   #panel{width:100%;max-width:100%;height:46dvh;top:auto;bottom:0;border-right:0;border-top:4px solid var(--elc-red);border-radius:14px 14px 0 0;box-shadow:0 -5px 20px rgba(0,0,0,.28)}
@@ -93,6 +102,7 @@ button:hover{background:#f0f4f8}
   #comp-list{font-size:12px}
   .comp-card{padding:10px 12px}.comp-addr{font-size:12px}.comp-parties{white-space:normal;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
   #legend{display:none}
+  #pin-edit-banner{left:10px;right:10px;top:10px;font-size:12px;padding:10px 12px}
   .esri-ui-top-left{top:8px;left:8px}.esri-popup{max-width:92vw!important}.popup-table{min-width:0;width:100%}
 }
 @media(max-width:390px){#panel{height:50dvh}#filters{grid-template-columns:1fr;max-height:26dvh}.filter-wide,.filter-actions{grid-column:span 1}}
@@ -100,6 +110,14 @@ button:hover{background:#f0f4f8}
 </head>
 <body>
 <div id="viewDiv"></div>
+
+<div id="pin-edit-banner">
+  <strong id="pin-edit-title">Pin edit mode</strong>
+  <span id="pin-edit-copy">Click the correct location on the map, then confirm the move.</span>
+  <div class="banner-actions">
+    <button type="button" onclick="cancelPinEdit()">Cancel</button>
+  </div>
+</div>
 
 <div id="panel">
   <div id="panel-header">
@@ -162,7 +180,9 @@ button:hover{background:#f0f4f8}
 <script>
 let view, graphicsLayer, Graphic, Point;
 let allComps = [], allMappedComps = [], filteredMappedComps = [], activeGraphics = [];
+let pinEditComp = null;
 const LOCAL_DEALS_KEY='elc_manual_added_deals_v1';
+const PIN_OVERRIDES_KEY='elc_pin_location_overrides_v1';
 const FIELD_LABELS = {
   num:'#',parcel_id:'Parcel ID',parcel_raw_id:'Parcel Raw ID',address:'Address',sale_date:'Sale Date',
   price:'Price',acreage:'Acres',price_per_acre:'$/Acre',book_page:'Book/Page',transaction_type:'Transaction Type',
@@ -186,6 +206,28 @@ const parseCompDate = c => {
 
 function loadLocalDeals(){
   try{return JSON.parse(localStorage.getItem(LOCAL_DEALS_KEY) || '[]');}catch(e){return [];}
+}
+function loadPinOverrides(){
+  try{return JSON.parse(localStorage.getItem(PIN_OVERRIDES_KEY) || '{}');}catch(e){return {};}
+}
+function savePinOverrides(overrides){
+  localStorage.setItem(PIN_OVERRIDES_KEY, JSON.stringify(overrides));
+}
+function getCompKey(c, fallbackIndex){
+  if(hasValue(c.num)) return 'num:' + String(c.num);
+  if(hasValue(c._manual_id)) return 'manual:' + String(c._manual_id);
+  return 'fallback:' + String(fallbackIndex);
+}
+function applyPinOverrides(comps){
+  const overrides = loadPinOverrides();
+  return comps.map((c,i)=>{
+    const key = getCompKey(c,i);
+    const override = overrides[key];
+    return override ? {...c, _compKey:key, lat:override.lat, lon:override.lon, coords_approx:false, pin_edited:true} : {...c, _compKey:key};
+  });
+}
+function getCompByKey(key){
+  return allComps.find(c=>c._compKey === key) || allMappedComps.find(c=>c._compKey === key);
 }
 
 function getPriceColor(price){
@@ -212,7 +254,7 @@ function buildPopupContent(comp){
     ['Units',hasValue(comp.unit_count) ? Number(comp.unit_count).toLocaleString() : null],['$/Unit',fmtPPA(comp.price_per_unit)],
     ['Sale Date',fmtStr(comp.sale_date)],['Type',fmtStr(comp.property_type)],['ELC Deal',fmtStr(comp.elc_deal)],['Zoning',fmtStr(comp.zoning)],
     ['Land Use',fmtStr(comp.land_use)],['Seller',fmtStr(comp.grantor)],['Buyer',fmtStr(comp.grantee)],
-    ['Source',fmtStr(comp.source)],['Aerial',fmtLink(comp.aerial,'View Aerial')],['Deed',fmtLink(comp.deed_url,'View Deed')]
+    ['Source',fmtStr(comp.source)],['Aerial',fmtLink(comp.aerial,'View Aerial')],['Deed',fmtLink(comp.deed_url,'View Deed')],['Pin Location',`<button class="pin-edit-link" type="button" onclick="startPinEdit('${escapeHtml(comp._compKey || '')}')">Change Pin</button>`]
   ].filter(r=>r[1]!=null);
   const comments = fmtStr(comp.comments);
   const table = '<table class="popup-table">' + rows.map(([k,v])=>`<tr><td>${k}</td><td>${v}</td></tr>`).join('') + '</table>';
@@ -227,7 +269,7 @@ function buildListCard(comp,idx){
   const units=hasValue(comp.unit_count) ? `<span class="comp-tag">${Number(comp.unit_count).toLocaleString()} Units</span>` : '';
   const sel=fmtStr(comp.grantor), buy=fmtStr(comp.grantee);
   const parties=(sel||buy) ? `<div class="comp-parties">${sel||'N/A'} to ${buy||'N/A'}</div>` : '';
-  const links = comp.aerial ? `<div class="comp-links"><a href="${escapeHtml(comp.aerial)}" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation()">View Aerial</a></div>` : '';
+  const links = `<div class="comp-links">${comp.aerial ? `<a href="${escapeHtml(comp.aerial)}" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation()">View Aerial</a> · ` : ''}<button class="pin-edit-btn" type="button" onclick="event.stopPropagation(); startPinEdit('${escapeHtml(comp._compKey || '')}')">Change Pin</button></div>`;
   return `<div class="comp-card" id="card-${idx}" onclick="zoomToComp(${idx})">
     <div class="comp-addr">${escapeHtml(comp.address || '(no address)')}</div>
     <div class="comp-meta">${type}${date}${units}${elc}${aerial}</div>
@@ -335,6 +377,43 @@ function addFilterListeners(){
     document.getElementById(id).addEventListener('input',()=>{if(id==='filter-type') toggleUnitPriceFilters(); applyFilters();});
   });
 }
+window.startPinEdit=function(compKey){
+  const comp = getCompByKey(compKey);
+  if(!comp || !hasValue(comp.lat) || !hasValue(comp.lon)){
+    alert('This comp does not have a mapped location to edit.');
+    return;
+  }
+  pinEditComp = comp;
+  document.body.classList.add('pin-editing');
+  const title = document.getElementById('pin-edit-title');
+  const copy = document.getElementById('pin-edit-copy');
+  const banner = document.getElementById('pin-edit-banner');
+  if(title) title.textContent = 'Change pin location';
+  if(copy) copy.textContent = 'Click the correct location on the map for: ' + (comp.address || 'selected comp') + '. You will be asked to confirm before it saves.';
+  if(banner) banner.style.display = 'block';
+  if(view){
+    view.goTo({center:[Number(comp.lon), Number(comp.lat)], zoom:16}).catch(()=>{});
+  }
+};
+window.cancelPinEdit=function(){
+  pinEditComp = null;
+  document.body.classList.remove('pin-editing');
+  const banner = document.getElementById('pin-edit-banner');
+  if(banner) banner.style.display = 'none';
+};
+function savePinEdit(comp, lon, lat){
+  const overrides = loadPinOverrides();
+  overrides[comp._compKey] = {lon:Number(lon), lat:Number(lat), updated:new Date().toISOString(), address:comp.address || null};
+  savePinOverrides(overrides);
+  allComps = applyPinOverrides(allComps);
+  allMappedComps = allComps.filter(c=>hasValue(c.lat) && hasValue(c.lon)).map((c,i)=>({...c,_mappedIndex:i}));
+  const key = comp._compKey;
+  cancelPinEdit();
+  applyFilters();
+  const newIdx = filteredMappedComps.findIndex(c=>c._compKey === key);
+  if(newIdx >= 0) setTimeout(()=>zoomToComp(newIdx),100);
+}
+
 window.resetFilters=function(){
   ['map-search','field-value','sale-date-from','sale-date-to','min-price','max-price','min-acres','max-acres','min-ppa','max-ppa','min-units','max-units','min-ppu','max-ppu'].forEach(id=>document.getElementById(id).value='');
   ['field-filter','filter-type','filter-source','filter-elc','filter-aerial'].forEach(id=>document.getElementById(id).value='');
@@ -383,7 +462,7 @@ require(["esri/Map","esri/views/MapView","esri/Graphic","esri/layers/GraphicsLay
   Graphic = EsriGraphic;
   async function init(){
     const data = await (await fetch('./comps.json')).json();
-    allComps = [...(data.comps || []), ...loadLocalDeals()];
+    allComps = applyPinOverrides([...(data.comps || []), ...loadLocalDeals()]);
     allMappedComps = allComps.filter(c=>hasValue(c.lat) && hasValue(c.lon)).map((c,i)=>({...c,_mappedIndex:i}));
     graphicsLayer = new GraphicsLayer();
     const map = new Map({basemap:"hybrid",layers:[graphicsLayer]});
@@ -391,6 +470,16 @@ require(["esri/Map","esri/views/MapView","esri/Graphic","esri/layers/GraphicsLay
     populateFilters();
     addFilterListeners();
     applyFilters();
+    view.on('click', function(event){
+      if(!pinEditComp) return;
+      event.stopPropagation();
+      const pt = event.mapPoint;
+      if(!pt) return;
+      const lon = Number(pt.longitude);
+      const lat = Number(pt.latitude);
+      const ok = confirm('Move this comp pin to the location you just clicked?\n\n' + (pinEditComp.address || 'Selected comp') + '\nLatitude: ' + lat.toFixed(6) + '\nLongitude: ' + lon.toFixed(6));
+      if(ok) savePinEdit(pinEditComp, lon, lat);
+    });
     view.when(()=>zoomToResults());
   }
   init();
