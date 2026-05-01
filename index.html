@@ -2,7 +2,7 @@
 <html>
 <head>
 <meta charset="utf-8">
-<title>Polk County Vacant Land Comps</title>
+<title>Eshenbaugh Land Company Comps</title>
 <style>
   body {
     font-family: 'Segoe UI', Arial, sans-serif;
@@ -70,11 +70,43 @@
     margin-top: 4px;
   }
 
+  .filters {
+    background: white;
+    border-radius: 10px;
+    padding: 16px 20px;
+    box-shadow: 0 1px 4px rgba(0,0,0,.08);
+    margin-bottom: 16px;
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+
+  .filters label {
+    font-size: 12px;
+    font-weight: 600;
+    color: #555;
+  }
+
+  .filters input, .filters select {
+    padding: 6px 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 12px;
+    min-width: 140px;
+  }
+
   .section {
     background: white;
     border-radius: 10px;
     padding: 20px;
     box-shadow: 0 1px 4px rgba(0,0,0,.08);
+  }
+
+  .section h2 {
+    margin: 0 0 14px;
+    font-size: 16px;
+    color: #1a3a5c;
   }
 
   table {
@@ -88,10 +120,15 @@
     color: white;
     padding: 8px;
     text-align: left;
+    white-space: nowrap;
+    cursor: pointer;
+    user-select: none;
   }
 
+  th:hover { background: #244f7a; }
+
   td {
-    padding: 8px;
+    padding: 7px 8px;
     border-bottom: 1px solid #eee;
   }
 
@@ -103,9 +140,41 @@
     background: #eef5ff;
   }
 
-  a {
-    color: #1d4ed8;
-    text-decoration: none;
+  a { color: #1d4ed8; text-decoration: none; }
+
+  .null-val { color: #bbb; }
+
+  .pager {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 14px;
+    font-size: 12px;
+    color: #555;
+  }
+
+  .pager button {
+    padding: 5px 14px;
+    border: 1px solid #ccd;
+    border-radius: 5px;
+    background: white;
+    cursor: pointer;
+    font-size: 12px;
+  }
+
+  .pager button:disabled {
+    opacity: .4;
+    cursor: default;
+  }
+
+  .pager button:hover:not(:disabled) {
+    background: #eef5ff;
+  }
+
+  #row-count {
+    font-size: 12px;
+    color: #666;
+    margin-bottom: 10px;
   }
 </style>
 </head>
@@ -122,62 +191,93 @@
 
 <div class="stats-grid" id="stats"></div>
 
+<div class="filters">
+  <label>Search: <input type="text" id="search" placeholder="Address, buyer, seller..."></label>
+  <label>Property Type: <select id="filter-type"><option value="">All</option></select></label>
+  <label>Min Price ($): <input type="number" id="min-price" placeholder="e.g. 500000"></label>
+  <label>Min Acres: <input type="number" id="min-acres" placeholder="e.g. 0.5" step="0.1"></label>
+</div>
+
 <div class="section">
   <h2>Comp Detail Table</h2>
+  <div id="row-count"></div>
   <div style="overflow-x:auto;">
     <table>
       <thead>
         <tr>
           <th>#</th>
-          <th>Parcel ID</th>
+          <th>Property Type</th>
           <th>Address</th>
           <th>Sale Date</th>
           <th>Price</th>
           <th>Acres</th>
           <th>$/Acre</th>
+          <th>Seller</th>
           <th>Buyer</th>
-          <th>Book/Page</th>
+          <th>Source</th>
         </tr>
       </thead>
       <tbody id="table-body"></tbody>
     </table>
   </div>
+  <div class="pager">
+    <button id="btn-prev" onclick="changePage(-1)" disabled>← Prev</button>
+    <span id="page-info"></span>
+    <button id="btn-next" onclick="changePage(1)">Next →</button>
+  </div>
 </div>
 
 <script>
+const PAGE_SIZE = 500;
+
+const fmt      = n => n != null ? '$' + Math.round(n).toLocaleString() : '<span class="null-val">—</span>';
+const fmtAcres = n => n != null ? Number(n).toFixed(2) : '<span class="null-val">—</span>';
+const fmtStr   = s => (s != null && s !== '') ? s : '<span class="null-val">—</span>';
+
+let allComps = [];
+let filteredComps = [];
+let currentPage = 1;
+
 async function loadReport() {
-  const response = await fetch('./comps.json');
-  const data = await response.json();
+  try {
+    const response = await fetch('./comps.json');
+    const data = await response.json();
+    allComps = data.comps;
+    const meta = data.meta;
 
-  const comps = data.comps;
-  const meta = data.meta;
+    document.getElementById('title').textContent = `${meta.title} — ${meta.period}`;
+    document.getElementById('subtitle').textContent =
+      `Source: ${meta.source} | ${meta.total_comps.toLocaleString()} comps | Generated ${meta.generated}`;
 
-  document.getElementById('title').textContent =
-    `${meta.title} — ${meta.period}`;
-
-  document.getElementById('subtitle').textContent =
-    `Source: ${meta.source} | Criteria: ${meta.criteria} | Generated ${meta.generated}`;
-
-  renderStats(comps);
-  renderTable(comps);
+    populateTypeFilter(allComps);
+    applyFilters();
+    addFilterListeners();
+  } catch (e) {
+    document.getElementById('title').textContent = 'Error loading data';
+    document.getElementById('subtitle').textContent = e.message;
+  }
 }
 
 function renderStats(comps) {
-  const totalVolume = comps.reduce((sum, c) => sum + c.price, 0);
-  const totalAcres = comps.reduce((sum, c) => sum + c.acreage, 0);
-  const avgPPA = comps.reduce((sum, c) => sum + c.price_per_acre, 0) / comps.length;
+  const withPrice = comps.filter(c => c.price != null);
+  const withAcres = comps.filter(c => c.acreage != null);
+  const withPPA   = comps.filter(c => c.price_per_acre != null);
+
+  const totalVolume = withPrice.reduce((s, c) => s + c.price, 0);
+  const totalAcres  = withAcres.reduce((s, c) => s + c.acreage, 0);
+  const avgPPA      = withPPA.length ? withPPA.reduce((s, c) => s + c.price_per_acre, 0) / withPPA.length : 0;
 
   document.getElementById('stats').innerHTML = `
     <div class="stat-card">
-      <div class="val">${comps.length}</div>
+      <div class="val">${comps.length.toLocaleString()}</div>
       <div class="lbl">Total Comps</div>
     </div>
     <div class="stat-card">
-      <div class="val">$${(totalVolume/1000000).toFixed(1)}M</div>
+      <div class="val">$${(totalVolume / 1000000).toFixed(1)}M</div>
       <div class="lbl">Volume</div>
     </div>
     <div class="stat-card">
-      <div class="val">${totalAcres.toFixed(1)}</div>
+      <div class="val">${Math.round(totalAcres).toLocaleString()}</div>
       <div class="lbl">Total Acres</div>
     </div>
     <div class="stat-card">
@@ -187,20 +287,85 @@ function renderStats(comps) {
   `;
 }
 
-function renderTable(comps) {
-  document.getElementById('table-body').innerHTML = comps.map(comp => `
+function populateTypeFilter(comps) {
+  const types = [...new Set(comps.map(c => c.property_type).filter(Boolean))].sort();
+  const sel = document.getElementById('filter-type');
+  types.forEach(t => {
+    const opt = document.createElement('option');
+    opt.value = t; opt.textContent = t;
+    sel.appendChild(opt);
+  });
+}
+
+function addFilterListeners() {
+  ['search', 'filter-type', 'min-price', 'min-acres'].forEach(id => {
+    document.getElementById(id).addEventListener('input', () => {
+      currentPage = 1;
+      applyFilters();
+    });
+  });
+}
+
+function applyFilters() {
+  const search   = document.getElementById('search').value.toLowerCase();
+  const type     = document.getElementById('filter-type').value;
+  const minPrice = parseFloat(document.getElementById('min-price').value) || 0;
+  const minAcres = parseFloat(document.getElementById('min-acres').value) || 0;
+
+  filteredComps = allComps.filter(c => {
+    if (type && c.property_type !== type) return false;
+    if (minPrice && (c.price == null || c.price < minPrice)) return false;
+    if (minAcres && (c.acreage == null || c.acreage < minAcres)) return false;
+    if (search) {
+      const hay = [c.address, c.grantor, c.grantee, c.property_type, c.comments]
+        .filter(Boolean).join(' ').toLowerCase();
+      if (!hay.includes(search)) return false;
+    }
+    return true;
+  });
+
+  renderStats(filteredComps);
+  renderPage();
+}
+
+function renderPage() {
+  const total = filteredComps.length;
+  const totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE));
+  currentPage = Math.min(currentPage, totalPages);
+
+  const start = (currentPage - 1) * PAGE_SIZE;
+  const end   = Math.min(start + PAGE_SIZE, total);
+  const pageComps = filteredComps.slice(start, end);
+
+  document.getElementById('row-count').textContent =
+    `Showing ${start + 1}–${end} of ${total.toLocaleString()} comps`;
+
+  document.getElementById('page-info').textContent =
+    `Page ${currentPage} of ${totalPages}`;
+
+  document.getElementById('btn-prev').disabled = currentPage <= 1;
+  document.getElementById('btn-next').disabled = currentPage >= totalPages;
+
+  document.getElementById('table-body').innerHTML = pageComps.map(comp => `
     <tr>
-      <td>${comp.num}</td>
-      <td>${comp.parcel_id}</td>
-      <td>${comp.address}</td>
-      <td>${comp.sale_date}</td>
-      <td>$${comp.price.toLocaleString()}</td>
-      <td>${comp.acreage}</td>
-      <td>$${Math.round(comp.price_per_acre).toLocaleString()}</td>
-      <td>${comp.grantee}</td>
-      <td><a href="${comp.deed_url}" target="_blank">${comp.book_page}</a></td>
+      <td>${comp.num != null ? comp.num : ''}</td>
+      <td>${fmtStr(comp.property_type)}</td>
+      <td>${fmtStr(comp.address)}</td>
+      <td>${fmtStr(comp.sale_date)}</td>
+      <td>${fmt(comp.price)}</td>
+      <td>${fmtAcres(comp.acreage)}</td>
+      <td>${fmt(comp.price_per_acre)}</td>
+      <td>${fmtStr(comp.grantor)}</td>
+      <td>${fmtStr(comp.grantee)}</td>
+      <td>${fmtStr(comp.source)}</td>
     </tr>
   `).join('');
+}
+
+function changePage(dir) {
+  currentPage += dir;
+  renderPage();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
 loadReport();
