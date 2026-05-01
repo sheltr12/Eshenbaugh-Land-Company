@@ -54,7 +54,6 @@ a:hover{text-decoration:underline}
 .pager button,.mini-btn{padding:6px 12px;border:1px solid #cbd5df;border-radius:7px;background:#fff;cursor:pointer;font-size:12px}
 .pager button:hover:not(:disabled),.mini-btn:hover{background:#f3f6fa}
 .pager button:disabled{opacity:.45;cursor:default}
-
 .table-wrap{overflow-x:auto;max-height:72vh;-webkit-overflow-scrolling:touch}
 .mobile-cards{display:none}
 .mobile-comp-card{background:#fff;border:1px solid var(--elc-line);border-radius:12px;padding:12px;margin-bottom:10px;box-shadow:0 1px 4px rgba(0,0,0,.04)}
@@ -62,7 +61,6 @@ a:hover{text-decoration:underline}
 .mobile-card-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px 10px;font-size:12px}
 .mobile-card-field span{display:block;font-size:10px;text-transform:uppercase;letter-spacing:.4px;color:var(--elc-muted);font-weight:800;margin-bottom:2px}
 .mobile-card-comments{margin-top:8px;font-size:12px;line-height:1.35;color:#475366}
-
 .add-help{font-size:12px;color:var(--elc-muted);margin:8px 0 0;line-height:1.4}
 .modal-backdrop{display:none;position:fixed;inset:0;background:rgba(0,0,0,.58);z-index:9999;padding:18px;overflow-y:auto}
 .modal-backdrop.open{display:block}
@@ -73,7 +71,6 @@ a:hover{text-decoration:underline}
 textarea{width:100%;margin-top:5px;padding:8px 10px;border:1px solid #cbd5df;border-radius:7px;font-size:12px;min-height:78px;font-family:inherit}.modal-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:14px;flex-wrap:wrap}
 @media(max-width:900px){.deal-form-grid{grid-template-columns:repeat(2,1fr)}.deal-form-wide{grid-column:span 2}}
 @media(max-width:700px){.modal-backdrop{padding:8px}.modal-card{margin:6px auto}.deal-form-grid{grid-template-columns:1fr}.deal-form-wide{grid-column:span 1}.modal-actions .btn{width:100%}}
-
 @media(max-width:1050px){.filters{grid-template-columns:repeat(2,1fr)}.filter-wide{grid-column:span 2}.stats-grid{grid-template-columns:repeat(2,1fr)}.header-inner{flex-direction:column;align-items:flex-start}.logo-wrap{max-width:330px}}
 @media(max-width:700px){
   .page{padding:10px 10px 18px}.report-header{border-radius:10px;margin-bottom:12px}.header-inner{padding:14px;gap:12px}.logo-wrap{min-width:0;width:100%;max-width:260px;padding:8px}.report-header h1{font-size:19px;line-height:1.2}.report-header p{font-size:12px;line-height:1.35}
@@ -96,15 +93,11 @@ textarea{width:100%;margin-top:5px;padding:8px 10px;border:1px solid #cbd5df;bor
       </div>
     </div>
   </div>
-
   <div class="actions">
     <a href="comps_map.html" class="btn btn-primary" target="_blank" rel="noopener noreferrer">Open Interactive Map</a>
     <button class="btn btn-secondary" onclick="openAddDealModal()">Add New Deal</button>
     <button class="btn btn-secondary" onclick="resetFilters()">Reset Filters</button>
   </div>
-
-
-
   <div id="add-deal-modal" class="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="add-deal-title">
     <div class="modal-card">
       <div class="modal-head">
@@ -147,9 +140,7 @@ textarea{width:100%;margin-top:5px;padding:8px 10px;border:1px solid #cbd5df;bor
       </div>
     </div>
   </div>
-
   <div class="stats-grid" id="stats"></div>
-
   <div class="panel">
     <div class="filters">
       <label class="filter-wide">Search All Fields<input type="text" id="search" placeholder="Address, buyer, seller, zoning, comments, aerial URL..."></label>
@@ -174,7 +165,6 @@ textarea{width:100%;margin-top:5px;padding:8px 10px;border:1px solid #cbd5df;bor
       <label class="ppu-filter">Max $/Unit<input type="number" id="max-ppu" placeholder="150000"></label>
     </div>
   </div>
-
   <div class="panel section">
     <h2>Comp Detail Table</h2>
     <div id="row-count"></div>
@@ -192,7 +182,6 @@ textarea{width:100%;margin-top:5px;padding:8px 10px;border:1px solid #cbd5df;bor
     </div>
   </div>
 </div>
-
 <script>
 const PAGE_SIZE = 500;
 const DISPLAY_COLUMNS = [
@@ -223,7 +212,6 @@ const parseCompDate = c => {
 };
 let allComps=[], filteredComps=[], currentPage=1, sortKey='num', sortDir='asc', baseMeta={};
 const LOCAL_DEALS_KEY='elc_manual_added_deals_v1';
-
 async function loadReport(){
   try{
     const data = await (await fetch('./comps.json')).json();
@@ -373,7 +361,6 @@ function fmtCell(c,key){
   if(key==='aerial') return fmtLink(v,'Aerial');
   return fmtStr(v);
 }
-
 function buildMobileCard(c){
   const comments = hasValue(c.comments) ? `<div class="mobile-card-comments"><strong>Comments:</strong> ${escapeHtml(c.comments)}</div>` : '';
   return `<div class="mobile-comp-card">
@@ -395,7 +382,6 @@ function buildMobileCard(c){
     </div>${comments}
   </div>`;
 }
-
 function renderPage(){
   const total=filteredComps.length, totalPages=Math.max(1,Math.ceil(total/PAGE_SIZE));
   currentPage=Math.min(currentPage,totalPages);
@@ -409,7 +395,6 @@ function renderPage(){
   document.getElementById('mobile-cards').innerHTML = pageItems.map(buildMobileCard).join('');
 }
 function changePage(dir){currentPage+=dir;renderPage();window.scrollTo({top:0,behavior:'smooth'});}
-
 function loadLocalDeals(){
   try{return JSON.parse(localStorage.getItem(LOCAL_DEALS_KEY) || '[]');}catch(e){return [];}
 }
