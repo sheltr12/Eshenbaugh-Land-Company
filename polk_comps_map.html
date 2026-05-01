@@ -254,7 +254,7 @@ function buildPopupContent(comp){
     ['Units',hasValue(comp.unit_count) ? Number(comp.unit_count).toLocaleString() : null],['$/Unit',fmtPPA(comp.price_per_unit)],
     ['Sale Date',fmtStr(comp.sale_date)],['Type',fmtStr(comp.property_type)],['ELC Deal',fmtStr(comp.elc_deal)],['Zoning',fmtStr(comp.zoning)],
     ['Land Use',fmtStr(comp.land_use)],['Seller',fmtStr(comp.grantor)],['Buyer',fmtStr(comp.grantee)],
-    ['Source',fmtStr(comp.source)],['Aerial',fmtLink(comp.aerial,'View Aerial')],['Deed',fmtLink(comp.deed_url,'View Deed')],['Pin Location',`<button class="pin-edit-link" type="button" onclick="startPinEdit('${escapeHtml(comp._compKey || '')}')">Change Pin</button>`]
+    ['Source',fmtStr(comp.source)],['Aerial',fmtLink(comp.aerial,'View Aerial')],['Deed',fmtLink(comp.deed_url,'View Deed')],['Pin Location',`<button class="pin-edit-link" type="button" data-pin-key="${encodeURIComponent(comp._compKey || '')}">Change Pin</button>`]
   ].filter(r=>r[1]!=null);
   const comments = fmtStr(comp.comments);
   const table = '<table class="popup-table">' + rows.map(([k,v])=>`<tr><td>${k}</td><td>${v}</td></tr>`).join('') + '</table>';
@@ -269,7 +269,7 @@ function buildListCard(comp,idx){
   const units=hasValue(comp.unit_count) ? `<span class="comp-tag">${Number(comp.unit_count).toLocaleString()} Units</span>` : '';
   const sel=fmtStr(comp.grantor), buy=fmtStr(comp.grantee);
   const parties=(sel||buy) ? `<div class="comp-parties">${sel||'N/A'} to ${buy||'N/A'}</div>` : '';
-  const links = `<div class="comp-links">${comp.aerial ? `<a href="${escapeHtml(comp.aerial)}" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation()">View Aerial</a> · ` : ''}<button class="pin-edit-btn" type="button" onclick="event.stopPropagation(); startPinEdit('${escapeHtml(comp._compKey || '')}')">Change Pin</button></div>`;
+  const links = `<div class="comp-links">${comp.aerial ? `<a href="${escapeHtml(comp.aerial)}" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation()">View Aerial</a> · ` : ''}<button class="pin-edit-btn" type="button" data-pin-key="${encodeURIComponent(comp._compKey || '')}">Change Pin</button></div>`;
   return `<div class="comp-card" id="card-${idx}" onclick="zoomToComp(${idx})">
     <div class="comp-addr">${escapeHtml(comp.address || '(no address)')}</div>
     <div class="comp-meta">${type}${date}${units}${elc}${aerial}</div>
@@ -401,6 +401,17 @@ window.cancelPinEdit=function(){
   const banner = document.getElementById('pin-edit-banner');
   if(banner) banner.style.display = 'none';
 };
+
+document.addEventListener('click', function(event){
+  const btn = event.target.closest('.pin-edit-btn, .pin-edit-link');
+  if(!btn) return;
+  event.preventDefault();
+  event.stopPropagation();
+  if(event.stopImmediatePropagation) event.stopImmediatePropagation();
+  const encodedKey = btn.getAttribute('data-pin-key') || '';
+  const compKey = decodeURIComponent(encodedKey);
+  if(compKey) window.startPinEdit(compKey);
+}, true);
 function savePinEdit(comp, lon, lat){
   const overrides = loadPinOverrides();
   overrides[comp._compKey] = {lon:Number(lon), lat:Number(lat), updated:new Date().toISOString(), address:comp.address || null};
