@@ -215,6 +215,7 @@
           <th>Seller</th>
           <th>Buyer</th>
           <th>Source</th>
+          <th>Aerial</th>
         </tr>
       </thead>
       <tbody id="table-body"></tbody>
@@ -233,6 +234,12 @@ const PAGE_SIZE = 500;
 const fmt      = n => n != null ? '$' + Math.round(n).toLocaleString() : '<span class="null-val">—</span>';
 const fmtAcres = n => n != null ? Number(n).toFixed(2) : '<span class="null-val">—</span>';
 const fmtStr   = s => (s != null && s !== '') ? s : '<span class="null-val">—</span>';
+const escapeHtml = s => String(s ?? '').replace(/[&<>"']/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[m]));
+const fmtLink = (url, label = 'View') => {
+  if (url == null || url === '') return '<span class="null-val">—</span>';
+  const safeUrl = escapeHtml(url);
+  return `<a href="${safeUrl}" target="_blank" rel="noopener noreferrer">${label}</a>`;
+};
 
 let allComps = [];
 let filteredComps = [];
@@ -317,7 +324,7 @@ function applyFilters() {
     if (minPrice && (c.price == null || c.price < minPrice)) return false;
     if (minAcres && (c.acreage == null || c.acreage < minAcres)) return false;
     if (search) {
-      const hay = [c.address, c.grantor, c.grantee, c.property_type, c.comments]
+      const hay = [c.address, c.grantor, c.grantee, c.property_type, c.comments, c.aerial]
         .filter(Boolean).join(' ').toLowerCase();
       if (!hay.includes(search)) return false;
     }
@@ -358,6 +365,7 @@ function renderPage() {
       <td>${fmtStr(comp.grantor)}</td>
       <td>${fmtStr(comp.grantee)}</td>
       <td>${fmtStr(comp.source)}</td>
+      <td>${fmtLink(comp.aerial, 'Aerial')}</td>
     </tr>
   `).join('');
 }
