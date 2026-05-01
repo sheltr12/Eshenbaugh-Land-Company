@@ -81,6 +81,10 @@ button:hover{background:#f0f4f8}
 #pin-edit-banner button:hover{background:rgba(255,255,255,.22)}
 body.pin-editing #viewDiv{cursor:crosshair}
 #pin-edit-banner .banner-actions{margin-top:8px}
+.aerial-btn{display:inline-block;background:var(--elc-red);color:#fff!important;border:1px solid var(--elc-red);border-radius:7px;padding:6px 10px;font-size:11px;font-weight:900;text-decoration:none!important;line-height:1.1}
+.aerial-btn:hover{background:#cf171d;text-decoration:none!important}
+.aerial-count-note{font-size:11px;opacity:.9;margin-top:3px}
+
 @media(max-width:760px){
   html,body,#viewDiv{height:100dvh}
   #panel{width:100%;max-width:100%;height:46dvh;top:auto;bottom:0;border-right:0;border-top:4px solid var(--elc-red);border-radius:14px 14px 0 0;box-shadow:0 -5px 20px rgba(0,0,0,.28)}
@@ -231,7 +235,7 @@ const fmtPrice = n => hasValue(n) ? '$' + Math.round(Number(n)).toLocaleString()
 const fmtAcres = n => hasValue(n) ? Number(n).toLocaleString(undefined,{maximumFractionDigits:2}) + ' ac' : 'N/A';
 const fmtPPA = n => hasValue(n) ? '$' + Math.round(Number(n)).toLocaleString() + '/ac' : null;
 const fmtStr = s => hasValue(s) ? escapeHtml(s) : null;
-const fmtLink = (url,label='View Aerial') => hasValue(url) ? `<a href="${escapeHtml(url)}" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation();">${label}</a>` : null;
+const fmtLink = (url,label='View Aerial') => hasValue(url) ? `<a class="aerial-btn" href="${escapeHtml(url)}" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation();">${label}</a>` : null;
 const parseCompDate = c => {
   const raw = c.sale_date_iso || c.sale_date;
   if(!hasValue(raw)) return null;
@@ -274,9 +278,16 @@ function buildPopupContent(comp){
     ['Units',hasValue(comp.unit_count) ? Number(comp.unit_count).toLocaleString() : null],['$/Unit',fmtPPA(comp.price_per_unit)],
     ['Sale Date',fmtStr(comp.sale_date)],['Type',fmtStr(comp.property_type)],['ELC Deal',fmtStr(comp.elc_deal)],['Zoning',fmtStr(comp.zoning)],
     ['Land Use',fmtStr(comp.land_use)],['Seller',fmtStr(comp.grantor)],['Buyer',fmtStr(comp.grantee)],
-    ['Source',fmtStr(comp.source)],['Aerial',fmtLink(comp.aerial,'View Aerial')],['Deed',fmtLink(comp.deed_url,'View Deed')]
+    ['Source',fmtStr(comp.source)],['Aerial',fmtLink(getAerialValue(comp),'View Aerial')],['Deed',fmtLink(comp.deed_url,'View Deed')]
   ].filter(r=>r[1]!=null);
   const wrap = document.createElement('div');
+  const aerialUrl = getAerialValue(comp);
+  if(aerialUrl){
+    const aerialDiv=document.createElement('div');
+    aerialDiv.style.margin='0 0 8px 0';
+    aerialDiv.innerHTML=fmtLink(aerialUrl,'Open Aerial');
+    wrap.appendChild(aerialDiv);
+  }
   const table = document.createElement('table');
   table.className = 'popup-table';
   rows.forEach(([k,v])=>{ const tr=document.createElement('tr'); const tdK=document.createElement('td'); const tdV=document.createElement('td'); tdK.textContent=k; tdV.innerHTML=v; tr.appendChild(tdK); tr.appendChild(tdV); table.appendChild(tr); });
@@ -294,12 +305,13 @@ function buildListCard(comp,idx){
   const ppa=fmtPPA(comp.price_per_acre);
   const type=comp.property_type ? `<span class="comp-tag">${escapeHtml(comp.property_type)}</span>` : '';
   const date=comp.sale_date ? `<span class="comp-tag">${escapeHtml(comp.sale_date)}</span>` : '';
-  const aerial=comp.aerial ? `<span class="comp-tag comp-tag-red">Aerial</span>` : '';
+  const aerialUrl=getAerialValue(comp);
+  const aerial=aerialUrl ? `<span class="comp-tag comp-tag-red">Aerial</span>` : '';
   const elc=comp.elc_deal==='Yes' ? `<span class="comp-tag comp-tag-red">ELC Deal</span>` : '';
   const units=hasValue(comp.unit_count) ? `<span class="comp-tag">${Number(comp.unit_count).toLocaleString()} Units</span>` : '';
   const sel=fmtStr(comp.grantor), buy=fmtStr(comp.grantee);
   const parties=(sel||buy) ? `<div class="comp-parties">${sel||'N/A'} to ${buy||'N/A'}</div>` : '';
-  const links=`<div class="comp-links">${comp.aerial ? `<a href="${escapeHtml(comp.aerial)}" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation()">View Aerial</a> &middot; ` : ''}<button class="pin-edit-btn" type="button" data-pin-key="${escapeHtml(comp._compKey||'')}" onclick="event.stopPropagation()">Change Pin</button></div>`;
+  const links=`<div class="comp-links">${aerialUrl ? `<a class="aerial-btn" href="${escapeHtml(aerialUrl)}" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation()">View Aerial</a> ` : ''}<button class="pin-edit-btn" type="button" data-pin-key="${escapeHtml(comp._compKey||'')}" onclick="event.stopPropagation()">Change Pin</button></div>`;
   return `<div class="comp-card" id="card-${idx}" onclick="zoomToComp(${idx})">
     <div class="comp-addr">${escapeHtml(comp.address||'(no address)')}</div>
     <div class="comp-meta">${type}${date}${units}${elc}${aerial}</div>
@@ -329,8 +341,8 @@ function getFilteredMappedComps(){
     if(source&&c.source!==source) return false;
     if(elc==='yes'&&c.elc_deal!=='Yes') return false;
     if(elc==='no'&&c.elc_deal==='Yes') return false;
-    if(aerial==='yes'&&!hasValue(c.aerial)) return false;
-    if(aerial==='no'&&hasValue(c.aerial)) return false;
+    if(aerial==='yes'&&!hasValue(getAerialValue(c))) return false;
+    if(aerial==='no'&&hasValue(getAerialValue(c))) return false;
     const compDate=parseCompDate(c);
     if(dateFrom&&(!compDate||compDate<dateFrom)) return false;
     if(dateTo&&(!compDate||compDate>dateTo)) return false;
@@ -352,7 +364,7 @@ function applyFilters(){
   if(!graphicsLayer) return;
   filteredMappedComps=getFilteredMappedComps();
   graphicsLayer.removeAll(); activeGraphics=[];
-  document.getElementById('map-count').textContent=`${filteredMappedComps.length.toLocaleString()} mapped comps shown | ${allMappedComps.length.toLocaleString()} mapped total | ${allComps.length.toLocaleString()} total comps`;
+  document.getElementById('map-count').textContent=`${filteredMappedComps.length.toLocaleString()} mapped comps shown | ${allMappedComps.filter(c=>hasValue(getAerialValue(c))).length.toLocaleString()} mapped aerials | ${allComps.filter(c=>hasValue(getAerialValue(c))).length.toLocaleString()} total aerials`;
   document.getElementById('comp-list').innerHTML=filteredMappedComps.length?filteredMappedComps.map((c,i)=>buildListCard(c,i)).join(''):'<div style="padding:14px;font-size:12px;color:#667085">No mapped comps match the current filters.</div>';
   filteredMappedComps.forEach((comp,idx)=>{
     const graphic=new Graphic({geometry:{type:'point',longitude:comp.lon,latitude:comp.lat},symbol:{type:'simple-marker',color:getPriceColor(comp.price),size:getAcreSize(comp.acreage),outline:{color:[255,255,255,210],width:1}},attributes:{idx,compKey:comp._compKey},popupTemplate:{title:comp.address||'(no address)',content:function(){return buildPopupContent(comp);}}});
@@ -382,7 +394,7 @@ if(window.innerWidth<=760){document.body.classList.add('filters-collapsed');setT
 require(["esri/Map","esri/views/MapView","esri/Graphic","esri/layers/GraphicsLayer"],function(Map,MapView,EsriGraphic,GraphicsLayer){
   Graphic=EsriGraphic;
   async function init(){
-    const data=await(await fetch('./comps.json')).json();
+    const data=await(await fetch('./comps.json?v=aerials-20260501-2', {cache:'no-store'})).json();
     const aerialBackup=await loadAerialBackup();
     const baseComps=mergeAerialsFromBackup(data.comps||[], aerialBackup?.comps || aerialBackup || []);
     allComps=applyPinOverrides([...baseComps,...loadLocalDeals().map(normalizeComp)]);

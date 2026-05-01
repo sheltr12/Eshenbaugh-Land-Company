@@ -49,6 +49,8 @@ tr:nth-child(even) td{background:#fbfcfe}
 tr:hover td{background:#fff4f4}
 a{color:var(--elc-red);font-weight:700;text-decoration:none}
 a:hover{text-decoration:underline}
+.aerial-btn{display:inline-block;background:var(--elc-red);color:#fff!important;border:1px solid var(--elc-red);border-radius:7px;padding:6px 10px;font-size:11px;font-weight:900;text-decoration:none!important;line-height:1.1}
+.aerial-btn:hover{background:#cf171d;text-decoration:none!important}
 .null-val{color:#aab3bf}
 .pager{display:flex;align-items:center;gap:10px;margin-top:14px;font-size:12px;color:var(--elc-muted)}
 .pager button,.mini-btn{padding:6px 12px;border:1px solid #cbd5df;border-radius:7px;background:#fff;cursor:pointer;font-size:12px}
@@ -245,7 +247,7 @@ async function loadAerialBackup(){
 const fmtMoney = n => hasValue(n) ? '$' + Math.round(Number(n)).toLocaleString() : '<span class="null-val">—</span>';
 const fmtAcres = n => hasValue(n) ? Number(n).toLocaleString(undefined,{maximumFractionDigits:2}) : '<span class="null-val">—</span>';
 const fmtStr = s => hasValue(s) ? escapeHtml(s) : '<span class="null-val">—</span>';
-const fmtLink = (url,label='Aerial') => hasValue(url) ? `<a href="${escapeHtml(url)}" target="_blank" rel="noopener noreferrer">${label}</a>` : '<span class="null-val">—</span>';
+const fmtLink = (url,label='Aerial') => hasValue(url) ? `<a class="aerial-btn" href="${escapeHtml(url)}" target="_blank" rel="noopener noreferrer">${label}</a>` : '<span class="null-val">—</span>';
 const parseCompDate = c => {
   const raw = c.sale_date_iso || c.sale_date;
   if(!hasValue(raw)) return null;
@@ -256,7 +258,7 @@ let allComps=[], filteredComps=[], currentPage=1, sortKey='num', sortDir='asc', 
 const LOCAL_DEALS_KEY='elc_manual_added_deals_v1';
 async function loadReport(){
   try{
-    const data = await (await fetch('./comps.json')).json();
+    const data = await (await fetch('./comps.json?v=aerials-20260501-2', {cache:'no-store'})).json();
     const aerialBackup = await loadAerialBackup();
     baseMeta = data.meta || {};
     const savedDeals = loadLocalDeals().map(normalizeComp);
@@ -264,7 +266,7 @@ async function loadReport(){
     allComps = [...baseComps, ...savedDeals];
     const meta = baseMeta;
     document.getElementById('title').textContent = `${meta.title || 'Eshenbaugh Land Company Comps'} — ${meta.period || 'Historical'}`;
-    document.getElementById('subtitle').textContent = `Source: ${meta.source || 'Eshenbaugh Land Company'} | ${(allComps.length).toLocaleString()} comps | Generated ${meta.generated || ''} | ${allComps.filter(c=>hasValue(c.aerial)).length.toLocaleString()} aerial links${savedDeals.length ? ' | ' + savedDeals.length.toLocaleString() + ' locally added' : ''}`;
+    document.getElementById('subtitle').textContent = `Source: ${meta.source || 'Eshenbaugh Land Company'} | ${(allComps.length).toLocaleString()} comps | Generated ${meta.generated || ''} | ${allComps.filter(c=>hasValue(getAerialValue(c))).length.toLocaleString()} aerial links${savedDeals.length ? ' | ' + savedDeals.length.toLocaleString() + ' locally added' : ''}`;
     renderTableHead();
     populateFilters();
     addFilterListeners();
@@ -339,8 +341,8 @@ function applyFilters(){
     if(trans && c.transaction_type!==trans) return false;
     if(elc==='yes' && c.elc_deal!=='Yes') return false;
     if(elc==='no' && c.elc_deal==='Yes') return false;
-    if(aerial==='yes' && !hasValue(c.aerial)) return false;
-    if(aerial==='no' && hasValue(c.aerial)) return false;
+    if(aerial==='yes' && !hasValue(getAerialValue(c))) return false;
+    if(aerial==='no' && hasValue(getAerialValue(c))) return false;
     const compDate = parseCompDate(c);
     if(dateFrom && (!compDate || compDate < dateFrom)) return false;
     if(dateTo && (!compDate || compDate > dateTo)) return false;
@@ -384,7 +386,7 @@ function renderStats(comps){
   const totalVolume=withPrice.reduce((s,c)=>s+Number(c.price),0);
   const totalAcres=withAcres.reduce((s,c)=>s+Number(c.acreage),0);
   const avgPPA=withPPA.length ? withPPA.reduce((s,c)=>s+Number(c.price_per_acre),0)/withPPA.length : 0;
-  const aerialCount=comps.filter(c=>hasValue(c.aerial)).length;
+  const aerialCount=comps.filter(c=>hasValue(getAerialValue(c))).length;
   document.getElementById('stats').innerHTML = `
     <div class="stat-card"><div class="val">${comps.length.toLocaleString()}</div><div class="lbl">Filtered Comps</div></div>
     <div class="stat-card"><div class="val">$${(totalVolume/1000000).toFixed(1)}M</div><div class="lbl">Volume</div></div>
@@ -402,7 +404,7 @@ function fmtCell(c,key){
   if(key==='price' || key==='price_per_acre' || key==='price_per_unit') return fmtMoney(v);
   if(key==='acreage') return fmtAcres(v);
   if(key==='unit_count') return hasValue(v) ? Number(v).toLocaleString() : '<span class="null-val">—</span>';
-  if(key==='aerial') return fmtLink(v,'Aerial');
+  if(key==='aerial') return fmtLink(getAerialValue(c),'Aerial');
   return fmtStr(v);
 }
 function buildMobileCard(c){
@@ -418,7 +420,7 @@ function buildMobileCard(c){
       <div class="mobile-card-field"><span>Units</span>${hasValue(c.unit_count) ? Number(c.unit_count).toLocaleString() : '<span class="null-val">—</span>'}</div>
       <div class="mobile-card-field"><span>$/Unit</span>${fmtMoney(c.price_per_unit)}</div>
       <div class="mobile-card-field"><span>ELC Deal</span>${fmtStr(c.elc_deal)}</div>
-      <div class="mobile-card-field"><span>Aerial</span>${fmtLink(c.aerial,'View Aerial')}</div>
+      <div class="mobile-card-field"><span>Aerial</span>${fmtLink(getAerialValue(c),'View Aerial')}</div>
       <div class="mobile-card-field"><span>Seller</span>${fmtStr(c.grantor)}</div>
       <div class="mobile-card-field"><span>Buyer</span>${fmtStr(c.grantee)}</div>
       <div class="mobile-card-field"><span>Source</span>${fmtStr(c.source)}</div>
