@@ -254,11 +254,55 @@ function buildPopupContent(comp){
     ['Units',hasValue(comp.unit_count) ? Number(comp.unit_count).toLocaleString() : null],['$/Unit',fmtPPA(comp.price_per_unit)],
     ['Sale Date',fmtStr(comp.sale_date)],['Type',fmtStr(comp.property_type)],['ELC Deal',fmtStr(comp.elc_deal)],['Zoning',fmtStr(comp.zoning)],
     ['Land Use',fmtStr(comp.land_use)],['Seller',fmtStr(comp.grantor)],['Buyer',fmtStr(comp.grantee)],
-    ['Source',fmtStr(comp.source)],['Aerial',fmtLink(comp.aerial,'View Aerial')],['Deed',fmtLink(comp.deed_url,'View Deed')],['Pin Location',`<button class="pin-edit-link" type="button" data-pin-key="${escapeHtml(comp._compKey || '')}">Change Pin</button>`]
+    ['Source',fmtStr(comp.source)],['Aerial',fmtLink(comp.aerial,'View Aerial')],['Deed',fmtLink(comp.deed_url,'View Deed')]
   ].filter(r=>r[1]!=null);
+
+  const wrap = document.createElement('div');
+  const table = document.createElement('table');
+  table.className = 'popup-table';
+
+  rows.forEach(([k,v])=>{
+    const tr = document.createElement('tr');
+    const tdK = document.createElement('td');
+    const tdV = document.createElement('td');
+    tdK.textContent = k;
+    tdV.innerHTML = v;
+    tr.appendChild(tdK);
+    tr.appendChild(tdV);
+    table.appendChild(tr);
+  });
+
+  const trPin = document.createElement('tr');
+  const tdPinK = document.createElement('td');
+  const tdPinV = document.createElement('td');
+  tdPinK.textContent = 'Pin Location';
+  const btn = document.createElement('button');
+  btn.className = 'pin-edit-link';
+  btn.type = 'button';
+  btn.textContent = 'Change Pin';
+  btn.setAttribute('data-pin-key', comp._compKey || '');
+  btn.addEventListener('click', function(e){
+    e.preventDefault();
+    e.stopPropagation();
+    if(view && view.popup) view.popup.close();
+    window.startPinEdit(comp._compKey);
+  });
+  tdPinV.appendChild(btn);
+  trPin.appendChild(tdPinK);
+  trPin.appendChild(tdPinV);
+  table.appendChild(trPin);
+  wrap.appendChild(table);
+
   const comments = fmtStr(comp.comments);
-  const table = '<table class="popup-table">' + rows.map(([k,v])=>`<tr><td>${k}</td><td>${v}</td></tr>`).join('') + '</table>';
-  return table + (comments ? `<div style="margin-top:8px;font-size:12px;line-height:1.35"><strong>Comments:</strong> ${comments}</div>` : '');
+  if(comments){
+    const div = document.createElement('div');
+    div.style.marginTop = '8px';
+    div.style.fontSize = '12px';
+    div.style.lineHeight = '1.35';
+    div.innerHTML = '<strong>Comments:</strong> ' + comments;
+    wrap.appendChild(div);
+  }
+  return wrap;
 }
 function buildListCard(comp,idx){
   const ppa=fmtPPA(comp.price_per_acre);
@@ -368,7 +412,7 @@ function applyFilters(){
       attributes:{idx, compKey: comp._compKey},
       popupTemplate:{
         title:comp.address || '(no address)',
-        content:buildPopupContent(comp),
+        content:function(){ return buildPopupContent(comp); },
         actions:[{title:'Change Pin', id:'change-pin', className:'esri-icon-edit'}]
       }
     });
