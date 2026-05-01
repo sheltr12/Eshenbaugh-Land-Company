@@ -100,7 +100,6 @@ textarea{width:100%;margin-top:5px;padding:8px 10px;border:1px solid #cbd5df;bor
   <div class="actions">
     <a href="polk_comps_map.html" class="btn btn-primary" target="_blank" rel="noopener noreferrer">Open Interactive Map</a>
     <button class="btn btn-secondary" onclick="openAddDealModal()">Add New Deal</button>
-    <button class="btn btn-secondary" onclick="exportUpdatedJson()">Export Updated comps.json</button>
     <button class="btn btn-secondary" onclick="resetFilters()">Reset Filters</button>
   </div>
 
@@ -113,7 +112,7 @@ textarea{width:100%;margin-top:5px;padding:8px 10px;border:1px solid #cbd5df;bor
         <button class="modal-close" type="button" onclick="closeAddDealModal()">Close</button>
       </div>
       <div class="modal-body">
-        <p class="add-help">New deals are saved in this browser immediately and will show in the list and map if latitude/longitude are entered. To make them permanent for everyone, click <strong>Export Updated comps.json</strong> and replace the file in GitHub.</p>
+        <p class="add-help">New deals are saved in this browser immediately and will show in the list and map if latitude/longitude are entered. Permanent database updates can be handled internally.</p>
         <form id="add-deal-form" onsubmit="event.preventDefault(); addNewDealFromForm();">
           <div class="deal-form-grid">
             <label>Property Type
@@ -136,7 +135,7 @@ textarea{width:100%;margin-top:5px;padding:8px 10px;border:1px solid #cbd5df;bor
             <label>Land Use<input id="new-land-use"></label>
             <label>Source<input id="new-source" value="Manual Entry"></label>
             <label>Aerial URL<input id="new-aerial-url" placeholder="https://..."></label>
-            <label class="deal-form-wide">Upload Aerial Image<input type="file" id="new-aerial-file" accept="image/*"><span class="add-help">For permanent public use, a URL is best. Small uploaded images can be embedded into the exported JSON.</span></label>
+            <label class="deal-form-wide">Upload Aerial Image<input type="file" id="new-aerial-file" accept="image/*"><span class="add-help">For best long-term use, paste a hosted image URL when available. Uploaded images are saved only in this browser.</span></label>
             <label class="deal-form-wide">Deed URL<input id="new-deed-url" placeholder="https://..."></label>
             <label class="deal-form-full">Comments<textarea id="new-comments" placeholder="Notes, comp description, broker representation, etc."></textarea></label>
           </div>
@@ -483,15 +482,8 @@ async function addNewDealFromForm(){
   const localDeals = loadLocalDeals(); localDeals.push(comp); saveLocalDeals(localDeals);
   allComps.push(comp);
   populateFilters(); currentPage=1; applyFilters(); closeAddDealModal();
-  alert('Deal added in this browser. It will show on the map if latitude and longitude were entered. Export the updated comps.json to make it permanent in GitHub.');
+  alert('Deal added in this browser. It will show on the map if latitude and longitude were entered.');
 }
-function exportUpdatedJson(){
-  const meta = {...baseMeta, total_comps: allComps.length, generated: new Date().toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'}), manual_entries: allComps.filter(c=>c.manual_entry).length, aerial_urls: allComps.filter(c=>hasValue(c.aerial)).length};
-  const blob = new Blob([JSON.stringify({meta, comps: allComps}, null, 2)], {type:'application/json'});
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a'); a.href=url; a.download='comps.json'; document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
-}
-
 function resetFilters(){
   ['search','field-value','sale-date-from','sale-date-to','min-price','max-price','min-acres','max-acres','min-ppa','max-ppa','min-units','max-units','min-ppu','max-ppu'].forEach(id=>document.getElementById(id).value='');
   ['field-filter','filter-type','filter-source','filter-elc','filter-transaction','filter-aerial'].forEach(id=>document.getElementById(id).value='');
