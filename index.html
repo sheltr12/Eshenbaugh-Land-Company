@@ -200,6 +200,48 @@ const currencyFields = new Set(['price','price_per_acre','price_per_unit']);
 const numericFields = new Set(['price','price_per_acre','price_per_unit','acreage','unit_count','lat','lon','num']);
 const escapeHtml = s => String(s ?? '').replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
 const hasValue = v => v !== null && v !== undefined && v !== '';
+const AERIAL_FIELDS = ['aerial','photo_url','photoUrl','photoURL','Photo URL','PHOTO URL','photo url','photo','Photo','image_url','imageUrl','image','aerial_url','aerialUrl','Aerial URL','AERIAL URL','Aerial'];
+function getAerialValue(c){
+  for(const field of AERIAL_FIELDS){
+    if(c && hasValue(c[field])) return c[field];
+  }
+  return null;
+}
+function normalizeComp(c){
+  const aerial = getAerialValue(c);
+  return aerial && !hasValue(c.aerial) ? {...c, aerial} : c;
+}
+function compMatchKeys(c){
+  const keys=[];
+  if(hasValue(c.num)) keys.push('num:' + String(c.num));
+  if(hasValue(c.address)) keys.push('addr:' + String(c.address).trim().toLowerCase() + '|date:' + String(c.sale_date||c.sale_date_iso||'').trim().toLowerCase() + '|price:' + String(c.price||''));
+  return keys;
+}
+function mergeAerialsFromBackup(comps, backupComps){
+  const aerialByKey = new Map();
+  (backupComps||[]).map(normalizeComp).forEach(b=>{
+    const aerial = getAerialValue(b);
+    if(!hasValue(aerial)) return;
+    compMatchKeys(b).forEach(k=>{ if(!aerialByKey.has(k)) aerialByKey.set(k, aerial); });
+  });
+  return (comps||[]).map(c=>{
+    let out = normalizeComp(c);
+    if(hasValue(out.aerial)) return out;
+    for(const k of compMatchKeys(out)){
+      if(aerialByKey.has(k)) return {...out, aerial:aerialByKey.get(k)};
+    }
+    return out;
+  });
+}
+async function loadAerialBackup(){
+  for(const file of ['./comps_aerial_backup.json','./comps_updated.json','./comps_with_aerials.json']){
+    try{
+      const res = await fetch(file, {cache:'no-store'});
+      if(res.ok) return await res.json();
+    }catch(e){}
+  }
+  return null;
+}
 const fmtMoney = n => hasValue(n) ? '$' + Math.round(Number(n)).toLocaleString() : '<span class="null-val">—</span>';
 const fmtAcres = n => hasValue(n) ? Number(n).toLocaleString(undefined,{maximumFractionDigits:2}) : '<span class="null-val">—</span>';
 const fmtStr = s => hasValue(s) ? escapeHtml(s) : '<span class="null-val">—</span>';
@@ -215,12 +257,14 @@ const LOCAL_DEALS_KEY='elc_manual_added_deals_v1';
 async function loadReport(){
   try{
     const data = await (await fetch('./comps.json')).json();
+    const aerialBackup = await loadAerialBackup();
     baseMeta = data.meta || {};
-    const savedDeals = loadLocalDeals();
-    allComps = [...(data.comps || []), ...savedDeals];
+    const savedDeals = loadLocalDeals().map(normalizeComp);
+    const baseComps = mergeAerialsFromBackup(data.comps || [], aerialBackup?.comps || aerialBackup || []);
+    allComps = [...baseComps, ...savedDeals];
     const meta = baseMeta;
     document.getElementById('title').textContent = `${meta.title || 'Eshenbaugh Land Company Comps'} — ${meta.period || 'Historical'}`;
-    document.getElementById('subtitle').textContent = `Source: ${meta.source || 'Eshenbaugh Land Company'} | ${(allComps.length).toLocaleString()} comps | Generated ${meta.generated || ''} | ${(meta.aerial_urls || allComps.filter(c=>c.aerial).length).toLocaleString()} aerial links${savedDeals.length ? ' | ' + savedDeals.length.toLocaleString() + ' locally added' : ''}`;
+    document.getElementById('subtitle').textContent = `Source: ${meta.source || 'Eshenbaugh Land Company'} | ${(allComps.length).toLocaleString()} comps | Generated ${meta.generated || ''} | ${allComps.filter(c=>hasValue(c.aerial)).length.toLocaleString()} aerial links${savedDeals.length ? ' | ' + savedDeals.length.toLocaleString() + ' locally added' : ''}`;
     renderTableHead();
     populateFilters();
     addFilterListeners();
