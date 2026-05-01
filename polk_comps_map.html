@@ -128,12 +128,13 @@ button:hover{background:#f0f4f8}
     <label>Max Acres<input type="number" id="max-acres" placeholder="50" step="0.1"></label>
     <label>Min $/Acre<input type="number" id="min-ppa" placeholder="100000"></label>
     <label>Max $/Acre<input type="number" id="max-ppa" placeholder="500000"></label>
-    <label>Min Units<input type="number" id="min-units" placeholder="50"></label>
-    <label>Max Units<input type="number" id="max-units" placeholder="400"></label>
+    <label class="unit-filter">Min Units<input type="number" id="min-units" placeholder="50"></label>
+    <label class="unit-filter">Max Units<input type="number" id="max-units" placeholder="400"></label>
     <label class="ppu-filter">Min $/Unit<input type="number" id="min-ppu" placeholder="50000"></label>
     <label class="ppu-filter">Max $/Unit<input type="number" id="max-ppu" placeholder="150000"></label>
     <div class="filter-actions">
       <button class="btn-red" onclick="resetFilters()">Reset Filters</button>
+      <button onclick="window.open('index.html','_blank')">Add Deal</button>
       <button onclick="zoomToResults()">Zoom to Results</button>
     </div>
   </div>
@@ -161,6 +162,7 @@ button:hover{background:#f0f4f8}
 <script>
 let view, graphicsLayer, Graphic, Point;
 let allComps = [], allMappedComps = [], filteredMappedComps = [], activeGraphics = [];
+const LOCAL_DEALS_KEY='elc_manual_added_deals_v1';
 const FIELD_LABELS = {
   num:'#',parcel_id:'Parcel ID',parcel_raw_id:'Parcel Raw ID',address:'Address',sale_date:'Sale Date',
   price:'Price',acreage:'Acres',price_per_acre:'$/Acre',book_page:'Book/Page',transaction_type:'Transaction Type',
@@ -181,6 +183,10 @@ const parseCompDate = c => {
   const d = new Date(raw);
   return Number.isNaN(d.getTime()) ? null : d;
 };
+
+function loadLocalDeals(){
+  try{return JSON.parse(localStorage.getItem(LOCAL_DEALS_KEY) || '[]');}catch(e){return [];}
+}
 
 function getPriceColor(price){
   if(!hasValue(price)) return [170,170,170,220];
@@ -300,8 +306,8 @@ function getFilteredMappedComps(){
 }
 function toggleUnitPriceFilters(){
   const show = document.getElementById('filter-type')?.value === 'Multifamily';
-  document.querySelectorAll('.ppu-filter').forEach(el=>{el.style.display = show ? '' : 'none';});
-  if(!show){['min-ppu','max-ppu'].forEach(id=>{const el=document.getElementById(id); if(el) el.value='';});}
+  document.querySelectorAll('.ppu-filter,.unit-filter').forEach(el=>{el.style.display = show ? '' : 'none';});
+  if(!show){['min-units','max-units','min-ppu','max-ppu'].forEach(id=>{const el=document.getElementById(id); if(el) el.value='';});}
 }
 function applyFilters(){
   if(!graphicsLayer) return;
@@ -377,7 +383,7 @@ require(["esri/Map","esri/views/MapView","esri/Graphic","esri/layers/GraphicsLay
   Graphic = EsriGraphic;
   async function init(){
     const data = await (await fetch('./comps.json')).json();
-    allComps = data.comps || [];
+    allComps = [...(data.comps || []), ...loadLocalDeals()];
     allMappedComps = allComps.filter(c=>hasValue(c.lat) && hasValue(c.lon)).map((c,i)=>({...c,_mappedIndex:i}));
     graphicsLayer = new GraphicsLayer();
     const map = new Map({basemap:"hybrid",layers:[graphicsLayer]});

@@ -62,6 +62,18 @@ a:hover{text-decoration:underline}
 .mobile-card-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px 10px;font-size:12px}
 .mobile-card-field span{display:block;font-size:10px;text-transform:uppercase;letter-spacing:.4px;color:var(--elc-muted);font-weight:800;margin-bottom:2px}
 .mobile-card-comments{margin-top:8px;font-size:12px;line-height:1.35;color:#475366}
+
+.add-help{font-size:12px;color:var(--elc-muted);margin:8px 0 0;line-height:1.4}
+.modal-backdrop{display:none;position:fixed;inset:0;background:rgba(0,0,0,.58);z-index:9999;padding:18px;overflow-y:auto}
+.modal-backdrop.open{display:block}
+.modal-card{background:#fff;max-width:980px;margin:24px auto;border-radius:14px;border-top:5px solid var(--elc-red);box-shadow:0 16px 45px rgba(0,0,0,.28);overflow:hidden}
+.modal-head{background:#000;color:#fff;padding:16px 18px;display:flex;justify-content:space-between;gap:12px;align-items:center}
+.modal-head h2{margin:0;font-size:18px}.modal-close{background:transparent;color:#fff;border:1px solid rgba(255,255,255,.35);border-radius:8px;padding:7px 10px;cursor:pointer}
+.modal-body{padding:16px 18px}.deal-form-grid{display:grid;grid-template-columns:repeat(4,minmax(150px,1fr));gap:12px}.deal-form-grid label{display:block}.deal-form-wide{grid-column:span 2}.deal-form-full{grid-column:1/-1}
+textarea{width:100%;margin-top:5px;padding:8px 10px;border:1px solid #cbd5df;border-radius:7px;font-size:12px;min-height:78px;font-family:inherit}.modal-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:14px;flex-wrap:wrap}
+@media(max-width:900px){.deal-form-grid{grid-template-columns:repeat(2,1fr)}.deal-form-wide{grid-column:span 2}}
+@media(max-width:700px){.modal-backdrop{padding:8px}.modal-card{margin:6px auto}.deal-form-grid{grid-template-columns:1fr}.deal-form-wide{grid-column:span 1}.modal-actions .btn{width:100%}}
+
 @media(max-width:1050px){.filters{grid-template-columns:repeat(2,1fr)}.filter-wide{grid-column:span 2}.stats-grid{grid-template-columns:repeat(2,1fr)}.header-inner{flex-direction:column;align-items:flex-start}.logo-wrap{max-width:330px}}
 @media(max-width:700px){
   .page{padding:10px 10px 18px}.report-header{border-radius:10px;margin-bottom:12px}.header-inner{padding:14px;gap:12px}.logo-wrap{min-width:0;width:100%;max-width:260px;padding:8px}.report-header h1{font-size:19px;line-height:1.2}.report-header p{font-size:12px;line-height:1.35}
@@ -87,7 +99,54 @@ a:hover{text-decoration:underline}
 
   <div class="actions">
     <a href="polk_comps_map.html" class="btn btn-primary" target="_blank" rel="noopener noreferrer">Open Interactive Map</a>
+    <button class="btn btn-secondary" onclick="openAddDealModal()">Add New Deal</button>
+    <button class="btn btn-secondary" onclick="exportUpdatedJson()">Export Updated comps.json</button>
     <button class="btn btn-secondary" onclick="resetFilters()">Reset Filters</button>
+  </div>
+
+
+
+  <div id="add-deal-modal" class="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="add-deal-title">
+    <div class="modal-card">
+      <div class="modal-head">
+        <h2 id="add-deal-title">Add New Deal</h2>
+        <button class="modal-close" type="button" onclick="closeAddDealModal()">Close</button>
+      </div>
+      <div class="modal-body">
+        <p class="add-help">New deals are saved in this browser immediately and will show in the list and map if latitude/longitude are entered. To make them permanent for everyone, click <strong>Export Updated comps.json</strong> and replace the file in GitHub.</p>
+        <form id="add-deal-form" onsubmit="event.preventDefault(); addNewDealFromForm();">
+          <div class="deal-form-grid">
+            <label>Property Type
+              <select id="new-property-type">
+                <option value="Land">Land</option><option value="Multifamily">Multifamily</option><option value="Retail">Retail</option><option value="Industrial">Industrial</option><option value="Office">Office</option><option value="Other">Other</option>
+              </select>
+            </label>
+            <label>Transaction Type<input id="new-transaction-type" value="Sale"></label>
+            <label>Sale Date<input type="date" id="new-sale-date"></label>
+            <label>ELC Deal<select id="new-elc-deal"><option value="No">No</option><option value="Yes">Yes</option></select></label>
+            <label class="deal-form-wide">Address<input id="new-address" placeholder="123 Main St, Tampa, FL"></label>
+            <label>Price<input type="number" id="new-price" placeholder="1500000"></label>
+            <label>Acres<input type="number" id="new-acreage" step="0.01" placeholder="10.25"></label>
+            <label>Unit Count<input type="number" id="new-unit-count" placeholder="250"></label>
+            <label>Latitude<input type="number" id="new-lat" step="0.000001" placeholder="28.123456"></label>
+            <label>Longitude<input type="number" id="new-lon" step="0.000001" placeholder="-82.123456"></label>
+            <label>Buyer<input id="new-grantee"></label>
+            <label>Seller<input id="new-grantor"></label>
+            <label>Zoning<input id="new-zoning"></label>
+            <label>Land Use<input id="new-land-use"></label>
+            <label>Source<input id="new-source" value="Manual Entry"></label>
+            <label>Aerial URL<input id="new-aerial-url" placeholder="https://..."></label>
+            <label class="deal-form-wide">Upload Aerial Image<input type="file" id="new-aerial-file" accept="image/*"><span class="add-help">For permanent public use, a URL is best. Small uploaded images can be embedded into the exported JSON.</span></label>
+            <label class="deal-form-wide">Deed URL<input id="new-deed-url" placeholder="https://..."></label>
+            <label class="deal-form-full">Comments<textarea id="new-comments" placeholder="Notes, comp description, broker representation, etc."></textarea></label>
+          </div>
+          <div class="modal-actions">
+            <button class="btn btn-secondary" type="button" onclick="closeAddDealModal()">Cancel</button>
+            <button class="btn btn-primary" type="submit">Add Deal</button>
+          </div>
+        </form>
+      </div>
+    </div>
   </div>
 
   <div class="stats-grid" id="stats"></div>
@@ -110,8 +169,8 @@ a:hover{text-decoration:underline}
       <label>Max Acres<input type="number" id="max-acres" placeholder="50" step="0.1"></label>
       <label>Min $/Acre<input type="number" id="min-ppa" placeholder="100000"></label>
       <label>Max $/Acre<input type="number" id="max-ppa" placeholder="500000"></label>
-      <label>Min Units<input type="number" id="min-units" placeholder="50"></label>
-      <label>Max Units<input type="number" id="max-units" placeholder="400"></label>
+      <label class="unit-filter">Min Units<input type="number" id="min-units" placeholder="50"></label>
+      <label class="unit-filter">Max Units<input type="number" id="max-units" placeholder="400"></label>
       <label class="ppu-filter">Min $/Unit<input type="number" id="min-ppu" placeholder="50000"></label>
       <label class="ppu-filter">Max $/Unit<input type="number" id="max-ppu" placeholder="150000"></label>
     </div>
@@ -163,15 +222,18 @@ const parseCompDate = c => {
   const d = new Date(raw);
   return Number.isNaN(d.getTime()) ? null : d;
 };
-let allComps=[], filteredComps=[], currentPage=1, sortKey='num', sortDir='asc';
+let allComps=[], filteredComps=[], currentPage=1, sortKey='num', sortDir='asc', baseMeta={};
+const LOCAL_DEALS_KEY='elc_manual_added_deals_v1';
 
 async function loadReport(){
   try{
     const data = await (await fetch('./comps.json')).json();
-    allComps = data.comps || [];
-    const meta = data.meta || {};
+    baseMeta = data.meta || {};
+    const savedDeals = loadLocalDeals();
+    allComps = [...(data.comps || []), ...savedDeals];
+    const meta = baseMeta;
     document.getElementById('title').textContent = `${meta.title || 'Eshenbaugh Land Company Comps'} — ${meta.period || 'Historical'}`;
-    document.getElementById('subtitle').textContent = `Source: ${meta.source || 'Eshenbaugh Land Company'} | ${(allComps.length).toLocaleString()} comps | Generated ${meta.generated || ''} | ${(meta.aerial_urls || allComps.filter(c=>c.aerial).length).toLocaleString()} aerial links`;
+    document.getElementById('subtitle').textContent = `Source: ${meta.source || 'Eshenbaugh Land Company'} | ${(allComps.length).toLocaleString()} comps | Generated ${meta.generated || ''} | ${(meta.aerial_urls || allComps.filter(c=>c.aerial).length).toLocaleString()} aerial links${savedDeals.length ? ' | ' + savedDeals.length.toLocaleString() + ' locally added' : ''}`;
     renderTableHead();
     populateFilters();
     addFilterListeners();
@@ -188,13 +250,19 @@ function populateSelect(id, values){
     const opt=document.createElement('option'); opt.value=v; opt.textContent=v; sel.appendChild(opt);
   });
 }
+function resetSelectOptions(id, firstLabel='All'){
+  const sel=document.getElementById(id); if(!sel) return;
+  sel.innerHTML = id === 'field-filter' ? '<option value="">Select field</option>' : `<option value="">${firstLabel}</option>`;
+}
 function populateFilters(){
+  resetSelectOptions('field-filter'); resetSelectOptions('filter-type'); resetSelectOptions('filter-source'); resetSelectOptions('filter-transaction');
   allFields().forEach(f=>{
     const opt=document.createElement('option'); opt.value=f; opt.textContent=FIELD_LABELS[f] || f; document.getElementById('field-filter').appendChild(opt);
   });
   populateSelect('filter-type', allComps.map(c=>c.property_type));
   populateSelect('filter-source', allComps.map(c=>c.source));
   populateSelect('filter-transaction', allComps.map(c=>c.transaction_type));
+  toggleUnitPriceFilters();
 }
 function addFilterListeners(){
   ['search','field-filter','field-value','sale-date-from','sale-date-to','filter-type','filter-source','filter-elc','filter-transaction','filter-aerial','min-price','max-price','min-acres','max-acres','min-ppa','max-ppa','min-units','max-units','min-ppu','max-ppu'].forEach(id=>{
@@ -295,8 +363,8 @@ function renderStats(comps){
 }
 function toggleUnitPriceFilters(){
   const show = document.getElementById('filter-type')?.value === 'Multifamily';
-  document.querySelectorAll('.ppu-filter').forEach(el=>{el.style.display = show ? '' : 'none';});
-  if(!show){['min-ppu','max-ppu'].forEach(id=>{const el=document.getElementById(id); if(el) el.value='';});}
+  document.querySelectorAll('.ppu-filter,.unit-filter').forEach(el=>{el.style.display = show ? '' : 'none';});
+  if(!show){['min-units','max-units','min-ppu','max-ppu'].forEach(id=>{const el=document.getElementById(id); if(el) el.value='';});}
 }
 function fmtCell(c,key){
   const v=c[key];
@@ -342,6 +410,88 @@ function renderPage(){
   document.getElementById('mobile-cards').innerHTML = pageItems.map(buildMobileCard).join('');
 }
 function changePage(dir){currentPage+=dir;renderPage();window.scrollTo({top:0,behavior:'smooth'});}
+
+function loadLocalDeals(){
+  try{return JSON.parse(localStorage.getItem(LOCAL_DEALS_KEY) || '[]');}catch(e){return [];}
+}
+function saveLocalDeals(deals){localStorage.setItem(LOCAL_DEALS_KEY, JSON.stringify(deals));}
+function toNumOrNull(v){ if(v === null || v === undefined || String(v).trim()==='') return null; const n=Number(v); return Number.isFinite(n) ? n : null; }
+function isoToDisplay(iso){
+  if(!iso) return null;
+  const d = new Date(iso + 'T00:00:00'); if(Number.isNaN(d.getTime())) return null;
+  return d.toLocaleDateString('en-US',{month:'short',day:'2-digit',year:'numeric'}).replace(',', '');
+}
+function deriveCompFields(c){
+  if(hasValue(c.price) && hasValue(c.acreage) && Number(c.acreage)!==0) c.price_per_acre = Math.round(Number(c.price)/Number(c.acreage));
+  else c.price_per_acre = null;
+  if(hasValue(c.price) && hasValue(c.unit_count) && Number(c.unit_count)!==0) c.price_per_unit = Math.round(Number(c.price)/Number(c.unit_count));
+  else c.price_per_unit = null;
+  if(c.sale_date_iso && !c.sale_date) c.sale_date = isoToDisplay(c.sale_date_iso);
+  if(c.property_type === 'Multifamily' && !hasValue(c.unit_count)) c.unit_count = null;
+  return c;
+}
+function openAddDealModal(){
+  const form=document.getElementById('add-deal-form'); if(form) form.reset();
+  document.getElementById('new-property-type').value='Land';
+  document.getElementById('new-transaction-type').value='Sale';
+  document.getElementById('new-source').value='Manual Entry';
+  document.getElementById('add-deal-modal').classList.add('open');
+}
+function closeAddDealModal(){ document.getElementById('add-deal-modal').classList.remove('open'); }
+function readFileAsDataURL(file){
+  return new Promise((resolve,reject)=>{const r=new FileReader(); r.onload=()=>resolve(r.result); r.onerror=reject; r.readAsDataURL(file);});
+}
+async function getAerialFromForm(){
+  const pasted=document.getElementById('new-aerial-url').value.trim();
+  if(pasted) return pasted;
+  const file=document.getElementById('new-aerial-file').files[0];
+  if(!file) return null;
+  if(file.size > 1800000){ alert('That image is pretty large. For best performance, upload the image somewhere first and paste the URL, or use a smaller aerial image under about 1.8 MB.'); return null; }
+  return await readFileAsDataURL(file);
+}
+async function addNewDealFromForm(){
+  const aerial = await getAerialFromForm();
+  const nextNum = Math.max(0, ...allComps.map(c=>Number(c.num)||0)) + 1;
+  const saleIso = document.getElementById('new-sale-date').value || null;
+  let comp = {
+    num: nextNum, parcel_id:null, parcel_raw_id:null,
+    address: document.getElementById('new-address').value.trim() || null,
+    sale_date: isoToDisplay(saleIso), sale_date_iso: saleIso,
+    price: toNumOrNull(document.getElementById('new-price').value),
+    acreage: toNumOrNull(document.getElementById('new-acreage').value),
+    price_per_acre:null, book_page:null,
+    transaction_type: document.getElementById('new-transaction-type').value.trim() || 'Sale',
+    grantor: document.getElementById('new-grantor').value.trim() || null,
+    grantee: document.getElementById('new-grantee').value.trim() || null,
+    deed_type:null,
+    property_type: document.getElementById('new-property-type').value || 'Land',
+    zoning: document.getElementById('new-zoning').value.trim() || null,
+    land_use: document.getElementById('new-land-use').value.trim() || null,
+    source: document.getElementById('new-source').value.trim() || 'Manual Entry',
+    comments: document.getElementById('new-comments').value.trim() || null,
+    lat: toNumOrNull(document.getElementById('new-lat').value),
+    lon: toNumOrNull(document.getElementById('new-lon').value),
+    coords_approx:false,
+    deed_url: document.getElementById('new-deed-url').value.trim() || null,
+    aerial: aerial,
+    unit_count: toNumOrNull(document.getElementById('new-unit-count').value),
+    price_per_unit:null,
+    elc_deal: document.getElementById('new-elc-deal').value === 'Yes' ? 'Yes' : null,
+    manual_entry:true
+  };
+  comp = deriveCompFields(comp);
+  const localDeals = loadLocalDeals(); localDeals.push(comp); saveLocalDeals(localDeals);
+  allComps.push(comp);
+  populateFilters(); currentPage=1; applyFilters(); closeAddDealModal();
+  alert('Deal added in this browser. It will show on the map if latitude and longitude were entered. Export the updated comps.json to make it permanent in GitHub.');
+}
+function exportUpdatedJson(){
+  const meta = {...baseMeta, total_comps: allComps.length, generated: new Date().toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'}), manual_entries: allComps.filter(c=>c.manual_entry).length, aerial_urls: allComps.filter(c=>hasValue(c.aerial)).length};
+  const blob = new Blob([JSON.stringify({meta, comps: allComps}, null, 2)], {type:'application/json'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a'); a.href=url; a.download='comps.json'; document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
+}
+
 function resetFilters(){
   ['search','field-value','sale-date-from','sale-date-to','min-price','max-price','min-acres','max-acres','min-ppa','max-ppa','min-units','max-units','min-ppu','max-ppu'].forEach(id=>document.getElementById(id).value='');
   ['field-filter','filter-type','filter-source','filter-elc','filter-transaction','filter-aerial'].forEach(id=>document.getElementById(id).value='');
