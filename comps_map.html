@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Eshenbaugh Land Company Comps Map</title>
+<link rel="stylesheet" href="https://js.arcgis.com/4.31/esri/themes/light/main.css">
+<script src="https://js.arcgis.com/4.31/"></script>
+<style>
+:root{
+  --elc-navy:#000000;
+  --elc-blue:#111111;
+  --elc-red:#ef1f25;
+  --elc-ink:#17212f;
+  --elc-muted:#667085;
+  --elc-line:#d9e1ea;
+  --elc-bg:#f5f7fa;
+  --elc-white:#fff;
+}
+*{box-sizing:border-box}
+html,body,#viewDiv{margin:0;padding:0;height:100%;font-family:"Segoe UI",Arial,sans-serif;color:var(--elc-ink)}
+#viewDiv{width:100%;touch-action:pan-x pan-y}
+#panel{
+  position:absolute;left:0;top:0;width:375px;max-width:92vw;height:100%;
+  background:#fff;z-index:99;box-shadow:2px 0 18px rgba(0,0,0,.22);
+  display:flex;flex-direction:column;border-right:4px solid var(--elc-red)
+}
+#panel-header{background:#000;color:#fff;padding:14px 14px 12px;flex-shrink:0}
+.logo-box{background:#fff;border-radius:8px;padding:8px 10px;margin-bottom:10px}
+.logo-box img{width:100%;height:auto;display:block}
+#panel-header h2{margin:0 0 5px;font-size:17px;letter-spacing:.2px}
+#map-count{font-size:11px;opacity:.88}
+#filters{padding:12px;border-bottom:1px solid var(--elc-line);background:#f8fafc;display:grid;grid-template-columns:1fr 1fr;gap:9px;flex-shrink:0;overflow-y:auto;-webkit-overflow-scrolling:touch}
+.filter-wide{grid-column:span 2}
+label{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.45px;color:#475366}
+input,select{width:100%;margin-top:4px;padding:7px 9px;border:1px solid #cbd5df;border-radius:7px;font-size:12px;background:#fff;color:var(--elc-ink)}
+.filter-actions{grid-column:span 2;display:flex;gap:8px}
+button{border:1px solid #cbd5df;background:#fff;border-radius:7px;padding:7px 10px;font-size:12px;cursor:pointer}
+button:hover{background:#f0f4f8}
+.mobile-only{display:none}
+.mobile-controls{display:flex;gap:6px;align-items:center;justify-content:flex-end}
+.panel-arrow{font-size:18px;line-height:1;font-weight:900;min-width:38px}
+.btn-red{background:var(--elc-red);border-color:var(--elc-red);color:#fff;font-weight:800}
+.btn-red:hover{background:#cf171d}
+#comp-list{flex:1;overflow-y:auto;background:#fff}
+.comp-card{padding:11px 13px;border-bottom:1px solid #edf1f5;cursor:pointer;font-size:12px;transition:background .1s,border .1s}
+.comp-card:hover{background:#fff4f4}
+.comp-card.active{background:#fff1f1;border-left:4px solid var(--elc-red)}
+.comp-addr{font-weight:800;font-size:12px;color:var(--elc-navy);margin-bottom:5px;line-height:1.3}
+.comp-meta{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:5px}
+.comp-tag{background:#eef2f7;color:#344054;padding:2px 6px;border-radius:999px;font-size:10px;font-weight:700}
+.comp-tag-red{background:#fee4e2;color:#b42318}
+.comp-price-row{display:flex;gap:8px;align-items:baseline;flex-wrap:wrap}
+.comp-price{font-weight:900;color:var(--elc-navy);font-size:13px}
+.comp-sub{color:var(--elc-muted);font-size:11px}
+.comp-parties{color:#555;font-size:11px;margin-top:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.comp-links{margin-top:5px;font-size:11px}
+.comp-links a{color:var(--elc-red);font-weight:800;text-decoration:none}
+.comp-links a:hover{text-decoration:underline}
+#legend{
+  position:absolute;bottom:30px;right:16px;background:rgba(255,255,255,.96);
+  border-radius:10px;padding:11px 13px;font-size:11px;box-shadow:0 4px 14px rgba(0,0,0,.22);
+  z-index:98;min-width:155px;border-top:3px solid var(--elc-red)
+}
+#legend h4{margin:0 0 6px;font-size:11px;text-transform:uppercase;color:#475366;letter-spacing:.5px}
+.legend-row{display:flex;align-items:center;gap:7px;margin-bottom:4px}
+.legend-dot{border-radius:50%;flex-shrink:0}
+.legend-divider{border:none;border-top:1px solid #eee;margin:7px 0}
+.esri-popup__header-title{font-weight:800;color:var(--elc-navy)}
+.popup-table{border-collapse:collapse;font-size:12px;min-width:230px}
+.popup-table td{padding:4px 8px 4px 0;border-bottom:1px solid #edf1f5;vertical-align:top}
+.popup-table td:first-child{color:#667085;white-space:nowrap;font-weight:700}
+.popup-table td:nth-child(2){font-weight:700}
+.popup-table a{color:var(--elc-red);font-weight:900;text-decoration:none}
+.popup-table a:hover{text-decoration:underline}
+.pin-edit-link,.pin-edit-btn{color:var(--elc-red);font-weight:900;text-decoration:none;background:transparent;border:none;padding:0;font-size:11px;cursor:pointer}
+.pin-edit-link:hover,.pin-edit-btn:hover{text-decoration:underline;background:transparent}
+#pin-edit-banner{display:none;position:absolute;left:395px;top:16px;right:16px;z-index:120;background:#111;color:#fff;border-left:5px solid var(--elc-red);border-radius:10px;box-shadow:0 4px 18px rgba(0,0,0,.28);padding:12px 14px;font-size:13px;line-height:1.35}
+#pin-edit-banner strong{display:block;margin-bottom:2px}
+#pin-edit-banner button{margin-left:8px;border-color:rgba(255,255,255,.35);background:rgba(255,255,255,.12);color:#fff;font-weight:800}
+#pin-edit-banner button:hover{background:rgba(255,255,255,.22)}
+body.pin-editing #viewDiv{cursor:crosshair}
+#pin-edit-banner .banner-actions{margin-top:8px}
+@media(max-width:760px){
+  html,body,#viewDiv{height:100dvh}
+  #panel{width:100%;max-width:100%;height:46dvh;top:auto;bottom:0;border-right:0;border-top:4px solid var(--elc-red);border-radius:14px 14px 0 0;box-shadow:0 -5px 20px rgba(0,0,0,.28)}
+  body.panel-collapsed #panel{height:54px;overflow:hidden}
+  body.panel-collapsed #filters, body.panel-collapsed #comp-list, body.panel-collapsed #map-count{display:none}
+  #panel-header{padding:8px 12px 9px;display:grid;grid-template-columns:1fr auto;gap:6px 10px;align-items:center}
+  .logo-box{display:none}
+  #panel-header h2{font-size:14px;margin:0}
+  #map-count{font-size:10px;grid-column:1 / -1;line-height:1.25}
+  .mobile-only{display:inline-block}
+  .mobile-controls{grid-column:2;grid-row:1;display:flex}
+  #mobile-filter-toggle,#mobile-panel-toggle{padding:7px 10px;border-color:rgba(255,255,255,.4);background:rgba(255,255,255,.12);color:#fff;font-weight:800}
+  #filters{grid-template-columns:1fr 1fr;gap:8px;padding:10px;max-height:23dvh}
+  body.filters-collapsed #filters{display:none}
+  input,select{font-size:16px;padding:9px 10px}
+  label{font-size:9px}
+  .filter-actions{position:sticky;bottom:0;background:#f8fafc;padding-top:4px}
+  #comp-list{font-size:12px}
+  .comp-card{padding:10px 12px}.comp-addr{font-size:12px}.comp-parties{white-space:normal;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+  #legend{display:none}
+  #pin-edit-banner{left:10px;right:10px;top:10px;font-size:12px;padding:10px 12px}
+  .esri-ui-top-left{top:8px;left:8px}.esri-popup{max-width:92vw!important}.popup-table{min-width:0;width:100%}
+}
+@media(max-width:390px){#panel{height:50dvh}#filters{grid-template-columns:1fr;max-height:26dvh}.filter-wide,.filter-actions{grid-column:span 1}}
+</style>
+</head>
+<body>
+<div id="viewDiv"></div>
+<div id="pin-edit-banner">
+  <strong id="pin-edit-title">Pin edit mode</strong>
+  <span id="pin-edit-copy">Click the correct location on the map, then confirm the move.</span>
+  <div class="banner-actions">
+    <button type="button" onclick="cancelPinEdit()">Cancel</button>
+  </div>
+</div>
+<div id="panel">
+  <div id="panel-header">
+    <div class="logo-box"><img src="./EshenbaughLogo.png" alt="Eshenbaugh Land Company" onerror="this.style.display='none'"></div>
+    <h2>Comps Interactive Map</h2>
+    <div class="mobile-controls">
+      <button id="mobile-filter-toggle" class="mobile-only" onclick="toggleMobileFilters()" type="button">Filters</button>
+      <button id="mobile-panel-toggle" class="mobile-only panel-arrow" onclick="toggleMobilePanel()" type="button" aria-label="Minimize comp list">⌄</button>
+    </div>
+    <div id="map-count">Loading...</div>
+  </div>
+  <div id="filters">
+    <label class="filter-wide">Search All Fields<input type="text" id="map-search" placeholder="Address, buyer, seller, comments, zoning, aerial URL..."></label>
+    <label>Filter Any Field<select id="field-filter"><option value="">Select field</option></select></label>
+    <label>Field Contains<input type="text" id="field-value" placeholder="Value"></label>
+    <label>Sale Date From<input type="date" id="sale-date-from"></label>
+    <label>Sale Date To<input type="date" id="sale-date-to"></label>
+    <label>Property Type<select id="filter-type"><option value="">All</option></select></label>
+    <label>Source<select id="filter-source"><option value="">All</option></select></label>
+    <label>ELC Deal<select id="filter-elc"><option value="">All</option><option value="yes">Yes</option><option value="no">No</option></select></label>
+    <label>Aerial<select id="filter-aerial"><option value="">All</option><option value="yes">Has Aerial</option><option value="no">No Aerial</option></select></label>
+    <label>Min Price<input type="number" id="min-price" placeholder="500000"></label>
+    <label>Max Price<input type="number" id="max-price" placeholder="5000000"></label>
+    <label>Min Acres<input type="number" id="min-acres" placeholder="0.5" step="0.1"></label>
+    <label>Max Acres<input type="number" id="max-acres" placeholder="50" step="0.1"></label>
+    <label>Min $/Acre<input type="number" id="min-ppa" placeholder="100000"></label>
+    <label>Max $/Acre<input type="number" id="max-ppa" placeholder="500000"></label>
+    <label class="unit-filter">Min Units<input type="number" id="min-units" placeholder="50"></label>
+    <label class="unit-filter">Max Units<input type="number" id="max-units" placeholder="400"></label>
+    <label class="ppu-filter">Min $/Unit<input type="number" id="min-ppu" placeholder="50000"></label>
+    <label class="ppu-filter">Max $/Unit<input type="number" id="max-ppu" placeholder="150000"></label>
+    <div class="filter-actions">
+      <button class="btn-red" onclick="resetFilters()">Reset Filters</button>
+      <button onclick="window.open('index.html','_blank')">Add Deal</button>
+      <button onclick="zoomToResults()">Zoom to Results</button>
+    </div>
+  </div>
+  <div id="comp-list"></div>
+</div>
+<div id="legend">
+  <h4>Price Tier</h4>
+  <div class="legend-row"><div class="legend-dot" style="width:10px;height:10px;background:#4299e1"></div> Under $500K</div>
+  <div class="legend-row"><div class="legend-dot" style="width:10px;height:10px;background:#48bb78"></div> $500K to $1M</div>
+  <div class="legend-row"><div class="legend-dot" style="width:10px;height:10px;background:#ed8936"></div> $1M to $5M</div>
+  <div class="legend-row"><div class="legend-dot" style="width:10px;height:10px;background:#e53e3e"></div> $5M to $10M</div>
+  <div class="legend-row"><div class="legend-dot" style="width:10px;height:10px;background:#805ad5"></div> Over $10M</div>
+  <div class="legend-row"><div class="legend-dot" style="width:10px;height:10px;background:#aaa"></div> No price</div>
+  <hr class="legend-divider">
+  <h4>Size (Acres)</h4>
+  <div class="legend-row"><div class="legend-dot" style="width:6px;height:6px;background:#555;margin-left:2px"></div> Under 1 ac</div>
+  <div class="legend-row"><div class="legend-dot" style="width:9px;height:9px;background:#555;margin-left:1px"></div> 1 to 5 ac</div>
+  <div class="legend-row"><div class="legend-dot" style="width:13px;height:13px;background:#555"></div> 5 to 20 ac</div>
+  <div class="legend-row"><div class="legend-dot" style="width:17px;height:17px;background:#555"></div> 20 to 50 ac</div>
+  <div class="legend-row"><div class="legend-dot" style="width:21px;height:21px;background:#555"></div> 50 plus ac</div>
+</div>
+<script>
+let view, graphicsLayer, Graphic, Point;
+let allComps = [], allMappedComps = [], filteredMappedComps = [], activeGraphics = [];
+let pinEditComp = null;
+const LOCAL_DEALS_KEY='elc_manual_added_deals_v1';
+const PIN_OVERRIDES_KEY='elc_pin_location_overrides_v1';
+const FIELD_LABELS = {
+  num:'#',parcel_id:'Parcel ID',parcel_raw_id:'Parcel Raw ID',address:'Address',sale_date:'Sale Date',
+  price:'Price',acreage:'Acres',price_per_acre:'$/Acre',book_page:'Book/Page',transaction_type:'Transaction Type',
+  grantor:'Seller',grantee:'Buyer',deed_type:'Deed Type',property_type:'Property Type',zoning:'Zoning',
+  land_use:'Land Use',source:'Source',comments:'Comments',lat:'Latitude',lon:'Longitude',
+  coords_approx:'Coordinates Approximate',deed_url:'Deed URL',aerial:'Aerial',sale_date_iso:'Sale Date ISO',unit_count:'Unit Count',price_per_unit:'$/Unit',elc_deal:'ELC Deal'
+};
+const hasValue = v => v !== null && v !== undefined && v !== '';
+const escapeHtml = s => String(s ?? '').replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+const fmtPrice = n => hasValue(n) ? '$' + Math.round(Number(n)).toLocaleString() : 'N/A';
+const fmtAcres = n => hasValue(n) ? Number(n).toLocaleString(undefined,{maximumFractionDigits:2}) + ' ac' : 'N/A';
+const fmtPPA = n => hasValue(n) ? '$' + Math.round(Number(n)).toLocaleString() + '/ac' : null;
+const fmtStr = s => hasValue(s) ? escapeHtml(s) : null;
+const fmtLink = (url,label='View Aerial') => hasValue(url) ? `<a href="${escapeHtml(url)}" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation();">${label}</a>` : null;
+const parseCompDate = c => {
+  const raw = c.sale_date_iso || c.sale_date;
+  if(!hasValue(raw)) return null;
+  const d = new Date(raw);
+  return Number.isNaN(d.getTime()) ? null : d;
+};
+function loadLocalDeals(){ try{return JSON.parse(localStorage.getItem(LOCAL_DEALS_KEY) || '[]');}catch(e){return [];} }
+function loadPinOverrides(){ try{return JSON.parse(localStorage.getItem(PIN_OVERRIDES_KEY) || '{}');}catch(e){return {};} }
+function savePinOverrides(overrides){ localStorage.setItem(PIN_OVERRIDES_KEY, JSON.stringify(overrides)); }
+function getCompKey(c, fallbackIndex){
+  if(hasValue(c.num)) return 'num:' + String(c.num);
+  if(hasValue(c._manual_id)) return 'manual:' + String(c._manual_id);
+  return 'fallback:' + String(fallbackIndex);
+}
+function applyPinOverrides(comps){
+  const overrides = loadPinOverrides();
+  return comps.map((c,i)=>{
+    const key = getCompKey(c,i);
+    const override = overrides[key];
+    return override ? {...c, _compKey:key, lat:override.lat, lon:override.lon, coords_approx:false, pin_edited:true} : {...c, _compKey:key};
+  });
+}
+function getCompByKey(key){ return allComps.find(c=>c._compKey === key) || allMappedComps.find(c=>c._compKey === key); }
+function getPriceColor(price){
+  if(!hasValue(price)) return [170,170,170,220];
+  price=Number(price);
+  if(price<500000) return [66,153,225,235];
+  if(price<1000000) return [72,187,120,235];
+  if(price<5000000) return [237,137,54,235];
+  if(price<10000000) return [229,62,62,235];
+  return [128,90,213,235];
+}
+function getAcreSize(a){
+  if(!hasValue(a)) return 7; a=Number(a);
+  if(a<1) return 6; if(a<5) return 9; if(a<20) return 13; if(a<50) return 17; return 22;
+}
+function buildPopupContent(comp){
+  const rows=[
+    ['Price',fmtPrice(comp.price)],['Acres',fmtAcres(comp.acreage)],['$/Acre',fmtPPA(comp.price_per_acre)],
+    ['Units',hasValue(comp.unit_count) ? Number(comp.unit_count).toLocaleString() : null],['$/Unit',fmtPPA(comp.price_per_unit)],
+    ['Sale Date',fmtStr(comp.sale_date)],['Type',fmtStr(comp.property_type)],['ELC Deal',fmtStr(comp.elc_deal)],['Zoning',fmtStr(comp.zoning)],
+    ['Land Use',fmtStr(comp.land_use)],['Seller',fmtStr(comp.grantor)],['Buyer',fmtStr(comp.grantee)],
+    ['Source',fmtStr(comp.source)],['Aerial',fmtLink(comp.aerial,'View Aerial')],['Deed',fmtLink(comp.deed_url,'View Deed')]
+  ].filter(r=>r[1]!=null);
+  const wrap = document.createElement('div');
+  const table = document.createElement('table');
+  table.className = 'popup-table';
+  rows.forEach(([k,v])=>{ const tr=document.createElement('tr'); const tdK=document.createElement('td'); const tdV=document.createElement('td'); tdK.textContent=k; tdV.innerHTML=v; tr.appendChild(tdK); tr.appendChild(tdV); table.appendChild(tr); });
+  const trPin=document.createElement('tr'); const tdPinK=document.createElement('td'); const tdPinV=document.createElement('td');
+  tdPinK.textContent='Pin Location';
+  const btn=document.createElement('button'); btn.className='pin-edit-link'; btn.type='button'; btn.textContent='Change Pin';
+  btn.setAttribute('data-pin-key', comp._compKey || '');
+  btn.addEventListener('click', function(e){ e.preventDefault(); e.stopPropagation(); if(view && view.popup) view.popup.close(); window.startPinEdit(comp._compKey); });
+  tdPinV.appendChild(btn); trPin.appendChild(tdPinK); trPin.appendChild(tdPinV); table.appendChild(trPin); wrap.appendChild(table);
+  const comments=fmtStr(comp.comments);
+  if(comments){ const div=document.createElement('div'); div.style.marginTop='8px'; div.style.fontSize='12px'; div.style.lineHeight='1.35'; div.innerHTML='<strong>Comments:</strong> '+comments; wrap.appendChild(div); }
+  return wrap;
+}
+function buildListCard(comp,idx){
+  const ppa=fmtPPA(comp.price_per_acre);
+  const type=comp.property_type ? `<span class="comp-tag">${escapeHtml(comp.property_type)}</span>` : '';
+  const date=comp.sale_date ? `<span class="comp-tag">${escapeHtml(comp.sale_date)}</span>` : '';
+  const aerial=comp.aerial ? `<span class="comp-tag comp-tag-red">Aerial</span>` : '';
+  const elc=comp.elc_deal==='Yes' ? `<span class="comp-tag comp-tag-red">ELC Deal</span>` : '';
+  const units=hasValue(comp.unit_count) ? `<span class="comp-tag">${Number(comp.unit_count).toLocaleString()} Units</span>` : '';
+  const sel=fmtStr(comp.grantor), buy=fmtStr(comp.grantee);
+  const parties=(sel||buy) ? `<div class="comp-parties">${sel||'N/A'} to ${buy||'N/A'}</div>` : '';
+  const links=`<div class="comp-links">${comp.aerial ? `<a href="${escapeHtml(comp.aerial)}" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation()">View Aerial</a> &middot; ` : ''}<button class="pin-edit-btn" type="button" data-pin-key="${escapeHtml(comp._compKey||'')}" onclick="event.stopPropagation()">Change Pin</button></div>`;
+  return `<div class="comp-card" id="card-${idx}" onclick="zoomToComp(${idx})">
+    <div class="comp-addr">${escapeHtml(comp.address||'(no address)')}</div>
+    <div class="comp-meta">${type}${date}${units}${elc}${aerial}</div>
+    <div class="comp-price-row"><span class="comp-price">${fmtPrice(comp.price)}</span><span class="comp-sub">${fmtAcres(comp.acreage)}${ppa?' &middot; '+ppa:''}${hasValue(comp.price_per_unit)?' &middot; $'+Math.round(Number(comp.price_per_unit)).toLocaleString()+'/unit':''}</span></div>
+    ${parties}${links}
+  </div>`;
+}
+function allFields(){return [...new Set(allComps.flatMap(c=>Object.keys(c)))].sort();}
+function populateSelect(id,values){ const sel=document.getElementById(id); [...new Set(values.filter(hasValue))].sort((a,b)=>String(a).localeCompare(String(b))).forEach(v=>{ const opt=document.createElement('option'); opt.value=v; opt.textContent=v; sel.appendChild(opt); }); }
+function populateFilters(){ allFields().forEach(f=>{ const opt=document.createElement('option'); opt.value=f; opt.textContent=FIELD_LABELS[f]||f; document.getElementById('field-filter').appendChild(opt); }); populateSelect('filter-type',allComps.map(c=>c.property_type)); populateSelect('filter-source',allComps.map(c=>c.source)); toggleUnitPriceFilters(); }
+function passesSearch(c,q){ if(!q) return true; return Object.values(c).filter(hasValue).join(' ').toLowerCase().includes(q); }
+function passesFieldFilter(c,field,val){ if(!field||!val) return true; if(!hasValue(c[field])) return false; return String(c[field]).toLowerCase().includes(val); }
+function getFilteredMappedComps(){
+  const q=document.getElementById('map-search').value.trim().toLowerCase();
+  const field=document.getElementById('field-filter').value, fieldVal=document.getElementById('field-value').value.trim().toLowerCase();
+  const type=document.getElementById('filter-type').value, source=document.getElementById('filter-source').value;
+  const elc=document.getElementById('filter-elc').value, aerial=document.getElementById('filter-aerial').value;
+  const dateFromVal=document.getElementById('sale-date-from').value, dateToVal=document.getElementById('sale-date-to').value;
+  const dateFrom=dateFromVal?new Date(dateFromVal+'T00:00:00'):null, dateTo=dateToVal?new Date(dateToVal+'T23:59:59'):null;
+  const minPrice=parseFloat(document.getElementById('min-price').value), maxPrice=parseFloat(document.getElementById('max-price').value);
+  const minAcres=parseFloat(document.getElementById('min-acres').value), maxAcres=parseFloat(document.getElementById('max-acres').value);
+  const minPPA=parseFloat(document.getElementById('min-ppa').value), maxPPA=parseFloat(document.getElementById('max-ppa').value);
+  const minUnits=parseFloat(document.getElementById('min-units').value), maxUnits=parseFloat(document.getElementById('max-units').value);
+  const minPPU=parseFloat(document.getElementById('min-ppu').value), maxPPU=parseFloat(document.getElementById('max-ppu').value);
+  return allMappedComps.filter(c=>{
+    if(type&&c.property_type!==type) return false;
+    if(source&&c.source!==source) return false;
+    if(elc==='yes'&&c.elc_deal!=='Yes') return false;
+    if(elc==='no'&&c.elc_deal==='Yes') return false;
+    if(aerial==='yes'&&!hasValue(c.aerial)) return false;
+    if(aerial==='no'&&hasValue(c.aerial)) return false;
+    const compDate=parseCompDate(c);
+    if(dateFrom&&(!compDate||compDate<dateFrom)) return false;
+    if(dateTo&&(!compDate||compDate>dateTo)) return false;
+    if(!Number.isNaN(minPrice)&&(!hasValue(c.price)||Number(c.price)<minPrice)) return false;
+    if(!Number.isNaN(maxPrice)&&(!hasValue(c.price)||Number(c.price)>maxPrice)) return false;
+    if(!Number.isNaN(minAcres)&&(!hasValue(c.acreage)||Number(c.acreage)<minAcres)) return false;
+    if(!Number.isNaN(maxAcres)&&(!hasValue(c.acreage)||Number(c.acreage)>maxAcres)) return false;
+    if(!Number.isNaN(minPPA)&&(!hasValue(c.price_per_acre)||Number(c.price_per_acre)<minPPA)) return false;
+    if(!Number.isNaN(maxPPA)&&(!hasValue(c.price_per_acre)||Number(c.price_per_acre)>maxPPA)) return false;
+    if(!Number.isNaN(minUnits)&&(!hasValue(c.unit_count)||Number(c.unit_count)<minUnits)) return false;
+    if(!Number.isNaN(maxUnits)&&(!hasValue(c.unit_count)||Number(c.unit_count)>maxUnits)) return false;
+    if(!Number.isNaN(minPPU)&&(!hasValue(c.price_per_unit)||Number(c.price_per_unit)<minPPU)) return false;
+    if(!Number.isNaN(maxPPU)&&(!hasValue(c.price_per_unit)||Number(c.price_per_unit)>maxPPU)) return false;
+    return passesSearch(c,q)&&passesFieldFilter(c,field,fieldVal);
+  });
+}
+function toggleUnitPriceFilters(){ const show=document.getElementById('filter-type')?.value==='Multifamily'; document.querySelectorAll('.ppu-filter,.unit-filter').forEach(el=>{el.style.display=show?'':'none';}); if(!show){['min-units','max-units','min-ppu','max-ppu'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});} }
+function applyFilters(){
+  if(!graphicsLayer) return;
+  filteredMappedComps=getFilteredMappedComps();
+  graphicsLayer.removeAll(); activeGraphics=[];
+  document.getElementById('map-count').textContent=`${filteredMappedComps.length.toLocaleString()} mapped comps shown | ${allMappedComps.length.toLocaleString()} mapped total | ${allComps.length.toLocaleString()} total comps`;
+  document.getElementById('comp-list').innerHTML=filteredMappedComps.length?filteredMappedComps.map((c,i)=>buildListCard(c,i)).join(''):'<div style="padding:14px;font-size:12px;color:#667085">No mapped comps match the current filters.</div>';
+  filteredMappedComps.forEach((comp,idx)=>{
+    const graphic=new Graphic({geometry:{type:'point',longitude:comp.lon,latitude:comp.lat},symbol:{type:'simple-marker',color:getPriceColor(comp.price),size:getAcreSize(comp.acreage),outline:{color:[255,255,255,210],width:1}},attributes:{idx,compKey:comp._compKey},popupTemplate:{title:comp.address||'(no address)',content:function(){return buildPopupContent(comp);}}});
+    activeGraphics.push(graphic); graphicsLayer.add(graphic);
+  });
+}
+function addFilterListeners(){ ['map-search','field-filter','field-value','sale-date-from','sale-date-to','filter-type','filter-source','filter-elc','filter-aerial','min-price','max-price','min-acres','max-acres','min-ppa','max-ppa','min-units','max-units','min-ppu','max-ppu'].forEach(id=>{ document.getElementById(id).addEventListener('input',()=>{if(id==='filter-type') toggleUnitPriceFilters(); applyFilters();}); }); }
+window.startPinEdit=function(compKey){
+  const comp=getCompByKey(compKey);
+  if(!comp||!hasValue(comp.lat)||!hasValue(comp.lon)){alert('This comp does not have a mapped location to edit.');return;}
+  pinEditComp=comp; document.body.classList.add('pin-editing');
+  const title=document.getElementById('pin-edit-title'), copy=document.getElementById('pin-edit-copy'), banner=document.getElementById('pin-edit-banner');
+  if(title) title.textContent='Change pin location';
+  if(copy) copy.textContent='Click the correct location on the map for: '+(comp.address||'selected comp')+'. You will be asked to confirm before it saves.';
+  if(banner) banner.style.display='block';
+  if(view){ view.goTo({center:[Number(comp.lon),Number(comp.lat)],zoom:16}).catch(()=>{}); }
+};
+window.cancelPinEdit=function(){ pinEditComp=null; document.body.classList.remove('pin-editing'); const banner=document.getElementById('pin-edit-banner'); if(banner) banner.style.display='none'; };
+document.addEventListener('click', function(event){ const btn=event.target.closest&&event.target.closest('.pin-edit-link, .pin-edit-btn'); if(!btn) return; const key=btn.getAttribute('data-pin-key'); if(!key) return; event.preventDefault(); event.stopPropagation(); if(view&&view.popup){view.popup.close();} window.startPinEdit(key); }, true);
+function savePinEdit(comp,lon,lat){ const overrides=loadPinOverrides(); overrides[comp._compKey]={lon:Number(lon),lat:Number(lat),updated:new Date().toISOString(),address:comp.address||null}; savePinOverrides(overrides); allComps=applyPinOverrides(allComps); allMappedComps=allComps.filter(c=>hasValue(c.lat)&&hasValue(c.lon)).map((c,i)=>({...c,_mappedIndex:i})); const key=comp._compKey; cancelPinEdit(); applyFilters(); const newIdx=filteredMappedComps.findIndex(c=>c._compKey===key); if(newIdx>=0) setTimeout(()=>zoomToComp(newIdx),100); }
+window.resetFilters=function(){ ['map-search','field-value','sale-date-from','sale-date-to','min-price','max-price','min-acres','max-acres','min-ppa','max-ppa','min-units','max-units','min-ppu','max-ppu'].forEach(id=>document.getElementById(id).value=''); ['field-filter','filter-type','filter-source','filter-elc','filter-aerial'].forEach(id=>document.getElementById(id).value=''); toggleUnitPriceFilters(); applyFilters(); };
+window.zoomToComp=function(idx){ const comp=filteredMappedComps[idx]; if(!comp) return; view.goTo({center:[comp.lon,comp.lat],zoom:16}); document.querySelectorAll('.comp-card').forEach(c=>c.classList.remove('active')); const card=document.getElementById('card-'+idx); if(card){card.classList.add('active');card.scrollIntoView({behavior:'smooth',block:'nearest'});} if(activeGraphics[idx]){if(view.openPopup){view.openPopup({features:[activeGraphics[idx]],location:activeGraphics[idx].geometry});}else if(view.popup&&view.popup.open){view.popup.open({features:[activeGraphics[idx]],location:activeGraphics[idx].geometry});}} };
+window.zoomToResults=function(){ if(!view||!filteredMappedComps.length) return; if(filteredMappedComps.length===1){const c=filteredMappedComps[0];view.goTo({center:[c.lon,c.lat],zoom:15});return;} const lons=filteredMappedComps.map(c=>Number(c.lon)),lats=filteredMappedComps.map(c=>Number(c.lat)); view.goTo({target:{type:'extent',xmin:Math.min(...lons),ymin:Math.min(...lats),xmax:Math.max(...lons),ymax:Math.max(...lats),spatialReference:{wkid:4326}},padding:window.innerWidth<=760?{left:35,right:35,top:45,bottom:document.body.classList.contains('panel-collapsed')?70:Math.round(window.innerHeight*0.48)}:{left:400,right:50,top:50,bottom:50}}); };
+window.toggleMobileFilters=function(){ document.body.classList.toggle('filters-collapsed'); const btn=document.getElementById('mobile-filter-toggle'); if(btn) btn.textContent=document.body.classList.contains('filters-collapsed')?'Show Filters':'Hide Filters'; };
+window.toggleMobilePanel=function(){ document.body.classList.toggle('panel-collapsed'); const btn=document.getElementById('mobile-panel-toggle'); if(btn){const collapsed=document.body.classList.contains('panel-collapsed');btn.textContent=collapsed?'⌃':'⌄';btn.setAttribute('aria-label',collapsed?'Show comp list':'Minimize comp list');} if(view) view.padding=document.body.classList.contains('panel-collapsed')?{bottom:60}:{bottom:Math.round(window.innerHeight*0.46)}; };
+if(window.innerWidth<=760){document.body.classList.add('filters-collapsed');setTimeout(()=>{const b=document.getElementById('mobile-filter-toggle');if(b)b.textContent='Show Filters';},0);}
+require(["esri/Map","esri/views/MapView","esri/Graphic","esri/layers/GraphicsLayer"],function(Map,MapView,EsriGraphic,GraphicsLayer){
+  Graphic=EsriGraphic;
+  async function init(){
+    const data=await(await fetch('./comps.json')).json();
+    allComps=applyPinOverrides([...(data.comps||[]),...loadLocalDeals()]);
+    allMappedComps=allComps.filter(c=>hasValue(c.lat)&&hasValue(c.lon)).map((c,i)=>({...c,_mappedIndex:i}));
+    graphicsLayer=new GraphicsLayer();
+    const map=new Map({basemap:"hybrid",layers:[graphicsLayer]});
+    view=new MapView({container:"viewDiv",map,center:[-82.2,28.1],zoom:8});
+    populateFilters(); addFilterListeners(); applyFilters();
+    view.on('click',function(event){
+      if(!pinEditComp) return; event.stopPropagation();
+      const pt=event.mapPoint; if(!pt) return;
+      const lon=Number(pt.longitude), lat=Number(pt.latitude);
+      const ok=confirm('Move this comp pin to the location you just clicked?\n\n'+(pinEditComp.address||'Selected comp')+'\nLatitude: '+lat.toFixed(6)+'\nLongitude: '+lon.toFixed(6));
+      if(ok) savePinEdit(pinEditComp,lon,lat);
+    });
+    view.when(()=>zoomToResults());
+  }
+  init();
+});
+</script>
+</body>
+</html>
