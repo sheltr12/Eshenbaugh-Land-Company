@@ -10,48 +10,157 @@
 
 <style>
 html, body, #viewDiv {
-  margin: 0;
-  padding: 0;
-  height: 100%;
+  margin: 0; padding: 0; height: 100%;
 }
 
 #panel {
   position: absolute;
-  left: 0;
-  top: 0;
-  width: 350px;
+  left: 0; top: 0;
+  width: 320px;
   height: 100%;
   background: white;
   overflow-y: auto;
   z-index: 99;
-  box-shadow: 2px 0 10px rgba(0,0,0,.15);
+  box-shadow: 2px 0 12px rgba(0,0,0,.18);
+  display: flex;
+  flex-direction: column;
 }
 
-#panel h2 {
+#panel-header {
   background: #1a3a5c;
   color: white;
-  margin: 0;
-  padding: 16px;
-  font-size: 18px;
+  padding: 14px 16px 10px;
+  flex-shrink: 0;
+}
+
+#panel-header h2 {
+  margin: 0 0 2px;
+  font-size: 17px;
 }
 
 #map-count {
   font-size: 11px;
-  color: #888;
-  padding: 6px 12px;
-  background: #f5f7fa;
-  border-bottom: 1px solid #eee;
+  opacity: .8;
 }
 
-.comp {
-  padding: 12px;
+#panel-search {
+  padding: 10px 12px;
+  border-bottom: 1px solid #eee;
+  flex-shrink: 0;
+}
+
+#panel-search input {
+  width: 100%;
+  padding: 7px 10px;
+  border: 1px solid #cdd;
+  border-radius: 5px;
+  font-size: 12px;
+  box-sizing: border-box;
+}
+
+#comp-list {
+  flex: 1;
+  overflow-y: auto;
+}
+
+.comp-card {
+  padding: 11px 13px;
   border-bottom: 1px solid #eee;
   cursor: pointer;
   font-size: 12px;
+  transition: background .1s;
 }
 
-.comp:hover {
-  background: #eef5ff;
+.comp-card:hover { background: #eef5ff; }
+.comp-card.active { background: #dbeafe; border-left: 3px solid #1a3a5c; }
+
+.comp-addr {
+  font-weight: 700;
+  font-size: 12px;
+  color: #1a3a5c;
+  margin-bottom: 4px;
+  line-height: 1.3;
+}
+
+.comp-meta {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin-bottom: 3px;
+}
+
+.comp-tag {
+  background: #f0f4ff;
+  color: #334;
+  padding: 1px 6px;
+  border-radius: 3px;
+  font-size: 10px;
+  font-weight: 600;
+}
+
+.comp-price-row {
+  display: flex;
+  gap: 10px;
+  align-items: baseline;
+}
+
+.comp-price {
+  font-weight: 700;
+  color: #1a3a5c;
+  font-size: 13px;
+}
+
+.comp-sub {
+  color: #666;
+  font-size: 11px;
+}
+
+.comp-parties {
+  color: #555;
+  font-size: 11px;
+  margin-top: 3px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+#legend {
+  position: absolute;
+  bottom: 30px;
+  right: 16px;
+  background: rgba(255,255,255,.93);
+  border-radius: 8px;
+  padding: 10px 13px;
+  font-size: 11px;
+  box-shadow: 0 2px 8px rgba(0,0,0,.2);
+  z-index: 98;
+  min-width: 150px;
+}
+
+#legend h4 {
+  margin: 0 0 6px;
+  font-size: 11px;
+  text-transform: uppercase;
+  color: #555;
+  letter-spacing: .5px;
+}
+
+.legend-row {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin-bottom: 4px;
+}
+
+.legend-dot {
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.legend-divider {
+  border: none;
+  border-top: 1px solid #eee;
+  margin: 6px 0;
 }
 </style>
 </head>
@@ -60,91 +169,130 @@ html, body, #viewDiv {
 <div id="viewDiv"></div>
 
 <div id="panel">
-  <h2>Polk County Comps</h2>
-  <div id="map-count"></div>
+  <div id="panel-header">
+    <h2>Polk County Comps</h2>
+    <div id="map-count"></div>
+  </div>
+  <div id="panel-search">
+    <input type="text" id="list-search" placeholder="Filter by address, buyer, seller" oninput="filterList()">
+  </div>
   <div id="comp-list"></div>
 </div>
 
-<script>
-let view;
-let graphicsLayer;
+<div id="legend">
+  <h4>Price Tier</h4>
+  <div class="legend-row"><div class="legend-dot" style="width:10px;height:10px;background:#4299e1"></div> Under $500K</div>
+  <div class="legend-row"><div class="legend-dot" style="width:10px;height:10px;background:#48bb78"></div> $500K to $1M</div>
+  <div class="legend-row"><div class="legend-dot" style="width:10px;height:10px;background:#ed8936"></div> $1M to $5M</div>
+  <div class="legend-row"><div class="legend-dot" style="width:10px;height:10px;background:#e53e3e"></div> $5M to $10M</div>
+  <div class="legend-row"><div class="legend-dot" style="width:10px;height:10px;background:#805ad5"></div> Over $10M</div>
+  <div class="legend-row"><div class="legend-dot" style="width:10px;height:10px;background:#aaa"></div> No price</div>
+  <hr class="legend-divider">
+  <h4>Size (Acres)</h4>
+  <div class="legend-row"><div class="legend-dot" style="width:6px;height:6px;background:#555;margin-left:2px"></div> Under 1 ac</div>
+  <div class="legend-row"><div class="legend-dot" style="width:9px;height:9px;background:#555;margin-left:1px"></div> 1 to 5 ac</div>
+  <div class="legend-row"><div class="legend-dot" style="width:13px;height:13px;background:#555"></div> 5 to 20 ac</div>
+  <div class="legend-row"><div class="legend-dot" style="width:17px;height:17px;background:#555"></div> 20 to 50 ac</div>
+  <div class="legend-row"><div class="legend-dot" style="width:21px;height:21px;background:#555"></div> 50 plus ac</div>
+</div>
 
-const fmtPrice = n => n != null ? '$' + Math.round(n).toLocaleString() : '—';
-const fmtAcres = n => n != null ? Number(n).toFixed(2) + ' ac' : '—';
-const fmtPPA   = n => n != null ? '$' + Math.round(n).toLocaleString() + '/ac' : '—';
+<script>
+let view, graphicsLayer;
+let allMappedComps = [];
+
+const fmtPrice = n => n != null ? '$' + Math.round(n).toLocaleString() : 'N/A';
+const fmtAcres = n => n != null ? Number(n).toFixed(2) + ' ac' : 'N/A';
+const fmtPPA   = n => n != null ? '$' + Math.round(n).toLocaleString() + '/ac' : null;
+const fmtStr   = s => (s != null && s !== '') ? s : null;
+
+function getPriceColor(price) {
+  if (price == null)    return [170,170,170,210];
+  if (price < 500000)   return [66,153,225,230];
+  if (price < 1000000)  return [72,187,120,230];
+  if (price < 5000000)  return [237,137,54,230];
+  if (price < 10000000) return [229,62,62,230];
+  return [128,90,213,230];
+}
+
+function getAcreSize(a) {
+  if (a == null) return 7;
+  if (a < 1)     return 6;
+  if (a < 5)     return 9;
+  if (a < 20)    return 13;
+  if (a < 50)    return 17;
+  return 22;
+}
+
+function buildPopupContent(comp) {
+  const rows = [
+    ['Price',     fmtPrice(comp.price)],
+    ['Acres',     fmtAcres(comp.acreage)],
+    ['per Acre',  fmtPPA(comp.price_per_acre)],
+    ['Sale Date', fmtStr(comp.sale_date)],
+    ['Type',      fmtStr(comp.property_type)],
+    ['Seller',    fmtStr(comp.grantor)],
+    ['Buyer',     fmtStr(comp.grantee)],
+    ['Source',    fmtStr(comp.source)],
+  ].filter(r => r[1] != null);
+  return '<table style="border-collapse:collapse;font-size:12px;min-width:180px">' +
+    rows.map(([k,v]) =>
+      '<tr><td style="padding:3px 8px 3px 0;color:#666;white-space:nowrap">'+k+'</td>' +
+      '<td style="padding:3px 0;font-weight:600">'+v+'</td></tr>'
+    ).join('') + '</table>';
+}
+
+function buildListCard(comp, idx) {
+  const ppa  = fmtPPA(comp.price_per_acre);
+  const type = comp.property_type ? '<span class="comp-tag">'+comp.property_type+'</span>' : '';
+  const date = comp.sale_date     ? '<span class="comp-tag">'+comp.sale_date+'</span>' : '';
+  const sel  = fmtStr(comp.grantor);
+  const buy  = fmtStr(comp.grantee);
+  const parties = (sel||buy) ? '<div class="comp-parties">'+(sel||'N/A')+' to '+(buy||'N/A')+'</div>' : '';
+  return '<div class="comp-card" id="card-'+idx+'" onclick="zoomTo('+comp.lon+','+comp.lat+','+idx+')">' +
+    '<div class="comp-addr">'+(comp.address||'(no address)')+'</div>' +
+    '<div class="comp-meta">'+type+date+'</div>' +
+    '<div class="comp-price-row"><span class="comp-price">'+fmtPrice(comp.price)+'</span>' +
+    '<span class="comp-sub">'+fmtAcres(comp.acreage)+(ppa?' &middot; '+ppa:'')+'</span></div>' +
+    parties + '</div>';
+}
+
+function filterList() {
+  const q = document.getElementById('list-search').value.toLowerCase();
+  document.querySelectorAll('.comp-card').forEach(c => {
+    c.style.display = c.textContent.toLowerCase().includes(q) ? '' : 'none';
+  });
+}
 
 require([
-  "esri/Map",
-  "esri/views/MapView",
-  "esri/Graphic",
-  "esri/layers/GraphicsLayer"
+  "esri/Map","esri/views/MapView","esri/Graphic","esri/layers/GraphicsLayer"
 ], function(Map, MapView, Graphic, GraphicsLayer) {
 
   async function init() {
-    const response = await fetch('./comps.json');
-    const data = await response.json();
+    const data  = await (await fetch('./comps.json')).json();
     const comps = data.comps;
-
     graphicsLayer = new GraphicsLayer();
-
-    const map = new Map({
-      basemap: "hybrid",
-      layers: [graphicsLayer]
-    });
-
-    view = new MapView({
-      container: "viewDiv",
-      map: map,
-      center: [-81.9, 28.1],
-      zoom: 10
-    });
-
-    renderList(comps);
-    addPoints(comps, Graphic);
-  }
-
-  function renderList(comps) {
-    const mapped = comps.filter(c => c.lat != null && c.lon != null);
+    const map = new Map({ basemap: "hybrid", layers: [graphicsLayer] });
+    view = new MapView({ container: "viewDiv", map, center: [-81.9, 28.1], zoom: 10 });
+    allMappedComps = comps.filter(c => c.lat != null && c.lon != null);
     document.getElementById('map-count').textContent =
-      mapped.length.toLocaleString() + ' of ' + comps.length.toLocaleString() + ' comps mapped';
-    document.getElementById('comp-list').innerHTML = mapped.map(comp => `
-      <div class="comp" onclick="zoomTo(${comp.lon}, ${comp.lat})">
-        <strong>${comp.address || '(no address)'}</strong><br>
-        ${fmtPrice(comp.price)} | ${fmtAcres(comp.acreage)}
-      </div>
-    `).join('');
-  }
-
-  function addPoints(comps, Graphic) {
-    comps.filter(c => c.lat != null && c.lon != null).forEach(comp => {
-      const pointGraphic = new Graphic({
-        geometry: {
-          type: "point",
-          longitude: comp.lon,
-          latitude: comp.lat
-        },
-        symbol: {
-          type: "simple-marker",
-          size: 8
-        },
-        popupTemplate: {
-          title: comp.address || '(no address)',
-          content:
-            'Price: ' + fmtPrice(comp.price) + '<br>' +
-            'Acres: ' + fmtAcres(comp.acreage) + '<br>' +
-            '$/Acre: ' + fmtPPA(comp.price_per_acre)
-        }
-      });
-
-      graphicsLayer.add(pointGraphic);
+      allMappedComps.length.toLocaleString() + ' of ' + comps.length.toLocaleString() + ' comps mapped';
+    document.getElementById('comp-list').innerHTML =
+      allMappedComps.map((c,i) => buildListCard(c,i)).join('');
+    allMappedComps.forEach((comp, idx) => {
+      graphicsLayer.add(new Graphic({
+        geometry: { type: "point", longitude: comp.lon, latitude: comp.lat },
+        symbol: { type: "simple-marker", color: getPriceColor(comp.price), size: getAcreSize(comp.acreage), outline: { color: [255,255,255,180], width: 1 } },
+        attributes: { idx },
+        popupTemplate: { title: comp.address || '(no address)', content: buildPopupContent(comp) }
+      }));
     });
   }
 
-  window.zoomTo = function(lon, lat) {
-    view.goTo({
-      center: [lon, lat],
-      zoom: 16
-    });
+  window.zoomTo = function(lon, lat, idx) {
+    view.goTo({ center: [lon, lat], zoom: 16 });
+    document.querySelectorAll('.comp-card').forEach(c => c.classList.remove('active'));
+    const card = document.getElementById('card-'+idx);
+    if (card) { card.classList.add('active'); card.scrollIntoView({behavior:'smooth',block:'nearest'}); }
   };
 
   init();
