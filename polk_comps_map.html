@@ -412,8 +412,7 @@ function applyFilters(){
       attributes:{idx, compKey: comp._compKey},
       popupTemplate:{
         title:comp.address || '(no address)',
-        content:function(){ return buildPopupContent(comp); },
-        actions:[{title:'Change Pin', id:'change-pin', className:'esri-icon-edit'}]
+        content:function(){ return buildPopupContent(comp); }
       }
     });
     activeGraphics.push(graphic);
@@ -542,20 +541,6 @@ require(["esri/Map","esri/views/MapView","esri/Graphic","esri/layers/GraphicsLay
       const ok = confirm('Move this comp pin to the location you just clicked?\n\n' + (pinEditComp.address || 'Selected comp') + '\nLatitude: ' + lat.toFixed(6) + '\nLongitude: ' + lon.toFixed(6));
       if(ok) savePinEdit(pinEditComp, lon, lat);
     });
-
-    // Native ArcGIS popup action for Change Pin. This makes the popup version reliable
-    // even when ArcGIS does not allow custom inline button handlers inside popup HTML.
-    if(view.popup && view.popup.on){
-      view.popup.on('trigger-action', function(event){
-        if(!event || !event.action || event.action.id !== 'change-pin') return;
-        const selected = view.popup.selectedFeature;
-        const key = selected && selected.attributes ? selected.attributes.compKey : null;
-        if(key){
-          view.popup.close();
-          window.startPinEdit(key);
-        }
-      });
-    }
 
     view.when(()=>zoomToResults());
   }
