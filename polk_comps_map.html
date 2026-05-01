@@ -35,10 +35,19 @@ html, body, #viewDiv {
   font-size: 18px;
 }
 
+#map-count {
+  font-size: 11px;
+  color: #888;
+  padding: 6px 12px;
+  background: #f5f7fa;
+  border-bottom: 1px solid #eee;
+}
+
 .comp {
   padding: 12px;
   border-bottom: 1px solid #eee;
   cursor: pointer;
+  font-size: 12px;
 }
 
 .comp:hover {
@@ -52,12 +61,17 @@ html, body, #viewDiv {
 
 <div id="panel">
   <h2>Polk County Comps</h2>
+  <div id="map-count"></div>
   <div id="comp-list"></div>
 </div>
 
 <script>
 let view;
 let graphicsLayer;
+
+const fmtPrice = n => n != null ? '$' + Math.round(n).toLocaleString() : '—';
+const fmtAcres = n => n != null ? Number(n).toFixed(2) + ' ac' : '—';
+const fmtPPA   = n => n != null ? '$' + Math.round(n).toLocaleString() + '/ac' : '—';
 
 require([
   "esri/Map",
@@ -90,16 +104,19 @@ require([
   }
 
   function renderList(comps) {
-    document.getElementById('comp-list').innerHTML = comps.map(comp => `
+    const mapped = comps.filter(c => c.lat != null && c.lon != null);
+    document.getElementById('map-count').textContent =
+      mapped.length.toLocaleString() + ' of ' + comps.length.toLocaleString() + ' comps mapped';
+    document.getElementById('comp-list').innerHTML = mapped.map(comp => `
       <div class="comp" onclick="zoomTo(${comp.lon}, ${comp.lat})">
-        <strong>${comp.address}</strong><br>
-        $${comp.price.toLocaleString()} | ${comp.acreage} ac
+        <strong>${comp.address || '(no address)'}</strong><br>
+        ${fmtPrice(comp.price)} | ${fmtAcres(comp.acreage)}
       </div>
     `).join('');
   }
 
   function addPoints(comps, Graphic) {
-    comps.forEach(comp => {
+    comps.filter(c => c.lat != null && c.lon != null).forEach(comp => {
       const pointGraphic = new Graphic({
         geometry: {
           type: "point",
@@ -111,12 +128,11 @@ require([
           size: 8
         },
         popupTemplate: {
-          title: comp.address,
-          content: `
-            Price: $${comp.price.toLocaleString()}<br>
-            Acres: ${comp.acreage}<br>
-            $/Acre: $${Math.round(comp.price_per_acre).toLocaleString()}
-          `
+          title: comp.address || '(no address)',
+          content:
+            'Price: ' + fmtPrice(comp.price) + '<br>' +
+            'Acres: ' + fmtAcres(comp.acreage) + '<br>' +
+            '$/Acre: ' + fmtPPA(comp.price_per_acre)
         }
       });
 
