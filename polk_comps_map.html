@@ -254,7 +254,7 @@ function buildPopupContent(comp){
     ['Units',hasValue(comp.unit_count) ? Number(comp.unit_count).toLocaleString() : null],['$/Unit',fmtPPA(comp.price_per_unit)],
     ['Sale Date',fmtStr(comp.sale_date)],['Type',fmtStr(comp.property_type)],['ELC Deal',fmtStr(comp.elc_deal)],['Zoning',fmtStr(comp.zoning)],
     ['Land Use',fmtStr(comp.land_use)],['Seller',fmtStr(comp.grantor)],['Buyer',fmtStr(comp.grantee)],
-    ['Source',fmtStr(comp.source)],['Aerial',fmtLink(comp.aerial,'View Aerial')],['Deed',fmtLink(comp.deed_url,'View Deed')],['Pin Location',`<button class="pin-edit-link" type="button" data-pin-key="${encodeURIComponent(comp._compKey || '')}">Change Pin</button>`]
+    ['Source',fmtStr(comp.source)],['Aerial',fmtLink(comp.aerial,'View Aerial')],['Deed',fmtLink(comp.deed_url,'View Deed')],['Pin Location',`<button class="pin-edit-link" type="button" data-pin-key="${escapeHtml(comp._compKey || '')}">Change Pin</button>`]
   ].filter(r=>r[1]!=null);
   const comments = fmtStr(comp.comments);
   const table = '<table class="popup-table">' + rows.map(([k,v])=>`<tr><td>${k}</td><td>${v}</td></tr>`).join('') + '</table>';
@@ -269,7 +269,7 @@ function buildListCard(comp,idx){
   const units=hasValue(comp.unit_count) ? `<span class="comp-tag">${Number(comp.unit_count).toLocaleString()} Units</span>` : '';
   const sel=fmtStr(comp.grantor), buy=fmtStr(comp.grantee);
   const parties=(sel||buy) ? `<div class="comp-parties">${sel||'N/A'} to ${buy||'N/A'}</div>` : '';
-  const links = `<div class="comp-links">${comp.aerial ? `<a href="${escapeHtml(comp.aerial)}" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation()">View Aerial</a> · ` : ''}<button class="pin-edit-btn" type="button" data-pin-key="${encodeURIComponent(comp._compKey || '')}">Change Pin</button></div>`;
+  const links = `<div class="comp-links">${comp.aerial ? `<a href="${escapeHtml(comp.aerial)}" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation()">View Aerial</a> · ` : ''}<button class="pin-edit-btn" type="button" data-pin-key="${escapeHtml(comp._compKey || '')}" onclick="event.stopPropagation()">Change Pin</button></div>`;
   return `<div class="comp-card" id="card-${idx}" onclick="zoomToComp(${idx})">
     <div class="comp-addr">${escapeHtml(comp.address || '(no address)')}</div>
     <div class="comp-meta">${type}${date}${units}${elc}${aerial}</div>
@@ -365,8 +365,12 @@ function applyFilters(){
     const graphic = new Graphic({
       geometry:{type:'point',longitude:comp.lon,latitude:comp.lat},
       symbol:{type:'simple-marker',color:getPriceColor(comp.price),size:getAcreSize(comp.acreage),outline:{color:[255,255,255,210],width:1}},
-      attributes:{idx},
-      popupTemplate:{title:comp.address || '(no address)',content:buildPopupContent(comp)}
+      attributes:{idx, compKey: comp._compKey},
+      popupTemplate:{
+        title:comp.address || '(no address)',
+        content:buildPopupContent(comp),
+        actions:[{title:'Change Pin', id:'change-pin', className:'esri-icon-edit'}]
+      }
     });
     activeGraphics.push(graphic);
     graphicsLayer.add(graphic);
@@ -402,15 +406,18 @@ window.cancelPinEdit=function(){
   if(banner) banner.style.display = 'none';
 };
 
+// Handles Change Pin clicks from regular sidebar buttons and ArcGIS popup HTML content.
+// ArcGIS can strip or ignore inline onclick handlers inside popup content, so we use
+// one delegated listener instead of relying on inline JavaScript.
 document.addEventListener('click', function(event){
-  const btn = event.target.closest('.pin-edit-btn, .pin-edit-link');
+  const btn = event.target.closest && event.target.closest('.pin-edit-link, .pin-edit-btn');
   if(!btn) return;
+  const key = btn.getAttribute('data-pin-key');
+  if(!key) return;
   event.preventDefault();
   event.stopPropagation();
-  if(event.stopImmediatePropagation) event.stopImmediatePropagation();
-  const encodedKey = btn.getAttribute('data-pin-key') || '';
-  const compKey = decodeURIComponent(encodedKey);
-  if(compKey) window.startPinEdit(compKey);
+  if(view && view.popup){ view.popup.close(); }
+  window.startPinEdit(key);
 }, true);
 function savePinEdit(comp, lon, lat){
   const overrides = loadPinOverrides();
@@ -491,6 +498,21 @@ require(["esri/Map","esri/views/MapView","esri/Graphic","esri/layers/GraphicsLay
       const ok = confirm('Move this comp pin to the location you just clicked?\n\n' + (pinEditComp.address || 'Selected comp') + '\nLatitude: ' + lat.toFixed(6) + '\nLongitude: ' + lon.toFixed(6));
       if(ok) savePinEdit(pinEditComp, lon, lat);
     });
+
+    // Native ArcGIS popup action for Change Pin. This makes the popup version reliable
+    // even when ArcGIS does not allow custom inline button handlers inside popup HTML.
+    if(view.popup && view.popup.on){
+      view.popup.on('trigger-action', function(event){
+        if(!event || !event.action || event.action.id !== 'change-pin') return;
+        const selected = view.popup.selectedFeature;
+        const key = selected && selected.attributes ? selected.attributes.compKey : null;
+        if(key){
+          view.popup.close();
+          window.startPinEdit(key);
+        }
+      });
+    }
+
     view.when(()=>zoomToResults());
   }
   init();
