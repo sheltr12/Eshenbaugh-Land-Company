@@ -52,7 +52,23 @@ function loadLocalEdits(){ try{return JSON.parse(localStorage.getItem(LOCAL_EDIT
 function saveLocalEdits(edits){ localStorage.setItem(LOCAL_EDITS_KEY, JSON.stringify(edits)); }
 function toNumOrNull(v){ if(v === null || v === undefined || String(v).trim()==='') return null; const n=Number(v); return Number.isFinite(n) ? n : null; }
 function isoToDisplay(iso){ if(!iso) return null; const d=new Date(iso+'T00:00:00'); if(Number.isNaN(d.getTime())) return null; return d.toLocaleDateString('en-US',{month:'short',day:'2-digit',year:'numeric'}).replace(',', ''); }
+
+function looksLikeMultifamilyComp(c){
+  const text = [c.address,c.comments,c.zoning,c.land_use,c.property_type,c.deed_type,c.source].filter(hasValue).join(' ').toLowerCase();
+  return /(multi[\s-]?family|apartment|apartments|\bapt\b|units?\b|duplex|triplex|quadplex|townhome|townhomes|condo|condominium|residential units?)/.test(text);
+}
+function consolidatePropertyType(c){
+  const raw = String(c.property_type || '').trim();
+  const lower = raw.toLowerCase();
+  if(hasValue(c.unit_count) && Number(c.unit_count) > 0) return 'Multifamily';
+  if(lower === 'investment' || lower === 'investment property'){
+    return looksLikeMultifamilyComp(c) ? 'Multifamily' : 'Land';
+  }
+  return raw || 'Land';
+}
+
 function deriveCompFields(c){
+  c.property_type = consolidatePropertyType(c);
   if(hasValue(c.price) && hasValue(c.acreage) && Number(c.acreage)!==0) c.price_per_acre=Math.round(Number(c.price)/Number(c.acreage)); else c.price_per_acre=null;
   if(hasValue(c.price) && hasValue(c.unit_count) && Number(c.unit_count)!==0) c.price_per_unit=Math.round(Number(c.price)/Number(c.unit_count)); else c.price_per_unit=null;
   if(c.sale_date_iso && !c.sale_date) c.sale_date=isoToDisplay(c.sale_date_iso);
