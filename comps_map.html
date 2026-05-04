@@ -118,6 +118,18 @@ body.pin-editing #viewDiv{cursor:crosshair}
 body.sidebar-filters-hidden #filters{display:none}
 body.sidebar-filters-hidden #comp-list{border-top:1px solid var(--elc-line)}
 
+
+.modal-backdrop{display:none;position:fixed;inset:0;background:rgba(0,0,0,.58);z-index:9999;padding:18px;overflow-y:auto}
+.modal-backdrop.open{display:block}
+.modal-card{background:#fff;max-width:980px;margin:24px auto;border-radius:14px;border-top:5px solid var(--elc-red);box-shadow:0 16px 45px rgba(0,0,0,.28);overflow:hidden}
+.modal-head{background:#000;color:#fff;padding:16px 18px;display:flex;justify-content:space-between;gap:12px;align-items:center}
+.modal-head h2{margin:0;font-size:18px}.modal-close{background:transparent;color:#fff;border:1px solid rgba(255,255,255,.35);border-radius:8px;padding:7px 10px;cursor:pointer}
+.modal-body{padding:16px 18px}.deal-form-grid{display:grid;grid-template-columns:repeat(4,minmax(150px,1fr));gap:12px}.deal-form-grid label{display:block}.deal-form-wide{grid-column:span 2}.deal-form-full{grid-column:1/-1}
+textarea{width:100%;margin-top:5px;padding:8px 10px;border:1px solid #cbd5df;border-radius:7px;font-size:12px;min-height:78px;font-family:inherit}.modal-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:14px;flex-wrap:wrap}.add-help{font-size:12px;color:var(--elc-muted);margin:0 0 10px;line-height:1.4}
+.edit-btn{color:var(--elc-red);font-weight:900;text-decoration:none;background:transparent;border:none;padding:0;font-size:11px;cursor:pointer}.edit-btn:hover{text-decoration:underline;background:transparent}
+@media(max-width:900px){.deal-form-grid{grid-template-columns:repeat(2,1fr)}.deal-form-wide{grid-column:span 2}}
+@media(max-width:700px){.modal-backdrop{padding:8px}.modal-card{margin:6px auto}.deal-form-grid{grid-template-columns:1fr}.deal-form-wide{grid-column:span 1}.modal-actions button{width:100%}}
+
 </style>
 </head>
 <body>
@@ -129,6 +141,48 @@ body.sidebar-filters-hidden #comp-list{border-top:1px solid var(--elc-line)}
     <button type="button" onclick="cancelPinEdit()">Cancel</button>
   </div>
 </div>
+
+<div id="edit-deal-modal" class="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="edit-deal-title">
+  <div class="modal-card">
+    <div class="modal-head">
+      <h2 id="edit-deal-title">Edit Deal Fields</h2>
+      <button class="modal-close" type="button" onclick="closeEditDealModal()">Close</button>
+    </div>
+    <div class="modal-body">
+      <p class="add-help">Changes are saved in this browser and shared between the list and map views. Price, acreage, and unit count automatically recalculate $/acre and $/unit.</p>
+      <form id="edit-deal-form" onsubmit="event.preventDefault(); saveEditedDealFromMapForm();">
+        <div class="deal-form-grid">
+          <label class="deal-form-wide">Property Name<input id="edit-property-name"></label>
+          <label>Property Type
+            <select id="edit-property-type"><option value="Land">Land</option><option value="Multifamily">Multifamily</option><option value="Retail">Retail</option><option value="Industrial">Industrial</option><option value="Office">Office</option><option value="Other">Other</option></select>
+          </label>
+          <label>Transaction Type<input id="edit-transaction-type"></label>
+          <label>Sale Date<input type="date" id="edit-sale-date"></label>
+          <label>ELC Deal<select id="edit-elc-deal"><option value="No">No</option><option value="Yes">Yes</option></select></label>
+          <label class="deal-form-wide">Address<input id="edit-address"></label>
+          <label>Price<input type="number" id="edit-price"></label>
+          <label>Acres<input type="number" id="edit-acreage" step="0.01"></label>
+          <label>Unit Count<input type="number" id="edit-unit-count"></label>
+          <label>Latitude<input type="number" id="edit-lat" step="0.000001"></label>
+          <label>Longitude<input type="number" id="edit-lon" step="0.000001"></label>
+          <label>Buyer<input id="edit-grantee"></label>
+          <label>Seller<input id="edit-grantor"></label>
+          <label>Zoning<input id="edit-zoning"></label>
+          <label>Land Use<input id="edit-land-use"></label>
+          <label>Source<input id="edit-source"></label>
+          <label class="deal-form-wide">Aerial URL<input id="edit-aerial-url"></label>
+          <label class="deal-form-wide">Deed URL<input id="edit-deed-url"></label>
+          <label class="deal-form-full">Comments<textarea id="edit-comments"></textarea></label>
+        </div>
+        <div class="modal-actions">
+          <button type="button" onclick="closeEditDealModal()">Cancel</button>
+          <button class="btn-red" type="submit">Save Changes</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
 <div id="panel">
   <div id="panel-header">
     <div class="logo-box"><img src="./EshenbaughLogo.png" alt="Eshenbaugh Land Company" onerror="this.style.display='none'"></div>
@@ -201,8 +255,11 @@ let sidebarFollowsMap=false;
 let selectedMapCompKeys = new Set();
 let pinEditComp = null;
 const LOCAL_DEALS_KEY='elc_manual_added_deals_v1';
+const LOCAL_EDITS_KEY='elc_comp_edits_v1';
 const PIN_OVERRIDES_KEY='elc_pin_location_overrides_v1';
+let editingCompKey=null;
 const FIELD_LABELS = {
+  property_name:'Property Name',
   num:'#',parcel_id:'Parcel ID',parcel_raw_id:'Parcel Raw ID',address:'Address',sale_date:'Sale Date',
   price:'Price',acreage:'Acres',price_per_acre:'$/Acre',book_page:'Book/Page',transaction_type:'Transaction Type',
   grantor:'Seller',grantee:'Buyer',deed_type:'Deed Type',property_type:'Property Type',zoning:'Zoning',
@@ -264,12 +321,100 @@ const parseCompDate = c => {
   const d = new Date(raw);
   return Number.isNaN(d.getTime()) ? null : d;
 };
+
+function toNumOrNull(v){ if(v===null || v===undefined || String(v).trim()==='') return null; const n=Number(v); return Number.isFinite(n)?n:null; }
+function isoToDisplay(iso){ if(!iso) return null; const d=new Date(iso+'T00:00:00'); if(Number.isNaN(d.getTime())) return null; return d.toLocaleDateString('en-US',{month:'short',day:'2-digit',year:'numeric'}).replace(',', ''); }
+function looksLikeMultifamilyComp(c){
+  const text=[c.address,c.comments,c.zoning,c.land_use,c.property_type,c.deed_type,c.source].filter(hasValue).join(' ').toLowerCase();
+  return /(multi[\s-]?family|apartment|apartments|\bapt\b|units?\b|duplex|triplex|quadplex|townhome|townhomes|condo|condominium|residential units?)/.test(text);
+}
+function consolidatePropertyType(c){
+  const raw=String(c.property_type||'').trim(), lower=raw.toLowerCase();
+  if(hasValue(c.unit_count)&&Number(c.unit_count)>0) return 'Multifamily';
+  if(lower==='investment'||lower==='investment property') return looksLikeMultifamilyComp(c)?'Multifamily':'Land';
+  return raw||'Land';
+}
+function deriveCompFields(c){
+  c.property_type=consolidatePropertyType(c);
+  if(hasValue(c.price)&&hasValue(c.acreage)&&Number(c.acreage)!==0) c.price_per_acre=Math.round(Number(c.price)/Number(c.acreage)); else c.price_per_acre=null;
+  if(hasValue(c.price)&&hasValue(c.unit_count)&&Number(c.unit_count)!==0) c.price_per_unit=Math.round(Number(c.price)/Number(c.unit_count)); else c.price_per_unit=null;
+  if(c.sale_date_iso&&!c.sale_date) c.sale_date=isoToDisplay(c.sale_date_iso);
+  return c;
+}
+function loadLocalEdits(){ try{return JSON.parse(localStorage.getItem(LOCAL_EDITS_KEY)||'{}');}catch(e){return {};} }
+function saveLocalEdits(edits){ localStorage.setItem(LOCAL_EDITS_KEY,JSON.stringify(edits)); }
+function applyLocalEdits(comps){
+  const edits=loadLocalEdits();
+  return (comps||[]).map((c,i)=>{ const key=getCompKey(c,i); const edited=edits[key]?{...c,...edits[key],edited_locally:true}:c; return deriveCompFields({...edited,_compKey:key}); });
+}
+function saveCompEdit(comp){ if(!comp||!comp._compKey)return; const edits=loadLocalEdits(); edits[comp._compKey]={...comp,_compKey:undefined}; saveLocalEdits(edits); }
+function setEditValue(id,val){ const el=document.getElementById(id); if(el) el.value=hasValue(val)?val:''; }
+function fillEditForm(c){
+  setEditValue('edit-property-name',c.property_name);
+  setEditValue('edit-property-type',c.property_type||'Land');
+  setEditValue('edit-transaction-type',c.transaction_type||'Sale');
+  setEditValue('edit-sale-date',c.sale_date_iso||'');
+  setEditValue('edit-elc-deal',c.elc_deal==='Yes'?'Yes':'No');
+  setEditValue('edit-address',c.address); setEditValue('edit-price',c.price); setEditValue('edit-acreage',c.acreage); setEditValue('edit-unit-count',c.unit_count);
+  setEditValue('edit-lat',c.lat); setEditValue('edit-lon',c.lon); setEditValue('edit-grantee',c.grantee); setEditValue('edit-grantor',c.grantor);
+  setEditValue('edit-zoning',c.zoning); setEditValue('edit-land-use',c.land_use); setEditValue('edit-source',c.source);
+  setEditValue('edit-aerial-url',getAerialValue(c)); setEditValue('edit-deed-url',c.deed_url); setEditValue('edit-comments',c.comments);
+}
+window.openEditDealModal=function(key){
+  const comp=getCompByKey(key);
+  if(!comp){ alert('Could not find that comp to edit.'); return; }
+  editingCompKey=key; fillEditForm(comp);
+  const modal=document.getElementById('edit-deal-modal'); if(modal) modal.classList.add('open');
+  if(view&&view.popup) view.popup.close();
+};
+window.closeEditDealModal=function(){ editingCompKey=null; const modal=document.getElementById('edit-deal-modal'); if(modal) modal.classList.remove('open'); };
+window.saveEditedDealFromMapForm=function(){
+  const existing=getCompByKey(editingCompKey);
+  if(!existing){ alert('Could not find that comp to edit.'); return; }
+  const saleIso=document.getElementById('edit-sale-date').value||null;
+  let updated={...existing,
+    property_name:document.getElementById('edit-property-name').value.trim()||null,
+    address:document.getElementById('edit-address').value.trim()||null,
+    sale_date:isoToDisplay(saleIso), sale_date_iso:saleIso,
+    price:toNumOrNull(document.getElementById('edit-price').value),
+    acreage:toNumOrNull(document.getElementById('edit-acreage').value),
+    transaction_type:document.getElementById('edit-transaction-type').value.trim()||'Sale',
+    grantor:document.getElementById('edit-grantor').value.trim()||null,
+    grantee:document.getElementById('edit-grantee').value.trim()||null,
+    property_type:document.getElementById('edit-property-type').value||'Land',
+    zoning:document.getElementById('edit-zoning').value.trim()||null,
+    land_use:document.getElementById('edit-land-use').value.trim()||null,
+    source:document.getElementById('edit-source').value.trim()||null,
+    comments:document.getElementById('edit-comments').value.trim()||null,
+    lat:toNumOrNull(document.getElementById('edit-lat').value),
+    lon:toNumOrNull(document.getElementById('edit-lon').value),
+    coords_approx:false,
+    deed_url:document.getElementById('edit-deed-url').value.trim()||null,
+    aerial:document.getElementById('edit-aerial-url').value.trim()||null,
+    unit_count:toNumOrNull(document.getElementById('edit-unit-count').value),
+    elc_deal:document.getElementById('edit-elc-deal').value==='Yes'?'Yes':null,
+    edited_locally:true
+  };
+  updated=deriveCompFields(updated);
+  saveCompEdit(updated);
+  allComps=allComps.map(c=>c._compKey===editingCompKey?updated:c);
+  allComps=applyPinOverrides(applyLocalEdits(allComps));
+  allMappedComps=allComps.filter(c=>hasValue(c.lat)&&hasValue(c.lon)).map((c,i)=>({...c,_mappedIndex:i}));
+  const key=editingCompKey;
+  closeEditDealModal();
+  applyFilters();
+  const newIdx=sidebarMappedComps.findIndex(c=>c._compKey===key);
+  if(newIdx>=0) setTimeout(()=>zoomToComp(newIdx),100);
+};
+
 function loadLocalDeals(){ try{return JSON.parse(localStorage.getItem(LOCAL_DEALS_KEY) || '[]');}catch(e){return [];} }
 function loadPinOverrides(){ try{return JSON.parse(localStorage.getItem(PIN_OVERRIDES_KEY) || '{}');}catch(e){return {};} }
 function savePinOverrides(overrides){ localStorage.setItem(PIN_OVERRIDES_KEY, JSON.stringify(overrides)); }
 function getCompKey(c, fallbackIndex){
-  if(hasValue(c.num)) return 'num:' + String(c.num);
+  if(hasValue(c._compKey)) return c._compKey;
   if(hasValue(c._manual_id)) return 'manual:' + String(c._manual_id);
+  if(hasValue(c.num)) return 'num:' + String(c.num);
+  if(hasValue(c.address)) return 'addr:' + String(c.address).trim().toLowerCase() + '|date:' + String(c.sale_date || c.sale_date_iso || '') + '|price:' + String(c.price || '');
   return 'fallback:' + String(fallbackIndex);
 }
 function applyPinOverrides(comps){
@@ -318,7 +463,13 @@ function buildPopupContent(comp){
   const btn=document.createElement('button'); btn.className='pin-edit-link'; btn.type='button'; btn.textContent='Change Pin';
   btn.setAttribute('data-pin-key', comp._compKey || '');
   btn.addEventListener('click', function(e){ e.preventDefault(); e.stopPropagation(); if(view && view.popup) view.popup.close(); window.startPinEdit(comp._compKey); });
-  const trSelect=document.createElement('tr'); const tdSelectK=document.createElement('td'); const tdSelectV=document.createElement('td'); tdSelectK.textContent='Report'; const selectLabel=document.createElement('label'); selectLabel.style.cssText='display:flex;align-items:center;gap:6px;font-weight:800;color:#ef1f25;cursor:pointer;'; const selectInput=document.createElement('input'); selectInput.type='checkbox'; selectInput.checked=selectedMapCompKeys.has(comp._compKey); selectInput.style.width='auto'; selectInput.style.margin='0'; selectInput.addEventListener('change',function(e){e.stopPropagation(); toggleMapCompSelection(comp._compKey,this.checked);}); selectLabel.appendChild(selectInput); selectLabel.appendChild(document.createTextNode('Select for report')); tdSelectV.appendChild(selectLabel); trSelect.appendChild(tdSelectK); trSelect.appendChild(tdSelectV); table.appendChild(trSelect); tdPinV.appendChild(btn); trPin.appendChild(tdPinK); trPin.appendChild(tdPinV); table.appendChild(trPin); wrap.appendChild(table);
+  const trSelect=document.createElement('tr'); const tdSelectK=document.createElement('td'); const tdSelectV=document.createElement('td'); tdSelectK.textContent='Report'; const selectLabel=document.createElement('label'); selectLabel.style.cssText='display:flex;align-items:center;gap:6px;font-weight:800;color:#ef1f25;cursor:pointer;'; const selectInput=document.createElement('input'); selectInput.type='checkbox'; selectInput.checked=selectedMapCompKeys.has(comp._compKey); selectInput.style.width='auto'; selectInput.style.margin='0'; selectInput.addEventListener('change',function(e){e.stopPropagation(); toggleMapCompSelection(comp._compKey,this.checked);}); selectLabel.appendChild(selectInput); selectLabel.appendChild(document.createTextNode('Select for report')); tdSelectV.appendChild(selectLabel); trSelect.appendChild(tdSelectK); trSelect.appendChild(tdSelectV); table.appendChild(trSelect); tdPinV.appendChild(btn); trPin.appendChild(tdPinK); trPin.appendChild(tdPinV); table.appendChild(trPin);
+  const trEdit=document.createElement('tr'); const tdEditK=document.createElement('td'); const tdEditV=document.createElement('td');
+  tdEditK.textContent='Fields';
+  const editBtn=document.createElement('button'); editBtn.className='edit-btn'; editBtn.type='button'; editBtn.textContent='Edit Fields';
+  editBtn.addEventListener('click',function(e){ e.preventDefault(); e.stopPropagation(); window.openEditDealModal(comp._compKey); });
+  tdEditV.appendChild(editBtn); trEdit.appendChild(tdEditK); trEdit.appendChild(tdEditV); table.appendChild(trEdit);
+  wrap.appendChild(table);
   const comments=fmtStr(comp.comments);
   if(comments){ const div=document.createElement('div'); div.style.marginTop='8px'; div.style.fontSize='12px'; div.style.lineHeight='1.35'; div.innerHTML='<strong>Comments:</strong> '+comments; wrap.appendChild(div); }
   return wrap;
@@ -447,7 +598,7 @@ window.startPinEdit=function(compKey){
 };
 window.cancelPinEdit=function(){ pinEditComp=null; document.body.classList.remove('pin-editing'); const banner=document.getElementById('pin-edit-banner'); if(banner) banner.style.display='none'; };
 document.addEventListener('click', function(event){ const btn=event.target.closest&&event.target.closest('.pin-edit-link, .pin-edit-btn'); if(!btn) return; const key=btn.getAttribute('data-pin-key'); if(!key) return; event.preventDefault(); event.stopPropagation(); if(view&&view.popup){view.popup.close();} window.startPinEdit(key); }, true);
-function savePinEdit(comp,lon,lat){ const overrides=loadPinOverrides(); overrides[comp._compKey]={lon:Number(lon),lat:Number(lat),updated:new Date().toISOString(),address:comp.address||null}; savePinOverrides(overrides); allComps=applyPinOverrides(allComps); allMappedComps=allComps.filter(c=>hasValue(c.lat)&&hasValue(c.lon)).map((c,i)=>({...c,_mappedIndex:i})); const key=comp._compKey; cancelPinEdit(); applyFilters(); const newIdx=sidebarMappedComps.findIndex(c=>c._compKey===key); if(newIdx>=0) setTimeout(()=>zoomToComp(newIdx),100); }
+function savePinEdit(comp,lon,lat){ const overrides=loadPinOverrides(); overrides[comp._compKey]={lon:Number(lon),lat:Number(lat),updated:new Date().toISOString(),address:comp.address||null}; savePinOverrides(overrides); allComps=applyPinOverrides(applyLocalEdits(allComps)); allMappedComps=allComps.filter(c=>hasValue(c.lat)&&hasValue(c.lon)).map((c,i)=>({...c,_mappedIndex:i})); const key=comp._compKey; cancelPinEdit(); applyFilters(); const newIdx=sidebarMappedComps.findIndex(c=>c._compKey===key); if(newIdx>=0) setTimeout(()=>zoomToComp(newIdx),100); }
 window.resetFilters=function(){ ['map-search','field-value','sale-date-from','sale-date-to','min-price','max-price','min-acres','max-acres','min-ppa','max-ppa','min-units','max-units','min-ppu','max-ppu'].forEach(id=>document.getElementById(id).value=''); ['field-filter','filter-type','filter-source','filter-elc','filter-aerial'].forEach(id=>document.getElementById(id).value=''); toggleUnitPriceFilters(); applyFilters(); };
 window.zoomToComp=function(idx){ 
   const comp=sidebarMappedComps[idx]; 
@@ -488,6 +639,18 @@ function createCoStarStyleReport(comps,title='Sale Comps Map & List Report'){
 body.sidebar-filters-hidden #filters{display:none}
 body.sidebar-filters-hidden #comp-list{border-top:1px solid var(--elc-line)}
 
+
+.modal-backdrop{display:none;position:fixed;inset:0;background:rgba(0,0,0,.58);z-index:9999;padding:18px;overflow-y:auto}
+.modal-backdrop.open{display:block}
+.modal-card{background:#fff;max-width:980px;margin:24px auto;border-radius:14px;border-top:5px solid var(--elc-red);box-shadow:0 16px 45px rgba(0,0,0,.28);overflow:hidden}
+.modal-head{background:#000;color:#fff;padding:16px 18px;display:flex;justify-content:space-between;gap:12px;align-items:center}
+.modal-head h2{margin:0;font-size:18px}.modal-close{background:transparent;color:#fff;border:1px solid rgba(255,255,255,.35);border-radius:8px;padding:7px 10px;cursor:pointer}
+.modal-body{padding:16px 18px}.deal-form-grid{display:grid;grid-template-columns:repeat(4,minmax(150px,1fr));gap:12px}.deal-form-grid label{display:block}.deal-form-wide{grid-column:span 2}.deal-form-full{grid-column:1/-1}
+textarea{width:100%;margin-top:5px;padding:8px 10px;border:1px solid #cbd5df;border-radius:7px;font-size:12px;min-height:78px;font-family:inherit}.modal-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:14px;flex-wrap:wrap}.add-help{font-size:12px;color:var(--elc-muted);margin:0 0 10px;line-height:1.4}
+.edit-btn{color:var(--elc-red);font-weight:900;text-decoration:none;background:transparent;border:none;padding:0;font-size:11px;cursor:pointer}.edit-btn:hover{text-decoration:underline;background:transparent}
+@media(max-width:900px){.deal-form-grid{grid-template-columns:repeat(2,1fr)}.deal-form-wide{grid-column:span 2}}
+@media(max-width:700px){.modal-backdrop{padding:8px}.modal-card{margin:6px auto}.deal-form-grid{grid-template-columns:1fr}.deal-form-wide{grid-column:span 1}.modal-actions button{width:100%}}
+
 </style></head><body><div class="page"><div class="head"><img src="${logo}"><div><strong>Eshenbaugh Land Company</strong><br>Land is all we do.<br>${today}</div></div><div class="actions"><button onclick="window.print()">Download PDF</button></div><h1 class="title">${escapeHtml(title)}</h1>${map}<div class="stats"><div class="stat"><b>${comps.length.toLocaleString()}</b><br>Selected Comps</div><div class="stat"><b>${reportMoney(total)}</b><br>Total Volume</div><div class="stat"><b>${reportNum(acres,1)}</b><br>Total Acres</div></div><h3>Sale Comps List</h3><table><thead><tr><th></th><th>Property Name / Address</th><th>Type</th><th>Sale Date</th><th>Size</th><th>Price</th></tr></thead><tbody>${rows}</tbody></table></div></body></html>`;
  const w=window.open('','_blank'); if(!w){alert('Your browser blocked the report popup.');return;} w.document.open();w.document.write(html);w.document.close();
 }
@@ -499,13 +662,23 @@ function clearSelectedMapComps(){ selectedMapCompKeys.clear(); updateMapSelected
 function getMapSelectedComps(){return allComps.filter(c=>selectedMapCompKeys.has(c._compKey));}
 function createMapSelectedReport(){createCoStarStyleReport(getMapSelectedComps());}
 
+
+window.addEventListener('storage',function(e){
+  if([LOCAL_EDITS_KEY,LOCAL_DEALS_KEY,PIN_OVERRIDES_KEY].includes(e.key)){
+    const currentKey = selectedMapCompKeys;
+    allComps=applyPinOverrides(applyLocalEdits(allComps));
+    allMappedComps=allComps.filter(c=>hasValue(c.lat)&&hasValue(c.lon)).map((c,i)=>({...c,_mappedIndex:i}));
+    applyFilters();
+  }
+});
+
 require(["esri/Map","esri/views/MapView","esri/Graphic","esri/layers/GraphicsLayer","esri/geometry/Point"],function(Map,MapView,EsriGraphic,GraphicsLayer,EsriPoint){
   Graphic=EsriGraphic; Point=EsriPoint;
   async function init(){
     const data=await(await fetch('./comps.json?v=aerials-20260501-2', {cache:'no-store'})).json();
     const aerialBackup=await loadAerialBackup();
     const baseComps=mergeAerialsFromBackup(data.comps||[], aerialBackup?.comps || aerialBackup || []);
-    allComps=applyPinOverrides([...baseComps,...loadLocalDeals().map(normalizeComp)]);
+    allComps=applyPinOverrides(applyLocalEdits([...baseComps,...loadLocalDeals().map(normalizeComp)]));
     allMappedComps=allComps.filter(c=>hasValue(c.lat)&&hasValue(c.lon)).map((c,i)=>({...c,_mappedIndex:i}));
     graphicsLayer=new GraphicsLayer();
     const map=new Map({basemap:"hybrid",layers:[graphicsLayer]});
