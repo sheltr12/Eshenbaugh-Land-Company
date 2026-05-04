@@ -522,7 +522,47 @@ function buildAerialAppendix(comps){
 function createCoStarStyleReport(comps, title='Sale Comps Map & List Report'){
   if(!comps||!comps.length){ alert('Select at least one comp first.'); return; }
   const logoUrl=new URL('./EshenbaughLogo.png',window.location.href).href, today=new Date().toLocaleDateString();
-  const html=`<!DOCTYPE html><html><head><meta charset="utf-8"><title>${escapeHtml(title)}</title><style>*{box-sizing:border-box}body{font-family:Arial,Helvetica,sans-serif;color:#132033;margin:0;background:#fff;font-size:12px}.page{max-width:980px;margin:0 auto;padding:24px 28px 18px}.page-title{font-size:24px;font-weight:500;margin:0 0 12px;border-bottom:4px solid #1665a9;padding:0 0 10px;display:flex;align-items:center;gap:12px}.diamond{width:22px;height:22px;background:#213e73;transform:rotate(45deg);display:inline-block;flex:0 0 22px}.report-map{position:relative;width:100%;height:420px;background:#e9f2ed;overflow:hidden;margin:12px 0 14px;border:1px solid #d7e2ef}.report-map img{width:100%;height:100%;object-fit:cover;display:block}.empty-map{display:flex;align-items:center;justify-content:center;color:#667085}.map-number-pin{position:absolute;transform:translate(-50%,-100%);min-width:24px;height:30px;padding:4px 5px;background:#213e73;color:#fff;border:2px solid #fff;clip-path:polygon(50% 100%,0 46%,0 0,100% 0,100% 46%);font-weight:700;text-align:center;line-height:16px;font-size:11px;box-shadow:0 1px 5px rgba(0,0,0,.35)}.map-number-pin.single{left:50%;top:50%}h3{font-size:13px;margin:12px 0 6px;border-bottom:1px solid #2f3d4a;padding-bottom:4px}.summary-table{width:100%;border-collapse:collapse;font-size:11px;margin:0 0 8px}.summary-table th{font-weight:700;text-align:right;border-bottom:1px solid #8b98a8;padding:5px}.summary-table th:first-child{text-align:left}.summary-table td{text-align:right;border-bottom:1px solid #d8dee7;padding:5px}.summary-table td:first-child{text-align:left}.summary-note{font-size:10px;color:#667085;margin:4px 0 12px}.comp-table{width:100%;border-collapse:collapse;font-size:11px}.comp-table th{text-align:left;border-bottom:1px solid #8792a1;padding:7px 6px;font-weight:700}.comp-table td{border-bottom:1px solid #e1e6ee;padding:7px 6px;vertical-align:top}.comp-table .num{width:28px;text-align:center;color:#475467}.comp-table a{color:#1167aa;font-weight:500;text-decoration:none}.comp-table span{color:#475467}.row-comments{margin-top:5px;color:#667085;font-size:10px;line-height:1.35}.footer{display:flex;justify-content:space-between;align-items:center;border-top:2px solid #333;margin-top:20px;padding-top:8px;color:#475467;font-size:10px}.footer img{height:24px;width:auto}.appendix-title{margin-top:28px;page-break-before:always}.appendix-card{break-inside:avoid;page-break-inside:avoid;border-top:1px solid #ccd5df;padding:12px 0}.appendix-card h4{font-size:14px;margin:0 0 8px}.appendix-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.aerial-box{position:relative;height:230px;background:#eef2f6;border:1px solid #d8dee7;display:flex;align-items:center;justify-content:center;color:#667085;overflow:hidden}.aerial-box img{width:100%;height:100%;object-fit:cover;display:block}.aerial-box.empty{font-weight:700;color:#667085}.appendix-card p{line-height:1.45;margin:8px 0 0}@media print{.page{max-width:none;padding:18px 24px}.report-map{height:370px}.appendix-card{break-inside:avoid;page-break-inside:avoid}}@media(max-width:700px){.page{padding:14px}.report-map{height:300px}.appendix-grid{grid-template-columns:1fr}.page-title{font-size:20px}}</style></head><body><div class="page"><h1 class="page-title"><span class="diamond"></span>${escapeHtml(title)}</h1>${buildReportMapBlock(comps)}${buildSummaryStatsTable(comps)}<h3>Sale Comps List</h3><table class="comp-table"><thead><tr><th></th><th>Property Name<br>Address</th><th>Type</th><th>Built/Renovated</th><th>Size</th><th>Sale Date</th><th>Price</th></tr></thead><tbody>${buildDetailedCompRows(comps)}</tbody></table><h3>Map with One Line Comp Info Report</h3><table class="comp-table"><thead><tr><th></th><th>Property Name<br>Address</th><th>City</th><th>Type</th><th>Size</th><th>Sale Information</th></tr></thead><tbody>${buildCompactCompRows(comps)}</tbody></table>${buildAerialAppendix(comps)}<div class="footer"><img src="${logoUrl}" onerror="this.style.display='none'"><span>Eshenbaugh Land Company Comp Report</span><span>${today}</span></div></div></body></html>`;
+  const html=`<!DOCTYPE html><html><head><meta charset="utf-8"><title>${escapeHtml(title)}</title><style>
+*{box-sizing:border-box}
+body{font-family:Arial,Helvetica,sans-serif;color:#17212f;margin:0;background:#f5f7fa;font-size:12px}
+.page{max-width:1020px;margin:0 auto;padding:24px 28px 18px;background:#fff;min-height:100vh}
+.page-title{font-size:24px;font-weight:700;margin:0 0 14px;border-bottom:4px solid #ef1f25;padding:0 0 11px;display:flex;align-items:center;gap:14px;color:#000}
+.diamond{width:22px;height:22px;background:#ef1f25;transform:rotate(45deg);display:inline-block;flex:0 0 22px}
+.report-brand-header{display:flex;align-items:center;justify-content:space-between;gap:18px;background:#000;color:#fff;border-radius:12px;padding:14px 16px;margin-bottom:18px;border-bottom:5px solid #ef1f25}
+.report-brand-header img{height:48px;width:auto;max-width:310px;background:#fff;border-radius:8px;padding:7px 10px}
+.report-brand-copy{text-align:right;font-size:11px;line-height:1.45;color:#e7edf5}
+.report-map{position:relative;width:100%;height:420px;background:#e9eef4;overflow:hidden;margin:12px 0 14px;border:1px solid #d9e1ea;border-radius:10px}
+.report-map img{width:100%;height:100%;object-fit:cover;display:block}
+.empty-map{display:flex;align-items:center;justify-content:center;color:#667085}
+.map-number-pin{position:absolute;transform:translate(-50%,-100%);min-width:24px;height:30px;padding:4px 5px;background:#ef1f25;color:#fff;border:2px solid #fff;clip-path:polygon(50% 100%,0 46%,0 0,100% 0,100% 46%);font-weight:700;text-align:center;line-height:16px;font-size:11px;box-shadow:0 1px 5px rgba(0,0,0,.35)}
+.map-number-pin.single{left:50%;top:50%}
+h3{font-size:13px;margin:14px 0 7px;border-bottom:2px solid #000;padding-bottom:5px;color:#000;text-transform:none}
+.summary-table{width:100%;border-collapse:collapse;font-size:11px;margin:0 0 8px}
+.summary-table th{font-weight:700;text-align:right;border-bottom:1px solid #aeb8c5;padding:6px 5px;background:#f8fafc;color:#000}
+.summary-table th:first-child{text-align:left}
+.summary-table td{text-align:right;border-bottom:1px solid #e1e7ef;padding:6px 5px}
+.summary-table td:first-child{text-align:left;color:#344054;font-weight:600}
+.summary-note{font-size:10px;color:#667085;margin:5px 0 14px}
+.comp-table{width:100%;border-collapse:collapse;font-size:11px}
+.comp-table th{text-align:left;border-bottom:2px solid #000;padding:7px 6px;font-weight:700;color:#000;background:#fff}
+.comp-table td{border-bottom:1px solid #e1e6ee;padding:7px 6px;vertical-align:top}
+.comp-table .num{width:28px;text-align:center;color:#475467;font-weight:700}
+.comp-table a{color:#ef1f25;font-weight:700;text-decoration:none}
+.comp-table span{color:#475467}
+.row-comments{margin-top:5px;color:#667085;font-size:10px;line-height:1.35}
+.footer{display:flex;justify-content:space-between;align-items:center;border-top:3px solid #000;margin-top:20px;padding-top:8px;color:#475467;font-size:10px}
+.footer img{height:28px;width:auto;background:#fff}
+.appendix-title{margin-top:28px;page-break-before:always}
+.appendix-card{break-inside:avoid;page-break-inside:avoid;border-top:1px solid #ccd5df;padding:12px 0}
+.appendix-card h4{font-size:14px;margin:0 0 8px;color:#000}
+.appendix-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.aerial-box{position:relative;height:230px;background:#eef2f6;border:1px solid #d8dee7;display:flex;align-items:center;justify-content:center;color:#667085;overflow:hidden;border-radius:10px}
+.aerial-box img{width:100%;height:100%;object-fit:cover;display:block}
+.aerial-box.empty{font-weight:700;color:#667085}
+.appendix-card p{line-height:1.45;margin:8px 0 0}
+@media print{body{background:#fff}.page{max-width:none;padding:18px 24px}.report-map{height:370px}.appendix-card{break-inside:avoid;page-break-inside:avoid}.report-brand-header{border-radius:0}}
+@media(max-width:700px){.page{padding:14px}.report-brand-header{flex-direction:column;align-items:flex-start}.report-brand-copy{text-align:left}.report-brand-header img{max-width:100%;height:auto}.report-map{height:300px}.appendix-grid{grid-template-columns:1fr}.page-title{font-size:20px}}
+</style></head><body><div class="page"><div class="report-brand-header"><img src="${logoUrl}" alt="Eshenbaugh Land Company" onerror="this.style.display=\'none\'"><div class="report-brand-copy"><strong>Eshenbaugh Land Company</strong><br>Land is all we do.<br>${today}</div></div><h1 class="page-title"><span class="diamond"></span>${escapeHtml(title)}</h1>${buildReportMapBlock(comps)}${buildSummaryStatsTable(comps)}<h3>Sale Comps List</h3><table class="comp-table"><thead><tr><th></th><th>Property Name<br>Address</th><th>Type</th><th>Built/Renovated</th><th>Size</th><th>Sale Date</th><th>Price</th></tr></thead><tbody>${buildDetailedCompRows(comps)}</tbody></table><h3>Map with One Line Comp Info Report</h3><table class="comp-table"><thead><tr><th></th><th>Property Name<br>Address</th><th>City</th><th>Type</th><th>Size</th><th>Sale Information</th></tr></thead><tbody>${buildCompactCompRows(comps)}</tbody></table>${buildAerialAppendix(comps)}<div class="footer"><img src="${logoUrl}" onerror="this.style.display='none'"><span>Eshenbaugh Land Company Comp Report</span><span>${today}</span></div></div></body></html>`;
   const w=window.open('', '_blank'); if(!w){ alert('Your browser blocked the report popup. Allow popups and try again.'); return; }
   w.document.open(); w.document.write(html); w.document.close();
 }
@@ -552,7 +592,7 @@ require(["esri/Map","esri/views/MapView","esri/Graphic","esri/layers/GraphicsLay
       const ok=confirm('Move this comp pin to the location you just clicked?\n\n'+(pinEditComp.address||'Selected comp')+'\nLatitude: '+lat.toFixed(6)+'\nLongitude: '+lon.toFixed(6));
       if(ok) savePinEdit(pinEditComp,lon,lat);
     });
-    view.when(()=>zoomToResults());
+    view.when(()=>window.zoomToResults());
   }
   init();
 });
