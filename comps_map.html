@@ -110,6 +110,7 @@ body.pin-editing #viewDiv{cursor:crosshair}
 }
 @media(max-width:390px){#panel{height:50dvh}#filters{grid-template-columns:1fr;max-height:26dvh}.filter-wide,.filter-actions{grid-column:span 1}}
 .selection-actions{grid-column:span 2;display:grid;grid-template-columns:1fr 1fr;gap:8px;border-top:1px solid var(--elc-line);padding-top:8px}.selection-actions button{font-size:11px;padding:7px 8px}#map-selected-count{grid-column:1/-1;font-size:11px;font-weight:800;color:#344054}.comp-select-row{display:flex;align-items:center;gap:7px;margin:0 0 6px;font-size:11px;color:#475467}.comp-select-row input{width:auto;margin:0}.comp-card.selected{background:#fff1f1;border-left:4px solid var(--elc-red)}.property-name-line{font-size:11px;font-weight:800;color:#000;margin-bottom:3px}
+.map-view-toggle{grid-column:span 2;display:flex;align-items:center;gap:7px;background:#fff;border:1px solid var(--elc-line);border-radius:8px;padding:8px 9px;text-transform:none;letter-spacing:0;font-size:11px;font-weight:800;color:#344054}.map-view-toggle input{width:auto;margin:0}.comp-card.active{background:#fff1f1;border-left:4px solid var(--elc-red)}
 </style>
 </head>
 <body>
@@ -151,6 +152,7 @@ body.pin-editing #viewDiv{cursor:crosshair}
     <label class="unit-filter">Max Units<input type="number" id="max-units" placeholder="400"></label>
     <label class="ppu-filter">Min $/Unit<input type="number" id="min-ppu" placeholder="50000"></label>
     <label class="ppu-filter">Max $/Unit<input type="number" id="max-ppu" placeholder="150000"></label>
+    <label class="map-view-toggle"><input type="checkbox" id="sidebar-current-view" onchange="setSidebarCurrentView(this.checked)"> Show only comps in current map view</label>
     <div class="selection-actions">
       <div id="map-selected-count">0 selected</div>
       <button type="button" onclick="selectVisibleMapComps()">Select Visible</button>
@@ -186,6 +188,8 @@ body.pin-editing #viewDiv{cursor:crosshair}
 <script>
 let view, graphicsLayer, Graphic, Point;
 let allComps = [], allMappedComps = [], filteredMappedComps = [], activeGraphics = [];
+let sidebarMappedComps=[];
+let sidebarFollowsMap=false;
 let selectedMapCompKeys = new Set();
 let pinEditComp = null;
 const LOCAL_DEALS_KEY='elc_manual_added_deals_v1';
@@ -373,15 +377,49 @@ function getFilteredMappedComps(){
   });
 }
 function toggleUnitPriceFilters(){ const show=document.getElementById('filter-type')?.value==='Multifamily'; document.querySelectorAll('.ppu-filter,.unit-filter').forEach(el=>{el.style.display=show?'':'none';}); if(!show){['min-units','max-units','min-ppu','max-ppu'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});} }
+
+function isCompInCurrentMapView(comp){
+  if(!view || !hasValue(comp.lat) || !hasValue(comp.lon)) return false;
+  try{
+    const screenPoint=view.toScreen({type:'point',longitude:Number(comp.lon),latitude:Number(comp.lat),spatialReference:{wkid:4326}});
+    return screenPoint && Number.isFinite(screenPoint.x) && Number.isFinite(screenPoint.y) && screenPoint.x>=0 && screenPoint.y>=0 && screenPoint.x<=view.width && screenPoint.y<=view.height;
+  }catch(e){ return false; }
+}
+function getSidebarComps(){
+  if(!sidebarFollowsMap || !view) return filteredMappedComps;
+  return filteredMappedComps.filter(isCompInCurrentMapView);
+}
+function refreshSidebarList(){
+  sidebarMappedComps=getSidebarComps();
+  const countText = sidebarFollowsMap
+    ? `${sidebarMappedComps.length.toLocaleString()} visible in sidebar | ${filteredMappedComps.length.toLocaleString()} filtered mapped comps | ${allMappedComps.length.toLocaleString()} mapped total`
+    : `${filteredMappedComps.length.toLocaleString()} mapped comps shown | ${allMappedComps.length.toLocaleString()} mapped total | ${allComps.length.toLocaleString()} total comps`;
+  document.getElementById('map-count').textContent=countText;
+  document.getElementById('comp-list').innerHTML=sidebarMappedComps.length?sidebarMappedComps.map((c,i)=>buildListCard(c,i)).join(''):'<div style="padding:14px;font-size:12px;color:#667085">No mapped comps match the current filters/view.</div>';
+  updateMapSelectedCount();
+}
+function scrollToSidebarComp(key){
+  const idx=sidebarMappedComps.findIndex(c=>c._compKey===key);
+  if(idx<0) return;
+  document.querySelectorAll('.comp-card').forEach(c=>c.classList.remove('active'));
+  const card=document.getElementById('card-'+idx);
+  if(card){card.classList.add('active');card.scrollIntoView({behavior:'smooth',block:'nearest'});}
+}
+function findActiveGraphicByKey(key){
+  return activeGraphics.find(g=>g && g.attributes && g.attributes.compKey===key);
+}
+window.setSidebarCurrentView=function(checked){
+  sidebarFollowsMap=!!checked;
+  refreshSidebarList();
+};
+
 function applyFilters(){
   if(!graphicsLayer) return;
   filteredMappedComps=getFilteredMappedComps();
   graphicsLayer.removeAll(); activeGraphics=[];
-  document.getElementById('map-count').textContent=`${filteredMappedComps.length.toLocaleString()} mapped comps shown | ${allMappedComps.filter(c=>hasValue(getAerialValue(c))).length.toLocaleString()} mapped aerials | ${allComps.filter(c=>hasValue(getAerialValue(c))).length.toLocaleString()} total aerials`;
-  document.getElementById('comp-list').innerHTML=filteredMappedComps.length?filteredMappedComps.map((c,i)=>buildListCard(c,i)).join(''):'<div style="padding:14px;font-size:12px;color:#667085">No mapped comps match the current filters.</div>';
-  updateMapSelectedCount();
+  refreshSidebarList();
   filteredMappedComps.forEach((comp,idx)=>{
-    const graphic=new Graphic({geometry:{type:'point',longitude:comp.lon,latitude:comp.lat},symbol:{type:'simple-marker',color:getPriceColor(comp.price),size:getAcreSize(comp.acreage),outline:{color:[255,255,255,210],width:1}},attributes:{idx,compKey:comp._compKey},popupTemplate:{title:comp.address||'(no address)',content:function(){return buildPopupContent(comp);}}});
+    const graphic=new Graphic({geometry:{type:'point',longitude:comp.lon,latitude:comp.lat},symbol:{type:'simple-marker',color:getPriceColor(comp.price),size:getAcreSize(comp.acreage),outline:{color:[255,255,255,210],width:1}},attributes:{idx,compKey:comp._compKey},popupTemplate:{title:comp.property_name||comp.address||'(no address)',content:function(){return buildPopupContent(comp);}}});
     activeGraphics.push(graphic); graphicsLayer.add(graphic);
   });
 }
@@ -398,9 +436,16 @@ window.startPinEdit=function(compKey){
 };
 window.cancelPinEdit=function(){ pinEditComp=null; document.body.classList.remove('pin-editing'); const banner=document.getElementById('pin-edit-banner'); if(banner) banner.style.display='none'; };
 document.addEventListener('click', function(event){ const btn=event.target.closest&&event.target.closest('.pin-edit-link, .pin-edit-btn'); if(!btn) return; const key=btn.getAttribute('data-pin-key'); if(!key) return; event.preventDefault(); event.stopPropagation(); if(view&&view.popup){view.popup.close();} window.startPinEdit(key); }, true);
-function savePinEdit(comp,lon,lat){ const overrides=loadPinOverrides(); overrides[comp._compKey]={lon:Number(lon),lat:Number(lat),updated:new Date().toISOString(),address:comp.address||null}; savePinOverrides(overrides); allComps=applyPinOverrides(allComps); allMappedComps=allComps.filter(c=>hasValue(c.lat)&&hasValue(c.lon)).map((c,i)=>({...c,_mappedIndex:i})); const key=comp._compKey; cancelPinEdit(); applyFilters(); const newIdx=filteredMappedComps.findIndex(c=>c._compKey===key); if(newIdx>=0) setTimeout(()=>zoomToComp(newIdx),100); }
+function savePinEdit(comp,lon,lat){ const overrides=loadPinOverrides(); overrides[comp._compKey]={lon:Number(lon),lat:Number(lat),updated:new Date().toISOString(),address:comp.address||null}; savePinOverrides(overrides); allComps=applyPinOverrides(allComps); allMappedComps=allComps.filter(c=>hasValue(c.lat)&&hasValue(c.lon)).map((c,i)=>({...c,_mappedIndex:i})); const key=comp._compKey; cancelPinEdit(); applyFilters(); const newIdx=sidebarMappedComps.findIndex(c=>c._compKey===key); if(newIdx>=0) setTimeout(()=>zoomToComp(newIdx),100); }
 window.resetFilters=function(){ ['map-search','field-value','sale-date-from','sale-date-to','min-price','max-price','min-acres','max-acres','min-ppa','max-ppa','min-units','max-units','min-ppu','max-ppu'].forEach(id=>document.getElementById(id).value=''); ['field-filter','filter-type','filter-source','filter-elc','filter-aerial'].forEach(id=>document.getElementById(id).value=''); toggleUnitPriceFilters(); applyFilters(); };
-window.zoomToComp=function(idx){ const comp=filteredMappedComps[idx]; if(!comp) return; view.goTo({center:[comp.lon,comp.lat],zoom:16}); document.querySelectorAll('.comp-card').forEach(c=>c.classList.remove('active')); const card=document.getElementById('card-'+idx); if(card){card.classList.add('active');card.scrollIntoView({behavior:'smooth',block:'nearest'});} if(activeGraphics[idx]){if(view.openPopup){view.openPopup({features:[activeGraphics[idx]],location:activeGraphics[idx].geometry});}else if(view.popup&&view.popup.open){view.popup.open({features:[activeGraphics[idx]],location:activeGraphics[idx].geometry});}} };
+window.zoomToComp=function(idx){ 
+  const comp=sidebarMappedComps[idx]; 
+  if(!comp) return; 
+  view.goTo({center:[comp.lon,comp.lat],zoom:16}); 
+  scrollToSidebarComp(comp._compKey);
+  const graphic=findActiveGraphicByKey(comp._compKey);
+  if(graphic){if(view.openPopup){view.openPopup({features:[graphic],location:graphic.geometry});}else if(view.popup&&view.popup.open){view.popup.open({features:[graphic],location:graphic.geometry});}}
+};
 window.zoomToResults=function(){ if(!view||!filteredMappedComps.length) return; if(filteredMappedComps.length===1){const c=filteredMappedComps[0];view.goTo({center:[c.lon,c.lat],zoom:15});return;} const lons=filteredMappedComps.map(c=>Number(c.lon)),lats=filteredMappedComps.map(c=>Number(c.lat)); view.goTo({target:{type:'extent',xmin:Math.min(...lons),ymin:Math.min(...lats),xmax:Math.max(...lons),ymax:Math.max(...lats),spatialReference:{wkid:4326}},padding:window.innerWidth<=760?{left:35,right:35,top:45,bottom:document.body.classList.contains('panel-collapsed')?70:Math.round(window.innerHeight*0.48)}:{left:400,right:50,top:50,bottom:50}}); };
 window.toggleMobileFilters=function(){ document.body.classList.toggle('filters-collapsed'); const btn=document.getElementById('mobile-filter-toggle'); if(btn) btn.textContent=document.body.classList.contains('filters-collapsed')?'Show Filters':'Hide Filters'; };
 window.toggleMobilePanel=function(){ document.body.classList.toggle('panel-collapsed'); const btn=document.getElementById('mobile-panel-toggle'); if(btn){const collapsed=document.body.classList.contains('panel-collapsed');btn.textContent=collapsed?'⌃':'⌄';btn.setAttribute('aria-label',collapsed?'Show comp list':'Minimize comp list');} if(view) view.padding=document.body.classList.contains('panel-collapsed')?{bottom:60}:{bottom:Math.round(window.innerHeight*0.46)}; };
@@ -416,14 +461,15 @@ function createCoStarStyleReport(comps,title='Sale Comps Map & List Report'){
  const map=m?`<div class="map"><img src="${m.url}">${comps.map((c,i)=>{if(!hasValue(c.lat)||!hasValue(c.lon))return ''; const x=((Number(c.lon)-m.e.minLon)/(m.e.maxLon-m.e.minLon))*100; const y=(1-((Number(c.lat)-m.e.minLat)/(m.e.maxLat-m.e.minLat)))*100; return svgPin(String(i+1),x,y);}).join('')}</div>`:'<div class="map empty">No mapped coordinates available.</div>';
  const total=comps.filter(c=>hasValue(c.price)).reduce((s,c)=>s+Number(c.price),0), acres=comps.filter(c=>hasValue(c.acreage)).reduce((s,c)=>s+Number(c.acreage),0);
  const rows=comps.map((c,i)=>`<tr><td>${i+1}</td><td><strong>${escapeHtml(reportName(c))}</strong><br><span>${escapeHtml(c.address||'')}</span>${hasValue(c.comments)?`<div class="comments">${escapeHtml(c.comments)}</div>`:''}</td><td>${escapeHtml(c.property_type||'')}</td><td>${escapeHtml(c.sale_date||'')}</td><td>${reportNum(c.acreage)} AC</td><td>${reportMoney(c.price)}<br><span>${reportMoney(c.price_per_acre)}/AC</span></td></tr>`).join('');
- const html=`<!DOCTYPE html><html><head><meta charset="utf-8"><title>${escapeHtml(title)}</title><style>*{box-sizing:border-box;-webkit-print-color-adjust:exact;print-color-adjust:exact}body{font-family:Arial,Helvetica,sans-serif;margin:0;background:#f5f7fa;color:#17212f}.page{max-width:1020px;margin:0 auto;padding:24px;background:#fff}.head{display:flex;justify-content:space-between;align-items:center;background:#000;color:#fff;border-bottom:5px solid #ef1f25;border-radius:12px;padding:14px 16px;margin-bottom:16px}.head img{height:48px;background:#fff;border-radius:8px;padding:7px 10px}.actions{text-align:right;margin:0 0 12px}.actions button{background:#ef1f25;color:#fff;border:0;border-radius:8px;padding:9px 12px;font-weight:700}.title{font-size:24px;font-weight:700;border-bottom:4px solid #ef1f25;padding-bottom:10px;margin:0 0 12px}.map{position:relative;height:420px;border:1px solid #d9e1ea;border-radius:10px;overflow:hidden;background:#eef2f6}.map img{width:100%;height:100%;object-fit:cover}.pin{position:absolute;transform:translate(-50%,-100%);width:28px;height:36px;filter:drop-shadow(0 1px 4px rgba(0,0,0,.35))}.pin path{fill:#ef1f25!important;stroke:#fff;stroke-width:2}.pin text{fill:#fff;font:700 11px Arial;text-anchor:middle}.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:12px 0}.stat{border:1px solid #d9e1ea;border-radius:8px;padding:10px}.stat b{font-size:18px}table{width:100%;border-collapse:collapse;font-size:11px}th{border-bottom:2px solid #000;text-align:left;padding:7px}td{border-bottom:1px solid #e1e6ee;padding:7px;vertical-align:top}.comments{font-size:10px;color:#667085;margin-top:5px}@media print{.actions{display:none}.page{max-width:none}}</style></head><body><div class="page"><div class="head"><img src="${logo}"><div><strong>Eshenbaugh Land Company</strong><br>Land is all we do.<br>${today}</div></div><div class="actions"><button onclick="window.print()">Download PDF</button></div><h1 class="title">${escapeHtml(title)}</h1>${map}<div class="stats"><div class="stat"><b>${comps.length.toLocaleString()}</b><br>Selected Comps</div><div class="stat"><b>${reportMoney(total)}</b><br>Total Volume</div><div class="stat"><b>${reportNum(acres,1)}</b><br>Total Acres</div></div><h3>Sale Comps List</h3><table><thead><tr><th></th><th>Property Name / Address</th><th>Type</th><th>Sale Date</th><th>Size</th><th>Price</th></tr></thead><tbody>${rows}</tbody></table></div></body></html>`;
+ const html=`<!DOCTYPE html><html><head><meta charset="utf-8"><title>${escapeHtml(title)}</title><style>*{box-sizing:border-box;-webkit-print-color-adjust:exact;print-color-adjust:exact}body{font-family:Arial,Helvetica,sans-serif;margin:0;background:#f5f7fa;color:#17212f}.page{max-width:1020px;margin:0 auto;padding:24px;background:#fff}.head{display:flex;justify-content:space-between;align-items:center;background:#000;color:#fff;border-bottom:5px solid #ef1f25;border-radius:12px;padding:14px 16px;margin-bottom:16px}.head img{height:48px;background:#fff;border-radius:8px;padding:7px 10px}.actions{text-align:right;margin:0 0 12px}.actions button{background:#ef1f25;color:#fff;border:0;border-radius:8px;padding:9px 12px;font-weight:700}.title{font-size:24px;font-weight:700;border-bottom:4px solid #ef1f25;padding-bottom:10px;margin:0 0 12px}.map{position:relative;height:420px;border:1px solid #d9e1ea;border-radius:10px;overflow:hidden;background:#eef2f6}.map img{width:100%;height:100%;object-fit:cover}.pin{position:absolute;transform:translate(-50%,-100%);width:28px;height:36px;filter:drop-shadow(0 1px 4px rgba(0,0,0,.35))}.pin path{fill:#ef1f25!important;stroke:#fff;stroke-width:2}.pin text{fill:#fff;font:700 11px Arial;text-anchor:middle}.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:12px 0}.stat{border:1px solid #d9e1ea;border-radius:8px;padding:10px}.stat b{font-size:18px}table{width:100%;border-collapse:collapse;font-size:11px}th{border-bottom:2px solid #000;text-align:left;padding:7px}td{border-bottom:1px solid #e1e6ee;padding:7px;vertical-align:top}.comments{font-size:10px;color:#667085;margin-top:5px}@media print{.actions{display:none}.page{max-width:none}}.map-view-toggle{grid-column:span 2;display:flex;align-items:center;gap:7px;background:#fff;border:1px solid var(--elc-line);border-radius:8px;padding:8px 9px;text-transform:none;letter-spacing:0;font-size:11px;font-weight:800;color:#344054}.map-view-toggle input{width:auto;margin:0}.comp-card.active{background:#fff1f1;border-left:4px solid var(--elc-red)}
+</style></head><body><div class="page"><div class="head"><img src="${logo}"><div><strong>Eshenbaugh Land Company</strong><br>Land is all we do.<br>${today}</div></div><div class="actions"><button onclick="window.print()">Download PDF</button></div><h1 class="title">${escapeHtml(title)}</h1>${map}<div class="stats"><div class="stat"><b>${comps.length.toLocaleString()}</b><br>Selected Comps</div><div class="stat"><b>${reportMoney(total)}</b><br>Total Volume</div><div class="stat"><b>${reportNum(acres,1)}</b><br>Total Acres</div></div><h3>Sale Comps List</h3><table><thead><tr><th></th><th>Property Name / Address</th><th>Type</th><th>Sale Date</th><th>Size</th><th>Price</th></tr></thead><tbody>${rows}</tbody></table></div></body></html>`;
  const w=window.open('','_blank'); if(!w){alert('Your browser blocked the report popup.');return;} w.document.open();w.document.write(html);w.document.close();
 }
 function updateMapSelectedCount(){const el=document.getElementById('map-selected-count'); if(el) el.textContent=`${selectedMapCompKeys.size.toLocaleString()} selected`;}
 function toggleMapCompSelection(key,checked){if(checked)selectedMapCompKeys.add(key);else selectedMapCompKeys.delete(key);updateMapSelectedCount();applyFilters();}
-function selectVisibleMapComps(){filteredMappedComps.forEach(c=>selectedMapCompKeys.add(c._compKey));updateMapSelectedCount();applyFilters();}
-function selectAllFilteredMapComps(){filteredMappedComps.forEach(c=>selectedMapCompKeys.add(c._compKey));updateMapSelectedCount();applyFilters();}
-function clearSelectedMapComps(){selectedMapCompKeys.clear();updateMapSelectedCount();applyFilters();}
+function selectVisibleMapComps(){ sidebarMappedComps.forEach(c=>selectedMapCompKeys.add(c._compKey)); updateMapSelectedCount(); refreshSidebarList(); }
+function selectAllFilteredMapComps(){ filteredMappedComps.forEach(c=>selectedMapCompKeys.add(c._compKey)); updateMapSelectedCount(); refreshSidebarList(); }
+function clearSelectedMapComps(){ selectedMapCompKeys.clear(); updateMapSelectedCount(); refreshSidebarList(); }
 function getMapSelectedComps(){return allComps.filter(c=>selectedMapCompKeys.has(c._compKey));}
 function createMapSelectedReport(){createCoStarStyleReport(getMapSelectedComps());}
 
@@ -440,13 +486,23 @@ require(["esri/Map","esri/views/MapView","esri/Graphic","esri/layers/GraphicsLay
     view=new MapView({container:"viewDiv",map,center:[-82.2,28.1],zoom:8});
     populateFilters(); addFilterListeners(); applyFilters();
     view.on('click',function(event){
-      if(!pinEditComp) return; event.stopPropagation();
-      const pt=event.mapPoint; if(!pt) return;
-      const lon=Number(pt.longitude), lat=Number(pt.latitude);
-      const ok=confirm('Move this comp pin to the location you just clicked?\n\n'+(pinEditComp.address||'Selected comp')+'\nLatitude: '+lat.toFixed(6)+'\nLongitude: '+lon.toFixed(6));
-      if(ok) savePinEdit(pinEditComp,lon,lat);
+      if(pinEditComp){
+        event.stopPropagation();
+        const pt=event.mapPoint; if(!pt) return;
+        const lon=Number(pt.longitude), lat=Number(pt.latitude);
+        const ok=confirm('Move this comp pin to the location you just clicked?\n\n'+(pinEditComp.address||'Selected comp')+'\nLatitude: '+lat.toFixed(6)+'\nLongitude: '+lon.toFixed(6));
+        if(ok) savePinEdit(pinEditComp,lon,lat);
+        return;
+      }
+      view.hitTest(event).then(function(response){
+        const result=(response.results||[]).find(r=>r.graphic && r.graphic.attributes && r.graphic.attributes.compKey);
+        if(result && result.graphic && result.graphic.attributes){
+          scrollToSidebarComp(result.graphic.attributes.compKey);
+        }
+      }).catch(()=>{});
     });
-    view.when(()=>zoomToResults());
+    view.watch('stationary',function(isStationary){ if(isStationary && sidebarFollowsMap) refreshSidebarList(); });
+    view.when(()=>window.zoomToResults());
   }
   init();
 });
