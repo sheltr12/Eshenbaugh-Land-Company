@@ -530,7 +530,7 @@ body{font-family:Arial,Helvetica,sans-serif;color:#17212f;margin:0;background:#f
 .diamond{width:22px;height:22px;background:#ef1f25;transform:rotate(45deg);display:inline-block;flex:0 0 22px}
 .report-brand-header{display:flex;align-items:center;justify-content:space-between;gap:18px;background:#000;color:#fff;border-radius:12px;padding:14px 16px;margin-bottom:18px;border-bottom:5px solid #ef1f25}
 .report-brand-header img{height:48px;width:auto;max-width:310px;background:#fff;border-radius:8px;padding:7px 10px}
-.report-brand-copy{text-align:right;font-size:11px;line-height:1.45;color:#e7edf5}
+.report-brand-copy{text-align:right;font-size:11px;line-height:1.45;color:#e7edf5}.report-actions{display:flex;gap:8px;justify-content:flex-end;margin:-6px 0 14px;flex-wrap:wrap}.report-actions button{background:#ef1f25;color:#fff;border:0;border-radius:8px;padding:9px 12px;font-weight:700;font-size:11px;cursor:pointer}.report-actions button.secondary{background:#000;color:#fff}
 .report-map{position:relative;width:100%;height:420px;background:#e9eef4;overflow:hidden;margin:12px 0 14px;border:1px solid #d9e1ea;border-radius:10px}
 .report-map img{width:100%;height:100%;object-fit:cover;display:block}
 .empty-map{display:flex;align-items:center;justify-content:center;color:#667085}
@@ -560,9 +560,23 @@ h3{font-size:13px;margin:14px 0 7px;border-bottom:2px solid #000;padding-bottom:
 .aerial-box img{width:100%;height:100%;object-fit:cover;display:block}
 .aerial-box.empty{font-weight:700;color:#667085}
 .appendix-card p{line-height:1.45;margin:8px 0 0}
-@media print{body{background:#fff}.page{max-width:none;padding:18px 24px}.report-map{height:370px}.appendix-card{break-inside:avoid;page-break-inside:avoid}.report-brand-header{border-radius:0}}
+@media print{.report-actions{display:none}body{background:#fff}.page{max-width:none;padding:18px 24px}.report-map{height:370px}.appendix-card{break-inside:avoid;page-break-inside:avoid}.report-brand-header{border-radius:0}}
 @media(max-width:700px){.page{padding:14px}.report-brand-header{flex-direction:column;align-items:flex-start}.report-brand-copy{text-align:left}.report-brand-header img{max-width:100%;height:auto}.report-map{height:300px}.appendix-grid{grid-template-columns:1fr}.page-title{font-size:20px}}
-</style></head><body><div class="page"><div class="report-brand-header"><img src="${logoUrl}" alt="Eshenbaugh Land Company" onerror="this.style.display=\'none\'"><div class="report-brand-copy"><strong>Eshenbaugh Land Company</strong><br>Land is all we do.<br>${today}</div></div><h1 class="page-title"><span class="diamond"></span>${escapeHtml(title)}</h1>${buildReportMapBlock(comps)}${buildSummaryStatsTable(comps)}<h3>Sale Comps List</h3><table class="comp-table"><thead><tr><th></th><th>Property Name<br>Address</th><th>Type</th><th>Built/Renovated</th><th>Size</th><th>Sale Date</th><th>Price</th></tr></thead><tbody>${buildDetailedCompRows(comps)}</tbody></table><h3>Map with One Line Comp Info Report</h3><table class="comp-table"><thead><tr><th></th><th>Property Name<br>Address</th><th>City</th><th>Type</th><th>Size</th><th>Sale Information</th></tr></thead><tbody>${buildCompactCompRows(comps)}</tbody></table>${buildAerialAppendix(comps)}<div class="footer"><img src="${logoUrl}" onerror="this.style.display='none'"><span>Eshenbaugh Land Company Comp Report</span><span>${today}</span></div></div></body></html>`;
+</style><script>
+function downloadCurrentReport(){
+  const html='<!DOCTYPE html>\\n' + document.documentElement.outerHTML;
+  const blob=new Blob([html],{type:'text/html;charset=utf-8'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  const stamp=new Date().toISOString().slice(0,10);
+  a.href=url;
+  a.download='ELC_Comp_Report_'+stamp+'.html';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+<\/script></head><body><div class="page"><div class="report-brand-header"><img src="${logoUrl}" alt="Eshenbaugh Land Company" onerror="this.style.display=\'none\'"><div class="report-brand-copy"><strong>Eshenbaugh Land Company</strong><br>Land is all we do.<br>${today}</div></div><div class="report-actions"><button type="button" onclick="downloadCurrentReport()">Download Report</button><button type="button" class="secondary" onclick="window.print()">Print / Save as PDF</button></div><h1 class="page-title"><span class="diamond"></span>${escapeHtml(title)}</h1>${buildReportMapBlock(comps)}${buildSummaryStatsTable(comps)}<h3>Sale Comps List</h3><table class="comp-table"><thead><tr><th></th><th>Property Name<br>Address</th><th>Type</th><th>Built/Renovated</th><th>Size</th><th>Sale Date</th><th>Price</th></tr></thead><tbody>${buildDetailedCompRows(comps)}</tbody></table><h3>Map with One Line Comp Info Report</h3><table class="comp-table"><thead><tr><th></th><th>Property Name<br>Address</th><th>City</th><th>Type</th><th>Size</th><th>Sale Information</th></tr></thead><tbody>${buildCompactCompRows(comps)}</tbody></table>${buildAerialAppendix(comps)}<div class="footer"><img src="${logoUrl}" onerror="this.style.display='none'"><span>Eshenbaugh Land Company Comp Report</span><span>${today}</span></div></div></body></html>`;
   const w=window.open('', '_blank'); if(!w){ alert('Your browser blocked the report popup. Allow popups and try again.'); return; }
   w.document.open(); w.document.write(html); w.document.close();
 }
