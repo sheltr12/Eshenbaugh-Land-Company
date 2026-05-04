@@ -334,6 +334,7 @@ const escapeHtml = s => String(s ?? '').replace(/[&<>"']/g, m => ({'&':'&amp;','
 const fmtPrice = n => hasValue(n) ? '$' + Math.round(Number(n)).toLocaleString() : 'N/A';
 const fmtAcres = n => hasValue(n) ? Number(n).toLocaleString(undefined,{maximumFractionDigits:2}) + ' ac' : 'N/A';
 const fmtPPA = n => hasValue(n) ? '$' + Math.round(Number(n)).toLocaleString() + '/ac' : null;
+const fmtPPU = n => hasValue(n) ? '$' + Math.round(Number(n)).toLocaleString() + '/unit' : null;
 const fmtStr = s => hasValue(s) ? escapeHtml(s) : null;
 const fmtLink = (url,label='View Aerial') => hasValue(url) ? `<a class="aerial-btn" href="${escapeHtml(url)}" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation();">${label}</a>` : null;
 const parseCompDate = c => {
