@@ -17,7 +17,7 @@
   --elc-bg:#f5f7fa;
   --elc-white:#fff;
 }
-*{box-sizing:border-box;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+*{box-sizing:border-box}
 html,body,#viewDiv{margin:0;padding:0;height:100%;font-family:"Segoe UI",Arial,sans-serif;color:var(--elc-ink)}
 #viewDiv{width:100%;touch-action:pan-x pan-y}
 #panel{
@@ -81,17 +81,9 @@ button:hover{background:#f0f4f8}
 #pin-edit-banner button:hover{background:rgba(255,255,255,.22)}
 body.pin-editing #viewDiv{cursor:crosshair}
 #pin-edit-banner .banner-actions{margin-top:8px}
-
-.modal-backdrop{display:none;position:fixed;inset:0;background:rgba(0,0,0,.58);z-index:9999;padding:18px;overflow-y:auto}
-.modal-backdrop.open{display:block}
-.modal-card{background:#fff;max-width:980px;margin:24px auto;border-radius:14px;border-top:5px solid var(--elc-red);box-shadow:0 16px 45px rgba(0,0,0,.28);overflow:hidden}
-.modal-head{background:#000;color:#fff;padding:16px 18px;display:flex;justify-content:space-between;gap:12px;align-items:center}
-.modal-head h2{margin:0;font-size:18px}.modal-close{background:transparent;color:#fff;border:1px solid rgba(255,255,255,.35);border-radius:8px;padding:7px 10px;cursor:pointer}
-.modal-body{padding:16px 18px}.deal-form-grid{display:grid;grid-template-columns:repeat(4,minmax(150px,1fr));gap:12px}.deal-form-grid label{display:block}.deal-form-wide{grid-column:span 2}.deal-form-full{grid-column:1/-1}
-textarea{width:100%;margin-top:5px;padding:8px 10px;border:1px solid #cbd5df;border-radius:7px;font-size:12px;min-height:78px;font-family:inherit}.modal-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:14px;flex-wrap:wrap}.add-help{font-size:12px;color:var(--elc-muted);margin:0 0 10px;line-height:1.4}
-.edit-btn{color:var(--elc-red);font-weight:900;text-decoration:none;background:transparent;border:none;padding:0;font-size:11px;cursor:pointer}.edit-btn:hover{text-decoration:underline;background:transparent}
-@media(max-width:900px){.deal-form-grid{grid-template-columns:repeat(2,1fr)}.deal-form-wide{grid-column:span 2}}
-@media(max-width:700px){.modal-backdrop{padding:8px}.modal-card{margin:6px auto}.deal-form-grid{grid-template-columns:1fr}.deal-form-wide{grid-column:span 1}.modal-actions button{width:100%}}
+.aerial-btn{display:inline-block;background:var(--elc-red);color:#fff!important;border:1px solid var(--elc-red);border-radius:7px;padding:6px 10px;font-size:11px;font-weight:900;text-decoration:none!important;line-height:1.1}
+.aerial-btn:hover{background:#cf171d;text-decoration:none!important}
+.aerial-count-note{font-size:11px;opacity:.9;margin-top:3px}
 
 @media(max-width:760px){
   html,body,#viewDiv{height:100dvh}
@@ -117,8 +109,7 @@ textarea{width:100%;margin-top:5px;padding:8px 10px;border:1px solid #cbd5df;bor
   .esri-ui-top-left{top:8px;left:8px}.esri-popup{max-width:92vw!important}.popup-table{min-width:0;width:100%}
 }
 @media(max-width:390px){#panel{height:50dvh}#filters{grid-template-columns:1fr;max-height:26dvh}.filter-wide,.filter-actions{grid-column:span 1}}
-.aerial-btn{display:inline-block;background:var(--elc-red);color:#fff!important;border:1px solid var(--elc-red);border-radius:7px;padding:6px 10px;font-size:11px;font-weight:900;text-decoration:none!important;line-height:1.1}.aerial-btn:hover{background:#cf171d;text-decoration:none!important}
-.selection-actions{grid-column:span 2;display:grid;grid-template-columns:1fr 1fr;gap:8px;border-top:1px solid var(--elc-line);padding-top:8px}.selection-actions button{font-size:11px;padding:7px 8px}#map-selected-count{grid-column:1/-1;font-size:11px;font-weight:800;color:#344054}.comp-select-row{display:flex;align-items:center;gap:7px;margin:0 0 6px;font-size:11px;color:#475467}.comp-select-row input{width:auto;margin:0}.comp-card.selected{background:#fff1f1;border-left:4px solid var(--elc-red)}
+.selection-actions{grid-column:span 2;display:grid;grid-template-columns:1fr 1fr;gap:8px;border-top:1px solid var(--elc-line);padding-top:8px}.selection-actions button{font-size:11px;padding:7px 8px}#map-selected-count{grid-column:1/-1;font-size:11px;font-weight:800;color:#344054}.comp-select-row{display:flex;align-items:center;gap:7px;margin:0 0 6px;font-size:11px;color:#475467}.comp-select-row input{width:auto;margin:0}.comp-card.selected{background:#fff1f1;border-left:4px solid var(--elc-red)}.property-name-line{font-size:11px;font-weight:800;color:#000;margin-bottom:3px}
 </style>
 </head>
 <body>
@@ -130,47 +121,6 @@ textarea{width:100%;margin-top:5px;padding:8px 10px;border:1px solid #cbd5df;bor
     <button type="button" onclick="cancelPinEdit()">Cancel</button>
   </div>
 </div>
-
-<div id="edit-deal-modal" class="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="edit-deal-title">
-  <div class="modal-card">
-    <div class="modal-head">
-      <h2 id="edit-deal-title">Edit Deal Fields</h2>
-      <button class="modal-close" type="button" onclick="closeEditDealModal()">Close</button>
-    </div>
-    <div class="modal-body">
-      <p class="add-help">Changes are saved in this browser. Price, acreage, and unit count automatically recalculate $/acre and $/unit.</p>
-      <form id="edit-deal-form" onsubmit="event.preventDefault(); saveEditedDealFromMapForm();">
-        <div class="deal-form-grid">
-          <label>Property Type
-            <select id="edit-property-type"><option value="Land">Land</option><option value="Multifamily">Multifamily</option><option value="Retail">Retail</option><option value="Industrial">Industrial</option><option value="Office">Office</option><option value="Other">Other</option></select>
-          </label>
-          <label>Transaction Type<input id="edit-transaction-type"></label>
-          <label>Sale Date<input type="date" id="edit-sale-date"></label>
-          <label>ELC Deal<select id="edit-elc-deal"><option value="No">No</option><option value="Yes">Yes</option></select></label>
-          <label class="deal-form-wide">Address<input id="edit-address"></label>
-          <label>Price<input type="number" id="edit-price"></label>
-          <label>Acres<input type="number" id="edit-acreage" step="0.01"></label>
-          <label>Unit Count<input type="number" id="edit-unit-count"></label>
-          <label>Latitude<input type="number" id="edit-lat" step="0.000001"></label>
-          <label>Longitude<input type="number" id="edit-lon" step="0.000001"></label>
-          <label>Buyer<input id="edit-grantee"></label>
-          <label>Seller<input id="edit-grantor"></label>
-          <label>Zoning<input id="edit-zoning"></label>
-          <label>Land Use<input id="edit-land-use"></label>
-          <label>Source<input id="edit-source"></label>
-          <label class="deal-form-wide">Aerial URL<input id="edit-aerial-url"></label>
-          <label class="deal-form-wide">Deed URL<input id="edit-deed-url"></label>
-          <label class="deal-form-full">Comments<textarea id="edit-comments"></textarea></label>
-        </div>
-        <div class="modal-actions">
-          <button type="button" onclick="closeEditDealModal()">Cancel</button>
-          <button class="btn-red" type="submit">Save Changes</button>
-        </div>
-      </form>
-    </div>
-  </div>
-</div>
-
 <div id="panel">
   <div id="panel-header">
     <div class="logo-box"><img src="./EshenbaughLogo.png" alt="Eshenbaugh Land Company" onerror="this.style.display='none'"></div>
@@ -239,9 +189,7 @@ let allComps = [], allMappedComps = [], filteredMappedComps = [], activeGraphics
 let selectedMapCompKeys = new Set();
 let pinEditComp = null;
 const LOCAL_DEALS_KEY='elc_manual_added_deals_v1';
-const LOCAL_EDITS_KEY='elc_comp_edits_v1';
 const PIN_OVERRIDES_KEY='elc_pin_location_overrides_v1';
-let editingCompKey = null;
 const FIELD_LABELS = {
   num:'#',parcel_id:'Parcel ID',parcel_raw_id:'Parcel Raw ID',address:'Address',sale_date:'Sale Date',
   price:'Price',acreage:'Acres',price_per_acre:'$/Acre',book_page:'Book/Page',transaction_type:'Transaction Type',
@@ -250,6 +198,48 @@ const FIELD_LABELS = {
   coords_approx:'Coordinates Approximate',deed_url:'Deed URL',aerial:'Aerial',sale_date_iso:'Sale Date ISO',unit_count:'Unit Count',price_per_unit:'$/Unit',elc_deal:'ELC Deal'
 };
 const hasValue = v => v !== null && v !== undefined && v !== '';
+const AERIAL_FIELDS = ['aerial','photo_url','photoUrl','photoURL','Photo URL','PHOTO URL','photo url','photo','Photo','image_url','imageUrl','image','aerial_url','aerialUrl','Aerial URL','AERIAL URL','Aerial'];
+function getAerialValue(c){
+  for(const field of AERIAL_FIELDS){
+    if(c && hasValue(c[field])) return c[field];
+  }
+  return null;
+}
+function normalizeComp(c){
+  const aerial = getAerialValue(c);
+  return aerial && !hasValue(c.aerial) ? {...c, aerial} : c;
+}
+function compMatchKeys(c){
+  const keys=[];
+  if(hasValue(c.num)) keys.push('num:' + String(c.num));
+  if(hasValue(c.address)) keys.push('addr:' + String(c.address).trim().toLowerCase() + '|date:' + String(c.sale_date||c.sale_date_iso||'').trim().toLowerCase() + '|price:' + String(c.price||''));
+  return keys;
+}
+function mergeAerialsFromBackup(comps, backupComps){
+  const aerialByKey = new Map();
+  (backupComps||[]).map(normalizeComp).forEach(b=>{
+    const aerial = getAerialValue(b);
+    if(!hasValue(aerial)) return;
+    compMatchKeys(b).forEach(k=>{ if(!aerialByKey.has(k)) aerialByKey.set(k, aerial); });
+  });
+  return (comps||[]).map(c=>{
+    let out = normalizeComp(c);
+    if(hasValue(out.aerial)) return out;
+    for(const k of compMatchKeys(out)){
+      if(aerialByKey.has(k)) return {...out, aerial:aerialByKey.get(k)};
+    }
+    return out;
+  });
+}
+async function loadAerialBackup(){
+  for(const file of ['./comps_aerial_backup.json','./comps_updated.json','./comps_with_aerials.json']){
+    try{
+      const res = await fetch(file, {cache:'no-store'});
+      if(res.ok) return await res.json();
+    }catch(e){}
+  }
+  return null;
+}
 const escapeHtml = s => String(s ?? '').replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
 const fmtPrice = n => hasValue(n) ? '$' + Math.round(Number(n)).toLocaleString() : 'N/A';
 const fmtAcres = n => hasValue(n) ? Number(n).toLocaleString(undefined,{maximumFractionDigits:2}) + ' ac' : 'N/A';
@@ -262,74 +252,14 @@ const parseCompDate = c => {
   const d = new Date(raw);
   return Number.isNaN(d.getTime()) ? null : d;
 };
-
-const AERIAL_FIELDS = ['aerial','photo_url','photoUrl','photoURL','Photo URL','PHOTO URL','photo url','photo','Photo','image_url','imageUrl','image','aerial_url','aerialUrl','Aerial URL','AERIAL URL','Aerial'];
-function getAerialValue(c){ for(const field of AERIAL_FIELDS){ if(c && hasValue(c[field])) return c[field]; } return null; }
-function normalizeComp(c){ const aerial=getAerialValue(c); return aerial && !hasValue(c.aerial) ? {...c,aerial} : c; }
-function compMatchKeys(c){ const keys=[]; if(hasValue(c.num)) keys.push('num:'+String(c.num)); if(hasValue(c.address)) keys.push('addr:'+String(c.address).trim().toLowerCase()+'|date:'+String(c.sale_date||c.sale_date_iso||'').trim().toLowerCase()+'|price:'+String(c.price||'')); return keys; }
-function mergeAerialsFromBackup(comps, backupComps){
-  const aerialByKey=new Map();
-  (backupComps||[]).map(normalizeComp).forEach(b=>{ const aerial=getAerialValue(b); if(!hasValue(aerial)) return; compMatchKeys(b).forEach(k=>{ if(!aerialByKey.has(k)) aerialByKey.set(k,aerial); }); });
-  return (comps||[]).map(c=>{ let out=normalizeComp(c); if(hasValue(out.aerial)) return out; for(const k of compMatchKeys(out)){ if(aerialByKey.has(k)) return {...out,aerial:aerialByKey.get(k)}; } return out; });
-}
-async function loadAerialBackup(){ for(const file of ['./comps_aerial_backup.json','./comps_updated.json','./comps_with_aerials.json']){ try{ const res=await fetch(file,{cache:'no-store'}); if(res.ok) return await res.json(); }catch(e){} } return null; }
-
 function loadLocalDeals(){ try{return JSON.parse(localStorage.getItem(LOCAL_DEALS_KEY) || '[]');}catch(e){return [];} }
 function loadPinOverrides(){ try{return JSON.parse(localStorage.getItem(PIN_OVERRIDES_KEY) || '{}');}catch(e){return {};} }
 function savePinOverrides(overrides){ localStorage.setItem(PIN_OVERRIDES_KEY, JSON.stringify(overrides)); }
 function getCompKey(c, fallbackIndex){
-  if(hasValue(c._compKey)) return c._compKey;
-  if(hasValue(c._manual_id)) return 'manual:' + String(c._manual_id);
   if(hasValue(c.num)) return 'num:' + String(c.num);
+  if(hasValue(c._manual_id)) return 'manual:' + String(c._manual_id);
   return 'fallback:' + String(fallbackIndex);
 }
-
-function loadLocalEdits(){ try{return JSON.parse(localStorage.getItem(LOCAL_EDITS_KEY) || '{}');}catch(e){return {};} }
-function saveLocalEdits(edits){ localStorage.setItem(LOCAL_EDITS_KEY, JSON.stringify(edits)); }
-function toNumOrNull(v){ if(v === null || v === undefined || String(v).trim()==='') return null; const n=Number(v); return Number.isFinite(n) ? n : null; }
-function isoToDisplay(iso){ if(!iso) return null; const d=new Date(iso+'T00:00:00'); if(Number.isNaN(d.getTime())) return null; return d.toLocaleDateString('en-US',{month:'short',day:'2-digit',year:'numeric'}).replace(',', ''); }
-
-function looksLikeMultifamilyComp(c){
-  const text = [c.address,c.comments,c.zoning,c.land_use,c.property_type,c.deed_type,c.source].filter(hasValue).join(' ').toLowerCase();
-  return /(multi[\s-]?family|apartment|apartments|\bapt\b|units?\b|duplex|triplex|quadplex|townhome|townhomes|condo|condominium|residential units?)/.test(text);
-}
-function consolidatePropertyType(c){
-  const raw = String(c.property_type || '').trim();
-  const lower = raw.toLowerCase();
-  if(hasValue(c.unit_count) && Number(c.unit_count) > 0) return 'Multifamily';
-  if(lower === 'investment' || lower === 'investment property'){
-    return looksLikeMultifamilyComp(c) ? 'Multifamily' : 'Land';
-  }
-  return raw || 'Land';
-}
-
-function deriveCompFields(c){
-  c.property_type = consolidatePropertyType(c);
-  if(hasValue(c.price) && hasValue(c.acreage) && Number(c.acreage)!==0) c.price_per_acre=Math.round(Number(c.price)/Number(c.acreage)); else c.price_per_acre=null;
-  if(hasValue(c.price) && hasValue(c.unit_count) && Number(c.unit_count)!==0) c.price_per_unit=Math.round(Number(c.price)/Number(c.unit_count)); else c.price_per_unit=null;
-  if(c.sale_date_iso && !c.sale_date) c.sale_date=isoToDisplay(c.sale_date_iso);
-  return c;
-}
-function applyLocalEdits(comps){
-  const edits=loadLocalEdits();
-  return (comps||[]).map((c,i)=>{ const key=getCompKey(c,i); const edited=edits[key] ? {...c,...edits[key],edited_locally:true} : c; return deriveCompFields({...edited,_compKey:key}); });
-}
-function saveCompEdit(comp){ if(!comp||!comp._compKey) return; const edits=loadLocalEdits(); edits[comp._compKey]={...comp,_compKey:undefined}; saveLocalEdits(edits); }
-function setEditValue(id,val){ const el=document.getElementById(id); if(el) el.value=hasValue(val)?val:''; }
-function fillEditForm(c){
-  setEditValue('edit-property-type',c.property_type||'Land'); setEditValue('edit-transaction-type',c.transaction_type||'Sale'); setEditValue('edit-sale-date',c.sale_date_iso||''); setEditValue('edit-elc-deal',c.elc_deal==='Yes'?'Yes':'No');
-  setEditValue('edit-address',c.address); setEditValue('edit-price',c.price); setEditValue('edit-acreage',c.acreage); setEditValue('edit-unit-count',c.unit_count); setEditValue('edit-lat',c.lat); setEditValue('edit-lon',c.lon);
-  setEditValue('edit-grantee',c.grantee); setEditValue('edit-grantor',c.grantor); setEditValue('edit-zoning',c.zoning); setEditValue('edit-land-use',c.land_use); setEditValue('edit-source',c.source); setEditValue('edit-aerial-url',c.aerial); setEditValue('edit-deed-url',c.deed_url); setEditValue('edit-comments',c.comments);
-}
-window.openEditDealModal=function(key){ const comp=getCompByKey(key); if(!comp){alert('Could not find that comp to edit.'); return;} editingCompKey=key; fillEditForm(comp); document.getElementById('edit-deal-modal').classList.add('open'); if(view&&view.popup) view.popup.close(); };
-window.closeEditDealModal=function(){ editingCompKey=null; document.getElementById('edit-deal-modal').classList.remove('open'); };
-window.saveEditedDealFromMapForm=function(){
-  const existing=getCompByKey(editingCompKey); if(!existing){alert('Could not find that comp to edit.'); return;}
-  const saleIso=document.getElementById('edit-sale-date').value||null;
-  let updated={...existing,address:document.getElementById('edit-address').value.trim()||null,sale_date:isoToDisplay(saleIso),sale_date_iso:saleIso,price:toNumOrNull(document.getElementById('edit-price').value),acreage:toNumOrNull(document.getElementById('edit-acreage').value),transaction_type:document.getElementById('edit-transaction-type').value.trim()||'Sale',grantor:document.getElementById('edit-grantor').value.trim()||null,grantee:document.getElementById('edit-grantee').value.trim()||null,property_type:document.getElementById('edit-property-type').value||'Land',zoning:document.getElementById('edit-zoning').value.trim()||null,land_use:document.getElementById('edit-land-use').value.trim()||null,source:document.getElementById('edit-source').value.trim()||null,comments:document.getElementById('edit-comments').value.trim()||null,lat:toNumOrNull(document.getElementById('edit-lat').value),lon:toNumOrNull(document.getElementById('edit-lon').value),coords_approx:false,deed_url:document.getElementById('edit-deed-url').value.trim()||null,aerial:document.getElementById('edit-aerial-url').value.trim()||null,unit_count:toNumOrNull(document.getElementById('edit-unit-count').value),elc_deal:document.getElementById('edit-elc-deal').value==='Yes'?'Yes':null,edited_locally:true};
-  updated=deriveCompFields(updated); saveCompEdit(updated); allComps=allComps.map(c=>c._compKey===editingCompKey?updated:c); allComps=applyPinOverrides(applyLocalEdits(allComps)); allMappedComps=allComps.filter(c=>hasValue(c.lat)&&hasValue(c.lon)).map((c,i)=>({...c,_mappedIndex:i})); closeEditDealModal(); populateFilters(); applyFilters(); alert('Changes saved in this browser.');
-};
-
 function applyPinOverrides(comps){
   const overrides = loadPinOverrides();
   return comps.map((c,i)=>{
@@ -354,13 +284,20 @@ function getAcreSize(a){
 }
 function buildPopupContent(comp){
   const rows=[
-    ['Price',fmtPrice(comp.price)],['Acres',fmtAcres(comp.acreage)],['$/Acre',fmtPPA(comp.price_per_acre)],
+    ['Property Name',fmtStr(comp.property_name)],['Price',fmtPrice(comp.price)],['Acres',fmtAcres(comp.acreage)],['$/Acre',fmtPPA(comp.price_per_acre)],
     ['Units',hasValue(comp.unit_count) ? Number(comp.unit_count).toLocaleString() : null],['$/Unit',fmtPPA(comp.price_per_unit)],
     ['Sale Date',fmtStr(comp.sale_date)],['Type',fmtStr(comp.property_type)],['ELC Deal',fmtStr(comp.elc_deal)],['Zoning',fmtStr(comp.zoning)],
     ['Land Use',fmtStr(comp.land_use)],['Seller',fmtStr(comp.grantor)],['Buyer',fmtStr(comp.grantee)],
-    ['Source',fmtStr(comp.source)],['Aerial',fmtLink(comp.aerial,'View Aerial')],['Deed',fmtLink(comp.deed_url,'View Deed')]
+    ['Source',fmtStr(comp.source)],['Aerial',fmtLink(getAerialValue(comp),'View Aerial')],['Deed',fmtLink(comp.deed_url,'View Deed')]
   ].filter(r=>r[1]!=null);
   const wrap = document.createElement('div');
+  const aerialUrl = getAerialValue(comp);
+  if(aerialUrl){
+    const aerialDiv=document.createElement('div');
+    aerialDiv.style.margin='0 0 8px 0';
+    aerialDiv.innerHTML=fmtLink(aerialUrl,'Open Aerial');
+    wrap.appendChild(aerialDiv);
+  }
   const table = document.createElement('table');
   table.className = 'popup-table';
   rows.forEach(([k,v])=>{ const tr=document.createElement('tr'); const tdK=document.createElement('td'); const tdV=document.createElement('td'); tdK.textContent=k; tdV.innerHTML=v; tr.appendChild(tdK); tr.appendChild(tdV); table.appendChild(tr); });
@@ -369,14 +306,7 @@ function buildPopupContent(comp){
   const btn=document.createElement('button'); btn.className='pin-edit-link'; btn.type='button'; btn.textContent='Change Pin';
   btn.setAttribute('data-pin-key', comp._compKey || '');
   btn.addEventListener('click', function(e){ e.preventDefault(); e.stopPropagation(); if(view && view.popup) view.popup.close(); window.startPinEdit(comp._compKey); });
-  const trSelect=document.createElement('tr'); const tdSelectK=document.createElement('td'); const tdSelectV=document.createElement('td');
-  tdSelectK.textContent='Report';
-  const selectLabel=document.createElement('label'); selectLabel.style.cssText='display:flex;align-items:center;gap:6px;font-weight:800;color:#ef1f25;cursor:pointer;';
-  const selectInput=document.createElement('input'); selectInput.type='checkbox'; selectInput.checked=selectedMapCompKeys.has(comp._compKey); selectInput.style.width='auto'; selectInput.style.margin='0';
-  selectInput.addEventListener('change',function(e){e.stopPropagation(); toggleMapCompSelection(comp._compKey, this.checked);});
-  selectLabel.appendChild(selectInput); selectLabel.appendChild(document.createTextNode('Select for report'));
-  tdSelectV.appendChild(selectLabel); trSelect.appendChild(tdSelectK); trSelect.appendChild(tdSelectV); table.appendChild(trSelect);
-  tdPinV.appendChild(btn); trPin.appendChild(tdPinK); trPin.appendChild(tdPinV); table.appendChild(trPin); const trEdit=document.createElement('tr'); const tdEditK=document.createElement('td'); const tdEditV=document.createElement('td'); tdEditK.textContent='Fields'; const editBtn=document.createElement('button'); editBtn.className='edit-btn'; editBtn.type='button'; editBtn.textContent='Edit Fields'; editBtn.addEventListener('click',function(e){e.preventDefault();e.stopPropagation();window.openEditDealModal(comp._compKey);}); tdEditV.appendChild(editBtn); trEdit.appendChild(tdEditK); trEdit.appendChild(tdEditV); table.appendChild(trEdit); wrap.appendChild(table);
+  const trSelect=document.createElement('tr'); const tdSelectK=document.createElement('td'); const tdSelectV=document.createElement('td'); tdSelectK.textContent='Report'; const selectLabel=document.createElement('label'); selectLabel.style.cssText='display:flex;align-items:center;gap:6px;font-weight:800;color:#ef1f25;cursor:pointer;'; const selectInput=document.createElement('input'); selectInput.type='checkbox'; selectInput.checked=selectedMapCompKeys.has(comp._compKey); selectInput.style.width='auto'; selectInput.style.margin='0'; selectInput.addEventListener('change',function(e){e.stopPropagation(); toggleMapCompSelection(comp._compKey,this.checked);}); selectLabel.appendChild(selectInput); selectLabel.appendChild(document.createTextNode('Select for report')); tdSelectV.appendChild(selectLabel); trSelect.appendChild(tdSelectK); trSelect.appendChild(tdSelectV); table.appendChild(trSelect); tdPinV.appendChild(btn); trPin.appendChild(tdPinK); trPin.appendChild(tdPinV); table.appendChild(trPin); wrap.appendChild(table);
   const comments=fmtStr(comp.comments);
   if(comments){ const div=document.createElement('div'); div.style.marginTop='8px'; div.style.fontSize='12px'; div.style.lineHeight='1.35'; div.innerHTML='<strong>Comments:</strong> '+comments; wrap.appendChild(div); }
   return wrap;
@@ -392,10 +322,11 @@ function buildListCard(comp,idx){
   const parties=(sel||buy) ? `<div class="comp-parties">${sel||'N/A'} to ${buy||'N/A'}</div>` : '';
   const checked=selectedMapCompKeys.has(comp._compKey) ? 'checked' : '';
   const selectedClass=selectedMapCompKeys.has(comp._compKey) ? ' selected' : '';
+  const pname=comp.property_name ? `<div class="property-name-line">${escapeHtml(comp.property_name)}</div>` : '';
   const links=`<div class="comp-links">${comp.aerial ? `<a href="${escapeHtml(comp.aerial)}" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation()">View Aerial</a> &middot; ` : ''}<button class="pin-edit-btn" type="button" data-pin-key="${escapeHtml(comp._compKey||'')}" onclick="event.stopPropagation()">Change Pin</button> &middot; <button class="edit-btn" type="button" onclick="event.stopPropagation(); openEditDealModal('${escapeHtml(comp._compKey||'')}')">Edit Fields</button></div>`;
   return `<div class="comp-card${selectedClass}" id="card-${idx}" onclick="zoomToComp(${idx})">
     <label class="comp-select-row" onclick="event.stopPropagation()"><input type="checkbox" ${checked} onchange="toggleMapCompSelection('${escapeHtml(comp._compKey||'')}', this.checked)"> Select for report</label>
-    <div class="comp-addr">${escapeHtml(comp.address||'(no address)')}</div>
+    ${pname}<div class="comp-addr">${escapeHtml(comp.address||'(no address)')}</div>
     <div class="comp-meta">${type}${date}${units}${elc}${aerial}</div>
     <div class="comp-price-row"><span class="comp-price">${fmtPrice(comp.price)}</span><span class="comp-sub">${fmtAcres(comp.acreage)}${ppa?' &middot; '+ppa:''}${hasValue(comp.price_per_unit)?' &middot; $'+Math.round(Number(comp.price_per_unit)).toLocaleString()+'/unit':''}</span></div>
     ${parties}${links}
@@ -423,8 +354,8 @@ function getFilteredMappedComps(){
     if(source&&c.source!==source) return false;
     if(elc==='yes'&&c.elc_deal!=='Yes') return false;
     if(elc==='no'&&c.elc_deal==='Yes') return false;
-    if(aerial==='yes'&&!hasValue(c.aerial)) return false;
-    if(aerial==='no'&&hasValue(c.aerial)) return false;
+    if(aerial==='yes'&&!hasValue(getAerialValue(c))) return false;
+    if(aerial==='no'&&hasValue(getAerialValue(c))) return false;
     const compDate=parseCompDate(c);
     if(dateFrom&&(!compDate||compDate<dateFrom)) return false;
     if(dateTo&&(!compDate||compDate>dateTo)) return false;
@@ -446,7 +377,7 @@ function applyFilters(){
   if(!graphicsLayer) return;
   filteredMappedComps=getFilteredMappedComps();
   graphicsLayer.removeAll(); activeGraphics=[];
-  document.getElementById('map-count').textContent=`${filteredMappedComps.length.toLocaleString()} mapped comps shown | ${allMappedComps.length.toLocaleString()} mapped total | ${allComps.length.toLocaleString()} total comps`;
+  document.getElementById('map-count').textContent=`${filteredMappedComps.length.toLocaleString()} mapped comps shown | ${allMappedComps.filter(c=>hasValue(getAerialValue(c))).length.toLocaleString()} mapped aerials | ${allComps.filter(c=>hasValue(getAerialValue(c))).length.toLocaleString()} total aerials`;
   document.getElementById('comp-list').innerHTML=filteredMappedComps.length?filteredMappedComps.map((c,i)=>buildListCard(c,i)).join(''):'<div style="padding:14px;font-size:12px;color:#667085">No mapped comps match the current filters.</div>';
   updateMapSelectedCount();
   filteredMappedComps.forEach((comp,idx)=>{
@@ -475,135 +406,34 @@ window.toggleMobileFilters=function(){ document.body.classList.toggle('filters-c
 window.toggleMobilePanel=function(){ document.body.classList.toggle('panel-collapsed'); const btn=document.getElementById('mobile-panel-toggle'); if(btn){const collapsed=document.body.classList.contains('panel-collapsed');btn.textContent=collapsed?'⌃':'⌄';btn.setAttribute('aria-label',collapsed?'Show comp list':'Minimize comp list');} if(view) view.padding=document.body.classList.contains('panel-collapsed')?{bottom:60}:{bottom:Math.round(window.innerHeight*0.46)}; };
 if(window.innerWidth<=760){document.body.classList.add('filters-collapsed');setTimeout(()=>{const b=document.getElementById('mobile-filter-toggle');if(b)b.textContent='Show Filters';},0);}
 
-function reportPlainText(v){ return hasValue(v) ? String(v) : '—'; }
-function reportMoneyPlain(n){ return hasValue(n) ? '$' + Math.round(Number(n)).toLocaleString() : '—'; }
-function reportMoneyPerAc(n){ return hasValue(n) ? '$' + Math.round(Number(n)).toLocaleString() + '/AC' : '—'; }
-function reportNumPlain(n, digits=2){ return hasValue(n) ? Number(n).toLocaleString(undefined,{minimumFractionDigits:0,maximumFractionDigits:digits}) : '—'; }
-function reportSF(c){ return hasValue(c.acreage) ? Math.round(Number(c.acreage) * 43560) : null; }
-function reportPricePSF(c){ return hasValue(c.price) && hasValue(c.acreage) && Number(c.acreage)>0 ? Number(c.price)/(Number(c.acreage)*43560) : null; }
-function reportCityFromAddress(address){ const parts=String(address||'').split(',').map(s=>s.trim()).filter(Boolean); return parts.length>=2 ? parts[parts.length-2].replace(/\bFL\b/i,'').trim() : ''; }
-function reportPropertyName(c){ return String(c.address||'').split(',')[0].trim() || c.property_type || 'Comp'; }
-function getReportSaleStatus(c){ const t=String(c.transaction_type||'Sale').toLowerCase(); if(t.includes('under')) return 'Under Contract'; if(t.includes('list')||t.includes('ask')) return 'For Sale'; return 'Sold'; }
-function safeMedian(vals){ const arr=vals.filter(v=>Number.isFinite(Number(v))).map(Number).sort((a,b)=>a-b); if(!arr.length) return null; const mid=Math.floor(arr.length/2); return arr.length%2?arr[mid]:(arr[mid-1]+arr[mid])/2; }
-function statSet(vals){ const arr=vals.filter(v=>Number.isFinite(Number(v))).map(Number).sort((a,b)=>a-b); if(!arr.length) return {low:null,avg:null,median:null,high:null}; return {low:arr[0],avg:arr.reduce((s,v)=>s+v,0)/arr.length,median:safeMedian(arr),high:arr[arr.length-1]}; }
-function buildReportMapUrl(comps){
-  const pts=comps.filter(c=>hasValue(c.lat)&&hasValue(c.lon)).map(c=>({lat:Number(c.lat),lon:Number(c.lon)})).filter(p=>Number.isFinite(p.lat)&&Number.isFinite(p.lon));
-  if(!pts.length) return null;
-  let minLat=Math.min(...pts.map(p=>p.lat)), maxLat=Math.max(...pts.map(p=>p.lat)), minLon=Math.min(...pts.map(p=>p.lon)), maxLon=Math.max(...pts.map(p=>p.lon));
-  const latPad=Math.max((maxLat-minLat)*0.18,0.01), lonPad=Math.max((maxLon-minLon)*0.18,0.01);
-  minLat-=latPad; maxLat+=latPad; minLon-=lonPad; maxLon+=lonPad;
-  return {url:`https://services.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/export?bbox=${minLon},${minLat},${maxLon},${maxLat}&bboxSR=4326&imageSR=4326&size=1200,650&format=png32&transparent=false&f=image`, extent:{minLat,maxLat,minLon,maxLon}};
+function reportMoney(n){return hasValue(n)?'$'+Math.round(Number(n)).toLocaleString():'—';}
+function reportNum(n,d=2){return hasValue(n)?Number(n).toLocaleString(undefined,{maximumFractionDigits:d}):'—';}
+function reportName(c){return c.property_name||String(c.address||'').split(',')[0]||'Comp';}
+function reportMapUrl(comps){const pts=comps.filter(c=>hasValue(c.lat)&&hasValue(c.lon)).map(c=>({lat:Number(c.lat),lon:Number(c.lon)})).filter(p=>Number.isFinite(p.lat)&&Number.isFinite(p.lon)); if(!pts.length)return null; let minLat=Math.min(...pts.map(p=>p.lat)),maxLat=Math.max(...pts.map(p=>p.lat)),minLon=Math.min(...pts.map(p=>p.lon)),maxLon=Math.max(...pts.map(p=>p.lon)); const latPad=Math.max((maxLat-minLat)*0.18,0.01),lonPad=Math.max((maxLon-minLon)*0.18,0.01);minLat-=latPad;maxLat+=latPad;minLon-=lonPad;maxLon+=lonPad; return {url:`https://services.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/export?bbox=${minLon},${minLat},${maxLon},${maxLat}&bboxSR=4326&imageSR=4326&size=1200,650&format=png32&transparent=false&f=image`,e:{minLat,maxLat,minLon,maxLon}};}
+function svgPin(label,x,y){return `<svg class="pin" style="left:${x}%;top:${y}%" viewBox="0 0 28 36"><path d="M14 35 L3 18 Q0 13 3 7 Q7 1 14 1 Q21 1 25 7 Q28 13 25 18 Z"></path><text x="14" y="16">${escapeHtml(label)}</text></svg>`;}
+function createCoStarStyleReport(comps,title='Sale Comps Map & List Report'){
+ if(!comps||!comps.length){alert('Select at least one comp first.');return;} const logo=new URL('./EshenbaughLogo.png',location.href).href,today=new Date().toLocaleDateString(); const m=reportMapUrl(comps);
+ const map=m?`<div class="map"><img src="${m.url}">${comps.map((c,i)=>{if(!hasValue(c.lat)||!hasValue(c.lon))return ''; const x=((Number(c.lon)-m.e.minLon)/(m.e.maxLon-m.e.minLon))*100; const y=(1-((Number(c.lat)-m.e.minLat)/(m.e.maxLat-m.e.minLat)))*100; return svgPin(String(i+1),x,y);}).join('')}</div>`:'<div class="map empty">No mapped coordinates available.</div>';
+ const total=comps.filter(c=>hasValue(c.price)).reduce((s,c)=>s+Number(c.price),0), acres=comps.filter(c=>hasValue(c.acreage)).reduce((s,c)=>s+Number(c.acreage),0);
+ const rows=comps.map((c,i)=>`<tr><td>${i+1}</td><td><strong>${escapeHtml(reportName(c))}</strong><br><span>${escapeHtml(c.address||'')}</span>${hasValue(c.comments)?`<div class="comments">${escapeHtml(c.comments)}</div>`:''}</td><td>${escapeHtml(c.property_type||'')}</td><td>${escapeHtml(c.sale_date||'')}</td><td>${reportNum(c.acreage)} AC</td><td>${reportMoney(c.price)}<br><span>${reportMoney(c.price_per_acre)}/AC</span></td></tr>`).join('');
+ const html=`<!DOCTYPE html><html><head><meta charset="utf-8"><title>${escapeHtml(title)}</title><style>*{box-sizing:border-box;-webkit-print-color-adjust:exact;print-color-adjust:exact}body{font-family:Arial,Helvetica,sans-serif;margin:0;background:#f5f7fa;color:#17212f}.page{max-width:1020px;margin:0 auto;padding:24px;background:#fff}.head{display:flex;justify-content:space-between;align-items:center;background:#000;color:#fff;border-bottom:5px solid #ef1f25;border-radius:12px;padding:14px 16px;margin-bottom:16px}.head img{height:48px;background:#fff;border-radius:8px;padding:7px 10px}.actions{text-align:right;margin:0 0 12px}.actions button{background:#ef1f25;color:#fff;border:0;border-radius:8px;padding:9px 12px;font-weight:700}.title{font-size:24px;font-weight:700;border-bottom:4px solid #ef1f25;padding-bottom:10px;margin:0 0 12px}.map{position:relative;height:420px;border:1px solid #d9e1ea;border-radius:10px;overflow:hidden;background:#eef2f6}.map img{width:100%;height:100%;object-fit:cover}.pin{position:absolute;transform:translate(-50%,-100%);width:28px;height:36px;filter:drop-shadow(0 1px 4px rgba(0,0,0,.35))}.pin path{fill:#ef1f25!important;stroke:#fff;stroke-width:2}.pin text{fill:#fff;font:700 11px Arial;text-anchor:middle}.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:12px 0}.stat{border:1px solid #d9e1ea;border-radius:8px;padding:10px}.stat b{font-size:18px}table{width:100%;border-collapse:collapse;font-size:11px}th{border-bottom:2px solid #000;text-align:left;padding:7px}td{border-bottom:1px solid #e1e6ee;padding:7px;vertical-align:top}.comments{font-size:10px;color:#667085;margin-top:5px}@media print{.actions{display:none}.page{max-width:none}}</style></head><body><div class="page"><div class="head"><img src="${logo}"><div><strong>Eshenbaugh Land Company</strong><br>Land is all we do.<br>${today}</div></div><div class="actions"><button onclick="window.print()">Download PDF</button></div><h1 class="title">${escapeHtml(title)}</h1>${map}<div class="stats"><div class="stat"><b>${comps.length.toLocaleString()}</b><br>Selected Comps</div><div class="stat"><b>${reportMoney(total)}</b><br>Total Volume</div><div class="stat"><b>${reportNum(acres,1)}</b><br>Total Acres</div></div><h3>Sale Comps List</h3><table><thead><tr><th></th><th>Property Name / Address</th><th>Type</th><th>Sale Date</th><th>Size</th><th>Price</th></tr></thead><tbody>${rows}</tbody></table></div></body></html>`;
+ const w=window.open('','_blank'); if(!w){alert('Your browser blocked the report popup.');return;} w.document.open();w.document.write(html);w.document.close();
 }
-
-function buildSvgMapPin(label, x, y, extraClass=''){
-  return `<svg class="map-number-pin-svg ${extraClass}" style="left:${x}%;top:${y}%" viewBox="0 0 28 36" aria-label="Comp ${escapeHtml(label)}"><path d="M14 35 L3 18 Q0 13 3 7 Q7 1 14 1 Q21 1 25 7 Q28 13 25 18 Z"></path><text x="14" y="16">${escapeHtml(label)}</text></svg>`;
-}
-
-function buildReportMapBlock(comps){
-  const map=buildReportMapUrl(comps);
-  if(!map) return '<div class="report-map empty-map">No mapped coordinates available for the selected comps.</div>';
-  const markers=comps.map((c,i)=>{ if(!hasValue(c.lat)||!hasValue(c.lon)) return ''; const lat=Number(c.lat),lon=Number(c.lon); if(!Number.isFinite(lat)||!Number.isFinite(lon)) return ''; const x=((lon-map.extent.minLon)/(map.extent.maxLon-map.extent.minLon))*100; const y=(1-((lat-map.extent.minLat)/(map.extent.maxLat-map.extent.minLat)))*100; return buildSvgMapPin(String(i+1), x, y); }).join('');
-  return `<div class="report-map"><img src="${escapeHtml(map.url)}" alt="Map of selected comps">${markers}</div>`;
-}
-function buildSummaryStatsTable(comps){
-  const saleComps=comps.filter(c=>!String(c.transaction_type||'').toLowerCase().includes('under')&&!String(c.transaction_type||'').toLowerCase().includes('ask')&&!String(c.transaction_type||'').toLowerCase().includes('list'));
-  const source=saleComps.length?saleComps:comps, salePrice=statSet(source.map(c=>c.price)), pricePsf=statSet(source.map(c=>reportPricePSF(c))), pricePac=statSet(source.map(c=>c.price_per_acre)), acres=statSet(source.map(c=>c.acreage)), sf=statSet(source.map(c=>reportSF(c)));
-  const moneyRow=(label,s)=>`<tr><td>${label}</td><td>${reportMoneyPlain(s.low)}</td><td>${reportMoneyPlain(s.avg)}</td><td>${reportMoneyPlain(s.median)}</td><td>${reportMoneyPlain(s.high)}</td></tr>`;
-  const psfRow=(label,s)=>`<tr><td>${label}</td><td>${hasValue(s.low)?'$'+Number(s.low).toFixed(2):'—'}</td><td>${hasValue(s.avg)?'$'+Number(s.avg).toFixed(2):'—'}</td><td>${hasValue(s.median)?'$'+Number(s.median).toFixed(2):'—'}</td><td>${hasValue(s.high)?'$'+Number(s.high).toFixed(2):'—'}</td></tr>`;
-  const acRow=(label,s)=>`<tr><td>${label}</td><td>${reportNumPlain(s.low)} AC</td><td>${reportNumPlain(s.avg)} AC</td><td>${reportNumPlain(s.median)} AC</td><td>${reportNumPlain(s.high)} AC</td></tr>`;
-  const sfRow=(label,s)=>`<tr><td>${label}</td><td>${hasValue(s.low)?Math.round(s.low).toLocaleString()+' SF':'—'}</td><td>${hasValue(s.avg)?Math.round(s.avg).toLocaleString()+' SF':'—'}</td><td>${hasValue(s.median)?Math.round(s.median).toLocaleString()+' SF':'—'}</td><td>${hasValue(s.high)?Math.round(s.high).toLocaleString()+' SF':'—'}</td></tr>`;
-  return `<h3>Sale Comparables Summary Statistics</h3><table class="summary-table"><thead><tr><th>Sale Attributes</th><th>Low</th><th>Average</th><th>Median</th><th>High</th></tr></thead><tbody>${moneyRow('Sale Price',salePrice)}${psfRow('Land Price Per SF',pricePsf)}${moneyRow('Land Price Per AC',pricePac)}</tbody></table><table class="summary-table"><thead><tr><th>Property Attributes</th><th>Low</th><th>Average</th><th>Median</th><th>High</th></tr></thead><tbody>${acRow('Land Area AC',acres)}${sfRow('Land Area SF',sf)}</tbody></table><div class="summary-note">Summary statistics exclude clearly listed/under-contract comps when possible.</div>`;
-}
-function buildCompactCompRows(comps){
-  return comps.map((c,i)=>{ const city=reportCityFromAddress(c.address), status=getReportSaleStatus(c); const priceLine=`${status}: ${reportMoneyPlain(c.price)}${hasValue(c.price_per_acre)?`<br><span>(${reportMoneyPerAc(c.price_per_acre)})</span>`:''}`; return `<tr><td class="num">${i+1}</td><td><a>${escapeHtml(reportPropertyName(c))}</a><br><span>${escapeHtml(c.address||'')}</span></td><td>${escapeHtml(city)}</td><td>${escapeHtml(c.property_type||'')}</td><td>${reportNumPlain(c.acreage)} AC</td><td>${priceLine}</td></tr>`; }).join('');
-}
-function buildDetailedCompRows(comps){
-  return comps.map((c,i)=>{ const priceLine=`${reportMoneyPlain(c.price)}${hasValue(c.price_per_acre)?`<br><span>(${reportMoneyPerAc(c.price_per_acre)})</span>`:''}`; return `<tr><td class="num">${i+1}</td><td><a>${escapeHtml(reportPropertyName(c))}</a><br><span>${escapeHtml(c.address||'')}</span>${hasValue(c.comments)?`<div class="row-comments">${escapeHtml(c.comments)}</div>`:''}</td><td>${escapeHtml(c.property_type||'')}</td><td>—</td><td>${reportNumPlain(c.acreage)} AC</td><td>${escapeHtml(c.sale_date||'')}</td><td>${priceLine}</td></tr>`; }).join('');
-}
-function buildAerialAppendix(comps){
-  const items=comps.filter(c=>hasValue(c.aerial)||hasValue(c.lat)).map((c,i)=>{ const map=buildReportMapUrl([c]); const mapImg=map?`<div class="aerial-box"><img src="${escapeHtml(map.url)}">${buildSvgMapPin(String(i+1), 50, 50, "single")}</div>`:`<div class="aerial-box empty">No Coordinates</div>`; const aerial=hasValue(c.aerial)?`<div class="aerial-box"><img src="${escapeHtml(c.aerial)}" onerror="this.style.display='none';this.parentElement.classList.add('empty');this.parentElement.textContent='Aerial preview unavailable';"></div>`:`<div class="aerial-box empty">No Aerial Image</div>`; return `<div class="appendix-card"><h4>${i+1}. ${escapeHtml(reportPropertyName(c))}</h4><div class="appendix-grid">${mapImg}${aerial}</div>${hasValue(c.comments)?`<p><strong>Comments:</strong> ${escapeHtml(c.comments)}</p>`:''}</div>`; }).join('');
-  return items?`<h2 class="page-title appendix-title"><span class="diamond"></span>Aerial & Comments Appendix</h2>${items}`:'';
-}
-function createCoStarStyleReport(comps, title='Sale Comps Map & List Report'){
-  if(!comps||!comps.length){ alert('Select at least one comp first.'); return; }
-  const logoUrl=new URL('./EshenbaughLogo.png',window.location.href).href, today=new Date().toLocaleDateString();
-  const html=`<!DOCTYPE html><html><head><meta charset="utf-8"><title>${escapeHtml(title)}</title><style>
-*{box-sizing:border-box;-webkit-print-color-adjust:exact;print-color-adjust:exact}
-body{font-family:Arial,Helvetica,sans-serif;color:#17212f;margin:0;background:#f5f7fa;font-size:12px}
-.page{max-width:1020px;margin:0 auto;padding:24px 28px 18px;background:#fff;min-height:100vh}
-.page-title{font-size:24px;font-weight:700;margin:0 0 14px;border-bottom:4px solid #ef1f25;padding:0 0 11px;display:flex;align-items:center;gap:14px;color:#000}
-.diamond{width:22px;height:22px;background:#ef1f25;transform:rotate(45deg);display:inline-block;flex:0 0 22px}
-.report-brand-header{display:flex;align-items:center;justify-content:space-between;gap:18px;background:#000;color:#fff;border-radius:12px;padding:14px 16px;margin-bottom:18px;border-bottom:5px solid #ef1f25}
-.report-brand-header img{height:48px;width:auto;max-width:310px;background:#fff;border-radius:8px;padding:7px 10px}
-.report-brand-copy{text-align:right;font-size:11px;line-height:1.45;color:#e7edf5}.report-actions{display:flex;gap:8px;justify-content:flex-end;margin:-6px 0 14px;flex-wrap:wrap}.report-actions button{background:#ef1f25;color:#fff;border:0;border-radius:8px;padding:9px 12px;font-weight:700;font-size:11px;cursor:pointer}.report-actions button.secondary{background:#000;color:#fff}
-.report-map{position:relative;width:100%;height:420px;background:#e9eef4;overflow:hidden;margin:12px 0 14px;border:1px solid #d9e1ea;border-radius:10px}
-.report-map img{width:100%;height:100%;object-fit:cover;display:block}
-.empty-map{display:flex;align-items:center;justify-content:center;color:#667085}
-.map-number-pin{position:absolute;transform:translate(-50%,-100%);min-width:24px;height:30px;padding:4px 5px;background:#ef1f25;color:#fff;border:2px solid #fff;clip-path:polygon(50% 100%,0 46%,0 0,100% 0,100% 46%);font-weight:700;text-align:center;line-height:16px;font-size:11px;box-shadow:0 1px 5px rgba(0,0,0,.35)}
-.map-number-pin.single{left:50%;top:50%}
-.map-number-pin,.diamond,.report-actions button{background:#ef1f25!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
-.map-number-pin-svg{position:absolute;transform:translate(-50%,-100%);width:28px;height:36px;overflow:visible;filter:drop-shadow(0 1px 4px rgba(0,0,0,.35));-webkit-print-color-adjust:exact;print-color-adjust:exact}
-.map-number-pin-svg.single{left:50%;top:50%}
-.map-number-pin-svg path{fill:#ef1f25!important;stroke:#fff;stroke-width:2;-webkit-print-color-adjust:exact;print-color-adjust:exact}
-.map-number-pin-svg text{fill:#fff!important;font-size:11px;font-weight:700;text-anchor:middle;font-family:Arial,Helvetica,sans-serif;-webkit-print-color-adjust:exact;print-color-adjust:exact}
-h3{font-size:13px;margin:14px 0 7px;border-bottom:2px solid #000;padding-bottom:5px;color:#000;text-transform:none}
-.summary-table{width:100%;border-collapse:collapse;font-size:11px;margin:0 0 8px}
-.summary-table th{font-weight:700;text-align:right;border-bottom:1px solid #aeb8c5;padding:6px 5px;background:#f8fafc;color:#000}
-.summary-table th:first-child{text-align:left}
-.summary-table td{text-align:right;border-bottom:1px solid #e1e7ef;padding:6px 5px}
-.summary-table td:first-child{text-align:left;color:#344054;font-weight:600}
-.summary-note{font-size:10px;color:#667085;margin:5px 0 14px}
-.comp-table{width:100%;border-collapse:collapse;font-size:11px}
-.comp-table th{text-align:left;border-bottom:2px solid #000;padding:7px 6px;font-weight:700;color:#000;background:#fff}
-.comp-table td{border-bottom:1px solid #e1e6ee;padding:7px 6px;vertical-align:top}
-.comp-table .num{width:28px;text-align:center;color:#475467;font-weight:700}
-.comp-table a{color:#ef1f25;font-weight:700;text-decoration:none}
-.comp-table span{color:#475467}
-.row-comments{margin-top:5px;color:#667085;font-size:10px;line-height:1.35}
-.footer{display:flex;justify-content:space-between;align-items:center;border-top:3px solid #000;margin-top:20px;padding-top:8px;color:#475467;font-size:10px}
-.footer img{height:28px;width:auto;background:#fff}
-.appendix-title{margin-top:28px;page-break-before:always}
-.appendix-card{break-inside:avoid;page-break-inside:avoid;border-top:1px solid #ccd5df;padding:12px 0}
-.appendix-card h4{font-size:14px;margin:0 0 8px;color:#000}
-.appendix-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.aerial-box{position:relative;height:230px;background:#eef2f6;border:1px solid #d8dee7;display:flex;align-items:center;justify-content:center;color:#667085;overflow:hidden;border-radius:10px}
-.aerial-box img{width:100%;height:100%;object-fit:cover;display:block}
-.aerial-box.empty{font-weight:700;color:#667085}
-.appendix-card p{line-height:1.45;margin:8px 0 0}
-@media print{.report-actions{display:none}body{background:#fff}.page{max-width:none;padding:18px 24px}.report-map{height:370px}.appendix-card{break-inside:avoid;page-break-inside:avoid}.report-brand-header{border-radius:0}}
-@media(max-width:700px){.page{padding:14px}.report-brand-header{flex-direction:column;align-items:flex-start}.report-brand-copy{text-align:left}.report-brand-header img{max-width:100%;height:auto}.report-map{height:300px}.appendix-grid{grid-template-columns:1fr}.page-title{font-size:20px}}
-</style><script>
-function downloadCurrentReport(){
-  const html='<!DOCTYPE html>\\n' + document.documentElement.outerHTML;
-  const blob=new Blob([html],{type:'text/html;charset=utf-8'});
-  const url=URL.createObjectURL(blob);
-  const a=document.createElement('a');
-  const stamp=new Date().toISOString().slice(0,10);
-  a.href=url;
-  a.download='ELC_Comp_Report_'+stamp+'.html';
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
-  URL.revokeObjectURL(url);
-}
-<\/script></head><body><div class="page"><div class="report-brand-header"><img src="${logoUrl}" alt="Eshenbaugh Land Company" onerror="this.style.display=\'none\'"><div class="report-brand-copy"><strong>Eshenbaugh Land Company</strong><br>Land is all we do.<br>${today}</div></div><div class="report-actions"><button type="button" onclick="window.print()">Download PDF</button></div><h1 class="page-title"><span class="diamond"></span>${escapeHtml(title)}</h1>${buildReportMapBlock(comps)}${buildSummaryStatsTable(comps)}<h3>Sale Comps List</h3><table class="comp-table"><thead><tr><th></th><th>Property Name<br>Address</th><th>Type</th><th>Built/Renovated</th><th>Size</th><th>Sale Date</th><th>Price</th></tr></thead><tbody>${buildDetailedCompRows(comps)}</tbody></table><h3>Map with One Line Comp Info Report</h3><table class="comp-table"><thead><tr><th></th><th>Property Name<br>Address</th><th>City</th><th>Type</th><th>Size</th><th>Sale Information</th></tr></thead><tbody>${buildCompactCompRows(comps)}</tbody></table>${buildAerialAppendix(comps)}<div class="footer"><img src="${logoUrl}" onerror="this.style.display='none'"><span>Eshenbaugh Land Company Comp Report</span><span>${today}</span></div></div></body></html>`;
-  const w=window.open('', '_blank'); if(!w){ alert('Your browser blocked the report popup. Allow popups and try again.'); return; }
-  w.document.open(); w.document.write(html); w.document.close();
-}
-
-function updateMapSelectedCount(){ const el=document.getElementById('map-selected-count'); if(el) el.textContent = `${selectedMapCompKeys.size.toLocaleString()} selected`; }
-function toggleMapCompSelection(key, checked){ if(checked) selectedMapCompKeys.add(key); else selectedMapCompKeys.delete(key); updateMapSelectedCount(); applyFilters(); }
-function selectVisibleMapComps(){ filteredMappedComps.forEach(c=>selectedMapCompKeys.add(c._compKey)); updateMapSelectedCount(); applyFilters(); }
-function selectAllFilteredMapComps(){ filteredMappedComps.forEach(c=>selectedMapCompKeys.add(c._compKey)); updateMapSelectedCount(); applyFilters(); }
-function clearSelectedMapComps(){ selectedMapCompKeys.clear(); updateMapSelectedCount(); applyFilters(); }
-function getMapSelectedComps(){ return allComps.filter(c=>selectedMapCompKeys.has(c._compKey)); }
-function createMapSelectedReport(){ createCoStarStyleReport(getMapSelectedComps()); }
+function updateMapSelectedCount(){const el=document.getElementById('map-selected-count'); if(el) el.textContent=`${selectedMapCompKeys.size.toLocaleString()} selected`;}
+function toggleMapCompSelection(key,checked){if(checked)selectedMapCompKeys.add(key);else selectedMapCompKeys.delete(key);updateMapSelectedCount();applyFilters();}
+function selectVisibleMapComps(){filteredMappedComps.forEach(c=>selectedMapCompKeys.add(c._compKey));updateMapSelectedCount();applyFilters();}
+function selectAllFilteredMapComps(){filteredMappedComps.forEach(c=>selectedMapCompKeys.add(c._compKey));updateMapSelectedCount();applyFilters();}
+function clearSelectedMapComps(){selectedMapCompKeys.clear();updateMapSelectedCount();applyFilters();}
+function getMapSelectedComps(){return allComps.filter(c=>selectedMapCompKeys.has(c._compKey));}
+function createMapSelectedReport(){createCoStarStyleReport(getMapSelectedComps());}
 
 require(["esri/Map","esri/views/MapView","esri/Graphic","esri/layers/GraphicsLayer"],function(Map,MapView,EsriGraphic,GraphicsLayer){
   Graphic=EsriGraphic;
   async function init(){
-    const data=await(await fetch('./comps.json')).json();
-    { const aerialBackup=await loadAerialBackup(); const baseComps=mergeAerialsFromBackup(data.comps||[], aerialBackup?.comps || aerialBackup || []); allComps=applyPinOverrides(applyLocalEdits([...baseComps,...loadLocalDeals()])); }
+    const data=await(await fetch('./comps.json?v=aerials-20260501-2', {cache:'no-store'})).json();
+    const aerialBackup=await loadAerialBackup();
+    const baseComps=mergeAerialsFromBackup(data.comps||[], aerialBackup?.comps || aerialBackup || []);
+    allComps=applyPinOverrides([...baseComps,...loadLocalDeals().map(normalizeComp)]);
     allMappedComps=allComps.filter(c=>hasValue(c.lat)&&hasValue(c.lon)).map((c,i)=>({...c,_mappedIndex:i}));
     graphicsLayer=new GraphicsLayer();
     const map=new Map({basemap:"hybrid",layers:[graphicsLayer]});
@@ -616,7 +446,7 @@ require(["esri/Map","esri/views/MapView","esri/Graphic","esri/layers/GraphicsLay
       const ok=confirm('Move this comp pin to the location you just clicked?\n\n'+(pinEditComp.address||'Selected comp')+'\nLatitude: '+lat.toFixed(6)+'\nLongitude: '+lon.toFixed(6));
       if(ok) savePinEdit(pinEditComp,lon,lat);
     });
-    view.when(()=>window.zoomToResults());
+    view.when(()=>zoomToResults());
   }
   init();
 });
