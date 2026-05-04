@@ -130,10 +130,30 @@ textarea{width:100%;margin-top:5px;padding:8px 10px;border:1px solid #cbd5df;bor
 @media(max-width:900px){.deal-form-grid{grid-template-columns:repeat(2,1fr)}.deal-form-wide{grid-column:span 2}}
 @media(max-width:700px){.modal-backdrop{padding:8px}.modal-card{margin:6px auto}.deal-form-grid{grid-template-columns:1fr}.deal-form-wide{grid-column:span 1}.modal-actions button{width:100%}}
 
+
+#sidebar-show-tab{
+  position:absolute;left:0;top:50%;transform:translateY(-50%);
+  z-index:130;display:none;background:#ef1f25;color:#fff;border:0;border-radius:0 9px 9px 0;
+  padding:13px 10px;font-size:20px;font-weight:900;box-shadow:2px 3px 12px rgba(0,0,0,.25);
+  cursor:pointer;line-height:1
+}
+#sidebar-show-tab:hover{background:#cf171d}
+.sidebar-hide-button{margin-top:8px}
+.sidebar-hide-button button{width:100%;border-color:rgba(255,255,255,.35);background:rgba(255,255,255,.12);color:#fff;font-weight:800}
+.sidebar-hide-button button:hover{background:rgba(255,255,255,.22)}
+body.sidebar-hidden #panel{transform:translateX(calc(-100% - 8px));pointer-events:none}
+body.sidebar-hidden #sidebar-show-tab{display:block;pointer-events:auto}
+#panel{transition:transform .22s ease}
+@media(max-width:760px){
+  #sidebar-show-tab{top:auto;left:50%;bottom:0;transform:translateX(-50%);border-radius:9px 9px 0 0;padding:8px 18px;font-size:18px}
+  body.sidebar-hidden #panel{transform:translateY(calc(100% + 8px))}
+}
+
 </style>
 </head>
 <body>
 <div id="viewDiv"></div>
+<button id="sidebar-show-tab" type="button" onclick="toggleSidebarPanel(false)" aria-label="Show sidebar">›</button>
 <div id="pin-edit-banner">
   <strong id="pin-edit-title">Pin edit mode</strong>
   <span id="pin-edit-copy">Click the correct location on the map, then confirm the move.</span>
@@ -193,6 +213,7 @@ textarea{width:100%;margin-top:5px;padding:8px 10px;border:1px solid #cbd5df;bor
     </div>
     <div id="map-count">Loading...</div>
     <div class="sidebar-filter-toggle"><button id="sidebar-filter-toggle" type="button" onclick="toggleSidebarFilters()">Hide Filters</button></div>
+    <div class="sidebar-hide-button"><button id="sidebar-hide-toggle" type="button" onclick="toggleSidebarPanel(true)">Hide Sidebar</button></div>
   </div>
   <div id="filters">
     <label class="filter-wide">Search All Fields<input type="text" id="map-search" placeholder="Address, buyer, seller, comments, zoning, aerial URL..."></label>
@@ -608,7 +629,28 @@ window.zoomToComp=function(idx){
   const graphic=findActiveGraphicByKey(comp._compKey);
   if(graphic){if(view.openPopup){view.openPopup({features:[graphic],location:graphic.geometry});}else if(view.popup&&view.popup.open){view.popup.open({features:[graphic],location:graphic.geometry});}}
 };
-window.zoomToResults=function(){ if(!view||!filteredMappedComps.length) return; if(filteredMappedComps.length===1){const c=filteredMappedComps[0];view.goTo({center:[c.lon,c.lat],zoom:15});return;} const lons=filteredMappedComps.map(c=>Number(c.lon)),lats=filteredMappedComps.map(c=>Number(c.lat)); view.goTo({target:{type:'extent',xmin:Math.min(...lons),ymin:Math.min(...lats),xmax:Math.max(...lons),ymax:Math.max(...lats),spatialReference:{wkid:4326}},padding:window.innerWidth<=760?{left:35,right:35,top:45,bottom:document.body.classList.contains('panel-collapsed')?70:Math.round(window.innerHeight*0.48)}:{left:400,right:50,top:50,bottom:50}}); };
+
+function getCurrentMapPadding(){
+  if(window.innerWidth<=760){
+    if(document.body.classList.contains('sidebar-hidden')) return {left:35,right:35,top:45,bottom:45};
+    return {left:35,right:35,top:45,bottom:document.body.classList.contains('panel-collapsed')?70:Math.round(window.innerHeight*0.48)};
+  }
+  return document.body.classList.contains('sidebar-hidden') ? {left:50,right:50,top:50,bottom:50} : {left:400,right:50,top:50,bottom:50};
+}
+function applyCurrentMapPadding(){
+  if(view) view.padding=getCurrentMapPadding();
+}
+window.toggleSidebarPanel=function(hide){
+  const shouldHide = hide === undefined ? !document.body.classList.contains('sidebar-hidden') : !!hide;
+  document.body.classList.toggle('sidebar-hidden', shouldHide);
+  applyCurrentMapPadding();
+  setTimeout(()=>{ 
+    if(sidebarFollowsMap) refreshSidebarList();
+    if(view && view.resize) view.resize();
+  }, 250);
+};
+
+window.zoomToResults=function(){ if(!view||!filteredMappedComps.length) return; if(filteredMappedComps.length===1){const c=filteredMappedComps[0];view.goTo({center:[c.lon,c.lat],zoom:15});return;} const lons=filteredMappedComps.map(c=>Number(c.lon)),lats=filteredMappedComps.map(c=>Number(c.lat)); view.goTo({target:{type:'extent',xmin:Math.min(...lons),ymin:Math.min(...lats),xmax:Math.max(...lons),ymax:Math.max(...lats),spatialReference:{wkid:4326}},padding:getCurrentMapPadding()}); };
 
 window.toggleSidebarFilters=function(){
   const hidden=document.body.classList.toggle('sidebar-filters-hidden');
@@ -618,7 +660,7 @@ window.toggleSidebarFilters=function(){
 };
 
 window.toggleMobileFilters=function(){ document.body.classList.toggle('filters-collapsed'); const btn=document.getElementById('mobile-filter-toggle'); if(btn) btn.textContent=document.body.classList.contains('filters-collapsed')?'Show Filters':'Hide Filters'; };
-window.toggleMobilePanel=function(){ document.body.classList.toggle('panel-collapsed'); const btn=document.getElementById('mobile-panel-toggle'); if(btn){const collapsed=document.body.classList.contains('panel-collapsed');btn.textContent=collapsed?'⌃':'⌄';btn.setAttribute('aria-label',collapsed?'Show comp list':'Minimize comp list');} if(view) view.padding=document.body.classList.contains('panel-collapsed')?{bottom:60}:{bottom:Math.round(window.innerHeight*0.46)}; };
+window.toggleMobilePanel=function(){ document.body.classList.toggle('panel-collapsed'); const btn=document.getElementById('mobile-panel-toggle'); if(btn){const collapsed=document.body.classList.contains('panel-collapsed');btn.textContent=collapsed?'⌃':'⌄';btn.setAttribute('aria-label',collapsed?'Show comp list':'Minimize comp list');} applyCurrentMapPadding(); };
 if(window.innerWidth<=760){document.body.classList.add('filters-collapsed');setTimeout(()=>{const b=document.getElementById('mobile-filter-toggle');if(b)b.textContent='Show Filters';},0);}
 
 function reportMoney(n){return hasValue(n)?'$'+Math.round(Number(n)).toLocaleString():'—';}
@@ -650,6 +692,25 @@ textarea{width:100%;margin-top:5px;padding:8px 10px;border:1px solid #cbd5df;bor
 .edit-btn{color:var(--elc-red);font-weight:900;text-decoration:none;background:transparent;border:none;padding:0;font-size:11px;cursor:pointer}.edit-btn:hover{text-decoration:underline;background:transparent}
 @media(max-width:900px){.deal-form-grid{grid-template-columns:repeat(2,1fr)}.deal-form-wide{grid-column:span 2}}
 @media(max-width:700px){.modal-backdrop{padding:8px}.modal-card{margin:6px auto}.deal-form-grid{grid-template-columns:1fr}.deal-form-wide{grid-column:span 1}.modal-actions button{width:100%}}
+
+
+#sidebar-show-tab{
+  position:absolute;left:0;top:50%;transform:translateY(-50%);
+  z-index:130;display:none;background:#ef1f25;color:#fff;border:0;border-radius:0 9px 9px 0;
+  padding:13px 10px;font-size:20px;font-weight:900;box-shadow:2px 3px 12px rgba(0,0,0,.25);
+  cursor:pointer;line-height:1
+}
+#sidebar-show-tab:hover{background:#cf171d}
+.sidebar-hide-button{margin-top:8px}
+.sidebar-hide-button button{width:100%;border-color:rgba(255,255,255,.35);background:rgba(255,255,255,.12);color:#fff;font-weight:800}
+.sidebar-hide-button button:hover{background:rgba(255,255,255,.22)}
+body.sidebar-hidden #panel{transform:translateX(calc(-100% - 8px));pointer-events:none}
+body.sidebar-hidden #sidebar-show-tab{display:block;pointer-events:auto}
+#panel{transition:transform .22s ease}
+@media(max-width:760px){
+  #sidebar-show-tab{top:auto;left:50%;bottom:0;transform:translateX(-50%);border-radius:9px 9px 0 0;padding:8px 18px;font-size:18px}
+  body.sidebar-hidden #panel{transform:translateY(calc(100% + 8px))}
+}
 
 </style></head><body><div class="page"><div class="head"><img src="${logo}"><div><strong>Eshenbaugh Land Company</strong><br>Land is all we do.<br>${today}</div></div><div class="actions"><button onclick="window.print()">Download PDF</button></div><h1 class="title">${escapeHtml(title)}</h1>${map}<div class="stats"><div class="stat"><b>${comps.length.toLocaleString()}</b><br>Selected Comps</div><div class="stat"><b>${reportMoney(total)}</b><br>Total Volume</div><div class="stat"><b>${reportNum(acres,1)}</b><br>Total Acres</div></div><h3>Sale Comps List</h3><table><thead><tr><th></th><th>Property Name / Address</th><th>Type</th><th>Sale Date</th><th>Size</th><th>Price</th></tr></thead><tbody>${rows}</tbody></table></div></body></html>`;
  const w=window.open('','_blank'); if(!w){alert('Your browser blocked the report popup.');return;} w.document.open();w.document.write(html);w.document.close();
@@ -683,6 +744,7 @@ require(["esri/Map","esri/views/MapView","esri/Graphic","esri/layers/GraphicsLay
     graphicsLayer=new GraphicsLayer();
     const map=new Map({basemap:"hybrid",layers:[graphicsLayer]});
     view=new MapView({container:"viewDiv",map,center:[-82.2,28.1],zoom:8});
+    applyCurrentMapPadding();
     populateFilters(); addFilterListeners(); applyFilters();
     view.on('click',function(event){
       if(pinEditComp){
