@@ -17,7 +17,7 @@
   --elc-bg:#f5f7fa;
   --elc-white:#fff;
 }
-*{box-sizing:border-box}
+*{box-sizing:border-box;-webkit-print-color-adjust:exact;print-color-adjust:exact}
 html,body,#viewDiv{margin:0;padding:0;height:100%;font-family:"Segoe UI",Arial,sans-serif;color:var(--elc-ink)}
 #viewDiv{width:100%;touch-action:pan-x pan-y}
 #panel{
@@ -494,10 +494,15 @@ function buildReportMapUrl(comps){
   minLat-=latPad; maxLat+=latPad; minLon-=lonPad; maxLon+=lonPad;
   return {url:`https://services.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/export?bbox=${minLon},${minLat},${maxLon},${maxLat}&bboxSR=4326&imageSR=4326&size=1200,650&format=png32&transparent=false&f=image`, extent:{minLat,maxLat,minLon,maxLon}};
 }
+
+function buildSvgMapPin(label, x, y, extraClass=''){
+  return `<svg class="map-number-pin-svg ${extraClass}" style="left:${x}%;top:${y}%" viewBox="0 0 28 36" aria-label="Comp ${escapeHtml(label)}"><path d="M14 35 L3 18 Q0 13 3 7 Q7 1 14 1 Q21 1 25 7 Q28 13 25 18 Z"></path><text x="14" y="16">${escapeHtml(label)}</text></svg>`;
+}
+
 function buildReportMapBlock(comps){
   const map=buildReportMapUrl(comps);
   if(!map) return '<div class="report-map empty-map">No mapped coordinates available for the selected comps.</div>';
-  const markers=comps.map((c,i)=>{ if(!hasValue(c.lat)||!hasValue(c.lon)) return ''; const lat=Number(c.lat),lon=Number(c.lon); if(!Number.isFinite(lat)||!Number.isFinite(lon)) return ''; const x=((lon-map.extent.minLon)/(map.extent.maxLon-map.extent.minLon))*100; const y=(1-((lat-map.extent.minLat)/(map.extent.maxLat-map.extent.minLat)))*100; return `<div class="map-number-pin" style="left:${x}%;top:${y}%">${i+1}</div>`; }).join('');
+  const markers=comps.map((c,i)=>{ if(!hasValue(c.lat)||!hasValue(c.lon)) return ''; const lat=Number(c.lat),lon=Number(c.lon); if(!Number.isFinite(lat)||!Number.isFinite(lon)) return ''; const x=((lon-map.extent.minLon)/(map.extent.maxLon-map.extent.minLon))*100; const y=(1-((lat-map.extent.minLat)/(map.extent.maxLat-map.extent.minLat)))*100; return buildSvgMapPin(String(i+1), x, y); }).join('');
   return `<div class="report-map"><img src="${escapeHtml(map.url)}" alt="Map of selected comps">${markers}</div>`;
 }
 function buildSummaryStatsTable(comps){
@@ -516,14 +521,14 @@ function buildDetailedCompRows(comps){
   return comps.map((c,i)=>{ const priceLine=`${reportMoneyPlain(c.price)}${hasValue(c.price_per_acre)?`<br><span>(${reportMoneyPerAc(c.price_per_acre)})</span>`:''}`; return `<tr><td class="num">${i+1}</td><td><a>${escapeHtml(reportPropertyName(c))}</a><br><span>${escapeHtml(c.address||'')}</span>${hasValue(c.comments)?`<div class="row-comments">${escapeHtml(c.comments)}</div>`:''}</td><td>${escapeHtml(c.property_type||'')}</td><td>—</td><td>${reportNumPlain(c.acreage)} AC</td><td>${escapeHtml(c.sale_date||'')}</td><td>${priceLine}</td></tr>`; }).join('');
 }
 function buildAerialAppendix(comps){
-  const items=comps.filter(c=>hasValue(c.aerial)||hasValue(c.lat)).map((c,i)=>{ const map=buildReportMapUrl([c]); const mapImg=map?`<div class="aerial-box"><img src="${escapeHtml(map.url)}"><div class="map-number-pin single">${i+1}</div></div>`:`<div class="aerial-box empty">No Coordinates</div>`; const aerial=hasValue(c.aerial)?`<div class="aerial-box"><img src="${escapeHtml(c.aerial)}" onerror="this.style.display='none';this.parentElement.classList.add('empty');this.parentElement.textContent='Aerial preview unavailable';"></div>`:`<div class="aerial-box empty">No Aerial Image</div>`; return `<div class="appendix-card"><h4>${i+1}. ${escapeHtml(reportPropertyName(c))}</h4><div class="appendix-grid">${mapImg}${aerial}</div>${hasValue(c.comments)?`<p><strong>Comments:</strong> ${escapeHtml(c.comments)}</p>`:''}</div>`; }).join('');
+  const items=comps.filter(c=>hasValue(c.aerial)||hasValue(c.lat)).map((c,i)=>{ const map=buildReportMapUrl([c]); const mapImg=map?`<div class="aerial-box"><img src="${escapeHtml(map.url)}">${buildSvgMapPin(String(i+1), 50, 50, "single")}</div>`:`<div class="aerial-box empty">No Coordinates</div>`; const aerial=hasValue(c.aerial)?`<div class="aerial-box"><img src="${escapeHtml(c.aerial)}" onerror="this.style.display='none';this.parentElement.classList.add('empty');this.parentElement.textContent='Aerial preview unavailable';"></div>`:`<div class="aerial-box empty">No Aerial Image</div>`; return `<div class="appendix-card"><h4>${i+1}. ${escapeHtml(reportPropertyName(c))}</h4><div class="appendix-grid">${mapImg}${aerial}</div>${hasValue(c.comments)?`<p><strong>Comments:</strong> ${escapeHtml(c.comments)}</p>`:''}</div>`; }).join('');
   return items?`<h2 class="page-title appendix-title"><span class="diamond"></span>Aerial & Comments Appendix</h2>${items}`:'';
 }
 function createCoStarStyleReport(comps, title='Sale Comps Map & List Report'){
   if(!comps||!comps.length){ alert('Select at least one comp first.'); return; }
   const logoUrl=new URL('./EshenbaughLogo.png',window.location.href).href, today=new Date().toLocaleDateString();
   const html=`<!DOCTYPE html><html><head><meta charset="utf-8"><title>${escapeHtml(title)}</title><style>
-*{box-sizing:border-box}
+*{box-sizing:border-box;-webkit-print-color-adjust:exact;print-color-adjust:exact}
 body{font-family:Arial,Helvetica,sans-serif;color:#17212f;margin:0;background:#f5f7fa;font-size:12px}
 .page{max-width:1020px;margin:0 auto;padding:24px 28px 18px;background:#fff;min-height:100vh}
 .page-title{font-size:24px;font-weight:700;margin:0 0 14px;border-bottom:4px solid #ef1f25;padding:0 0 11px;display:flex;align-items:center;gap:14px;color:#000}
@@ -536,6 +541,11 @@ body{font-family:Arial,Helvetica,sans-serif;color:#17212f;margin:0;background:#f
 .empty-map{display:flex;align-items:center;justify-content:center;color:#667085}
 .map-number-pin{position:absolute;transform:translate(-50%,-100%);min-width:24px;height:30px;padding:4px 5px;background:#ef1f25;color:#fff;border:2px solid #fff;clip-path:polygon(50% 100%,0 46%,0 0,100% 0,100% 46%);font-weight:700;text-align:center;line-height:16px;font-size:11px;box-shadow:0 1px 5px rgba(0,0,0,.35)}
 .map-number-pin.single{left:50%;top:50%}
+.map-number-pin,.diamond,.report-actions button{background:#ef1f25!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+.map-number-pin-svg{position:absolute;transform:translate(-50%,-100%);width:28px;height:36px;overflow:visible;filter:drop-shadow(0 1px 4px rgba(0,0,0,.35));-webkit-print-color-adjust:exact;print-color-adjust:exact}
+.map-number-pin-svg.single{left:50%;top:50%}
+.map-number-pin-svg path{fill:#ef1f25!important;stroke:#fff;stroke-width:2;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+.map-number-pin-svg text{fill:#fff!important;font-size:11px;font-weight:700;text-anchor:middle;font-family:Arial,Helvetica,sans-serif;-webkit-print-color-adjust:exact;print-color-adjust:exact}
 h3{font-size:13px;margin:14px 0 7px;border-bottom:2px solid #000;padding-bottom:5px;color:#000;text-transform:none}
 .summary-table{width:100%;border-collapse:collapse;font-size:11px;margin:0 0 8px}
 .summary-table th{font-weight:700;text-align:right;border-bottom:1px solid #aeb8c5;padding:6px 5px;background:#f8fafc;color:#000}
@@ -576,7 +586,7 @@ function downloadCurrentReport(){
   document.body.removeChild(a);
   URL.revokeObjectURL(url);
 }
-<\/script></head><body><div class="page"><div class="report-brand-header"><img src="${logoUrl}" alt="Eshenbaugh Land Company" onerror="this.style.display=\'none\'"><div class="report-brand-copy"><strong>Eshenbaugh Land Company</strong><br>Land is all we do.<br>${today}</div></div><div class="report-actions"><button type="button" onclick="downloadCurrentReport()">Download Report</button><button type="button" class="secondary" onclick="window.print()">Print / Save as PDF</button></div><h1 class="page-title"><span class="diamond"></span>${escapeHtml(title)}</h1>${buildReportMapBlock(comps)}${buildSummaryStatsTable(comps)}<h3>Sale Comps List</h3><table class="comp-table"><thead><tr><th></th><th>Property Name<br>Address</th><th>Type</th><th>Built/Renovated</th><th>Size</th><th>Sale Date</th><th>Price</th></tr></thead><tbody>${buildDetailedCompRows(comps)}</tbody></table><h3>Map with One Line Comp Info Report</h3><table class="comp-table"><thead><tr><th></th><th>Property Name<br>Address</th><th>City</th><th>Type</th><th>Size</th><th>Sale Information</th></tr></thead><tbody>${buildCompactCompRows(comps)}</tbody></table>${buildAerialAppendix(comps)}<div class="footer"><img src="${logoUrl}" onerror="this.style.display='none'"><span>Eshenbaugh Land Company Comp Report</span><span>${today}</span></div></div></body></html>`;
+<\/script></head><body><div class="page"><div class="report-brand-header"><img src="${logoUrl}" alt="Eshenbaugh Land Company" onerror="this.style.display=\'none\'"><div class="report-brand-copy"><strong>Eshenbaugh Land Company</strong><br>Land is all we do.<br>${today}</div></div><div class="report-actions"><button type="button" onclick="window.print()">Download PDF</button></div><h1 class="page-title"><span class="diamond"></span>${escapeHtml(title)}</h1>${buildReportMapBlock(comps)}${buildSummaryStatsTable(comps)}<h3>Sale Comps List</h3><table class="comp-table"><thead><tr><th></th><th>Property Name<br>Address</th><th>Type</th><th>Built/Renovated</th><th>Size</th><th>Sale Date</th><th>Price</th></tr></thead><tbody>${buildDetailedCompRows(comps)}</tbody></table><h3>Map with One Line Comp Info Report</h3><table class="comp-table"><thead><tr><th></th><th>Property Name<br>Address</th><th>City</th><th>Type</th><th>Size</th><th>Sale Information</th></tr></thead><tbody>${buildCompactCompRows(comps)}</tbody></table>${buildAerialAppendix(comps)}<div class="footer"><img src="${logoUrl}" onerror="this.style.display='none'"><span>Eshenbaugh Land Company Comp Report</span><span>${today}</span></div></div></body></html>`;
   const w=window.open('', '_blank'); if(!w){ alert('Your browser blocked the report popup. Allow popups and try again.'); return; }
   w.document.open(); w.document.write(html); w.document.close();
 }
