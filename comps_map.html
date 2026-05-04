@@ -379,10 +379,13 @@ function getFilteredMappedComps(){
 function toggleUnitPriceFilters(){ const show=document.getElementById('filter-type')?.value==='Multifamily'; document.querySelectorAll('.ppu-filter,.unit-filter').forEach(el=>{el.style.display=show?'':'none';}); if(!show){['min-units','max-units','min-ppu','max-ppu'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});} }
 
 function isCompInCurrentMapView(comp){
-  if(!view || !hasValue(comp.lat) || !hasValue(comp.lon)) return false;
+  if(!view || !Point || !hasValue(comp.lat) || !hasValue(comp.lon)) return false;
   try{
-    const screenPoint=view.toScreen({type:'point',longitude:Number(comp.lon),latitude:Number(comp.lat),spatialReference:{wkid:4326}});
-    return screenPoint && Number.isFinite(screenPoint.x) && Number.isFinite(screenPoint.y) && screenPoint.x>=0 && screenPoint.y>=0 && screenPoint.x<=view.width && screenPoint.y<=view.height;
+    const point = new Point({longitude:Number(comp.lon), latitude:Number(comp.lat), spatialReference:{wkid:4326}});
+    const screenPoint = view.toScreen(point);
+    const width = view.width || (view.container && view.container.clientWidth) || window.innerWidth;
+    const height = view.height || (view.container && view.container.clientHeight) || window.innerHeight;
+    return screenPoint && Number.isFinite(screenPoint.x) && Number.isFinite(screenPoint.y) && screenPoint.x >= 0 && screenPoint.y >= 0 && screenPoint.x <= width && screenPoint.y <= height;
   }catch(e){ return false; }
 }
 function getSidebarComps(){
@@ -417,11 +420,11 @@ function applyFilters(){
   if(!graphicsLayer) return;
   filteredMappedComps=getFilteredMappedComps();
   graphicsLayer.removeAll(); activeGraphics=[];
-  refreshSidebarList();
   filteredMappedComps.forEach((comp,idx)=>{
     const graphic=new Graphic({geometry:{type:'point',longitude:comp.lon,latitude:comp.lat},symbol:{type:'simple-marker',color:getPriceColor(comp.price),size:getAcreSize(comp.acreage),outline:{color:[255,255,255,210],width:1}},attributes:{idx,compKey:comp._compKey},popupTemplate:{title:comp.property_name||comp.address||'(no address)',content:function(){return buildPopupContent(comp);}}});
     activeGraphics.push(graphic); graphicsLayer.add(graphic);
   });
+  refreshSidebarList();
 }
 function addFilterListeners(){ ['map-search','field-filter','field-value','sale-date-from','sale-date-to','filter-type','filter-source','filter-elc','filter-aerial','min-price','max-price','min-acres','max-acres','min-ppa','max-ppa','min-units','max-units','min-ppu','max-ppu'].forEach(id=>{ document.getElementById(id).addEventListener('input',()=>{if(id==='filter-type') toggleUnitPriceFilters(); applyFilters();}); }); }
 window.startPinEdit=function(compKey){
@@ -473,8 +476,8 @@ function clearSelectedMapComps(){ selectedMapCompKeys.clear(); updateMapSelected
 function getMapSelectedComps(){return allComps.filter(c=>selectedMapCompKeys.has(c._compKey));}
 function createMapSelectedReport(){createCoStarStyleReport(getMapSelectedComps());}
 
-require(["esri/Map","esri/views/MapView","esri/Graphic","esri/layers/GraphicsLayer"],function(Map,MapView,EsriGraphic,GraphicsLayer){
-  Graphic=EsriGraphic;
+require(["esri/Map","esri/views/MapView","esri/Graphic","esri/layers/GraphicsLayer","esri/geometry/Point"],function(Map,MapView,EsriGraphic,GraphicsLayer,EsriPoint){
+  Graphic=EsriGraphic; Point=EsriPoint;
   async function init(){
     const data=await(await fetch('./comps.json?v=aerials-20260501-2', {cache:'no-store'})).json();
     const aerialBackup=await loadAerialBackup();
