@@ -236,6 +236,7 @@ textarea{width:100%;margin-top:5px;padding:8px 10px;border:1px solid #cbd5df;bor
 <script>
 let view, graphicsLayer, Graphic, Point;
 let allComps = [], allMappedComps = [], filteredMappedComps = [], activeGraphics = [];
+let selectedMapCompKeys = new Set();
 let pinEditComp = null;
 const LOCAL_DEALS_KEY='elc_manual_added_deals_v1';
 const LOCAL_EDITS_KEY='elc_comp_edits_v1';
