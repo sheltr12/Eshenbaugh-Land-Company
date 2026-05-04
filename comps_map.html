@@ -111,6 +111,13 @@ body.pin-editing #viewDiv{cursor:crosshair}
 @media(max-width:390px){#panel{height:50dvh}#filters{grid-template-columns:1fr;max-height:26dvh}.filter-wide,.filter-actions{grid-column:span 1}}
 .selection-actions{grid-column:span 2;display:grid;grid-template-columns:1fr 1fr;gap:8px;border-top:1px solid var(--elc-line);padding-top:8px}.selection-actions button{font-size:11px;padding:7px 8px}#map-selected-count{grid-column:1/-1;font-size:11px;font-weight:800;color:#344054}.comp-select-row{display:flex;align-items:center;gap:7px;margin:0 0 6px;font-size:11px;color:#475467}.comp-select-row input{width:auto;margin:0}.comp-card.selected{background:#fff1f1;border-left:4px solid var(--elc-red)}.property-name-line{font-size:11px;font-weight:800;color:#000;margin-bottom:3px}
 .map-view-toggle{grid-column:span 2;display:flex;align-items:center;gap:7px;background:#fff;border:1px solid var(--elc-line);border-radius:8px;padding:8px 9px;text-transform:none;letter-spacing:0;font-size:11px;font-weight:800;color:#344054}.map-view-toggle input{width:auto;margin:0}.comp-card.active{background:#fff1f1;border-left:4px solid var(--elc-red)}
+
+.sidebar-filter-toggle{margin-top:8px;display:flex;gap:8px;align-items:center}
+.sidebar-filter-toggle button{width:100%;border-color:rgba(255,255,255,.35);background:rgba(255,255,255,.12);color:#fff;font-weight:800}
+.sidebar-filter-toggle button:hover{background:rgba(255,255,255,.22)}
+body.sidebar-filters-hidden #filters{display:none}
+body.sidebar-filters-hidden #comp-list{border-top:1px solid var(--elc-line)}
+
 </style>
 </head>
 <body>
@@ -131,6 +138,7 @@ body.pin-editing #viewDiv{cursor:crosshair}
       <button id="mobile-panel-toggle" class="mobile-only panel-arrow" onclick="toggleMobilePanel()" type="button" aria-label="Minimize comp list">⌄</button>
     </div>
     <div id="map-count">Loading...</div>
+    <div class="sidebar-filter-toggle"><button id="sidebar-filter-toggle" type="button" onclick="toggleSidebarFilters()">Hide Filters</button></div>
   </div>
   <div id="filters">
     <label class="filter-wide">Search All Fields<input type="text" id="map-search" placeholder="Address, buyer, seller, comments, zoning, aerial URL..."></label>
@@ -450,6 +458,14 @@ window.zoomToComp=function(idx){
   if(graphic){if(view.openPopup){view.openPopup({features:[graphic],location:graphic.geometry});}else if(view.popup&&view.popup.open){view.popup.open({features:[graphic],location:graphic.geometry});}}
 };
 window.zoomToResults=function(){ if(!view||!filteredMappedComps.length) return; if(filteredMappedComps.length===1){const c=filteredMappedComps[0];view.goTo({center:[c.lon,c.lat],zoom:15});return;} const lons=filteredMappedComps.map(c=>Number(c.lon)),lats=filteredMappedComps.map(c=>Number(c.lat)); view.goTo({target:{type:'extent',xmin:Math.min(...lons),ymin:Math.min(...lats),xmax:Math.max(...lons),ymax:Math.max(...lats),spatialReference:{wkid:4326}},padding:window.innerWidth<=760?{left:35,right:35,top:45,bottom:document.body.classList.contains('panel-collapsed')?70:Math.round(window.innerHeight*0.48)}:{left:400,right:50,top:50,bottom:50}}); };
+
+window.toggleSidebarFilters=function(){
+  const hidden=document.body.classList.toggle('sidebar-filters-hidden');
+  const btn=document.getElementById('sidebar-filter-toggle');
+  if(btn) btn.textContent=hidden?'Show Filters':'Hide Filters';
+  setTimeout(()=>{ if(sidebarFollowsMap) refreshSidebarList(); }, 50);
+};
+
 window.toggleMobileFilters=function(){ document.body.classList.toggle('filters-collapsed'); const btn=document.getElementById('mobile-filter-toggle'); if(btn) btn.textContent=document.body.classList.contains('filters-collapsed')?'Show Filters':'Hide Filters'; };
 window.toggleMobilePanel=function(){ document.body.classList.toggle('panel-collapsed'); const btn=document.getElementById('mobile-panel-toggle'); if(btn){const collapsed=document.body.classList.contains('panel-collapsed');btn.textContent=collapsed?'⌃':'⌄';btn.setAttribute('aria-label',collapsed?'Show comp list':'Minimize comp list');} if(view) view.padding=document.body.classList.contains('panel-collapsed')?{bottom:60}:{bottom:Math.round(window.innerHeight*0.46)}; };
 if(window.innerWidth<=760){document.body.classList.add('filters-collapsed');setTimeout(()=>{const b=document.getElementById('mobile-filter-toggle');if(b)b.textContent='Show Filters';},0);}
@@ -465,6 +481,13 @@ function createCoStarStyleReport(comps,title='Sale Comps Map & List Report'){
  const total=comps.filter(c=>hasValue(c.price)).reduce((s,c)=>s+Number(c.price),0), acres=comps.filter(c=>hasValue(c.acreage)).reduce((s,c)=>s+Number(c.acreage),0);
  const rows=comps.map((c,i)=>`<tr><td>${i+1}</td><td><strong>${escapeHtml(reportName(c))}</strong><br><span>${escapeHtml(c.address||'')}</span>${hasValue(c.comments)?`<div class="comments">${escapeHtml(c.comments)}</div>`:''}</td><td>${escapeHtml(c.property_type||'')}</td><td>${escapeHtml(c.sale_date||'')}</td><td>${reportNum(c.acreage)} AC</td><td>${reportMoney(c.price)}<br><span>${reportMoney(c.price_per_acre)}/AC</span></td></tr>`).join('');
  const html=`<!DOCTYPE html><html><head><meta charset="utf-8"><title>${escapeHtml(title)}</title><style>*{box-sizing:border-box;-webkit-print-color-adjust:exact;print-color-adjust:exact}body{font-family:Arial,Helvetica,sans-serif;margin:0;background:#f5f7fa;color:#17212f}.page{max-width:1020px;margin:0 auto;padding:24px;background:#fff}.head{display:flex;justify-content:space-between;align-items:center;background:#000;color:#fff;border-bottom:5px solid #ef1f25;border-radius:12px;padding:14px 16px;margin-bottom:16px}.head img{height:48px;background:#fff;border-radius:8px;padding:7px 10px}.actions{text-align:right;margin:0 0 12px}.actions button{background:#ef1f25;color:#fff;border:0;border-radius:8px;padding:9px 12px;font-weight:700}.title{font-size:24px;font-weight:700;border-bottom:4px solid #ef1f25;padding-bottom:10px;margin:0 0 12px}.map{position:relative;height:420px;border:1px solid #d9e1ea;border-radius:10px;overflow:hidden;background:#eef2f6}.map img{width:100%;height:100%;object-fit:cover}.pin{position:absolute;transform:translate(-50%,-100%);width:28px;height:36px;filter:drop-shadow(0 1px 4px rgba(0,0,0,.35))}.pin path{fill:#ef1f25!important;stroke:#fff;stroke-width:2}.pin text{fill:#fff;font:700 11px Arial;text-anchor:middle}.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:12px 0}.stat{border:1px solid #d9e1ea;border-radius:8px;padding:10px}.stat b{font-size:18px}table{width:100%;border-collapse:collapse;font-size:11px}th{border-bottom:2px solid #000;text-align:left;padding:7px}td{border-bottom:1px solid #e1e6ee;padding:7px;vertical-align:top}.comments{font-size:10px;color:#667085;margin-top:5px}@media print{.actions{display:none}.page{max-width:none}}.map-view-toggle{grid-column:span 2;display:flex;align-items:center;gap:7px;background:#fff;border:1px solid var(--elc-line);border-radius:8px;padding:8px 9px;text-transform:none;letter-spacing:0;font-size:11px;font-weight:800;color:#344054}.map-view-toggle input{width:auto;margin:0}.comp-card.active{background:#fff1f1;border-left:4px solid var(--elc-red)}
+
+.sidebar-filter-toggle{margin-top:8px;display:flex;gap:8px;align-items:center}
+.sidebar-filter-toggle button{width:100%;border-color:rgba(255,255,255,.35);background:rgba(255,255,255,.12);color:#fff;font-weight:800}
+.sidebar-filter-toggle button:hover{background:rgba(255,255,255,.22)}
+body.sidebar-filters-hidden #filters{display:none}
+body.sidebar-filters-hidden #comp-list{border-top:1px solid var(--elc-line)}
+
 </style></head><body><div class="page"><div class="head"><img src="${logo}"><div><strong>Eshenbaugh Land Company</strong><br>Land is all we do.<br>${today}</div></div><div class="actions"><button onclick="window.print()">Download PDF</button></div><h1 class="title">${escapeHtml(title)}</h1>${map}<div class="stats"><div class="stat"><b>${comps.length.toLocaleString()}</b><br>Selected Comps</div><div class="stat"><b>${reportMoney(total)}</b><br>Total Volume</div><div class="stat"><b>${reportNum(acres,1)}</b><br>Total Acres</div></div><h3>Sale Comps List</h3><table><thead><tr><th></th><th>Property Name / Address</th><th>Type</th><th>Sale Date</th><th>Size</th><th>Price</th></tr></thead><tbody>${rows}</tbody></table></div></body></html>`;
  const w=window.open('','_blank'); if(!w){alert('Your browser blocked the report popup.');return;} w.document.open();w.document.write(html);w.document.close();
 }
