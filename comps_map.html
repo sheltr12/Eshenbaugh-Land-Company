@@ -463,7 +463,7 @@ function getAcreSize(a){
 function buildPopupContent(comp){
   const rows=[
     ['Property Name',fmtStr(comp.property_name)],['Price',fmtPrice(comp.price)],['Acres',fmtAcres(comp.acreage)],['$/Acre',fmtPPA(comp.price_per_acre)],
-    ['Units',hasValue(comp.unit_count) ? Number(comp.unit_count).toLocaleString() : null],['$/Unit',fmtPPA(comp.price_per_unit)],
+    ['Units',hasValue(comp.unit_count) ? Number(comp.unit_count).toLocaleString() : null],['$/Unit',fmtPPU(comp.price_per_unit)],
     ['Sale Date',fmtStr(comp.sale_date)],['Type',fmtStr(comp.property_type)],['ELC Deal',fmtStr(comp.elc_deal)],['Zoning',fmtStr(comp.zoning)],
     ['Land Use',fmtStr(comp.land_use)],['Seller',fmtStr(comp.grantor)],['Buyer',fmtStr(comp.grantee)],
     ['Source',fmtStr(comp.source)],['Aerial',fmtLink(getAerialValue(comp),'View Aerial')],['Deed',fmtLink(comp.deed_url,'View Deed')]
