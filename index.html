@@ -625,7 +625,7 @@ function createSelectedReport(){
   const fmtPPU = n => hasValue(n) ? '$' + Math.round(Number(n)).toLocaleString() + '/unit' : '—';
   const fmtText = v => hasValue(v) ? escapeHtml(v) : '—';
   const getAerial = c => (typeof getAerialValue === 'function') ? getAerialValue(c) : (c.aerial || null);
-  const reportDate = c => {
+  const fmtDate = c => {
     const raw = c.sale_date_iso || c.sale_date;
     if(!hasValue(raw)) return '—';
     if(typeof raw === 'string' && /^\d{4}-\d{2}-\d{2}/.test(raw)){
@@ -634,28 +634,28 @@ function createSelectedReport(){
     }
     return escapeHtml(String(raw));
   };
-  const reportType = c => hasValue(c.property_type) ? escapeHtml(c.property_type) : '—';
-  const locationMapFor = c => {
+  const locMapFor = c => {
     if(!hasValue(c.lat) || !hasValue(c.lon)) return null;
-    const lat = Number(c.lat), lon = Number(c.lon), pad = 0.008;
+    const lat = Number(c.lat), lon = Number(c.lon);
     if(!Number.isFinite(lat) || !Number.isFinite(lon)) return null;
+    const pad = 0.0065;
     return `https://services.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/export?bbox=${lon-pad},${lat-pad},${lon+pad},${lat+pad}&bboxSR=4326&size=900,520&imageSR=4326&format=png32&transparent=false&f=image`;
   };
-
   const summaryMap = reportMapUrl(reportComps);
+
   const withPrice = reportComps.filter(c => hasValue(c.price));
   const withAcres = reportComps.filter(c => hasValue(c.acreage));
-  const totalPrice = withPrice.reduce((s,c) => s + Number(c.price), 0);
-  const totalAcres = withAcres.reduce((s,c) => s + Number(c.acreage), 0);
-  const avgPrice = withPrice.length ? totalPrice / withPrice.length : null;
-  const avgAcres = withAcres.length ? totalAcres / withAcres.length : null;
   const ppaVals = reportComps.filter(c => hasValue(c.price_per_acre));
   const ppuVals = reportComps.filter(c => hasValue(c.price_per_unit));
-  const avgPPA = ppaVals.length ? ppaVals.reduce((s,c)=>s+Number(c.price_per_acre),0) / ppaVals.length : null;
-  const avgPPU = ppuVals.length ? ppuVals.reduce((s,c)=>s+Number(c.price_per_unit),0) / ppuVals.length : null;
+  const totalPrice = withPrice.reduce((s,c)=>s+Number(c.price),0);
+  const totalAcres = withAcres.reduce((s,c)=>s+Number(c.acreage),0);
+  const avgPrice = withPrice.length ? totalPrice / withPrice.length : null;
+  const avgAcres = withAcres.length ? totalAcres / withAcres.length : null;
+  const avgPPA = ppaVals.length ? ppaVals.reduce((s,c)=>s+Number(c.price_per_acre),0)/ppaVals.length : null;
+  const avgPPU = ppuVals.length ? ppuVals.reduce((s,c)=>s+Number(c.price_per_unit),0)/ppuVals.length : null;
 
   function chartSvg(items, opts={}){
-    const width = 900, barH = 24, leftPad = opts.leftPad || 180, rightPad = opts.rightPad || 115, topPad = 16, gap = 13;
+    const width = 900, barH = 24, leftPad = opts.leftPad || 190, rightPad = opts.rightPad || 120, topPad = 16, gap = 13;
     const safeItems = (items || []).filter(it => hasValue(it.value) && Number(it.value) >= 0).slice(0, 10);
     if(!safeItems.length) return `<div class="chart-empty">Not enough data to chart.</div>`;
     const maxVal = Math.max(...safeItems.map(it => Number(it.value)), 1);
@@ -664,9 +664,7 @@ function createSelectedReport(){
     const rows = safeItems.map((it, idx) => {
       const y = topPad + idx*(barH+gap);
       const barW = Math.max(2, (Number(it.value)/maxVal)*innerW);
-      const label = escapeHtml(String(it.label || ''));
-      const valueLabel = escapeHtml(String(it.display || fmtMoney(it.value)));
-      return `<text x="${leftPad-10}" y="${y + 16}" text-anchor="end" class="chart-label">${label}</text><rect x="${leftPad}" y="${y}" width="${barW}" height="${barH}" rx="4" class="chart-bar"></rect><text x="${leftPad + barW + 8}" y="${y + 16}" class="chart-value">${valueLabel}</text>`;
+      return `<text x="${leftPad-10}" y="${y + 16}" text-anchor="end" class="chart-label">${escapeHtml(String(it.label || ''))}</text><rect x="${leftPad}" y="${y}" width="${barW}" height="${barH}" rx="4" class="chart-bar"></rect><text x="${leftPad + barW + 8}" y="${y + 16}" class="chart-value">${escapeHtml(String(it.display || fmtMoney(it.value)))}</text>`;
     }).join('');
     return `<svg viewBox="0 0 ${width} ${height}" class="chart-svg">${rows}</svg>`;
   }
@@ -679,17 +677,50 @@ function createSelectedReport(){
   const typeChart = Object.entries(typeCounts).sort((a,b)=>b[1]-a[1]).map(([label,value]) => ({label,value,display:value.toLocaleString()}));
   const priceChart = reportComps.filter(c=>hasValue(c.price)).sort((a,b)=>Number(b.price)-Number(a.price)).slice(0,10).map(c=>({label:reportName(c),value:Number(c.price),display:fmtMoney(c.price)}));
   const ppaChart = reportComps.filter(c=>hasValue(c.price_per_acre)).sort((a,b)=>Number(b.price_per_acre)-Number(a.price_per_acre)).slice(0,10).map(c=>({label:reportName(c),value:Number(c.price_per_acre),display:fmtPPA(c.price_per_acre)}));
+  const acresChart = reportComps.filter(c=>hasValue(c.acreage)).sort((a,b)=>Number(b.acreage)-Number(a.acreage)).slice(0,10).map(c=>({label:reportName(c),value:Number(c.acreage),display:fmtAcres(c.acreage)}));
 
-  const overviewRows = reportComps.map((c,i)=>`<tr><td class="num">${i+1}</td><td><strong>${escapeHtml(reportName(c))}</strong><div class="subline">${fmtText(c.address)}</div></td><td>${reportType(c)}</td><td>${reportDate(c)}</td><td>${fmtMoney(c.price)}</td><td>${fmtAcres(c.acreage)}</td><td>${fmtPPA(c.price_per_acre)}</td><td>${fmtNum(c.unit_count,0)}</td><td>${fmtPPU(c.price_per_unit)}</td></tr>`).join('');
+  const overviewRows = reportComps.map((c,i)=>`<tr><td class="num">${i+1}</td><td><strong>${escapeHtml(reportName(c))}</strong><div class="subline">${fmtText(c.address)}</div></td><td>${fmtText(c.property_type)}</td><td>${fmtDate(c)}</td><td>${fmtMoney(c.price)}</td><td>${fmtAcres(c.acreage)}</td><td>${fmtPPA(c.price_per_acre)}</td><td>${fmtNum(c.unit_count,0)}</td><td>${fmtPPU(c.price_per_unit)}</td></tr>`).join('');
+
+  function salesFields(c){
+    const aerial = getAerial(c);
+    const fields = [
+      ['Property Name', c.property_name],
+      ['Address', c.address],
+      ['Sale Date', c.sale_date],
+      ['Sale Date ISO', c.sale_date_iso],
+      ['Transaction Type', c.transaction_type],
+      ['Sale Price', hasValue(c.price) ? fmtMoney(c.price) : null],
+      ['Acreage', hasValue(c.acreage) ? fmtAcres(c.acreage) : null],
+      ['Price / Acre', hasValue(c.price_per_acre) ? fmtPPA(c.price_per_acre) : null],
+      ['Unit Count', hasValue(c.unit_count) ? fmtNum(c.unit_count,0) : null],
+      ['Price / Unit', hasValue(c.price_per_unit) ? fmtPPU(c.price_per_unit) : null],
+      ['Buyer', c.grantee],
+      ['Seller', c.grantor],
+      ['Property Type', c.property_type],
+      ['Zoning', c.zoning],
+      ['Land Use', c.land_use],
+      ['Book / Page', c.book_page],
+      ['Deed Type', c.deed_type],
+      ['Parcel ID', c.parcel_id],
+      ['Source', c.source],
+      ['ELC Deal', c.elc_deal],
+      ['Latitude', c.lat],
+      ['Longitude', c.lon],
+      ['Aerial Link', aerial],
+      ['Deed URL', c.deed_url]
+    ];
+    return fields.filter(([k,v])=>hasValue(v)).map(([k,v])=>`<div><span>${escapeHtml(k)}</span><b>${escapeHtml(String(v))}</b></div>`).join('');
+  }
 
   const detailPages = reportComps.map((c,i)=>{
     const aerial = getAerial(c);
-    const locMap = locationMapFor(c);
+    const locMap = locMapFor(c);
     const comments = hasValue(c.comments) ? `<div class="detail-comments"><h4>Comments / Description</h4><p>${escapeHtml(c.comments).replace(/\n/g,'<br>')}</p></div>` : `<div class="detail-comments empty"><h4>Comments / Description</h4><p>No comments or description provided.</p></div>`;
-    const aerialBox = aerial ? `<div class="image-card"><div class="image-title">Aerial / Site Image</div><div class="image-box"><img src="${escapeHtml(aerial)}" alt="Aerial image for ${escapeHtml(reportName(c))}"></div></div>` : '';
-    const locBox = locMap ? `<div class="image-card"><div class="image-title">Location Overview</div><div class="image-box"><img src="${locMap}" alt="Location map for ${escapeHtml(reportName(c))}"><div class="image-pin">${i+1}</div></div></div>` : '';
-    const imageGrid = (aerialBox || locBox) ? `<div class="detail-image-grid">${locBox}${aerialBox}</div>` : `<div class="image-box empty">No aerial or location image available.</div>`;
-    return `<section class="detail-page"><div class="detail-head"><div><div class="detail-kicker">Comp ${i+1}</div><h2>${escapeHtml(reportName(c))}</h2><div class="detail-address">${fmtText(c.address)}</div></div><div class="detail-price"><span>Sale Price</span><strong>${fmtMoney(c.price)}</strong></div></div><div class="detail-stats"><div><span>Type</span><b>${reportType(c)}</b></div><div><span>Sale Date</span><b>${reportDate(c)}</b></div><div><span>Acres</span><b>${fmtAcres(c.acreage)}</b></div><div><span>$/Acre</span><b>${fmtPPA(c.price_per_acre)}</b></div><div><span>Units</span><b>${fmtNum(c.unit_count,0)}</b></div><div><span>$/Unit</span><b>${fmtPPU(c.price_per_unit)}</b></div><div><span>Seller</span><b>${fmtText(c.grantor)}</b></div><div><span>Buyer</span><b>${fmtText(c.grantee)}</b></div><div><span>Zoning</span><b>${fmtText(c.zoning)}</b></div><div><span>Land Use</span><b>${fmtText(c.land_use)}</b></div><div><span>Source</span><b>${fmtText(c.source)}</b></div><div><span>ELC Deal</span><b>${fmtText(c.elc_deal)}</b></div></div>${imageGrid}${comments}</section>`;
+    const locBox = locMap ? `<div class="image-card"><div class="image-title">Aerial Location Map with Pin</div><div class="image-box"><img src="${locMap}" alt="Location map for ${escapeHtml(reportName(c))}"><div class="image-pin">${i+1}</div></div></div>` : '';
+    const aerialBox = aerial ? `<div class="image-card"><div class="image-title">Saved Aerial / Site Image</div><div class="image-box"><img src="${escapeHtml(aerial)}" alt="Aerial image for ${escapeHtml(reportName(c))}" onerror="this.parentElement.classList.add('empty');this.style.display='none';this.parentElement.innerHTML='Aerial preview unavailable. Use the aerial link in the fields below.';"></div></div>` : '';
+    const imageSection = (locBox || aerialBox) ? `<div class="detail-image-grid">${locBox}${aerialBox}</div>` : `<div class="image-box empty">No aerial or location image available.</div>`;
+    const fieldGrid = salesFields(c);
+    return `<section class="detail-page"><div class="detail-head"><div><div class="detail-kicker">Comp ${i+1}</div><h2>${escapeHtml(reportName(c))}</h2><div class="detail-address">${fmtText(c.address)}</div></div><div class="detail-price"><span>Sale Price</span><strong>${fmtMoney(c.price)}</strong></div></div><div class="detail-top-stats"><div><span>Sale Date</span><b>${fmtDate(c)}</b></div><div><span>Acres</span><b>${fmtAcres(c.acreage)}</b></div><div><span>$ / Acre</span><b>${fmtPPA(c.price_per_acre)}</b></div><div><span>Units</span><b>${fmtNum(c.unit_count,0)}</b></div><div><span>$ / Unit</span><b>${fmtPPU(c.price_per_unit)}</b></div></div>${imageSection}${comments}<div class="section-title detail-fields-title">Sales & Property Fields</div><div class="field-grid">${fieldGrid || '<div><span>Fields</span><b>No additional fields available.</b></div>'}</div></section>`;
   }).join('');
 
   const mapHtml = summaryMap ? `<div class="map"><img src="${summaryMap.url}" alt="Comp map">${reportComps.map((c,i)=>{ if(!hasValue(c.lat)||!hasValue(c.lon)) return ''; const x=((Number(c.lon)-summaryMap.e.minLon)/(summaryMap.e.maxLon-summaryMap.e.minLon))*100; const y=(1-((Number(c.lat)-summaryMap.e.minLat)/(summaryMap.e.maxLat-summaryMap.e.minLat)))*100; return svgPin(String(i+1),x,y); }).join('')}</div>` : `<div class="map empty">No mapped coordinates available.</div>`;
@@ -705,26 +736,27 @@ function createSelectedReport(){
     .actions button{background:#ef1f25;color:#fff;border:0;border-radius:8px;padding:9px 14px;font-weight:800;cursor:pointer}
     .title{font-size:26px;font-weight:800;color:#000;margin:0 0 14px;padding-bottom:10px;border-bottom:4px solid #ef1f25}
     .summary-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin:14px 0 18px}
-    .metric{border:1px solid #d8e0ea;border-top:4px solid #ef1f25;border-radius:10px;padding:12px;background:#fff}.metric span{display:block;font-size:10px;color:#667085;text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px}.metric strong{font-size:18px;color:#000}
+    .metric{border:1px solid #d8e0ea;border-top:4px solid #ef1f25;border-radius:10px;padding:12px;background:#fff}
+    .metric span{display:block;font-size:10px;color:#667085;text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px}.metric strong{font-size:18px;color:#000}
     .section-title{font-size:15px;font-weight:800;color:#000;margin:24px 0 10px;padding-bottom:6px;border-bottom:2px solid #000}
     .map{position:relative;height:420px;border:1px solid #d9e1ea;border-radius:12px;overflow:hidden;background:#edf2f6}.map.empty{display:flex;align-items:center;justify-content:center;color:#667085;font-weight:700}.map img{width:100%;height:100%;object-fit:cover;display:block}
     .pin{position:absolute;transform:translate(-50%,-100%);width:28px;height:36px;overflow:visible;filter:drop-shadow(0 1px 4px rgba(0,0,0,.35))}.pin path{fill:#ef1f25;stroke:#fff;stroke-width:2}.pin text{fill:#fff;font-size:11px;font-weight:700;text-anchor:middle;font-family:Arial,Helvetica,sans-serif}
     .chart-grid{display:grid;grid-template-columns:1fr;gap:16px}.chart-card{border:1px solid #d8e0ea;border-radius:12px;padding:14px;background:#fff}.chart-title{font-weight:800;color:#000;margin-bottom:10px}.chart-svg{width:100%;height:auto;display:block}.chart-label,.chart-value{fill:#344054;font-size:11px;font-weight:700}.chart-bar{fill:#ef1f25}.chart-empty{display:flex;align-items:center;justify-content:center;min-height:120px;color:#667085;background:#f8fafc;border-radius:8px}
     table{width:100%;border-collapse:collapse}.overview th{font-size:11px;text-align:left;border-bottom:2px solid #000;padding:8px 6px;background:#fafbfc}.overview td{padding:8px 6px;border-bottom:1px solid #e2e8f0;vertical-align:top}.overview .num{width:32px;text-align:center;font-weight:800}.subline{margin-top:3px;color:#667085;font-size:10px;line-height:1.35}
     .detail-page{page-break-before:always;padding-top:8px}.detail-head{display:flex;justify-content:space-between;gap:16px;align-items:flex-start;margin-bottom:12px}.detail-kicker{font-size:10px;font-weight:800;text-transform:uppercase;color:#ef1f25;letter-spacing:.08em;margin-bottom:4px}.detail-head h2{margin:0;font-size:24px;color:#000}.detail-address{margin-top:4px;color:#667085;font-size:12px}.detail-price{border:1px solid #d8e0ea;border-top:4px solid #ef1f25;border-radius:12px;background:#fff;padding:10px 14px;min-width:170px;text-align:right}.detail-price span{display:block;font-size:10px;color:#667085;text-transform:uppercase;letter-spacing:.06em}.detail-price strong{display:block;font-size:20px;color:#000;margin-top:4px}
-    .detail-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:12px 0}.detail-stats div{border:1px solid #d8e0ea;border-radius:10px;padding:10px;background:#fff}.detail-stats span{display:block;font-size:10px;color:#667085;text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px}
-    .detail-image-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:10px}.image-card{border:1px solid #d8e0ea;border-radius:12px;padding:10px;background:#fff}.image-title{font-weight:800;color:#000;margin-bottom:8px}.image-box{position:relative;height:275px;background:#edf2f6;border-radius:10px;overflow:hidden;display:flex;align-items:center;justify-content:center;color:#667085}.image-box img{width:100%;height:100%;object-fit:cover;display:block}.image-box.empty{font-weight:700}.image-pin{position:absolute;left:50%;top:50%;transform:translate(-50%,-100%);min-width:28px;height:34px;padding-top:7px;background:#ef1f25;color:#fff;border:2px solid #fff;border-radius:14px 14px 14px 0;font-weight:800;box-shadow:0 2px 6px rgba(0,0,0,.3)}
-    .detail-comments{border:1px solid #d8e0ea;border-radius:12px;padding:12px;background:#fff;margin-top:14px}.detail-comments h4{margin:0 0 8px;color:#000;font-size:14px}.detail-comments p{margin:0;line-height:1.5;color:#344054}.detail-comments.empty p{color:#667085}
+    .detail-top-stats,.field-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:12px 0}.detail-top-stats div,.field-grid div{border:1px solid #d8e0ea;border-radius:10px;padding:10px;background:#fff}.detail-top-stats span,.field-grid span{display:block;font-size:10px;color:#667085;text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px}.field-grid b{font-size:11px;line-height:1.35;word-break:break-word}
+    .detail-image-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:10px}.image-card{border:1px solid #d8e0ea;border-radius:12px;padding:10px;background:#fff}.image-title{font-weight:800;color:#000;margin-bottom:8px}.image-box{position:relative;height:285px;background:#edf2f6;border-radius:10px;overflow:hidden;display:flex;align-items:center;justify-content:center;color:#667085;text-align:center;padding:8px}.image-box img{width:100%;height:100%;object-fit:cover;display:block}.image-box.empty{font-weight:700}.image-pin{position:absolute;left:50%;top:50%;transform:translate(-50%,-100%);min-width:28px;height:34px;padding-top:7px;background:#ef1f25;color:#fff;border:2px solid #fff;border-radius:14px 14px 14px 0;font-weight:800;box-shadow:0 2px 6px rgba(0,0,0,.3)}
+    .detail-comments{border:1px solid #d8e0ea;border-radius:12px;padding:12px;background:#fff;margin-top:14px}.detail-comments h4{margin:0 0 8px;color:#000;font-size:14px}.detail-comments p{margin:0;line-height:1.5;color:#344054}.detail-comments.empty p{color:#667085}.detail-fields-title{page-break-after:avoid}
     .footer{display:flex;justify-content:space-between;align-items:center;margin-top:20px;padding-top:8px;border-top:3px solid #000;font-size:10px;color:#667085}
-    @media print{body{background:#fff}.page{max-width:none;padding:18px 24px}.actions{display:none}.brand{border-radius:0}}
-    @media(max-width:900px){.summary-grid{grid-template-columns:repeat(2,1fr)}.detail-stats{grid-template-columns:1fr 1fr}.detail-image-grid{grid-template-columns:1fr}.detail-head{flex-direction:column}}
+    @media print{body{background:#fff}.page{max-width:none;padding:18px 24px}.actions{display:none}.brand{border-radius:0}.detail-page{break-before:page}}
+    @media(max-width:900px){.summary-grid{grid-template-columns:repeat(2,1fr)}.detail-top-stats,.field-grid{grid-template-columns:1fr 1fr}.detail-image-grid{grid-template-columns:1fr}.detail-head{flex-direction:column}}
   </style></head><body><div class="page">
     <div class="brand"><img src="${logo}" alt="Eshenbaugh Land Company" onerror="this.style.display='none'"><div class="brand-copy"><strong>Eshenbaugh Land Company</strong><br>Land is all we do.<br>${today}</div></div>
     <div class="actions"><button type="button" onclick="window.print()">Download PDF</button></div>
     <h1 class="title">${escapeHtml(reportTitle)}</h1>
     <div class="summary-grid"><div class="metric"><span>Selected Comps</span><strong>${reportComps.length.toLocaleString()}</strong></div><div class="metric"><span>Average Sale Price</span><strong>${fmtMoney(avgPrice)}</strong></div><div class="metric"><span>Average Acres</span><strong>${fmtAcres(avgAcres)}</strong></div><div class="metric"><span>Average $ / Acre</span><strong>${fmtPPA(avgPPA)}</strong></div><div class="metric"><span>Average $ / Unit</span><strong>${fmtPPU(avgPPU)}</strong></div></div>
     <div class="section-title">Comp Map</div>${mapHtml}
-    <div class="section-title">Charts & Graphs</div><div class="chart-grid"><div class="chart-card"><div class="chart-title">Property Type Distribution</div>${chartSvg(typeChart,{leftPad:150,rightPad:70})}</div><div class="chart-card"><div class="chart-title">Top Sale Prices</div>${chartSvg(priceChart,{leftPad:210,rightPad:115})}</div><div class="chart-card"><div class="chart-title">Top $ / Acre</div>${chartSvg(ppaChart,{leftPad:210,rightPad:110})}</div></div>
+    <div class="section-title">Charts & Graphs</div><div class="chart-grid"><div class="chart-card"><div class="chart-title">Property Type Distribution</div>${chartSvg(typeChart,{leftPad:150,rightPad:70})}</div><div class="chart-card"><div class="chart-title">Top Sale Prices</div>${chartSvg(priceChart,{leftPad:210,rightPad:115})}</div><div class="chart-card"><div class="chart-title">Top $ / Acre</div>${chartSvg(ppaChart,{leftPad:210,rightPad:110})}</div><div class="chart-card"><div class="chart-title">Largest Land Areas</div>${chartSvg(acresChart,{leftPad:210,rightPad:110})}</div></div>
     <div class="section-title">Comp Overview</div><table class="overview"><thead><tr><th>#</th><th>Property</th><th>Type</th><th>Sale Date</th><th>Price</th><th>Acres</th><th>$ / Acre</th><th>Units</th><th>$ / Unit</th></tr></thead><tbody>${overviewRows}</tbody></table>
     ${detailPages}
     <div class="footer"><span>Eshenbaugh Land Company</span><span>${today}</span></div>
