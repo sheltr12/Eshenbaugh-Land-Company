@@ -150,6 +150,7 @@ body.sidebar-hidden #sidebar-show-tab{display:block;pointer-events:auto}
 }
 
 </style>
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 </head>
 <body>
 <div id="viewDiv"></div>
@@ -242,6 +243,8 @@ body.sidebar-hidden #sidebar-show-tab{display:block;pointer-events:auto}
       <button type="button" onclick="selectAllFilteredMapComps()">Select All Filtered</button>
       <button type="button" onclick="clearSelectedMapComps()">Clear Selected</button>
       <button class="btn-red" type="button" onclick="createMapSelectedReport()">Create Report</button>
+      <button type="button" onclick="exportSelectedComps('xlsx', getMapSelectedComps())">Export Excel</button>
+      <button type="button" onclick="exportSelectedComps('csv', getMapSelectedComps())">Export CSV</button>
     </div>
 
     <div class="filter-actions">
@@ -663,6 +666,88 @@ window.toggleSidebarFilters=function(){
 window.toggleMobileFilters=function(){ document.body.classList.toggle('filters-collapsed'); const btn=document.getElementById('mobile-filter-toggle'); if(btn) btn.textContent=document.body.classList.contains('filters-collapsed')?'Show Filters':'Hide Filters'; };
 window.toggleMobilePanel=function(){ document.body.classList.toggle('panel-collapsed'); const btn=document.getElementById('mobile-panel-toggle'); if(btn){const collapsed=document.body.classList.contains('panel-collapsed');btn.textContent=collapsed?'⌃':'⌄';btn.setAttribute('aria-label',collapsed?'Show comp list':'Minimize comp list');} applyCurrentMapPadding(); };
 if(window.innerWidth<=760){document.body.classList.add('filters-collapsed');setTimeout(()=>{const b=document.getElementById('mobile-filter-toggle');if(b)b.textContent='Show Filters';},0);}
+
+
+const EXPORT_COLUMNS = [
+  ['property_name','Property Name'],
+  ['address','Address'],
+  ['property_type','Property Type'],
+  ['transaction_type','Transaction Type'],
+  ['sale_date','Sale Date'],
+  ['sale_date_iso','Sale Date ISO'],
+  ['price','Sale Price'],
+  ['acreage','Acres'],
+  ['price_per_acre','Price / Acre'],
+  ['unit_count','Unit Count'],
+  ['price_per_unit','Price / Unit'],
+  ['grantor','Seller'],
+  ['grantee','Buyer'],
+  ['zoning','Zoning'],
+  ['land_use','Land Use'],
+  ['parcel_id','Parcel ID'],
+  ['book_page','Book / Page'],
+  ['deed_type','Deed Type'],
+  ['source','Source'],
+  ['elc_deal','ELC Deal'],
+  ['lat','Latitude'],
+  ['lon','Longitude'],
+  ['coords_approx','Coordinates Approximate'],
+  ['geocode_status','Geocode Status'],
+  ['geocode_source','Geocode Source'],
+  ['aerial','Aerial URL'],
+  ['deed_url','Deed URL'],
+  ['comments','Comments']
+];
+function cleanExportValue(v){
+  if(v === null || v === undefined) return '';
+  if(typeof v === 'number') return Number.isFinite(v) ? v : '';
+  if(typeof v === 'boolean') return v ? 'Yes' : 'No';
+  return String(v);
+}
+function selectedExportRows(comps){
+  return comps.map(c => {
+    const row = {};
+    EXPORT_COLUMNS.forEach(([key,label]) => { row[label] = cleanExportValue(c[key]); });
+    return row;
+  });
+}
+function downloadBlob(filename, mimeType, content){
+  const blob = new Blob([content], {type:mimeType});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+function rowsToCsv(rows){
+  const headers = EXPORT_COLUMNS.map(([,label]) => label);
+  const esc = v => {
+    const s = cleanExportValue(v);
+    if(/[",\n\r]/.test(s)) return '"' + s.replace(/"/g,'""') + '"';
+    return s;
+  };
+  return [headers.join(','), ...rows.map(row => headers.map(h => esc(row[h])).join(','))].join('\n');
+}
+function exportSelectedComps(format, comps){
+  if(!comps || !comps.length){ alert('Select at least one comp first.'); return; }
+  const rows = selectedExportRows(comps);
+  const stamp = new Date().toISOString().slice(0,10);
+  const prefix = 'ELC_Selected_Comps_' + stamp;
+  if(format === 'xlsx'){
+    if(window.XLSX){
+      const ws = XLSX.utils.json_to_sheet(rows);
+      const wb = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, ws, 'Selected Comps');
+      XLSX.writeFile(wb, prefix + '.xlsx');
+      return;
+    }
+    alert('Excel export library did not load, downloading CSV instead.');
+  }
+  downloadBlob(prefix + '.csv', 'text/csv;charset=utf-8', rowsToCsv(rows));
+}
 
 function reportMoney(n){return hasValue(n)?'$'+Math.round(Number(n)).toLocaleString():'—';}
 function reportNum(n,d=2){return hasValue(n)?Number(n).toLocaleString(undefined,{maximumFractionDigits:d}):'—';}

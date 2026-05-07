@@ -112,6 +112,8 @@ tr.row-selected td{background:#fff1f1!important}
     <button class="btn btn-secondary" onclick="openAddDealModal()">Add New Deal</button>
     <button class="btn btn-secondary" onclick="openImportModal()">Import Deals</button>
     <button class="btn btn-secondary" onclick="createSelectedReport()">Create Report from Selected</button>
+    <button class="btn btn-secondary" onclick="exportSelectedComps('xlsx', getSelectedComps())">Export Selected Excel</button>
+    <button class="btn btn-secondary" onclick="exportSelectedComps('csv', getSelectedComps())">Export Selected CSV</button>
     <button class="btn btn-secondary" onclick="resetFilters()">Reset Filters</button>
   </div>
   <div id="add-deal-modal" class="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="add-deal-title">
@@ -210,6 +212,8 @@ tr.row-selected td{background:#fff1f1!important}
       <button class="btn btn-secondary btn-small" type="button" onclick="selectAllFilteredComps()">Select All Filtered</button>
       <button class="btn btn-secondary btn-small" type="button" onclick="clearSelectedComps()">Clear Selected</button>
       <button class="btn btn-primary btn-small" type="button" onclick="createSelectedReport()">Create Report</button>
+      <button class="btn btn-secondary btn-small" type="button" onclick="exportSelectedComps('xlsx', getSelectedComps())">Export Excel</button>
+      <button class="btn btn-secondary btn-small" type="button" onclick="exportSelectedComps('csv', getSelectedComps())">Export CSV</button>
     </div>
     <div id="row-count"></div>
     <div class="table-wrap">
@@ -311,7 +315,7 @@ async function loadReport(){
     allComps = applyLocalEdits([...baseComps, ...savedDeals]);
     const meta = baseMeta;
     document.getElementById('title').textContent = `${meta.title || 'Eshenbaugh Land Company Comps'} — ${meta.period || 'Historical'}`;
-    document.getElementById('subtitle').textContent = `Source: ${meta.source || 'Eshenbaugh Land Company'} | ${(allComps.length).toLocaleString()} comps | Generated ${meta.generated || ''} | ${allComps.filter(c=>hasValue(getAerialValue(c))).length.toLocaleString()} aerial links${savedDeals.length ? ' | ' + savedDeals.length.toLocaleString() + ' locally added' : ''}`;
+    document.getElementById('subtitle').textContent = `${(allComps.length).toLocaleString()} comps | Generated ${meta.generated || ''} | ${allComps.filter(c=>hasValue(getAerialValue(c))).length.toLocaleString()} aerial links${savedDeals.length ? ' | ' + savedDeals.length.toLocaleString() + ' locally added' : ''}`;
     renderTableHead();
     populateFilters();
     addFilterListeners();
@@ -599,6 +603,88 @@ function selectVisibleComps(){ const start=(currentPage-1)*PAGE_SIZE,end=Math.mi
 function selectAllFilteredComps(){ filteredComps.forEach(c=>selectedCompKeys.add(c._compKey)); renderPage();}
 function clearSelectedComps(){ selectedCompKeys.clear(); renderPage();}
 function getSelectedComps(){ return allComps.filter(c=>selectedCompKeys.has(c._compKey)); }
+
+const EXPORT_COLUMNS = [
+  ['property_name','Property Name'],
+  ['address','Address'],
+  ['property_type','Property Type'],
+  ['transaction_type','Transaction Type'],
+  ['sale_date','Sale Date'],
+  ['sale_date_iso','Sale Date ISO'],
+  ['price','Sale Price'],
+  ['acreage','Acres'],
+  ['price_per_acre','Price / Acre'],
+  ['unit_count','Unit Count'],
+  ['price_per_unit','Price / Unit'],
+  ['grantor','Seller'],
+  ['grantee','Buyer'],
+  ['zoning','Zoning'],
+  ['land_use','Land Use'],
+  ['parcel_id','Parcel ID'],
+  ['book_page','Book / Page'],
+  ['deed_type','Deed Type'],
+  ['source','Source'],
+  ['elc_deal','ELC Deal'],
+  ['lat','Latitude'],
+  ['lon','Longitude'],
+  ['coords_approx','Coordinates Approximate'],
+  ['geocode_status','Geocode Status'],
+  ['geocode_source','Geocode Source'],
+  ['aerial','Aerial URL'],
+  ['deed_url','Deed URL'],
+  ['comments','Comments']
+];
+function cleanExportValue(v){
+  if(v === null || v === undefined) return '';
+  if(typeof v === 'number') return Number.isFinite(v) ? v : '';
+  if(typeof v === 'boolean') return v ? 'Yes' : 'No';
+  return String(v);
+}
+function selectedExportRows(comps){
+  return comps.map(c => {
+    const row = {};
+    EXPORT_COLUMNS.forEach(([key,label]) => { row[label] = cleanExportValue(c[key]); });
+    return row;
+  });
+}
+function downloadBlob(filename, mimeType, content){
+  const blob = new Blob([content], {type:mimeType});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+function rowsToCsv(rows){
+  const headers = EXPORT_COLUMNS.map(([,label]) => label);
+  const esc = v => {
+    const s = cleanExportValue(v);
+    if(/[",\n\r]/.test(s)) return '"' + s.replace(/"/g,'""') + '"';
+    return s;
+  };
+  return [headers.join(','), ...rows.map(row => headers.map(h => esc(row[h])).join(','))].join('\n');
+}
+function exportSelectedComps(format, comps){
+  if(!comps || !comps.length){ alert('Select at least one comp first.'); return; }
+  const rows = selectedExportRows(comps);
+  const stamp = new Date().toISOString().slice(0,10);
+  const prefix = 'ELC_Selected_Comps_' + stamp;
+  if(format === 'xlsx'){
+    if(window.XLSX){
+      const ws = XLSX.utils.json_to_sheet(rows);
+      const wb = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, ws, 'Selected Comps');
+      XLSX.writeFile(wb, prefix + '.xlsx');
+      return;
+    }
+    alert('Excel export library did not load, downloading CSV instead.');
+  }
+  downloadBlob(prefix + '.csv', 'text/csv;charset=utf-8', rowsToCsv(rows));
+}
+
 function reportMoney(n){return hasValue(n)?'$'+Math.round(Number(n)).toLocaleString():'—';}
 function reportNum(n,d=2){return hasValue(n)?Number(n).toLocaleString(undefined,{maximumFractionDigits:d}):'—';}
 function reportName(c){return c.property_name||String(c.address||'').split(',')[0]||'Comp';}
