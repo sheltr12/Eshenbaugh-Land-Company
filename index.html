@@ -109,11 +109,11 @@ tr.row-selected td{background:#fff1f1!important}
   </div>
   <div class="actions">
     <a href="comps_map.html" class="btn btn-primary" target="_blank" rel="noopener noreferrer">Open Interactive Map</a>
+    <a href="swfwmd_erp_map.html" class="btn btn-primary" target="_blank" rel="noopener noreferrer">Open SWFWMD ERP Map</a>
     <button class="btn btn-secondary" onclick="openAddDealModal()">Add New Deal</button>
     <button class="btn btn-secondary" onclick="openImportModal()">Import Deals</button>
     <button class="btn btn-secondary" onclick="createSelectedReport()">Create Report from Selected</button>
-    <button class="btn btn-secondary" onclick="exportSelectedComps('xlsx', getSelectedComps())">Export Selected Excel</button>
-    <button class="btn btn-secondary" onclick="exportSelectedComps('csv', getSelectedComps())">Export Selected CSV</button>
+    <button class="btn btn-secondary" onclick="showExportChoice(getSelectedComps())">Export Selected</button>
     <button class="btn btn-secondary" onclick="resetFilters()">Reset Filters</button>
   </div>
   <div id="add-deal-modal" class="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="add-deal-title">
@@ -212,8 +212,7 @@ tr.row-selected td{background:#fff1f1!important}
       <button class="btn btn-secondary btn-small" type="button" onclick="selectAllFilteredComps()">Select All Filtered</button>
       <button class="btn btn-secondary btn-small" type="button" onclick="clearSelectedComps()">Clear Selected</button>
       <button class="btn btn-primary btn-small" type="button" onclick="createSelectedReport()">Create Report</button>
-      <button class="btn btn-secondary btn-small" type="button" onclick="exportSelectedComps('xlsx', getSelectedComps())">Export Excel</button>
-      <button class="btn btn-secondary btn-small" type="button" onclick="exportSelectedComps('csv', getSelectedComps())">Export CSV</button>
+      <button class="btn btn-secondary btn-small" type="button" onclick="showExportChoice(getSelectedComps())">Export Selected</button>
     </div>
     <div id="row-count"></div>
     <div class="table-wrap">
@@ -604,6 +603,7 @@ function selectAllFilteredComps(){ filteredComps.forEach(c=>selectedCompKeys.add
 function clearSelectedComps(){ selectedCompKeys.clear(); renderPage();}
 function getSelectedComps(){ return allComps.filter(c=>selectedCompKeys.has(c._compKey)); }
 
+
 const EXPORT_COLUMNS = [
   ['property_name','Property Name'],
   ['address','Address'],
@@ -667,20 +667,34 @@ function rowsToCsv(rows){
   };
   return [headers.join(','), ...rows.map(row => headers.map(h => esc(row[h])).join(','))].join('\n');
 }
+function rowsToExcelHtml(rows){
+  const headers = EXPORT_COLUMNS.map(([,label]) => label);
+  const escHtml = v => cleanExportValue(v).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  const head = headers.map(h => `<th>${escHtml(h)}</th>`).join('');
+  const body = rows.map(row => `<tr>${headers.map(h => `<td>${escHtml(row[h])}</td>`).join('')}</tr>`).join('');
+  return `<!DOCTYPE html><html><head><meta charset="utf-8"><style>table{border-collapse:collapse}th,td{border:1px solid #999;padding:4px;vertical-align:top}th{background:#f2f2f2}</style></head><body><table><thead><tr>${head}</tr></thead><tbody>${body}</tbody></table></body></html>`;
+}
+function showExportChoice(comps){
+  if(!comps || !comps.length){ alert('Select at least one comp first.'); return; }
+  const choice = prompt('Export selected comps as:\n\n1 = Excel\n2 = CSV', '1');
+  if(choice === null) return;
+  const normalized = String(choice).trim().toLowerCase();
+  if(normalized === '1' || normalized === 'excel' || normalized === 'xls' || normalized === 'xlsx'){
+    exportSelectedComps('excel', comps);
+  }else if(normalized === '2' || normalized === 'csv'){
+    exportSelectedComps('csv', comps);
+  }else{
+    alert('Please enter 1 for Excel or 2 for CSV.');
+  }
+}
 function exportSelectedComps(format, comps){
   if(!comps || !comps.length){ alert('Select at least one comp first.'); return; }
   const rows = selectedExportRows(comps);
   const stamp = new Date().toISOString().slice(0,10);
   const prefix = 'ELC_Selected_Comps_' + stamp;
-  if(format === 'xlsx'){
-    if(window.XLSX){
-      const ws = XLSX.utils.json_to_sheet(rows);
-      const wb = XLSX.utils.book_new();
-      XLSX.utils.book_append_sheet(wb, ws, 'Selected Comps');
-      XLSX.writeFile(wb, prefix + '.xlsx');
-      return;
-    }
-    alert('Excel export library did not load, downloading CSV instead.');
+  if(format === 'excel' || format === 'xls' || format === 'xlsx'){
+    downloadBlob(prefix + '.xls', 'application/vnd.ms-excel;charset=utf-8', rowsToExcelHtml(rows));
+    return;
   }
   downloadBlob(prefix + '.csv', 'text/csv;charset=utf-8', rowsToCsv(rows));
 }

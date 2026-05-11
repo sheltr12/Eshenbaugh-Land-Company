@@ -243,7 +243,7 @@ body.sidebar-hidden #sidebar-show-tab{display:block;pointer-events:auto}
       <button type="button" onclick="selectAllFilteredMapComps()">Select All Filtered</button>
       <button type="button" onclick="clearSelectedMapComps()">Clear Selected</button>
       <button class="btn-red" type="button" onclick="createMapSelectedReport()">Create Report</button>
-      <button type="button" onclick="exportSelectedComps('csv', getMapSelectedComps())">Export CSV</button>
+      <button type="button" onclick="showExportChoice(getMapSelectedComps())">Export Selected</button>
     </div>
 
     <div class="filter-actions">
@@ -667,6 +667,7 @@ window.toggleMobilePanel=function(){ document.body.classList.toggle('panel-colla
 if(window.innerWidth<=760){document.body.classList.add('filters-collapsed');setTimeout(()=>{const b=document.getElementById('mobile-filter-toggle');if(b)b.textContent='Show Filters';},0);}
 
 
+
 const EXPORT_COLUMNS = [
   ['property_name','Property Name'],
   ['address','Address'],
@@ -730,20 +731,34 @@ function rowsToCsv(rows){
   };
   return [headers.join(','), ...rows.map(row => headers.map(h => esc(row[h])).join(','))].join('\n');
 }
+function rowsToExcelHtml(rows){
+  const headers = EXPORT_COLUMNS.map(([,label]) => label);
+  const escHtml = v => cleanExportValue(v).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  const head = headers.map(h => `<th>${escHtml(h)}</th>`).join('');
+  const body = rows.map(row => `<tr>${headers.map(h => `<td>${escHtml(row[h])}</td>`).join('')}</tr>`).join('');
+  return `<!DOCTYPE html><html><head><meta charset="utf-8"><style>table{border-collapse:collapse}th,td{border:1px solid #999;padding:4px;vertical-align:top}th{background:#f2f2f2}</style></head><body><table><thead><tr>${head}</tr></thead><tbody>${body}</tbody></table></body></html>`;
+}
+function showExportChoice(comps){
+  if(!comps || !comps.length){ alert('Select at least one comp first.'); return; }
+  const choice = prompt('Export selected comps as:\n\n1 = Excel\n2 = CSV', '1');
+  if(choice === null) return;
+  const normalized = String(choice).trim().toLowerCase();
+  if(normalized === '1' || normalized === 'excel' || normalized === 'xls' || normalized === 'xlsx'){
+    exportSelectedComps('excel', comps);
+  }else if(normalized === '2' || normalized === 'csv'){
+    exportSelectedComps('csv', comps);
+  }else{
+    alert('Please enter 1 for Excel or 2 for CSV.');
+  }
+}
 function exportSelectedComps(format, comps){
   if(!comps || !comps.length){ alert('Select at least one comp first.'); return; }
   const rows = selectedExportRows(comps);
   const stamp = new Date().toISOString().slice(0,10);
   const prefix = 'ELC_Selected_Comps_' + stamp;
-  if(format === 'xlsx'){
-    if(window.XLSX){
-      const ws = XLSX.utils.json_to_sheet(rows);
-      const wb = XLSX.utils.book_new();
-      XLSX.utils.book_append_sheet(wb, ws, 'Selected Comps');
-      XLSX.writeFile(wb, prefix + '.xlsx');
-      return;
-    }
-    alert('Excel export library did not load, downloading CSV instead.');
+  if(format === 'excel' || format === 'xls' || format === 'xlsx'){
+    downloadBlob(prefix + '.xls', 'application/vnd.ms-excel;charset=utf-8', rowsToExcelHtml(rows));
+    return;
   }
   downloadBlob(prefix + '.csv', 'text/csv;charset=utf-8', rowsToCsv(rows));
 }
