@@ -948,8 +948,41 @@ window.addEventListener('storage',function(e){
   }
 });
 
-require(["esri/Map","esri/views/MapView","esri/Graphic","esri/layers/GraphicsLayer","esri/geometry/Point"],function(Map,MapView,EsriGraphic,GraphicsLayer,EsriPoint){
+require(["esri/Map","esri/views/MapView","esri/Graphic","esri/layers/GraphicsLayer","esri/geometry/Point","esri/widgets/Search","esri/rest/locator"],function(Map,MapView,EsriGraphic,GraphicsLayer,EsriPoint,Search,locator){
   Graphic=EsriGraphic; Point=EsriPoint;
+
+  function copyTextToClipboard(text){
+    if(navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(text).catch(()=>{});
+    }
+  }
+  function showClickedAddress(mapPoint){
+    if(!mapPoint) return;
+    locator.locationToAddress("https://geocode.arcgis.com/arcgis/rest/services/World/GeocodeServer", {
+      location: mapPoint,
+      outSpatialReference: view.spatialReference
+    }).then(function(response){
+      const addr = response && response.address ? response.address : "No address found";
+      const safeAddr = String(addr).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]));
+      view.openPopup({
+        title: "Clicked Location",
+        location: mapPoint,
+        content: `<div style="font-family:Arial,sans-serif;min-width:220px">
+          <div style="font-weight:800;margin-bottom:6px">${safeAddr}</div>
+          <button type="button" onclick="navigator.clipboard && navigator.clipboard.writeText('${String(addr).replace(/\\/g,'\\\\').replace(/'/g,"\\'")}')" style="background:#ef1f25;color:#fff;border:0;border-radius:7px;padding:6px 9px;font-weight:800;cursor:pointer">Copy Address</button>
+        </div>`
+      });
+    }).catch(function(){
+      const lon = mapPoint.longitude ? mapPoint.longitude.toFixed(6) : '';
+      const lat = mapPoint.latitude ? mapPoint.latitude.toFixed(6) : '';
+      view.openPopup({
+        title: "Clicked Location",
+        location: mapPoint,
+        content: `<div style="font-family:Arial,sans-serif;min-width:220px">No address found.<br>Lat/Lon: ${lat}, ${lon}</div>`
+      });
+    });
+  }
+
   async function init(){
     const data=await(await fetch('./comps.json?v=aerials-20260501-2', {cache:'no-store'})).json();
     const aerialBackup=await loadAerialBackup();
@@ -959,6 +992,15 @@ require(["esri/Map","esri/views/MapView","esri/Graphic","esri/layers/GraphicsLay
     graphicsLayer=new GraphicsLayer();
     const map=new Map({basemap:"hybrid",layers:[graphicsLayer]});
     view=new MapView({container:"viewDiv",map,center:[-82.2,28.1],zoom:8});
+    const addressSearch = new Search({
+      view,
+      includeDefaultSources: true,
+      locationEnabled: false,
+      popupEnabled: true,
+      resultGraphicEnabled: true,
+      label: "Search address or place"
+    });
+    view.ui.add(addressSearch, "top-right");
     applyCurrentMapPadding();
     populateFilters(); addFilterListeners(); applyFilters();
     view.on('click',function(event){
@@ -974,8 +1016,10 @@ require(["esri/Map","esri/views/MapView","esri/Graphic","esri/layers/GraphicsLay
         const result=(response.results||[]).find(r=>r.graphic && r.graphic.attributes && r.graphic.attributes.compKey);
         if(result && result.graphic && result.graphic.attributes){
           scrollToSidebarComp(result.graphic.attributes.compKey);
+        }else{
+          showClickedAddress(event.mapPoint);
         }
-      }).catch(()=>{});
+      }).catch(()=>{ showClickedAddress(event.mapPoint); });
     });
     view.watch('stationary',function(isStationary){ if(isStationary && sidebarFollowsMap) refreshSidebarList(); });
     view.when(()=>window.zoomToResults());
