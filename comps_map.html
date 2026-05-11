@@ -951,10 +951,28 @@ window.addEventListener('storage',function(e){
 require(["esri/Map","esri/views/MapView","esri/Graphic","esri/layers/GraphicsLayer","esri/geometry/Point","esri/widgets/Search","esri/rest/locator"],function(Map,MapView,EsriGraphic,GraphicsLayer,EsriPoint,Search,locator){
   Graphic=EsriGraphic; Point=EsriPoint;
 
-  function copyTextToClipboard(text){
-    if(navigator.clipboard && navigator.clipboard.writeText){
-      navigator.clipboard.writeText(text).catch(()=>{});
+  window.copyMapAddress=function(text){
+    text = text || '';
+    function fallbackCopy(){
+      const ta=document.createElement('textarea');
+      ta.value=text;
+      ta.style.position='fixed';
+      ta.style.left='-9999px';
+      document.body.appendChild(ta);
+      ta.focus();
+      ta.select();
+      try{document.execCommand('copy');}catch(e){}
+      document.body.removeChild(ta);
     }
+    if(navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(text).then(()=>{}).catch(fallbackCopy);
+    }else{
+      fallbackCopy();
+    }
+  };
+  function copyButtonHtml(addr){
+    const encoded = encodeURIComponent(String(addr||''));
+    return `<button type="button" onclick="window.copyMapAddress(decodeURIComponent('${encoded}'))" style="background:#ef1f25;color:#fff;border:0;border-radius:7px;padding:6px 9px;font-weight:800;cursor:pointer">Copy Address</button>`;
   }
   function showClickedAddress(mapPoint){
     if(!mapPoint) return;
@@ -969,7 +987,7 @@ require(["esri/Map","esri/views/MapView","esri/Graphic","esri/layers/GraphicsLay
         location: mapPoint,
         content: `<div style="font-family:Arial,sans-serif;min-width:220px">
           <div style="font-weight:800;margin-bottom:6px">${safeAddr}</div>
-          <button type="button" onclick="navigator.clipboard && navigator.clipboard.writeText('${String(addr).replace(/\\/g,'\\\\').replace(/'/g,"\\'")}')" style="background:#ef1f25;color:#fff;border:0;border-radius:7px;padding:6px 9px;font-weight:800;cursor:pointer">Copy Address</button>
+          ${copyButtonHtml(addr)}
         </div>`
       });
     }).catch(function(){

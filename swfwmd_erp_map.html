@@ -75,7 +75,8 @@ function highlightRow(idx){document.querySelectorAll('.permit-card').forEach(r=>
 function selectPermit(idx){highlightRow(idx);const marker=markerByIndex.get(idx);const p=PERMITS[idx];if(marker&&p){map.flyTo([Number(p.lat),Number(p.lon)],14,{duration:.6});setTimeout(()=>marker.openPopup(),650)}}
 function fitVisible(animate=true){const pts=filteredPermits.filter(p=>hasValue(p.lat)&&hasValue(p.lon)).map(p=>[Number(p.lat),Number(p.lon)]);if(pts.length)map.fitBounds(L.latLngBounds(pts),{padding:[35,35],animate});else map.setView([28.0,-82.5],8)}
 
-function copyText(text){if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(text).catch(()=>{});}
+window.copyMapAddress=function(text){text=text||'';function fallbackCopy(){const ta=document.createElement('textarea');ta.value=text;ta.style.position='fixed';ta.style.left='-9999px';document.body.appendChild(ta);ta.focus();ta.select();try{document.execCommand('copy');}catch(e){}document.body.removeChild(ta);}if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(text).then(()=>{}).catch(fallbackCopy);}else{fallbackCopy();}};
+function copyButtonHtml(addr){const encoded=encodeURIComponent(String(addr||''));return `<button type="button" onclick="window.copyMapAddress(decodeURIComponent('${encoded}'))" style="margin-top:7px;background:#ef1f25;color:#fff;border:0;border-radius:7px;padding:6px 9px;font-weight:800;cursor:pointer">Copy Address</button>`;}
 async function geocodeAddressSearch(){
   const q=document.getElementById('address-search').value.trim();
   if(!q){alert('Type an address or place first.');return;}
@@ -85,7 +86,7 @@ async function geocodeAddressSearch(){
     if(!c||!c.location){alert('No address match found.');return;}
     const lat=c.location.y,lon=c.location.x,addr=c.address||q;
     map.flyTo([lat,lon],16,{duration:.7});
-    L.popup().setLatLng([lat,lon]).setContent(`<div style="font-family:Arial,sans-serif;min-width:220px"><b>${escapeHtml(addr)}</b><br><button onclick="copyText('${String(addr).replace(/\\/g,'\\\\').replace(/'/g,"\\'")}')" style="margin-top:7px;background:#ef1f25;color:#fff;border:0;border-radius:7px;padding:6px 9px;font-weight:800;cursor:pointer">Copy Address</button></div>`).openOn(map);
+    L.popup().setLatLng([lat,lon]).setContent(`<div style="font-family:Arial,sans-serif;min-width:220px"><b>${escapeHtml(addr)}</b><br>${copyButtonHtml(addr)}</div>`).openOn(map);
   }catch(e){alert('Address search failed.');}
 }
 async function onMapClickAddress(e){
@@ -94,7 +95,7 @@ async function onMapClickAddress(e){
   const url=`https://geocode.arcgis.com/arcgis/rest/services/World/GeocodeServer/reverseGeocode?f=json&location=${lon},${lat}&distance=80&outSR=4326`;
   try{
     const res=await fetch(url);const data=await res.json();const addr=(data.address&&(data.address.Match_addr||data.address.LongLabel||data.address.Address))||`${lat.toFixed(6)}, ${lon.toFixed(6)}`;
-    L.popup().setLatLng(e.latlng).setContent(`<div style="font-family:Arial,sans-serif;min-width:220px"><b>${escapeHtml(addr)}</b><br><span style="font-size:10px;color:#667085">${lat.toFixed(6)}, ${lon.toFixed(6)}</span><br><button onclick="copyText('${String(addr).replace(/\\/g,'\\\\').replace(/'/g,"\\'")}')" style="margin-top:7px;background:#ef1f25;color:#fff;border:0;border-radius:7px;padding:6px 9px;font-weight:800;cursor:pointer">Copy Address</button></div>`).openOn(map);
+    L.popup().setLatLng(e.latlng).setContent(`<div style="font-family:Arial,sans-serif;min-width:220px"><b>${escapeHtml(addr)}</b><br><span style="font-size:10px;color:#667085">${lat.toFixed(6)}, ${lon.toFixed(6)}</span><br>${copyButtonHtml(addr)}</div>`).openOn(map);
   }catch(err){}
 }
 
