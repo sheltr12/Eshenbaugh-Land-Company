@@ -151,15 +151,43 @@ function addressPopupNode(addr, latlng){
   wrap.appendChild(copyButtonNode(addr||''));
   return wrap;
 }
+
+function pickStreetAddressFromArcgis(result, fallback){
+  const a = (result && (result.attributes || result.address)) || {};
+  if(typeof a === 'string') return a || fallback || 'No address found';
+
+  const place = String(a.PlaceName || a.Name || '').trim();
+  const parts = [];
+
+  const street = String(a.Address || a.StAddr || a.StreetName || a.ShortLabel || '').trim();
+  const city = String(a.City || a.Municipality || a.Subregion || '').trim();
+  const region = String(a.RegionAbbr || a.Region || '').trim();
+  const postal = String(a.Postal || a.PostalExt || '').trim();
+
+  if(street && street.toLowerCase() !== place.toLowerCase()) parts.push(street);
+  if(city) parts.push(city);
+  const stateZip = [region, postal].filter(Boolean).join(' ');
+  if(stateZip) parts.push(stateZip);
+
+  if(parts.length) return parts.join(', ');
+
+  const longLabel = String(a.LongLabel || a.Match_addr || a.MatchAddr || fallback || '').trim();
+  if(place && longLabel.toLowerCase().startsWith(place.toLowerCase())){
+    const stripped = longLabel.slice(place.length).replace(/^[\s,;-]+/,'').trim();
+    if(stripped) return stripped;
+  }
+  return longLabel || fallback || 'No address found';
+}
+
 window.geocodeAddressSearch=async function(){
   const q=document.getElementById('address-search').value.trim();
   if(!q){alert('Type an address or place first.');return;}
   const endpoint='https://geocode.arcgis.com/arcgis/rest/services/World/GeocodeServer/findAddressCandidates';
   try{
-    const data=await jsonpArcgis(endpoint,{maxLocations:1,outFields:'Match_addr,Addr_type',SingleLine:q});
+    const data=await jsonpArcgis(endpoint,{maxLocations:1,outFields:'*',SingleLine:q});
     const c=data.candidates&&data.candidates[0];
     if(!c||!c.location){alert('No address match found.');return;}
-    const lat=c.location.y,lon=c.location.x,addr=c.address||q;
+    const lat=c.location.y,lon=c.location.x,addr=pickStreetAddressFromArcgis(c,c.address||q);
     const latlng=L.latLng(lat,lon);
     map.flyTo(latlng,16,{duration:.7});
     setTimeout(()=>L.popup().setLatLng(latlng).setContent(addressPopupNode(addr,latlng)).openOn(map),250);
@@ -173,7 +201,7 @@ async function onMapClickAddress(e){
   const endpoint='https://geocode.arcgis.com/arcgis/rest/services/World/GeocodeServer/reverseGeocode';
   try{
     const data=await jsonpArcgis(endpoint,{location:lon+','+lat,distance:80,outSR:4326});
-    const addr=(data.address&&(data.address.Match_addr||data.address.LongLabel||data.address.Address))||`${lat.toFixed(6)}, ${lon.toFixed(6)}`;
+    const addr=pickStreetAddressFromArcgis(data,`${lat.toFixed(6)}, ${lon.toFixed(6)}`);
     L.popup().setLatLng(e.latlng).setContent(addressPopupNode(addr,e.latlng)).openOn(map);
   }catch(err){
     const addr=`${lat.toFixed(6)}, ${lon.toFixed(6)}`;

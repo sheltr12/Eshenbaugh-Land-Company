@@ -972,6 +972,34 @@ require(["esri/Map","esri/views/MapView","esri/Graphic","esri/layers/GraphicsLay
       fallbackCopy();
     }
   };
+
+  function pickStreetAddressFromArcgis(result, fallback){
+    const a = (result && (result.attributes || result.address)) || {};
+    if(typeof a === 'string') return a || fallback || 'No address found';
+
+    const place = String(a.PlaceName || a.Name || '').trim();
+    const parts = [];
+
+    const street = String(a.Address || a.StAddr || a.StreetName || a.ShortLabel || '').trim();
+    const city = String(a.City || a.Municipality || a.Subregion || '').trim();
+    const region = String(a.RegionAbbr || a.Region || '').trim();
+    const postal = String(a.Postal || a.PostalExt || '').trim();
+
+    if(street && street.toLowerCase() !== place.toLowerCase()) parts.push(street);
+    if(city) parts.push(city);
+    const stateZip = [region, postal].filter(Boolean).join(' ');
+    if(stateZip) parts.push(stateZip);
+
+    if(parts.length) return parts.join(', ');
+
+    const longLabel = String(a.LongLabel || a.Match_addr || a.MatchAddr || fallback || '').trim();
+    if(place && longLabel.toLowerCase().startsWith(place.toLowerCase())){
+      const stripped = longLabel.slice(place.length).replace(/^[\s,;-]+/,'').trim();
+      if(stripped) return stripped;
+    }
+    return longLabel || fallback || 'No address found';
+  }
+
   function addressPopupNode(addr, mapPoint){
     const wrap=document.createElement('div');
     wrap.style.fontFamily='Arial,sans-serif';
@@ -1016,9 +1044,10 @@ require(["esri/Map","esri/views/MapView","esri/Graphic","esri/layers/GraphicsLay
     if(!mapPoint) return;
     locator.locationToAddress("https://geocode.arcgis.com/arcgis/rest/services/World/GeocodeServer", {
       location: mapPoint,
-      outSpatialReference: view.spatialReference
+      outSpatialReference: view.spatialReference,
+      outFields: ["*"]
     }).then(function(response){
-      const addr = response && response.address ? response.address : "No address found";
+      const addr = pickStreetAddressFromArcgis(response, response && response.address ? response.address : "No address found");
       view.openPopup({
         title: "Clicked Location",
         location: mapPoint,
