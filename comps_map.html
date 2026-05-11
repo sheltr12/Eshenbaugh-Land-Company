@@ -465,7 +465,7 @@ function getAcreSize(a){
 }
 function buildPopupContent(comp){
   const rows=[
-    ['Property Name',fmtStr(comp.property_name)],['Price',fmtPrice(comp.price)],['Acres',fmtAcres(comp.acreage)],['$/Acre',fmtPPA(comp.price_per_acre)],
+    ['Property Name',fmtStr(comp.property_name)],['Address',fmtStr(comp.address)],['Price',fmtPrice(comp.price)],['Acres',fmtAcres(comp.acreage)],['$/Acre',fmtPPA(comp.price_per_acre)],
     ['Units',hasValue(comp.unit_count) ? Number(comp.unit_count).toLocaleString() : null],['$/Unit',fmtPPU(comp.price_per_unit)],
     ['Sale Date',fmtStr(comp.sale_date)],['Type',fmtStr(comp.property_type)],['ELC Deal',fmtStr(comp.elc_deal)],['Zoning',fmtStr(comp.zoning)],
     ['Land Use',fmtStr(comp.land_use)],['Seller',fmtStr(comp.grantor)],['Buyer',fmtStr(comp.grantee)],
@@ -1093,14 +1093,27 @@ require(["esri/Map","esri/views/MapView","esri/Graphic","esri/layers/GraphicsLay
         if(ok) savePinEdit(pinEditComp,lon,lat);
         return;
       }
-      view.hitTest(event).then(function(response){
+      view.hitTest(event, {include: graphicsLayer}).then(function(response){
         const result=(response.results||[]).find(r=>r.graphic && r.graphic.attributes && r.graphic.attributes.compKey);
         if(result && result.graphic && result.graphic.attributes){
+          event.stopPropagation();
           scrollToSidebarComp(result.graphic.attributes.compKey);
+          const g=result.graphic;
+          if(view.openPopup){
+            view.openPopup({features:[g],location:g.geometry});
+          }else if(view.popup&&view.popup.open){
+            view.popup.open({features:[g],location:g.geometry});
+          }
         }else{
           showClickedAddress(event.mapPoint);
         }
       }).catch(()=>{ showClickedAddress(event.mapPoint); });
+    });
+    view.on('pointer-move',function(event){
+      view.hitTest(event, {include: graphicsLayer}).then(function(response){
+        const hit=(response.results||[]).some(r=>r.graphic && r.graphic.attributes && r.graphic.attributes.compKey);
+        view.container.style.cursor=hit?'pointer':'default';
+      }).catch(()=>{view.container.style.cursor='default';});
     });
     view.watch('stationary',function(isStationary){ if(isStationary && sidebarFollowsMap) refreshSidebarList(); });
     view.when(()=>window.zoomToResults());
