@@ -956,23 +956,61 @@ require(["esri/Map","esri/views/MapView","esri/Graphic","esri/layers/GraphicsLay
     function fallbackCopy(){
       const ta=document.createElement('textarea');
       ta.value=text;
+      ta.setAttribute('readonly','');
       ta.style.position='fixed';
       ta.style.left='-9999px';
+      ta.style.top='0';
       document.body.appendChild(ta);
       ta.focus();
       ta.select();
       try{document.execCommand('copy');}catch(e){}
       document.body.removeChild(ta);
     }
-    if(navigator.clipboard && navigator.clipboard.writeText){
-      navigator.clipboard.writeText(text).then(()=>{}).catch(fallbackCopy);
+    if(navigator.clipboard && window.isSecureContext && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(text).catch(fallbackCopy);
     }else{
       fallbackCopy();
     }
   };
-  function copyButtonHtml(addr){
-    const encoded = encodeURIComponent(String(addr||''));
-    return `<button type="button" onclick="window.copyMapAddress(decodeURIComponent('${encoded}'))" style="background:#ef1f25;color:#fff;border:0;border-radius:7px;padding:6px 9px;font-weight:800;cursor:pointer">Copy Address</button>`;
+  function addressPopupNode(addr, mapPoint){
+    const wrap=document.createElement('div');
+    wrap.style.fontFamily='Arial,sans-serif';
+    wrap.style.minWidth='220px';
+
+    const address=document.createElement('div');
+    address.style.fontWeight='800';
+    address.style.marginBottom='6px';
+    address.textContent=addr || 'No address found';
+    wrap.appendChild(address);
+
+    if(mapPoint && mapPoint.latitude && mapPoint.longitude){
+      const ll=document.createElement('div');
+      ll.style.fontSize='10px';
+      ll.style.color='#667085';
+      ll.style.marginBottom='7px';
+      ll.textContent=mapPoint.latitude.toFixed(6)+', '+mapPoint.longitude.toFixed(6);
+      wrap.appendChild(ll);
+    }
+
+    const btn=document.createElement('button');
+    btn.type='button';
+    btn.textContent='Copy Address';
+    btn.style.background='#ef1f25';
+    btn.style.color='#fff';
+    btn.style.border='0';
+    btn.style.borderRadius='7px';
+    btn.style.padding='6px 9px';
+    btn.style.fontWeight='800';
+    btn.style.cursor='pointer';
+    btn.addEventListener('click',function(e){
+      e.preventDefault();
+      e.stopPropagation();
+      window.copyMapAddress(addr || '');
+      btn.textContent='Copied';
+      setTimeout(()=>btn.textContent='Copy Address',1200);
+    });
+    wrap.appendChild(btn);
+    return wrap;
   }
   function showClickedAddress(mapPoint){
     if(!mapPoint) return;
@@ -981,14 +1019,10 @@ require(["esri/Map","esri/views/MapView","esri/Graphic","esri/layers/GraphicsLay
       outSpatialReference: view.spatialReference
     }).then(function(response){
       const addr = response && response.address ? response.address : "No address found";
-      const safeAddr = String(addr).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]));
       view.openPopup({
         title: "Clicked Location",
         location: mapPoint,
-        content: `<div style="font-family:Arial,sans-serif;min-width:220px">
-          <div style="font-weight:800;margin-bottom:6px">${safeAddr}</div>
-          ${copyButtonHtml(addr)}
-        </div>`
+        content: addressPopupNode(addr, mapPoint)
       });
     }).catch(function(){
       const lon = mapPoint.longitude ? mapPoint.longitude.toFixed(6) : '';
@@ -996,7 +1030,7 @@ require(["esri/Map","esri/views/MapView","esri/Graphic","esri/layers/GraphicsLay
       view.openPopup({
         title: "Clicked Location",
         location: mapPoint,
-        content: `<div style="font-family:Arial,sans-serif;min-width:220px">No address found.<br>Lat/Lon: ${lat}, ${lon}</div>`
+        content: addressPopupNode(`${lat}, ${lon}`, mapPoint)
       });
     });
   }

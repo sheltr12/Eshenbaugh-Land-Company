@@ -47,7 +47,7 @@ button{border:1px solid #cbd5df;background:#fff;color:var(--elc-ink);border-radi
       <label>District<select id="district-filter"><option value="all">All Districts</option></select></label>
       <label class="filter-wide">Search ERP Records<input id="search-filter" placeholder="Project, permittee, app ID, district..."></label>
       <label class="filter-wide">Find Address / Place<input id="address-search" placeholder="Type an address or place, then click Zoom"></label>
-      <div id="filter-buttons"><button class="btn-red" type="button" onclick="resetFilters()">Reset Filters</button><button type="button" onclick="fitVisible()">Zoom to Results</button><button type="button" onclick="geocodeAddressSearch()">Zoom to Address</button><button type="button" onclick="window.open('index.html','_blank')">Comps Database</button></div>
+      <div id="filter-buttons"><button class="btn-red" type="button" onclick="resetFilters()">Reset Filters</button><button type="button" onclick="fitVisible()">Zoom to Results</button><button type="button" id="zoom-address-btn">Zoom to Address</button><button type="button" onclick="window.open('index.html','_blank')">Comps Database</button></div>
     </div>
     <div id="count">Loading...</div><div id="list"></div>
   </div>
@@ -75,32 +75,120 @@ function highlightRow(idx){document.querySelectorAll('.permit-card').forEach(r=>
 function selectPermit(idx){highlightRow(idx);const marker=markerByIndex.get(idx);const p=PERMITS[idx];if(marker&&p){map.flyTo([Number(p.lat),Number(p.lon)],14,{duration:.6});setTimeout(()=>marker.openPopup(),650)}}
 function fitVisible(animate=true){const pts=filteredPermits.filter(p=>hasValue(p.lat)&&hasValue(p.lon)).map(p=>[Number(p.lat),Number(p.lon)]);if(pts.length)map.fitBounds(L.latLngBounds(pts),{padding:[35,35],animate});else map.setView([28.0,-82.5],8)}
 
-window.copyMapAddress=function(text){text=text||'';function fallbackCopy(){const ta=document.createElement('textarea');ta.value=text;ta.style.position='fixed';ta.style.left='-9999px';document.body.appendChild(ta);ta.focus();ta.select();try{document.execCommand('copy');}catch(e){}document.body.removeChild(ta);}if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(text).then(()=>{}).catch(fallbackCopy);}else{fallbackCopy();}};
-function copyButtonHtml(addr){const encoded=encodeURIComponent(String(addr||''));return `<button type="button" onclick="window.copyMapAddress(decodeURIComponent('${encoded}'))" style="margin-top:7px;background:#ef1f25;color:#fff;border:0;border-radius:7px;padding:6px 9px;font-weight:800;cursor:pointer">Copy Address</button>`;}
-async function geocodeAddressSearch(){
+window.copyMapAddress=function(text){
+  text=text||'';
+  function fallbackCopy(){
+    const ta=document.createElement('textarea');
+    ta.value=text;
+    ta.setAttribute('readonly','');
+    ta.style.position='fixed';
+    ta.style.left='-9999px';
+    ta.style.top='0';
+    document.body.appendChild(ta);
+    ta.focus();
+    ta.select();
+    try{document.execCommand('copy');}catch(e){}
+    document.body.removeChild(ta);
+  }
+  if(navigator.clipboard&&window.isSecureContext&&navigator.clipboard.writeText){
+    navigator.clipboard.writeText(text).catch(fallbackCopy);
+  }else{
+    fallbackCopy();
+  }
+};
+function jsonpArcgis(endpoint, params){
+  return new Promise((resolve,reject)=>{
+    const cb='jsonp_cb_'+Date.now()+'_'+Math.round(Math.random()*100000);
+    const script=document.createElement('script');
+    const qs=new URLSearchParams({...params,f:'json',callback:cb}).toString();
+    const timer=setTimeout(()=>{cleanup();reject(new Error('Geocode timed out'));},12000);
+    function cleanup(){clearTimeout(timer);delete window[cb];if(script.parentNode)script.parentNode.removeChild(script);}
+    window[cb]=function(data){cleanup();resolve(data);};
+    script.onerror=function(){cleanup();reject(new Error('Geocode failed'));};
+    script.src=endpoint+'?'+qs;
+    document.body.appendChild(script);
+  });
+}
+function copyButtonNode(addr){
+  const btn=document.createElement('button');
+  btn.type='button';
+  btn.textContent='Copy Address';
+  btn.style.marginTop='7px';
+  btn.style.background='#ef1f25';
+  btn.style.color='#fff';
+  btn.style.border='0';
+  btn.style.borderRadius='7px';
+  btn.style.padding='6px 9px';
+  btn.style.fontWeight='800';
+  btn.style.cursor='pointer';
+  btn.addEventListener('click',function(e){
+    e.preventDefault();
+    e.stopPropagation();
+    if(window.L&&L.DomEvent){L.DomEvent.stop(e);}
+    window.copyMapAddress(addr||'');
+    btn.textContent='Copied';
+    setTimeout(()=>btn.textContent='Copy Address',1200);
+  });
+  return btn;
+}
+function addressPopupNode(addr, latlng){
+  const wrap=document.createElement('div');
+  wrap.style.fontFamily='Arial,sans-serif';
+  wrap.style.minWidth='220px';
+  if(window.L&&L.DomEvent){L.DomEvent.disableClickPropagation(wrap);L.DomEvent.disableScrollPropagation(wrap);}
+  const b=document.createElement('b');
+  b.textContent=addr||'No address found';
+  wrap.appendChild(b);
+  if(latlng){
+    wrap.appendChild(document.createElement('br'));
+    const small=document.createElement('span');
+    small.style.fontSize='10px';
+    small.style.color='#667085';
+    small.textContent=Number(latlng.lat).toFixed(6)+', '+Number(latlng.lng).toFixed(6);
+    wrap.appendChild(small);
+  }
+  wrap.appendChild(document.createElement('br'));
+  wrap.appendChild(copyButtonNode(addr||''));
+  return wrap;
+}
+window.geocodeAddressSearch=async function(){
   const q=document.getElementById('address-search').value.trim();
   if(!q){alert('Type an address or place first.');return;}
-  const url='https://geocode.arcgis.com/arcgis/rest/services/World/GeocodeServer/findAddressCandidates?f=json&maxLocations=1&outFields=Match_addr,Addr_type&SingleLine='+encodeURIComponent(q);
+  const endpoint='https://geocode.arcgis.com/arcgis/rest/services/World/GeocodeServer/findAddressCandidates';
   try{
-    const res=await fetch(url);const data=await res.json();const c=data.candidates&&data.candidates[0];
+    const data=await jsonpArcgis(endpoint,{maxLocations:1,outFields:'Match_addr,Addr_type',SingleLine:q});
+    const c=data.candidates&&data.candidates[0];
     if(!c||!c.location){alert('No address match found.');return;}
     const lat=c.location.y,lon=c.location.x,addr=c.address||q;
-    map.flyTo([lat,lon],16,{duration:.7});
-    L.popup().setLatLng([lat,lon]).setContent(`<div style="font-family:Arial,sans-serif;min-width:220px"><b>${escapeHtml(addr)}</b><br>${copyButtonHtml(addr)}</div>`).openOn(map);
-  }catch(e){alert('Address search failed.');}
-}
+    const latlng=L.latLng(lat,lon);
+    map.flyTo(latlng,16,{duration:.7});
+    setTimeout(()=>L.popup().setLatLng(latlng).setContent(addressPopupNode(addr,latlng)).openOn(map),250);
+  }catch(e){
+    alert('Address search failed.');
+    console.error(e);
+  }
+};
 async function onMapClickAddress(e){
-  // If a marker popup is already opening, Leaflet will still fire map click in some cases, but this is harmless.
   const lat=e.latlng.lat,lon=e.latlng.lng;
-  const url=`https://geocode.arcgis.com/arcgis/rest/services/World/GeocodeServer/reverseGeocode?f=json&location=${lon},${lat}&distance=80&outSR=4326`;
+  const endpoint='https://geocode.arcgis.com/arcgis/rest/services/World/GeocodeServer/reverseGeocode';
   try{
-    const res=await fetch(url);const data=await res.json();const addr=(data.address&&(data.address.Match_addr||data.address.LongLabel||data.address.Address))||`${lat.toFixed(6)}, ${lon.toFixed(6)}`;
-    L.popup().setLatLng(e.latlng).setContent(`<div style="font-family:Arial,sans-serif;min-width:220px"><b>${escapeHtml(addr)}</b><br><span style="font-size:10px;color:#667085">${lat.toFixed(6)}, ${lon.toFixed(6)}</span><br>${copyButtonHtml(addr)}</div>`).openOn(map);
-  }catch(err){}
+    const data=await jsonpArcgis(endpoint,{location:lon+','+lat,distance:80,outSR:4326});
+    const addr=(data.address&&(data.address.Match_addr||data.address.LongLabel||data.address.Address))||`${lat.toFixed(6)}, ${lon.toFixed(6)}`;
+    L.popup().setLatLng(e.latlng).setContent(addressPopupNode(addr,e.latlng)).openOn(map);
+  }catch(err){
+    const addr=`${lat.toFixed(6)}, ${lon.toFixed(6)}`;
+    L.popup().setLatLng(e.latlng).setContent(addressPopupNode(addr,e.latlng)).openOn(map);
+  }
+}
+function setupAddressSearchControls(){
+  const btn=document.getElementById('zoom-address-btn');
+  if(btn) btn.addEventListener('click',function(e){e.preventDefault();window.geocodeAddressSearch();});
+  const input=document.getElementById('address-search');
+  if(input) input.addEventListener('keydown',function(e){if(e.key==='Enter'){e.preventDefault();window.geocodeAddressSearch();}});
 }
 
 function resetFilters(){document.getElementById('year-filter').value='all';document.getElementById('month-filter').value='all';document.getElementById('size-filter').value='all';document.getElementById('district-filter').value='all';document.getElementById('search-filter').value='';applyFilters()}
-(async function init(){await loadData();initMap();populateFilters();applyFilters()})();
+(async function init(){await loadData();initMap();populateFilters();setupAddressSearchControls();applyFilters()})();
 </script>
 </body>
 </html>
