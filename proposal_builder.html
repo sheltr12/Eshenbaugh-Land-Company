@@ -17,7 +17,7 @@
   --teal:#0a4d5a;
   --cream:#f7f3ec;
 }
-*{box-sizing:border-box}
+*{box-sizing:border-box;-webkit-print-color-adjust:exact;print-color-adjust:exact}
 body{margin:0;font-family:"Segoe UI",Arial,sans-serif;background:var(--bg);color:var(--ink)}
 .app{display:grid;grid-template-columns:420px 1fr;min-height:100vh}
 .builder{height:100vh;overflow:auto;background:#fff;border-right:4px solid var(--red);position:sticky;top:0;z-index:10}
@@ -130,6 +130,15 @@ tfoot td{font-weight:900;background:#f1f5f9}
 .custom-box{border:1px dashed #aeb8c5;min-height:4.9in;padding:16px;white-space:pre-wrap;font-size:12.2px;line-height:1.55}
 @media(max-width:1320px){.app{grid-template-columns:1fr}.builder{height:auto;position:relative}.sheet{transform:scale(.72);transform-origin:top center;margin-bottom:-1.7in}}
 @media print{
+
+  .hero-cover,.chapter,.dark-section,.footer-bar,.value-card,th{background-color:#061826!important;color:#fff!important}
+  .builder-head,.btn-black{background-color:#000!important;color:#fff!important}
+  .diagonal{background-color:rgba(0,22,36,.92)!important}
+  .hero-img:after,.chapter-img:after{background-color:rgba(0,16,28,.72)!important}
+  .stat,.overlay-card,.info-panel,.highlight,.page-head,.sheet{background-color:#fff!important}
+  .dark-section .highlight{background-color:#fff!important;color:#111827!important}
+  .dark-section .highlight p,.dark-section .highlight h3{color:#111827!important}
+
   body{background:#fff}.builder,.preview-toolbar{display:none!important}.app{display:block}.preview-shell{padding:0}.preview{display:block;gap:0}.sheet{box-shadow:none;width:8.5in;height:8.5in;min-height:8.5in;page-break-after:always;break-after:page;margin:0}@page{size:letter landscape;margin:0}
 }
 </style>
@@ -225,7 +234,7 @@ We will combine targeted outreach, direct calls, email campaigns, Eshenbaugh Rep
 
   <main class="preview-shell">
     <div class="preview-toolbar">
-      <div><b>Live Preview</b><div class="small">Landscape proposal format, built for widescreen 16:9 aerials, full-bleed imagery, dark overlays, stat cards, and brochure-style section pages.</div></div>
+      <div><b>Live Preview</b><div class="small">Landscape proposal format built for 16:9 aerials. For best PDF output, make sure “Background graphics” is enabled in the print dialog.</div></div>
       <div class="btns"><button class="btn-red" onclick="renderProposal()">Refresh</button><button class="btn-black" onclick="window.print()">Print / Save as PDF</button></div>
     </div>
     <div id="preview" class="preview"></div>
