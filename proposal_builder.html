@@ -59,9 +59,9 @@ button:hover,.btn:hover{background:#f1f5f9}
 .preview-toolbar{position:sticky;top:0;z-index:6;background:rgba(232,228,220,.95);backdrop-filter:blur(6px);border:1px solid #ccc7bb;border-radius:10px;padding:10px;margin-bottom:16px;display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
 .preview{display:flex;flex-direction:column;gap:24px;align-items:center}
 
-/* ══ Page Shell — Portrait 8.5×11 ══ */
+/* ══ Page Shell — Landscape 11×8.5 ══ */
 .page{
-  width:8.5in;height:11in;min-height:11in;
+  width:11in;height:8.5in;min-height:8.5in;
   background:#fff;
   box-shadow:0 10px 32px rgba(0,0,0,.18);
   position:relative;overflow:hidden;
@@ -283,8 +283,8 @@ tfoot td.avg-v{color:var(--red);font-size:13px}
   .app{display:block}
   .preview-shell{padding:0}
   .preview{display:block;gap:0}
-  .page{box-shadow:none;width:8.5in;height:11in;min-height:11in;page-break-after:always;break-after:page;margin:0;transform:none!important}
-  @page{size:letter portrait;margin:0}
+  .page{box-shadow:none;width:11in;height:8.5in;min-height:8.5in;page-break-after:always;break-after:page;margin:0;transform:none!important}
+  @page{size:letter landscape;margin:0}
 }
 </style>
 </head>
@@ -294,7 +294,7 @@ tfoot td.avg-v{color:var(--red);font-size:13px}
     <div class="builder-head">
       <div class="logo-card"><img src="EshenbaughLogo.png" alt="Eshenbaugh Land Company"></div>
       <h1>Proposal Builder</h1>
-      <p>Portrait proposal format. Enable "Background graphics" in the print dialog for best results.</p>
+      <p>Landscape proposal format. Enable "Background graphics" in the print dialog for best results.</p>
     </div>
     <div class="builder-body">
       <div class="btns">
@@ -382,7 +382,7 @@ We will combine targeted outreach, direct calls, email campaigns, Eshenbaugh Rep
 
   <main class="preview-shell">
     <div class="preview-toolbar">
-      <div><b>Live Preview</b><div class="small">Portrait proposal format. Enable "Background graphics" in browser print dialog.</div></div>
+      <div><b>Live Preview</b><div class="small">Landscape proposal format. Enable "Background graphics" in browser print dialog.</div></div>
       <div class="btns"><button class="btn-red" onclick="renderProposal()">Refresh</button><button class="btn-black" onclick="window.print()">Print / Save as PDF</button></div>
     </div>
     <div id="preview" class="preview"></div>
