@@ -7,22 +7,20 @@
 <style>
 :root{
   --red:#ef1f25;
-  --black:#030405;
-  --ink:#111827;
+  --black:#050505;
+  --ink:#17212f;
   --muted:#667085;
-  --line:#d8e0ea;
+  --line:#d9e1ea;
   --bg:#eef2f6;
-  --white:#ffffff;
-  --navy:#061826;
-  --teal:#0a4d5a;
-  --cream:#f7f3ec;
+  --soft:#f8fafc;
+  --white:#fff;
 }
 *{box-sizing:border-box;-webkit-print-color-adjust:exact;print-color-adjust:exact}
-body{margin:0;font-family:"Segoe UI",Arial,sans-serif;background:var(--bg);color:var(--ink)}
+body{margin:0;background:var(--bg);font-family:"Segoe UI",Arial,sans-serif;color:var(--ink)}
 .app{display:grid;grid-template-columns:420px 1fr;min-height:100vh}
 .builder{height:100vh;overflow:auto;background:#fff;border-right:4px solid var(--red);position:sticky;top:0;z-index:10}
 .builder-head{background:#000;color:#fff;padding:18px}
-.logo-card{background:#fff;border-radius:10px;padding:8px 10px;max-width:300px;margin-bottom:13px}
+.logo-card{background:#fff;border-radius:10px;padding:7px 9px;max-width:300px;margin-bottom:13px}
 .logo-card img{display:block;width:100%;height:auto}
 .builder-head h1{margin:0;font-size:21px}
 .builder-head p{margin:6px 0 0;color:#cbd5e1;font-size:12px;line-height:1.4}
@@ -57,89 +55,73 @@ button:hover,.btn:hover{background:#f1f5f9}
 .preview-toolbar{position:sticky;top:0;z-index:6;background:rgba(238,242,246,.95);backdrop-filter:blur(6px);border:1px solid var(--line);border-radius:12px;padding:10px;margin-bottom:16px;display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
 .preview{display:flex;flex-direction:column;gap:20px;align-items:center}
 
-.sheet{width:11in;min-height:8.5in;background:#fff;box-shadow:0 12px 34px rgba(2,6,23,.18);position:relative;overflow:hidden}
-.page-pad{padding:.58in .62in .78in}
-.bg-topo:before{content:"";position:absolute;inset:0;opacity:.075;background:
-  radial-gradient(circle at 20% 25%, transparent 0 35px, #fff 36px 38px, transparent 39px),
-  radial-gradient(circle at 70% 60%, transparent 0 48px, #fff 49px 51px, transparent 52px),
-  repeating-radial-gradient(circle at 10% 80%, transparent 0 22px, rgba(255,255,255,.95) 23px 24px, transparent 25px 42px);pointer-events:none}
-.hero-cover{background:#061826;color:#fff}
-.hero-img{position:absolute;inset:0}
-.hero-img img{width:100%;height:100%;object-fit:cover;filter:saturate(1.04) contrast(1.04)}
-.hero-img:after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(2,6,23,.18),rgba(2,6,23,.75)),linear-gradient(90deg,rgba(0,0,0,.78),rgba(0,0,0,.08))}
-.diagonal{position:absolute;inset:-.5in 5.1in -.5in -.8in;background:rgba(0,22,36,.86);transform:skewX(-14deg);transform-origin:top left;border-right:5px solid rgba(239,31,37,.95)}
-.cover-logo{position:absolute;left:.55in;top:.44in;width:3.25in;background:#fff;border-radius:12px;padding:10px 14px;z-index:3}
-.cover-logo img{width:100%;display:block}
-.cover-content{position:absolute;left:.62in;right:.7in;top:3.0in;z-index:3;color:#fff}
-.kicker{font-size:11px;text-transform:uppercase;letter-spacing:.2em;color:#ff4248;font-weight:900}
-.cover-content h1{font-size:47px;line-height:.98;margin:10px 0 14px;letter-spacing:-1.2px;text-transform:uppercase;max-width:6.8in}
-.cover-address{font-size:17px;letter-spacing:.06em;text-transform:uppercase;color:#e8eef5;font-weight:800}
-.cover-strip{position:absolute;left:.62in;right:.62in;bottom:.58in;display:grid;grid-template-columns:repeat(4,1fr);gap:12px;z-index:3}
-.stat{background:rgba(255,255,255,.93);border-left:5px solid var(--red);border-radius:0 10px 10px 0;padding:11px;color:#07121f}
-.stat b{display:block;font-size:18px}
-.stat span{display:block;font-size:9px;text-transform:uppercase;color:#667085;font-weight:900;letter-spacing:.06em}
-.footer-bar{position:absolute;left:0;right:0;bottom:0;height:.42in;background:#061826;color:#fff;display:flex;align-items:center;justify-content:space-between;padding:0 .42in;font-size:9px;text-transform:uppercase;letter-spacing:.08em}
-.footer-bar img{height:.24in;width:auto;background:#fff;border-radius:4px;padding:2px 6px}
-.page-number{background:var(--red);color:#fff;display:inline-flex;align-items:center;justify-content:center;width:.32in;height:.32in;margin-left:.12in;font-weight:900}
-.chapter{background:#061826;color:#fff}
-.chapter-img{position:absolute;inset:0}
-.chapter-img img{width:100%;height:100%;object-fit:cover;filter:saturate(1.05)}
-.chapter-img:after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(0,16,28,.92) 0%,rgba(0,16,28,.76) 48%,rgba(0,16,28,.18) 100%)}
-.chapter-panel{position:absolute;left:.72in;top:3.0in;width:3.4in;z-index:2}
-.chapter-panel h2{font-size:40px;line-height:1.05;margin:0;text-transform:uppercase;letter-spacing:-.5px}
-.chapter-line{height:2px;background:#fff;margin:16px 0;width:100%}
-.page-head{display:flex;justify-content:space-between;align-items:flex-end;border-bottom:2px solid #8a3a31;padding-bottom:9px;margin-bottom:22px;position:relative;z-index:1}
-.page-head h2{margin:0;color:#073145;font-size:24px;text-transform:uppercase;letter-spacing:.03em}
-.page-head img{width:1.55in}
-.body-copy{font-size:12.1px;line-height:1.58;color:#2f3b4b;white-space:pre-wrap}
-.two-col{display:grid;grid-template-columns:1.15fr .85fr;gap:26px}
-.info-panel{background:#f4f1ea;border:1px solid #e2ddd4;padding:18px;position:relative;z-index:1}
-.info-row{display:grid;grid-template-columns:1fr 1.15fr;border-bottom:1px solid #d8d1c7;padding:7px 0;font-size:11.4px}
+.page{width:11in;height:8.5in;min-height:8.5in;background:#fff;box-shadow:0 14px 34px rgba(15,23,42,.18);position:relative;overflow:hidden}
+.page-pad{padding:.62in .62in .72in}
+.logo-small{width:2.55in;height:auto}
+.header{position:absolute;left:0;right:0;top:0;height:.66in;background:#fff;border-bottom:1px solid #dfe5ec;display:flex;align-items:center;justify-content:space-between;padding:0 .52in;z-index:4}
+.header img{width:2.38in;height:auto}
+.header-title{text-align:right}
+.header-title b{display:block;font-size:17px;text-transform:uppercase;letter-spacing:.06em;color:#111827}
+.header-title span{display:block;font-size:9.5px;text-transform:uppercase;letter-spacing:.12em;color:#667085;margin-top:3px}
+.redline{position:absolute;left:0;right:0;top:.66in;height:5px;background:var(--red);z-index:5}
+.footer{position:absolute;left:0;right:0;bottom:0;height:.45in;background:#fff;border-top:1px solid #dfe5ec;display:flex;align-items:center;justify-content:space-between;padding:0 .5in;font-size:9.5px;color:#667085;text-transform:uppercase;letter-spacing:.06em}
+.footer:before{content:"";position:absolute;left:0;bottom:0;width:.44in;height:.45in;background:var(--red)}
+.footer .footer-left{padding-left:.33in;color:#17212f;font-weight:800}
+.footer img{height:.23in;width:auto}
+.page-num{display:inline-flex;align-items:center;justify-content:center;width:.28in;height:.28in;border-radius:50%;background:var(--red);color:#fff;font-weight:900;margin-left:.12in}
+.hero-contained{position:absolute;left:0;right:0;top:.72in;height:4.95in;background:#fff;display:flex;align-items:center;justify-content:center;overflow:hidden}
+.hero-contained img{max-width:100%;max-height:100%;width:auto;height:auto;display:block}
+.cover-ribbon{position:absolute;right:0;top:5.48in;background:var(--red);color:#fff;padding:13px 30px;font-size:12px;letter-spacing:.14em;text-transform:uppercase;font-weight:900}
+.cover-bottom{position:absolute;left:.58in;right:.58in;top:5.92in;bottom:.65in;display:grid;grid-template-columns:1fr 1.15fr;gap:.38in}
+.smallcaps{font-size:10px;text-transform:uppercase;letter-spacing:.13em;font-weight:900;color:var(--red)}
+.cover-bottom h1{font-size:46px;line-height:.98;margin:8px 0 10px;color:#111827;text-transform:uppercase;letter-spacing:-.035em}
+.body-copy{font-size:11.5px;line-height:1.48;color:#354154;white-space:pre-wrap}
+.stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;align-content:start}
+.stat{background:#fff;border:1px solid #dfe5ec;border-left:6px solid var(--red);border-radius:7px;padding:12px 13px;min-height:.72in}
+.stat b{display:block;font-size:22px;color:#111827}
+.stat span{display:block;font-size:8.8px;text-transform:uppercase;color:#667085;font-weight:900;letter-spacing:.07em;margin-top:2px}
+.page-title{font-size:26px;margin:0 0 14px;text-transform:uppercase;letter-spacing:.02em;color:#111827}
+.section-rule{height:3px;background:var(--red);width:2.1in;margin:0 0 22px}
+.two-col{display:grid;grid-template-columns:1.05fr .95fr;gap:.38in}
+.three-col{display:grid;grid-template-columns:repeat(3,1fr);gap:.18in}
+.card{border:1px solid #dfe5ec;border-top:5px solid var(--red);border-radius:7px;padding:14px;background:#fff}
+.card h3{margin:0 0 7px;font-size:14px;text-transform:uppercase;color:#111827}
+.card p{font-size:10.8px;line-height:1.42;color:#3d4a5c;margin:0}
+.info-panel{background:#f8fafc;border:1px solid #dfe5ec;border-radius:8px;padding:15px}
+.info-row{display:grid;grid-template-columns:1fr 1.25fr;border-bottom:1px solid #dfe5ec;padding:8px 0;font-size:10.8px}
 .info-row:last-child{border-bottom:0}
-.info-row span{font-weight:900;color:#233443}
+.info-row span{font-weight:900;color:#17212f;text-transform:uppercase;font-size:9px;letter-spacing:.06em}
 .info-row b{font-weight:700;color:#111827}
-.overlay-card{background:rgba(255,255,255,.86);border-left:4px solid var(--red);padding:18px;box-shadow:0 12px 24px rgba(15,23,42,.14)}
-.section-label{font-size:10px;text-transform:uppercase;letter-spacing:.12em;font-weight:900;color:var(--red);margin-bottom:8px}
-.dark-section{background:#071826;color:#fff}
-.dark-section .page-head{border-bottom-color:rgba(255,255,255,.45)}
-.dark-section .page-head h2{color:#fff}
-.dark-section .body-copy{color:#e2e8f0}
-.image-full{position:absolute;inset:0}
-.image-full img{width:100%;height:100%;object-fit:cover}
-.image-bleed{height:3.35in;margin:-.58in -.62in 24px;position:relative;overflow:hidden}
-.image-bleed img{width:100%;height:100%;object-fit:cover}
-.image-bleed:after{content:"";position:absolute;inset:0;background:linear-gradient(0deg,rgba(255,255,255,1),rgba(255,255,255,.08) 58%,rgba(0,0,0,.15))}
-.caption-card{position:absolute;left:.62in;bottom:.28in;background:rgba(255,255,255,.88);border-left:4px solid var(--red);padding:13px 16px;max-width:3.6in;font-size:12px;font-weight:800}
-.highlight-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
-.highlight{background:#fff;border:1px solid #d9e1ea;border-top:5px solid var(--red);padding:13px;min-height:1.35in}
-.highlight h3{margin:0 0 7px;font-size:13px;color:#061826;text-transform:uppercase}
-.highlight p{margin:0;font-size:11px;line-height:1.42;color:#3d4a5c}
-.value-card{background:#061826;color:#fff;padding:22px;border-radius:0;position:relative;overflow:hidden}
-.value-card:after{content:"";position:absolute;right:-.4in;bottom:-.4in;width:1.8in;height:1.8in;border:2px solid rgba(239,31,37,.65);transform:rotate(45deg)}
-.value-card .big{font-size:36px;font-weight:900;position:relative;z-index:1}
-.value-card .label{font-size:10px;text-transform:uppercase;letter-spacing:.14em;color:#cbd5e1;position:relative;z-index:1}
-table{width:100%;border-collapse:collapse;font-size:10.3px;position:relative;z-index:1}
-th{background:#061826;color:#fff;text-align:left;padding:8px 8px;font-size:9px;text-transform:uppercase;letter-spacing:.06em}
+.image-frame{background:#fff;border:1px solid #dfe5ec;display:flex;align-items:center;justify-content:center;overflow:hidden}
+.image-frame img{max-width:100%;max-height:100%;width:auto;height:auto;display:block}
+.image-caption{font-size:9px;color:#667085;text-transform:uppercase;letter-spacing:.08em;margin-top:7px}
+.full-aerial{position:absolute;left:.62in;right:.62in;top:1.05in;bottom:.86in;background:#fff;border:1px solid #dfe5ec;display:flex;align-items:center;justify-content:center}
+.full-aerial img{max-width:100%;max-height:100%;width:auto;height:auto}
+.red-note{position:absolute;left:.62in;right:.62in;bottom:.46in;background:var(--red);color:#fff;padding:10px 18px;font-size:11px;font-weight:800}
+.value-box{background:#111827;color:#fff;border-radius:8px;padding:20px;border-left:7px solid var(--red)}
+.value-box .label{font-size:10px;text-transform:uppercase;letter-spacing:.12em;color:#cbd5e1;font-weight:900}
+.value-box .big{font-size:34px;font-weight:900;margin-top:6px}
+table{width:100%;border-collapse:collapse;font-size:9.4px}
+th{background:#111827;color:#fff;text-align:left;padding:7px 8px;font-size:8.2px;text-transform:uppercase;letter-spacing:.06em}
 td{border-bottom:1px solid #e2e8f0;padding:7px 8px;vertical-align:top}
 tfoot td{font-weight:900;background:#f1f5f9}
-.photo-grid{display:grid;grid-template-columns:1.35fr 1fr 1fr;gap:12px}
-.photo-grid .imgbox:first-child{grid-column:span 2;grid-row:span 2;min-height:4.85in}
-.imgbox{background:#edf2f7;min-height:2.3in;position:relative;overflow:hidden;border:8px solid #fff;box-shadow:0 6px 18px rgba(15,23,42,.10)}
-.imgbox img{width:100%;height:100%;object-fit:cover;display:block}
-.placeholder{height:100%;display:flex;align-items:center;justify-content:center;color:#667085;font-weight:900;text-align:center;padding:20px}
-.custom-box{border:1px dashed #aeb8c5;min-height:4.9in;padding:16px;white-space:pre-wrap;font-size:12.2px;line-height:1.55}
-@media(max-width:1320px){.app{grid-template-columns:1fr}.builder{height:auto;position:relative}.sheet{transform:scale(.72);transform-origin:top center;margin-bottom:-1.7in}}
+.contents-table td{font-size:12px;padding:8px 0;border-bottom:1px solid #e5eaf0}
+.contents-table td:last-child{text-align:right;color:var(--red);font-weight:900}
+.photo-grid{display:grid;grid-template-columns:1.25fr 1fr;gap:.18in;height:5.75in}
+.photo-grid .image-frame:first-child{grid-row:span 2}
+.custom-box{border:1px dashed #aeb8c5;min-height:5.6in;padding:16px;white-space:pre-wrap;font-size:11.5px;line-height:1.5}
+.disclaimer{font-size:7.5px;line-height:1.35;color:#667085;position:absolute;left:.62in;right:.62in;bottom:.55in}
+
+@media(max-width:1320px){.app{grid-template-columns:1fr}.builder{height:auto;position:relative}.page{transform:scale(.72);transform-origin:top center;margin-bottom:-1.75in}}
 @media print{
-
-  .hero-cover,.chapter,.dark-section,.footer-bar,.value-card,th{background-color:#061826!important;color:#fff!important}
-  .builder-head,.btn-black{background-color:#000!important;color:#fff!important}
-  .diagonal{background-color:rgba(0,22,36,.92)!important}
-  .hero-img:after,.chapter-img:after{background-color:rgba(0,16,28,.72)!important}
-  .stat,.overlay-card,.info-panel,.highlight,.page-head,.sheet{background-color:#fff!important}
-  .dark-section .highlight{background-color:#fff!important;color:#111827!important}
-  .dark-section .highlight p,.dark-section .highlight h3{color:#111827!important}
-
-  body{background:#fff}.builder,.preview-toolbar{display:none!important}.app{display:block}.preview-shell{padding:0}.preview{display:block;gap:0}.sheet{box-shadow:none;width:8.5in;height:8.5in;min-height:8.5in;page-break-after:always;break-after:page;margin:0}@page{size:letter landscape;margin:0}
+  body{background:#fff}
+  .builder,.preview-toolbar{display:none!important}
+  .app{display:block}
+  .preview-shell{padding:0}
+  .preview{display:block;gap:0}
+  .page{box-shadow:none;width:11in;height:8.5in;min-height:8.5in;page-break-after:always;break-after:page;margin:0;transform:none!important}
+  .header,.footer,.value-box,th,.cover-ribbon,.red-note,.footer:before,.redline,.section-rule{ -webkit-print-color-adjust:exact!important; print-color-adjust:exact!important; }
+  @page{size:letter landscape;margin:0}
 }
 </style>
 </head>
@@ -149,7 +131,7 @@ tfoot td{font-weight:900;background:#f1f5f9}
     <div class="builder-head">
       <div class="logo-card"><img src="EshenbaughLogo.png" alt="Eshenbaugh Land Company"></div>
       <h1>Proposal Builder</h1>
-      <p>Build an Eshenbaugh-branded proposal with a more polished OM-style layout, image-heavy pages, valuation, comps, marketing strategy, and custom pages.</p>
+      <p>Trial proposal builder using a clean white/red Eshenbaugh design, landscape format, and aerial-safe image placement.</p>
     </div>
     <div class="builder-body">
       <div class="btns">
@@ -162,15 +144,15 @@ tfoot td{font-weight:900;background:#f1f5f9}
 
       <details open><summary>Property Information</summary><div class="content">
         <div class="field"><label>Proposal Title</label><input id="proposalTitle" value="Sale Proposal"></div>
-        <div class="field"><label>Property Name</label><input id="propertyName" placeholder="35140 County Road 52"></div>
-        <div class="field"><label>Address</label><input id="propertyAddress" placeholder="Dade City, FL 33525"></div>
+        <div class="field"><label>Property Name</label><input id="propertyName" placeholder="Harbor Sunsets"></div>
+        <div class="field"><label>Address</label><input id="propertyAddress" placeholder="Burnt Store Road, Punta Gorda, FL"></div>
         <div class="grid">
-          <div class="field"><label>Acres</label><input id="acres" placeholder="17.98±"></div>
+          <div class="field"><label>Acres</label><input id="acres" placeholder="80±"></div>
           <div class="field"><label>Price / Guidance</label><input id="price" placeholder="$___"></div>
-          <div class="field"><label>Zoning</label><input id="zoning" placeholder="AC"></div>
-          <div class="field"><label>Future Land Use</label><input id="landUse" placeholder="VMU2A"></div>
+          <div class="field"><label>Zoning</label><input id="zoning" placeholder="TBD"></div>
+          <div class="field"><label>Future Land Use</label><input id="landUse" placeholder="TBD"></div>
           <div class="field"><label>Parcel ID</label><input id="parcelId" placeholder="00-00-00-0000-00000-0000"></div>
-          <div class="field"><label>County</label><input id="county" placeholder="Pasco County"></div>
+          <div class="field"><label>County</label><input id="county" placeholder="Charlotte County"></div>
         </div>
         <div class="field"><label>Property Description</label><textarea id="propertyDescription" placeholder="The opportunity is to acquire..."></textarea></div>
         <div class="field"><label>Location Description</label><textarea id="locationDescription" placeholder="Strategically located..."></textarea></div>
@@ -179,8 +161,8 @@ tfoot td{font-weight:900;background:#f1f5f9}
       <details open><summary>Broker / Client Info</summary><div class="content">
         <div class="grid">
           <div class="field"><label>Client / Owner</label><input id="clientName" placeholder="Owner / Client Name"></div>
-          <div class="field"><label>Broker Name</label><input id="brokerName" placeholder="J. Michael Strahan, ALC, CCIM"></div>
-          <div class="field"><label>Broker Title</label><input id="brokerTitle" placeholder="Senior Advisor / Partner"></div>
+          <div class="field"><label>Broker Name</label><input id="brokerName" placeholder="Broker Name"></div>
+          <div class="field"><label>Broker Title</label><input id="brokerTitle" placeholder="Advisor / Partner"></div>
           <div class="field"><label>Broker Phone</label><input id="brokerPhone" placeholder="813.287.8787"></div>
           <div class="field"><label>Broker Email</label><input id="brokerEmail" placeholder="broker@thedirtdog.com"></div>
           <div class="field"><label>Prepared Date</label><input id="preparedDate" type="date"></div>
@@ -192,7 +174,7 @@ tfoot td{font-weight:900;background:#f1f5f9}
           <div class="field"><label>Estimated Value</label><input id="estimatedValue" placeholder="$___"></div>
           <div class="field"><label>Success Fee</label><input id="successFee" value="6%"></div>
           <div class="field"><label>Listing Term</label><input id="listingTerm" value="12 months"></div>
-          <div class="field"><label>Offer Timing</label><input id="offerTiming" placeholder="Call for Offers after Labor Day"></div>
+          <div class="field"><label>Offer Timing</label><input id="offerTiming" placeholder="Call for Offers"></div>
         </div>
         <div class="field"><label>Broker Opinion of Value</label><textarea id="bovText" placeholder="Enter valuation commentary..."></textarea></div>
         <div class="field"><label>Marketing Strategy</label><textarea id="strategyText">Our objective is to execute a successful sale by attracting qualified buyers, including developers, homebuilders, investors, and users best suited for the property.
@@ -202,8 +184,8 @@ We will combine targeted outreach, direct calls, email campaigns, Eshenbaugh Rep
       </div></details>
 
       <details><summary>Images & Plans</summary><div class="content">
-        <p class="small">Use JPG/PNG images for a cover, aerials, maps, and plans. They save in the draft JSON for this browser workflow.</p>
-        <div class="field"><label>Cover Image</label><input id="coverImage" type="file" accept="image/*"></div>
+        <p class="small">Images are placed in contained frames so 16:9 aerials stay visible without cropping.</p>
+        <div class="field"><label>Cover / Main Aerial</label><input id="coverImage" type="file" accept="image/*"></div>
         <div class="field"><label>Aerial Image 1</label><input id="aerial1" type="file" accept="image/*"></div>
         <div class="field"><label>Aerial Image 2</label><input id="aerial2" type="file" accept="image/*"></div>
         <div class="field"><label>Site Plan / Map</label><input id="sitePlan" type="file" accept="image/*"></div>
@@ -218,9 +200,12 @@ We will combine targeted outreach, direct calls, email campaigns, Eshenbaugh Rep
 
       <details><summary>Pages & Customization</summary><div class="content page-toggles">
         <label><input type="checkbox" id="pageContents" checked> Table of Contents</label>
-        <label><input type="checkbox" id="pageWhy" checked> Why Eshenbaugh</label>
-        <label><input type="checkbox" id="pageMarketing" checked> Marketing Strategy</label>
-        <label><input type="checkbox" id="pageProperty" checked> Property Overview</label>
+        <label><input type="checkbox" id="pageAdvisor" checked> Advisor Bio & Contact</label>
+        <label><input type="checkbox" id="pageWhy" checked> Why Eshenbaugh / Five E's</label>
+        <label><input type="checkbox" id="pageMarketing" checked> Marketing Approach</label>
+        <label><input type="checkbox" id="pageInternet" checked> Internet Marketing</label>
+        <label><input type="checkbox" id="pageSignage" checked> Signage & Technology</label>
+        <label><input type="checkbox" id="pageProperty" checked> Property Description</label>
         <label><input type="checkbox" id="pageBov" checked> Broker Opinion of Value</label>
         <label><input type="checkbox" id="pageComps" checked> Sale Comps Summary</label>
         <label><input type="checkbox" id="pageFee" checked> Success Fee</label>
@@ -234,7 +219,7 @@ We will combine targeted outreach, direct calls, email campaigns, Eshenbaugh Rep
 
   <main class="preview-shell">
     <div class="preview-toolbar">
-      <div><b>Live Preview</b><div class="small">Landscape proposal format built for 16:9 aerials. For best PDF output, make sure “Background graphics” is enabled in the print dialog.</div></div>
+      <div><b>Live Preview</b><div class="small">Landscape proposal format. For best PDF output, enable “Background graphics” in the print dialog.</div></div>
       <div class="btns"><button class="btn-red" onclick="renderProposal()">Refresh</button><button class="btn-black" onclick="window.print()">Print / Save as PDF</button></div>
     </div>
     <div id="preview" class="preview"></div>
@@ -259,12 +244,20 @@ function fileToDataUrl(inputId){
 async function updateImages(){await Promise.all(['coverImage','aerial1','aerial2','sitePlan'].map(fileToDataUrl));}
 function compKey(c){return [c.num,c.address,c.sale_date,c.price].map(v=>String(v||'')).join('|');}
 function getSelectedComps(){return allComps.filter(c=>selectedCompKeys.has(compKey(c)));}
-function footer(n){return `<div class="footer-bar"><span>${esc(val('propertyName')||'Eshenbaugh Land Company')}</span><span><img src="EshenbaughLogo.png" alt="ELC"><span class="page-number">${n}</span></span></div>`;}
-function head(title){return `<div class="page-head"><h2>${esc(title)}</h2><img src="EshenbaughLogo.png" alt="ELC"></div>`;}
-function imgTag(src){return src?`<img src="${src}" alt="">`:'';}
-function imgBox(src,label){return `<div class="imgbox">${src?`<img src="${src}" alt="${esc(label)}">`:`<div class="placeholder">${esc(label)}</div>`}</div>`;}
-function chapterPage(title,src,n){return `<section class="sheet chapter bg-topo"><div class="chapter-img">${imgTag(src)}<div></div></div><div class="diagonal"></div><div class="chapter-panel"><div class="kicker">Eshenbaugh Land Company</div><h2>${esc(title)}</h2><div class="chapter-line"></div></div>${footer(n)}</section>`;}
-function contentsTable(items){return `<table><tbody>${items.map((p,i)=>`<tr><td style="font-weight:900;color:#061826">${esc(p)}</td><td style="text-align:right">${i+2}</td></tr>`).join('')}</tbody></table>`;}
+function header(title,subtitle){
+  return `<div class="header"><img src="EshenbaughLogo.png" alt="ELC"><div class="header-title"><b>${esc(title||val('propertyName')||'Sale Proposal')}</b><span>${esc(subtitle||val('propertyAddress')||'www.thedirtdog.com')}</span></div></div><div class="redline"></div>`;
+}
+function footer(n){
+  return `<div class="footer"><span class="footer-left">Eshenbaugh Land Company</span><span>${esc(val('propertyName')||'Sale Proposal')}</span><span><img src="EshenbaughLogo.png" alt="ELC"><span class="page-num">${n}</span></span></div>`;
+}
+function image(src,label,cls=''){
+  return `<div class="image-frame ${cls}">${src?`<img src="${src}" alt="${esc(label||'Image')}">`:`<div style="color:#667085;font-weight:900;text-align:center;padding:20px">${esc(label||'Image Placeholder')}</div>`}</div>`;
+}
+function stat(value,label){return `<div class="stat"><b>${esc(value||'—')}</b><span>${esc(label||'')}</span></div>`;}
+function page(title, subtitle, body, n, extraClass='page-pad'){return `<section class="page ${extraClass}">${header(title,subtitle)}${body}${footer(n)}</section>`;}
+function contentsTable(items){
+  return `<table class="contents-table"><tbody>${items.map((p,i)=>`<tr><td>${esc(p)}</td><td>${i+2}</td></tr>`).join('')}</tbody></table>`;
+}
 function compsTable(){
   const comps=getSelectedComps();
   if(!comps.length) return '<p class="body-copy">No sale comps selected yet. Load comps and select records to populate this section.</p>';
@@ -289,33 +282,56 @@ function makePages(){
   const cover=imageStore.coverImage, aerial1=imageStore.aerial1, aerial2=imageStore.aerial2, sitePlan=imageStore.sitePlan;
   const property=val('propertyName')||'Property Name', address=val('propertyAddress')||'Property Address';
   const p=[];
-  p.push(`<section class="sheet hero-cover"><div class="hero-img">${imgTag(cover||aerial1)}<div></div></div><div class="diagonal"></div><div class="cover-logo"><img src="EshenbaughLogo.png" alt="ELC"></div><div class="cover-content"><div class="kicker">${esc(val('proposalTitle')||'Sale Proposal')}</div><h1>${esc(property)}</h1><div class="cover-address">${esc(address)}</div></div><div class="cover-strip"><div class="stat"><b>${esc(val('acres')||'—')}</b><span>Acres</span></div><div class="stat"><b>${esc(val('zoning')||'—')}</b><span>Zoning</span></div><div class="stat"><b>${esc(val('landUse')||'—')}</b><span>Future Land Use</span></div><div class="stat"><b>${esc(val('price')||val('estimatedValue')||'—')}</b><span>Guidance</span></div></div><div class="footer-bar"><span>www.thedirtdog.com</span><span>${esc(val('preparedDate')||'')}</span></div></section>`);
+  p.push(`<section class="page">${header(property,address)}<div class="hero-contained">${cover?`<img src="${cover}" alt="Cover">`:''}</div><div class="cover-ribbon">${esc(val('proposalTitle')||'Sale Proposal')}</div><div class="cover-bottom"><div><div class="smallcaps">Property Details</div><h1>${esc(val('acres')||'—')} Acres</h1><p class="body-copy">${esc(val('propertyDescription')||'Enter a brief overview of the opportunity. This area is intended to quickly communicate the property, location, and overall development thesis.')}</p></div><div class="stat-grid">${stat(val('acres')||'—','Acres')}${stat(val('zoning')||'—','Zoning')}${stat(val('landUse')||'—','Future Land Use')}${stat(val('price')||val('estimatedValue')||'—','Guidance')}</div></div>${footer(1)}</section>`);
   const items=[];
-  if(checked('pageWhy'))items.push('Why Eshenbaugh');
-  if(checked('pageMarketing'))items.push('Marketing Strategy');
-  if(checked('pageProperty'))items.push('Property Overview');
+  if(checked('pageAdvisor'))items.push('Advisor Bio & Contact');
+  if(checked('pageWhy'))items.push("Why Eshenbaugh / Five E's");
+  if(checked('pageMarketing'))items.push('Marketing Approach');
+  if(checked('pageInternet'))items.push('Internet Marketing');
+  if(checked('pageSignage'))items.push('Signage & Technology');
+  if(checked('pageProperty'))items.push('Property Description');
   if(checked('pageBov'))items.push('Broker Opinion of Value');
   if(checked('pageComps'))items.push('Sale Comps Summary');
   if(checked('pageFee'))items.push('Success Fee');
   if(checked('pageAerials'))items.push('Aerials / Site Plan');
   if(hasValue(val('customTitle'))||hasValue(val('customText')))items.push(val('customTitle')||'Custom Page');
-  if(checked('pageThankYou'))items.push('Thank You');
-  if(checked('pageContents'))p.push(`<section class="sheet page-pad">${head('Contents')}<div class="two-col"><div><div class="section-label">Proposal Sections</div>${contentsTable(items)}</div><div>${imgBox(cover||aerial1,'Property Image')}</div></div>${footer(p.length+1)}</section>`);
-  if(checked('pageWhy')){p.push(chapterPage('Why Eshenbaugh',cover||aerial1,p.length+1));p.push(`<section class="sheet page-pad">${head('Why Partner With Eshenbaugh')}<div class="highlight-grid"><div class="highlight"><h3>Land Focus</h3><p>We specialize in vacant development land, giving your assignment a focused strategy from day one.</p></div><div class="highlight"><h3>Market Reach</h3><p>Our proprietary buyer network, market intelligence, and direct outreach are built around active land buyers.</p></div><div class="highlight"><h3>Senior Attention</h3><p>You work directly with experienced land advisors who understand value, entitlement risk, and buyer behavior.</p></div></div><div style="margin-top:22px" class="value-card"><div class="label">Florida Land Brokerage</div><div class="big">Land is all we do.</div></div><p class="body-copy" style="margin-top:18px">Eshenbaugh Land Company provides a focused, data-informed disposition process designed to maximize exposure, generate buyer urgency, and support value with market evidence.</p>${footer(p.length+1)}</section>`);}
-  if(checked('pageMarketing'))p.push(`<section class="sheet page-pad dark-section bg-topo">${head('Marketing Strategy')}<div class="two-col"><div><div class="section-label">Objective</div><p class="body-copy">${esc(val('strategyText'))}</p></div><div class="highlight"><h3>Targeted Outreach</h3><p>Direct calls and email campaigns to developers, builders, investors, and users.</p></div></div><div class="highlight-grid" style="margin-top:20px"><div class="highlight"><h3>Data Room</h3><p>Centralized due diligence materials for buyer underwriting.</p></div><div class="highlight"><h3>Reporting</h3><p>Seller updates with buyer feedback and activity tracking.</p></div><div class="highlight"><h3>Market Positioning</h3><p>Comp-backed guidance and strategic pricing narrative.</p></div></div>${footer(p.length+1)}</section>`);
-  if(checked('pageProperty'))p.push(`<section class="sheet page-pad"><div class="image-bleed">${imgTag(cover||aerial1)}<div class="caption-card">${esc(property)}<br><span style="color:#667085">${esc(address)}</span></div></div>${head('Property Overview')}<div class="two-col"><div><div class="section-label">Property Description</div><p class="body-copy">${esc(val('propertyDescription')||'Enter property description...')}</p><div class="section-label" style="margin-top:16px">Location Description</div><p class="body-copy">${esc(val('locationDescription')||'Enter location description...')}</p></div><div class="info-panel"><div class="info-row"><span>Property Size</span><b>${esc(val('acres')||'—')}</b></div><div class="info-row"><span>Zoning</span><b>${esc(val('zoning')||'—')}</b></div><div class="info-row"><span>Future Land Use</span><b>${esc(val('landUse')||'—')}</b></div><div class="info-row"><span>Parcel ID</span><b>${esc(val('parcelId')||'—')}</b></div><div class="info-row"><span>County</span><b>${esc(val('county')||'—')}</b></div><div class="info-row"><span>Broker</span><b>${esc(val('brokerName')||'—')}<br>${esc(val('brokerPhone')||'')}<br>${esc(val('brokerEmail')||'')}</b></div></div></div>${footer(p.length+1)}</section>`);
-  if(checked('pageBov'))p.push(`<section class="sheet page-pad">${head('Broker Opinion of Value')}<div class="two-col"><div><div class="value-card"><div class="label">Estimated Value / Guidance</div><div class="big">${esc(val('estimatedValue')||val('price')||'TBD')}</div></div></div><div><p class="body-copy">${esc(val('bovText')||'Enter broker opinion of value commentary...')}</p></div></div>${footer(p.length+1)}</section>`);
-  if(checked('pageComps'))p.push(`<section class="sheet page-pad">${head('Sale Comps Summary')}<div class="highlight-grid" style="margin-bottom:16px"><div class="highlight"><h3>Subject</h3><p>${esc(property)}</p></div><div class="highlight"><h3>Lot Size</h3><p>${esc(val('acres')||'—')}</p></div><div class="highlight"><h3>Selected Comps</h3><p>${getSelectedComps().length}</p></div></div>${compsTable()}${footer(p.length+1)}</section>`);
-  if(checked('pageFee'))p.push(`<section class="sheet page-pad">${head('The Success Fee')}<div class="two-col"><p class="body-copy">${esc(val('feeText'))}</p><div class="value-card"><div class="label">Success Fee</div><div class="big">${esc(val('successFee')||'—')}</div><p style="margin:12px 0 0;color:#dbe4ef">Exclusive listing term: ${esc(val('listingTerm')||'—')}</p></div></div>${footer(p.length+1)}</section>`);
-  if(checked('pageAerials'))p.push(`<section class="sheet page-pad dark-section bg-topo">${head('Aerials / Site Plan')}<div class="photo-grid">${imgBox(aerial1,'Aerial Image 1')}${imgBox(aerial2,'Aerial Image 2')}${imgBox(sitePlan,'Site Plan / Concept Plan')}</div>${footer(p.length+1)}</section>`);
-  if(hasValue(val('customTitle'))||hasValue(val('customText')))p.push(`<section class="sheet page-pad">${head(val('customTitle')||'Custom Page')}<div class="custom-box">${esc(val('customText')||'')}</div>${footer(p.length+1)}</section>`);
-  if(checked('pageThankYou'))p.push(`<section class="sheet page-pad"><div class="image-full">${imgTag(cover||aerial1)}</div><div style="position:absolute;inset:0;background:linear-gradient(90deg,rgba(255,255,255,.96),rgba(255,255,255,.72),rgba(255,255,255,.10))"></div><div style="position:relative;z-index:1;width:5.3in;margin-top:.85in">${head('Thank You For Your Partnership')}<p class="body-copy">We appreciate the opportunity to provide a disposition strategy for your property. This asset will be positioned to appeal to a broad range of local, regional, and national buyers active in the Florida marketplace.</p><h2 style="color:#ef1f25;margin-top:24px">We’re Ready To Make a Great Land Deal Happen For You</h2></div>${footer(p.length+1)}</section>`);
+  if(checked('pageThankYou'))items.push('Thank You For Your Partnership');
+
+  if(checked('pageContents'))p.push(page('Table of Contents',address,`<h2 class="page-title">Contents</h2><div class="section-rule"></div><div class="two-col"><div>${contentsTable(items)}</div><div>${image(cover||aerial1,'Property Aerial')}</div></div>`,p.length+1));
+
+  if(checked('pageAdvisor'))p.push(page('Advisor Bio & Contact',address,`<h2 class="page-title">Advisor Bio & Contact</h2><div class="section-rule"></div><div class="two-col"><div class="info-panel"><div class="info-row"><span>Broker</span><b>${esc(val('brokerName')||'Broker Name')}</b></div><div class="info-row"><span>Title</span><b>${esc(val('brokerTitle')||'Advisor')}</b></div><div class="info-row"><span>Phone</span><b>${esc(val('brokerPhone')||'813.287.8787')}</b></div><div class="info-row"><span>Email</span><b>${esc(val('brokerEmail')||'broker@thedirtdog.com')}</b></div><div class="info-row"><span>Office</span><b>304 S. Willow Avenue<br>Tampa, FL 33606</b></div></div><div><div class="smallcaps">Professional Background</div><p class="body-copy">Eshenbaugh Land Company provides specialized land brokerage representation throughout Florida, with a focus on development land, agricultural land, residential development sites, commercial acreage, and transitional properties. Our advisors combine transaction experience, market intelligence, and direct buyer relationships to guide clients through the sale process.</p><div class="smallcaps" style="margin-top:14px">Contact</div><p class="body-copy">${esc(val('brokerName')||'Broker Name')}<br>${esc(val('brokerPhone')||'')}<br>${esc(val('brokerEmail')||'')}</p></div></div>`,p.length+1));
+
+  if(checked('pageWhy'))p.push(page("Why Partner with Eshenbaugh",address,`<h2 class="page-title">Why Partner with Eshenbaugh</h2><div class="section-rule"></div><div class="three-col"><div class="card"><h3>Ethics</h3><p>We value honesty, transparency, and respect throughout the assignment.</p></div><div class="card"><h3>Education</h3><p>Our team stays current on market conditions, entitlement trends, and development considerations.</p></div><div class="card"><h3>Experience</h3><p>Focused Florida land brokerage experience supports pricing, positioning, and negotiation strategy.</p></div><div class="card"><h3>Engaged</h3><p>We remain active in the real estate and development community to stay close to market demand.</p></div><div class="card"><h3>Enthusiasm</h3><p>We bring energy and focus to every assignment, from initial valuation through closing.</p></div><div class="card"><h3>Land Focus</h3><p>Vacant development land is our core business, not an add-on service line.</p></div></div><div class="value-box" style="margin-top:20px"><div class="label">Florida Land Brokerage</div><div class="big">Land is all we do.</div></div>`,p.length+1));
+
+  if(checked('pageMarketing'))p.push(page('Marketing Approach',address,`<h2 class="page-title">Marketing Approach</h2><div class="section-rule"></div><div class="two-col"><div><p class="body-copy">${esc(val('strategyText'))}</p></div><div class="three-col" style="grid-template-columns:1fr;gap:12px"><div class="card"><h3>Monthly Reports</h3><p>Written updates outlining market feedback, online activity, buyer interest, and next steps.</p></div><div class="card"><h3>Property Website</h3><p>A dedicated online presence and organized due diligence access for qualified prospects.</p></div><div class="card"><h3>Virtual Vault</h3><p>A secure document room to help buyers efficiently review property materials.</p></div></div></div>`,p.length+1));
+
+  if(checked('pageInternet'))p.push(page('Internet Marketing',address,`<h2 class="page-title">Internet Marketing</h2><div class="section-rule"></div><p class="body-copy">Eshenbaugh’s goal is to strategically position your property for maximum qualified exposure. The marketing plan can include direct email campaigns, targeted outreach, property website exposure, third-party listing platforms, and placement through Eshenbaugh’s proprietary buyer database.</p><div class="three-col" style="margin-top:22px"><div class="card"><h3>CoStar / LoopNet</h3><p>High visibility across widely used commercial real estate platforms.</p></div><div class="card"><h3>Crexi / Land.com</h3><p>Expanded digital reach for land buyers, investors, and users.</p></div><div class="card"><h3>Eshenbaugh Report</h3><p>Market-facing exposure through our proprietary communication channels.</p></div></div>`,p.length+1));
+
+  if(checked('pageSignage'))p.push(page('Signage & Technology',address,`<h2 class="page-title">Signage & Technology</h2><div class="section-rule"></div><div class="two-col"><div><p class="body-copy">We believe heavily in signage and technology. Depending on the property, we can use custom property signage, QR codes, property-specific extensions, direct text response, and automated buyer follow-up to expand outreach and capture leads efficiently.</p></div><div class="info-panel"><div class="info-row"><span>Signage</span><b>Custom property signs</b></div><div class="info-row"><span>QR Codes</span><b>Direct access to property materials</b></div><div class="info-row"><span>Automation</span><b>Email and buyer follow-up</b></div><div class="info-row"><span>Reporting</span><b>Lead and activity tracking</b></div></div></div>`,p.length+1));
+
+  if(checked('pageProperty'))p.push(page('Property Description',address,`<h2 class="page-title">Property Description</h2><div class="section-rule"></div><div class="two-col"><div><div class="smallcaps">Property Description</div><p class="body-copy">${esc(val('propertyDescription')||'Enter property description...')}</p><div class="smallcaps" style="margin-top:14px">Location Description</div><p class="body-copy">${esc(val('locationDescription')||'Enter location description...')}</p></div><div class="info-panel"><div class="info-row"><span>Property Size</span><b>${esc(val('acres')||'—')}</b></div><div class="info-row"><span>Zoning</span><b>${esc(val('zoning')||'—')}</b></div><div class="info-row"><span>Future Land Use</span><b>${esc(val('landUse')||'—')}</b></div><div class="info-row"><span>Parcel ID</span><b>${esc(val('parcelId')||'—')}</b></div><div class="info-row"><span>Price</span><b>${esc(val('price')||'—')}</b></div><div class="info-row"><span>Broker</span><b>${esc(val('brokerName')||'—')}<br>${esc(val('brokerPhone')||'')}<br>${esc(val('brokerEmail')||'')}</b></div></div></div>`,p.length+1));
+
+  if(checked('pageBov'))p.push(page('Broker Opinion of Value',address,`<h2 class="page-title">Broker Opinion of Value</h2><div class="section-rule"></div><div class="two-col"><div class="value-box"><div class="label">Estimated Value / Guidance</div><div class="big">${esc(val('estimatedValue')||val('price')||'TBD')}</div></div><div><p class="body-copy">${esc(val('bovText')||'Enter broker opinion of value commentary...')}</p></div></div>`,p.length+1));
+
+  if(checked('pageComps'))p.push(page('Sale Comps Summary',address,`<h2 class="page-title">Sale Comps Summary</h2><div class="section-rule"></div><div class="three-col" style="margin-bottom:14px"><div class="card"><h3>Subject</h3><p>${esc(property)}</p></div><div class="card"><h3>Lot Size</h3><p>${esc(val('acres')||'—')}</p></div><div class="card"><h3>Selected Comps</h3><p>${getSelectedComps().length}</p></div></div>${compsTable()}`,p.length+1));
+
+  if(checked('pageFee'))p.push(page('The Success Fee',address,`<h2 class="page-title">The Success Fee</h2><div class="section-rule"></div><div class="two-col"><p class="body-copy">${esc(val('feeText'))}</p><div class="value-box"><div class="label">Success Fee</div><div class="big">${esc(val('successFee')||'—')}</div><p style="margin:12px 0 0;color:#dbe4ef;font-size:12px">Exclusive listing term: ${esc(val('listingTerm')||'—')}</p></div></div>`,p.length+1));
+
+  if(checked('pageAerials')){
+    p.push(`<section class="page">${header('Aerial Exhibit',address)}<div class="full-aerial">${(aerial1||cover)?`<img src="${aerial1||cover}" alt="Aerial">`:''}</div><div class="red-note">Aerial exhibit, designed to preserve the full 16:9 image without forced cropping.</div>${footer(p.length+1)}</section>`);
+    p.push(`<section class="page">${header('Aerial Exhibit',address)}<div class="full-aerial">${aerial2?`<img src="${aerial2}" alt="Aerial">`:''}</div><div class="red-note">Additional aerial or market context exhibit.</div>${footer(p.length+1)}</section>`);
+    p.push(`<section class="page">${header('Site Plan',address)}<div class="full-aerial">${sitePlan?`<img src="${sitePlan}" alt="Site Plan">`:''}</div><div class="red-note">Site plan, conceptual plan, or other supporting exhibit.</div>${footer(p.length+1)}</section>`);
+  }
+
+  if(hasValue(val('customTitle'))||hasValue(val('customText')))p.push(page(val('customTitle')||'Custom Page',address,`<h2 class="page-title">${esc(val('customTitle')||'Custom Page')}</h2><div class="section-rule"></div><div class="custom-box">${esc(val('customText')||'')}</div>`,p.length+1));
+
+  if(checked('pageThankYou'))p.push(page('Thank You For Your Partnership',address,`<h2 class="page-title">Thank You For Your Partnership</h2><div class="section-rule"></div><div class="two-col"><div><p class="body-copy">We appreciate the opportunity to provide a disposition strategy for your property. This asset will be positioned to appeal to a broad range of local, regional, and national buyers active in the Florida marketplace.</p><h2 style="color:#ef1f25;margin-top:24px">We’re Ready To Make a Great Land Deal Happen For You</h2></div><div>${image(cover||aerial1,'Property Aerial')}</div></div><div class="disclaimer">This proposal is for discussion purposes only and is based on information believed to be reliable. Final pricing, terms, marketing strategy, and brokerage engagement are subject to owner approval and execution of a mutually acceptable listing agreement.</div>`,p.length+1));
   return p;
 }
 async function renderProposal(){await updateImages();$('preview').innerHTML=makePages().join('');}
 function draftData(){
   const ids=['proposalTitle','propertyName','propertyAddress','acres','price','zoning','landUse','parcelId','county','propertyDescription','locationDescription','clientName','brokerName','brokerTitle','brokerPhone','brokerEmail','preparedDate','estimatedValue','successFee','listingTerm','offerTiming','bovText','strategyText','feeText','customTitle','customText'];
-  const checks=['pageContents','pageWhy','pageMarketing','pageProperty','pageBov','pageComps','pageFee','pageAerials','pageThankYou'];
+  const checks=['pageContents','pageAdvisor','pageWhy','pageMarketing','pageInternet','pageSignage','pageProperty','pageBov','pageComps','pageFee','pageAerials','pageThankYou'];
   return {fields:Object.fromEntries(ids.map(id=>[id,val(id)])),checks:Object.fromEntries(checks.map(id=>[id,checked(id)])),images:imageStore,selected:[...selectedCompKeys]};
 }
 function applyDraft(d){Object.entries(d.fields||{}).forEach(([id,v])=>{if($(id))$(id).value=v||''});Object.entries(d.checks||{}).forEach(([id,v])=>{if($(id))$(id).checked=!!v});imageStore=d.images||{};selectedCompKeys=new Set(d.selected||[]);renderCompsList();renderProposal();}
