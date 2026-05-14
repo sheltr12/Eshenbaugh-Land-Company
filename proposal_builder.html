@@ -56,23 +56,23 @@ button:hover,.btn:hover{background:#f1f5f9}
 .preview{display:flex;flex-direction:column;gap:20px;align-items:center}
 
 .page{width:11in;height:8.5in;min-height:8.5in;background:#fff;box-shadow:0 14px 34px rgba(15,23,42,.18);position:relative;overflow:hidden}
-.page-pad{padding:.62in .62in .72in}
+.page-pad{padding:.98in .62in .72in}
 .logo-small{width:2.55in;height:auto}
-.header{position:absolute;left:0;right:0;top:0;height:.66in;background:#fff;border-bottom:1px solid #dfe5ec;display:flex;align-items:center;justify-content:space-between;padding:0 .52in;z-index:4}
-.header img{width:2.38in;height:auto}
-.header-title{text-align:right}
+.header{position:absolute;left:0;right:0;top:0;height:.70in;background:#fff;border-bottom:1px solid #dfe5ec;display:flex;align-items:center;justify-content:space-between;padding:0 .52in;z-index:4}
+.header img{width:1.95in;height:auto;position:relative;z-index:6}
+.header-title{text-align:right;position:relative;z-index:6}
 .header-title b{display:block;font-size:17px;text-transform:uppercase;letter-spacing:.06em;color:#111827}
 .header-title span{display:block;font-size:9.5px;text-transform:uppercase;letter-spacing:.12em;color:#667085;margin-top:3px}
-.redline{position:absolute;left:0;right:0;top:.66in;height:5px;background:var(--red);z-index:5}
-.footer{position:absolute;left:0;right:0;bottom:0;height:.45in;background:#fff;border-top:1px solid #dfe5ec;display:flex;align-items:center;justify-content:space-between;padding:0 .5in;font-size:9.5px;color:#667085;text-transform:uppercase;letter-spacing:.06em}
+.redline{position:absolute;left:0;right:0;top:.70in;height:5px;background:transparent;z-index:5}.redline:before{content:"";position:absolute;left:0;top:0;width:.50in;height:5px;background:var(--red)}.redline:after{content:"";position:absolute;left:3.05in;right:0;top:0;height:5px;background:var(--red)}
+.footer{position:absolute;left:0;right:0;bottom:0;height:.52in;background:#fff;border-top:1px solid #dfe5ec;display:grid;grid-template-columns:1.45fr .9fr auto;align-items:center;gap:.18in;padding:0 .5in;font-size:8.4px;color:#667085;text-transform:uppercase;letter-spacing:.045em}
 .footer:before{content:"";position:absolute;left:0;bottom:0;width:.44in;height:.45in;background:var(--red)}
-.footer .footer-left{padding-left:.33in;color:#17212f;font-weight:800}
-.footer img{height:.23in;width:auto}
-.page-num{display:inline-flex;align-items:center;justify-content:center;width:.28in;height:.28in;border-radius:50%;background:var(--red);color:#fff;font-weight:900;margin-left:.12in}
-.hero-contained{position:absolute;left:0;right:0;top:.72in;height:4.95in;background:#fff;display:flex;align-items:center;justify-content:center;overflow:hidden}
+.footer .footer-left{padding-left:.33in;color:#17212f;font-weight:800;line-height:1.35;text-transform:none;letter-spacing:0}
+.footer img{height:.22in;width:auto;vertical-align:middle}
+.page-num{display:inline-flex;align-items:center;justify-content:center;width:.28in;height:.28in;border-radius:50%;background:var(--red);color:#fff;font-weight:900;margin-left:.10in;vertical-align:middle}
+.hero-contained{position:absolute;left:0;right:0;top:.86in;height:4.78in;background:#fff;display:flex;align-items:center;justify-content:center;overflow:hidden}
 .hero-contained img{max-width:100%;max-height:100%;width:auto;height:auto;display:block}
-.cover-ribbon{position:absolute;right:0;top:5.48in;background:var(--red);color:#fff;padding:13px 30px;font-size:12px;letter-spacing:.14em;text-transform:uppercase;font-weight:900}
-.cover-bottom{position:absolute;left:.58in;right:.58in;top:5.92in;bottom:.65in;display:grid;grid-template-columns:1fr 1.15fr;gap:.38in}
+.cover-ribbon{position:absolute;right:0;top:5.43in;background:var(--red);color:#fff;padding:13px 30px;font-size:12px;letter-spacing:.14em;text-transform:uppercase;font-weight:900}
+.cover-bottom{position:absolute;left:.58in;right:.58in;top:5.86in;bottom:.65in;display:grid;grid-template-columns:1fr 1.15fr;gap:.38in}
 .smallcaps{font-size:10px;text-transform:uppercase;letter-spacing:.13em;font-weight:900;color:var(--red)}
 .cover-bottom h1{font-size:46px;line-height:.98;margin:8px 0 10px;color:#111827;text-transform:uppercase;letter-spacing:-.035em}
 .body-copy{font-size:11.5px;line-height:1.48;color:#354154;white-space:pre-wrap}
@@ -92,10 +92,10 @@ button:hover,.btn:hover{background:#f1f5f9}
 .info-row:last-child{border-bottom:0}
 .info-row span{font-weight:900;color:#17212f;text-transform:uppercase;font-size:9px;letter-spacing:.06em}
 .info-row b{font-weight:700;color:#111827}
-.image-frame{background:#fff;border:1px solid #dfe5ec;display:flex;align-items:center;justify-content:center;overflow:hidden}
+.image-frame{background:#fff;border:1px solid #dfe5ec;display:flex;align-items:center;justify-content:center;overflow:hidden;box-shadow:0 8px 20px rgba(15,23,42,.14)}
 .image-frame img{max-width:100%;max-height:100%;width:auto;height:auto;display:block}
 .image-caption{font-size:9px;color:#667085;text-transform:uppercase;letter-spacing:.08em;margin-top:7px}
-.full-aerial{position:absolute;left:.62in;right:.62in;top:1.05in;bottom:.86in;background:#fff;border:1px solid #dfe5ec;display:flex;align-items:center;justify-content:center}
+.full-aerial{position:absolute;left:.62in;right:.62in;top:1.22in;bottom:.86in;background:#fff;border:1px solid #dfe5ec;display:flex;align-items:center;justify-content:center;box-shadow:0 10px 24px rgba(15,23,42,.18)}
 .full-aerial img{max-width:100%;max-height:100%;width:auto;height:auto}
 .red-note{position:absolute;left:.62in;right:.62in;bottom:.46in;background:var(--red);color:#fff;padding:10px 18px;font-size:11px;font-weight:800}
 .value-box{background:#111827;color:#fff;border-radius:8px;padding:20px;border-left:7px solid var(--red)}
@@ -120,7 +120,7 @@ tfoot td{font-weight:900;background:#f1f5f9}
   .preview-shell{padding:0}
   .preview{display:block;gap:0}
   .page{box-shadow:none;width:11in;height:8.5in;min-height:8.5in;page-break-after:always;break-after:page;margin:0;transform:none!important}
-  .header,.footer,.value-box,th,.cover-ribbon,.red-note,.footer:before,.redline,.section-rule{ -webkit-print-color-adjust:exact!important; print-color-adjust:exact!important; }
+  .header,.footer,.value-box,th,.cover-ribbon,.red-note,.footer:before,.redline,.redline:before,.redline:after,.section-rule{ -webkit-print-color-adjust:exact!important; print-color-adjust:exact!important; }
   @page{size:letter landscape;margin:0}
 }
 </style>
@@ -248,7 +248,7 @@ function header(title,subtitle){
   return `<div class="header"><img src="EshenbaughLogo.png" alt="ELC"><div class="header-title"><b>${esc(title||val('propertyName')||'Sale Proposal')}</b><span>${esc(subtitle||val('propertyAddress')||'www.thedirtdog.com')}</span></div></div><div class="redline"></div>`;
 }
 function footer(n){
-  return `<div class="footer"><span class="footer-left">Eshenbaugh Land Company</span><span>${esc(val('propertyName')||'Sale Proposal')}</span><span><img src="EshenbaughLogo.png" alt="ELC"><span class="page-num">${n}</span></span></div>`;
+  return `<div class="footer"><span class="footer-left">Tampa: 304 S Willow Ave. Tampa, FL 33606<br>Orlando: 941 West Morse Blvd, Suite 100, Winter Park, FL 32789</span><span>${esc(val('propertyName')||'Sale Proposal')}</span><span style="white-space:nowrap;display:inline-flex;align-items:center;justify-content:flex-end"><img src="EshenbaughLogo.png" alt="ELC"><span class="page-num">${n}</span></span></div>`;
 }
 function image(src,label,cls=''){
   return `<div class="image-frame ${cls}">${src?`<img src="${src}" alt="${esc(label||'Image')}">`:`<div style="color:#667085;font-weight:900;text-align:center;padding:20px">${esc(label||'Image Placeholder')}</div>`}</div>`;
@@ -297,7 +297,7 @@ function makePages(){
   if(hasValue(val('customTitle'))||hasValue(val('customText')))items.push(val('customTitle')||'Custom Page');
   if(checked('pageThankYou'))items.push('Thank You For Your Partnership');
 
-  if(checked('pageContents'))p.push(page('Table of Contents',address,`<h2 class="page-title">Contents</h2><div class="section-rule"></div><div class="two-col"><div>${contentsTable(items)}</div><div>${image(cover||aerial1,'Property Aerial')}</div></div>`,p.length+1));
+  if(checked('pageContents'))p.push(page('Table of Contents',address,`<h2 class="page-title">Table of Contents</h2><div class="section-rule"></div><div class="two-col"><div>${contentsTable(items)}</div><div>${image(cover||aerial1,'Property Aerial')}</div></div>`,p.length+1));
 
   if(checked('pageAdvisor'))p.push(page('Advisor Bio & Contact',address,`<h2 class="page-title">Advisor Bio & Contact</h2><div class="section-rule"></div><div class="two-col"><div class="info-panel"><div class="info-row"><span>Broker</span><b>${esc(val('brokerName')||'Broker Name')}</b></div><div class="info-row"><span>Title</span><b>${esc(val('brokerTitle')||'Advisor')}</b></div><div class="info-row"><span>Phone</span><b>${esc(val('brokerPhone')||'813.287.8787')}</b></div><div class="info-row"><span>Email</span><b>${esc(val('brokerEmail')||'broker@thedirtdog.com')}</b></div><div class="info-row"><span>Office</span><b>304 S. Willow Avenue<br>Tampa, FL 33606</b></div></div><div><div class="smallcaps">Professional Background</div><p class="body-copy">Eshenbaugh Land Company provides specialized land brokerage representation throughout Florida, with a focus on development land, agricultural land, residential development sites, commercial acreage, and transitional properties. Our advisors combine transaction experience, market intelligence, and direct buyer relationships to guide clients through the sale process.</p><div class="smallcaps" style="margin-top:14px">Contact</div><p class="body-copy">${esc(val('brokerName')||'Broker Name')}<br>${esc(val('brokerPhone')||'')}<br>${esc(val('brokerEmail')||'')}</p></div></div>`,p.length+1));
 
