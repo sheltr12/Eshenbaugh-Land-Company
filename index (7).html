@@ -1,0 +1,895 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Eshenbaugh Land Company Comps</title>
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+<style>
+:root{
+  --elc-navy:#000000;
+  --elc-blue:#111111;
+  --elc-red:#ef1f25;
+  --elc-ink:#17212f;
+  --elc-muted:#687385;
+  --elc-line:#d9e1ea;
+  --elc-bg:#f5f7fa;
+  --elc-white:#fff;
+}
+*{box-sizing:border-box}
+body{font-family:"Segoe UI",Arial,sans-serif;margin:0;background:var(--elc-bg);color:var(--elc-ink)}
+.page{padding:20px;max-width:1600px;margin:0 auto}
+.report-header{background:#000;color:#fff;border-radius:14px;margin-bottom:18px;box-shadow:0 8px 24px rgba(7,27,47,.18);overflow:hidden}
+.header-inner{display:flex;gap:22px;align-items:center;padding:22px 26px}
+.logo-wrap{background:#fff;border-radius:10px;padding:10px 14px;min-width:260px;max-width:360px}
+.logo-wrap img{display:block;width:100%;height:auto}
+.header-copy{flex:1}
+.report-header h1{margin:0 0 6px;font-size:26px;letter-spacing:.2px}
+.report-header p{margin:0;font-size:13px;opacity:.9}
+.actions{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:18px}
+.btn{display:inline-block;padding:10px 16px;border-radius:8px;font-weight:700;text-decoration:none;border:1px solid transparent;font-size:13px}
+.btn-primary{background:var(--elc-red);color:#fff}
+.btn-secondary{background:#fff;color:var(--elc-navy);border-color:var(--elc-line)}
+.stats-grid{display:grid;grid-template-columns:repeat(5,minmax(130px,1fr));gap:12px;margin-bottom:18px}
+.stat-card{background:#fff;border:1px solid var(--elc-line);padding:15px;border-radius:10px;box-shadow:0 1px 5px rgba(0,0,0,.05)}
+.stat-card .val{font-size:22px;font-weight:800;color:var(--elc-navy)}
+.stat-card .lbl{font-size:10px;text-transform:uppercase;letter-spacing:.6px;color:var(--elc-muted);margin-top:4px}
+.panel{background:#fff;border:1px solid var(--elc-line);border-radius:12px;box-shadow:0 1px 5px rgba(0,0,0,.05);margin-bottom:16px}
+.filters{padding:16px;display:grid;grid-template-columns:repeat(6,minmax(150px,1fr));gap:12px}
+label{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.45px;color:#475366}
+input,select{width:100%;margin-top:5px;padding:8px 10px;border:1px solid #cbd5df;border-radius:7px;font-size:12px;background:#fff;color:var(--elc-ink)}
+.filter-wide{grid-column:span 2}
+.section{padding:18px}
+.section h2{margin:0 0 12px;font-size:17px;color:var(--elc-navy)}
+#row-count{font-size:12px;color:var(--elc-muted);margin-bottom:10px}
+table{width:100%;border-collapse:collapse;font-size:12px}
+th{background:var(--elc-navy);color:#fff;padding:9px 8px;text-align:left;white-space:nowrap;cursor:pointer;position:sticky;top:0;z-index:1}
+th:hover{background:#143f69}
+td{padding:8px;border-bottom:1px solid #edf1f5;vertical-align:top}
+tr:nth-child(even) td{background:#fbfcfe}
+tr:hover td{background:#fff4f4}
+a{color:var(--elc-red);font-weight:700;text-decoration:none}
+a:hover{text-decoration:underline}
+.aerial-btn{display:inline-block;background:var(--elc-red);color:#fff!important;border:1px solid var(--elc-red);border-radius:7px;padding:6px 10px;font-size:11px;font-weight:900;text-decoration:none!important;line-height:1.1}
+.aerial-btn:hover{background:#cf171d;text-decoration:none!important}
+.null-val{color:#aab3bf}
+.pager{display:flex;align-items:center;gap:10px;margin-top:14px;font-size:12px;color:var(--elc-muted)}
+.pager button,.mini-btn{padding:6px 12px;border:1px solid #cbd5df;border-radius:7px;background:#fff;cursor:pointer;font-size:12px}
+.pager button:hover:not(:disabled),.mini-btn:hover{background:#f3f6fa}
+.pager button:disabled{opacity:.45;cursor:default}
+.table-wrap{overflow-x:auto;max-height:72vh;-webkit-overflow-scrolling:touch}
+.mobile-cards{display:none}
+.mobile-comp-card{background:#fff;border:1px solid var(--elc-line);border-radius:12px;padding:12px;margin-bottom:10px;box-shadow:0 1px 4px rgba(0,0,0,.04)}
+.mobile-card-title{font-weight:900;color:var(--elc-navy);font-size:14px;line-height:1.3;margin-bottom:8px}
+.mobile-card-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px 10px;font-size:12px}
+.mobile-card-field span{display:block;font-size:10px;text-transform:uppercase;letter-spacing:.4px;color:var(--elc-muted);font-weight:800;margin-bottom:2px}
+.mobile-card-comments{margin-top:8px;font-size:12px;line-height:1.35;color:#475366}
+.add-help{font-size:12px;color:var(--elc-muted);margin:8px 0 0;line-height:1.4}
+.modal-backdrop{display:none;position:fixed;inset:0;background:rgba(0,0,0,.58);z-index:9999;padding:18px;overflow-y:auto}
+.modal-backdrop.open{display:block}
+.modal-card{background:#fff;max-width:980px;margin:24px auto;border-radius:14px;border-top:5px solid var(--elc-red);box-shadow:0 16px 45px rgba(0,0,0,.28);overflow:hidden}
+.modal-head{background:#000;color:#fff;padding:16px 18px;display:flex;justify-content:space-between;gap:12px;align-items:center}
+.modal-head h2{margin:0;font-size:18px}.modal-close{background:transparent;color:#fff;border:1px solid rgba(255,255,255,.35);border-radius:8px;padding:7px 10px;cursor:pointer}
+.modal-body{padding:16px 18px}.deal-form-grid{display:grid;grid-template-columns:repeat(4,minmax(150px,1fr));gap:12px}.deal-form-grid label{display:block}.deal-form-wide{grid-column:span 2}.deal-form-full{grid-column:1/-1}
+textarea{width:100%;margin-top:5px;padding:8px 10px;border:1px solid #cbd5df;border-radius:7px;font-size:12px;min-height:78px;font-family:inherit}.modal-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:14px;flex-wrap:wrap}
+@media(max-width:900px){.deal-form-grid{grid-template-columns:repeat(2,1fr)}.deal-form-wide{grid-column:span 2}}
+@media(max-width:700px){.modal-backdrop{padding:8px}.modal-card{margin:6px auto}.deal-form-grid{grid-template-columns:1fr}.deal-form-wide{grid-column:span 1}.modal-actions .btn{width:100%}}
+@media(max-width:1050px){.filters{grid-template-columns:repeat(2,1fr)}.filter-wide{grid-column:span 2}.stats-grid{grid-template-columns:repeat(2,1fr)}.header-inner{flex-direction:column;align-items:flex-start}.logo-wrap{max-width:330px}}
+@media(max-width:700px){
+  .page{padding:10px 10px 18px}.report-header{border-radius:10px;margin-bottom:12px}.header-inner{padding:14px;gap:12px}.logo-wrap{min-width:0;width:100%;max-width:260px;padding:8px}.report-header h1{font-size:19px;line-height:1.2}.report-header p{font-size:12px;line-height:1.35}
+  .actions{gap:8px;margin-bottom:12px}.btn{width:100%;text-align:center;padding:11px 12px}
+  .stats-grid{grid-template-columns:repeat(2,1fr);gap:8px}.stat-card{padding:11px}.stat-card .val{font-size:18px}.stat-card .lbl{font-size:9px}
+  .filters{grid-template-columns:1fr;gap:9px;padding:12px}.filter-wide{grid-column:span 1} input,select{font-size:16px;padding:10px 11px}
+  .section{padding:12px}.section h2{font-size:16px}.table-wrap{display:none}.mobile-cards{display:block}.pager{justify-content:space-between;gap:6px}.pager button{flex:0 0 auto;padding:9px 12px}#page-info{font-size:12px;text-align:center}
+}
+@media(max-width:390px){.stats-grid{grid-template-columns:1fr}.mobile-card-grid{grid-template-columns:1fr}}
+
+.selection-bar{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:0 0 12px;font-size:12px;color:var(--elc-muted)}
+.selection-bar strong{color:var(--elc-ink)}
+.btn-small{padding:7px 10px;font-size:12px;border-radius:7px}
+tr.row-selected td{background:#fff1f1!important}
+.checkbox-cell{text-align:center;white-space:nowrap}
+.action-cell{white-space:nowrap}
+.action-cell button{padding:5px 8px;border:1px solid #cbd5df;border-radius:6px;background:#fff;cursor:pointer;font-size:11px}
+.import-preview{margin-top:10px;padding:10px;border:1px solid var(--elc-line);border-radius:8px;background:#f8fafc;font-size:12px;line-height:1.4;color:var(--elc-muted)}
+.aerial-btn{display:inline-block;background:var(--elc-red);color:#fff!important;border:1px solid var(--elc-red);border-radius:7px;padding:6px 10px;font-size:11px;font-weight:900;text-decoration:none!important;line-height:1.1}
+
+</style>
+</head>
+<body>
+<div class="page">
+  <div class="report-header">
+    <div class="header-inner">
+      <div class="logo-wrap"><img src="./EshenbaughLogo.png" alt="Eshenbaugh Land Company" onerror="this.style.display='none'"></div>
+      <div class="header-copy">
+        <h1 id="title">Loading...</h1>
+        <p id="subtitle"></p>
+      </div>
+    </div>
+  </div>
+  <div class="actions">
+    <a href="comps_map.html" class="btn btn-primary" target="_blank" rel="noopener noreferrer">Open Interactive Map</a>
+    <a href="swfwmd_erp_map.html" class="btn btn-primary" target="_blank" rel="noopener noreferrer">Open SWFWMD ERP Map</a>
+    <a href="proposal_builder.html" class="btn btn-primary" target="_blank" rel="noopener noreferrer">Open Proposal Builder (Trial)</a>
+    <button class="btn btn-secondary" onclick="openAddDealModal()">Add New Deal</button>
+    <button class="btn btn-secondary" onclick="openImportModal()">Import Deals</button>
+    <button class="btn btn-secondary" onclick="createSelectedReport()">Create Report from Selected</button>
+    <button class="btn btn-secondary" onclick="showExportChoice(getSelectedComps())">Export Selected</button>
+    <button class="btn btn-secondary" onclick="resetFilters()">Reset Filters</button>
+  </div>
+  <div id="add-deal-modal" class="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="add-deal-title">
+    <div class="modal-card">
+      <div class="modal-head">
+        <h2 id="add-deal-title">Add New Deal</h2>
+        <button class="modal-close" type="button" onclick="closeAddDealModal()">Close</button>
+      </div>
+      <div class="modal-body">
+        <p class="add-help">New deals are saved in this browser immediately and will show in the list and map if latitude/longitude are entered. Permanent database updates can be handled internally.</p>
+        <form id="add-deal-form" onsubmit="event.preventDefault(); saveDealFromForm();">
+          <div class="deal-form-grid">
+            <label>Property Type
+              <select id="new-property-type">
+                <option value="Land">Land</option><option value="Multifamily">Multifamily</option><option value="Retail">Retail</option><option value="Industrial">Industrial</option><option value="Office">Office</option><option value="Other">Other</option>
+              </select>
+            </label>
+            <label>Transaction Type<input id="new-transaction-type" value="Sale"></label>
+            <label>Sale Date<input type="date" id="new-sale-date"></label>
+            <label>ELC Deal<select id="new-elc-deal"><option value="No">No</option><option value="Yes">Yes</option></select></label>
+            <label class="deal-form-wide">Property Name<input id="new-property-name" placeholder="Optional project/listing name"></label>
+            <label class="deal-form-wide">Address<input id="new-address" placeholder="123 Main St, Tampa, FL"></label>
+            <label>Price<input type="number" id="new-price" placeholder="1500000"></label>
+            <label>Acres<input type="number" id="new-acreage" step="0.01" placeholder="10.25"></label>
+            <label>Unit Count<input type="number" id="new-unit-count" placeholder="250"></label>
+            <label>Latitude<input type="number" id="new-lat" step="0.000001" placeholder="28.123456"></label>
+            <label>Longitude<input type="number" id="new-lon" step="0.000001" placeholder="-82.123456"></label>
+            <label>Buyer<input id="new-grantee"></label>
+            <label>Seller<input id="new-grantor"></label>
+            <label>Zoning<input id="new-zoning"></label>
+            <label>Land Use<input id="new-land-use"></label>
+            <label>Source<input id="new-source" value="Manual Entry"></label>
+            <label>Aerial URL<input id="new-aerial-url" placeholder="https://..."></label>
+            <label class="deal-form-wide">Upload Aerial Image<input type="file" id="new-aerial-file" accept="image/*"><span class="add-help">For best long-term use, paste a hosted image URL when available. Uploaded images are saved only in this browser.</span></label>
+            <label class="deal-form-wide">Deed URL<input id="new-deed-url" placeholder="https://..."></label>
+            <label class="deal-form-full">Comments<textarea id="new-comments" placeholder="Notes, comp description, broker representation, etc."></textarea></label>
+          </div>
+          <div class="modal-actions">
+            <button class="btn btn-secondary" type="button" onclick="closeAddDealModal()">Cancel</button>
+            <button class="btn btn-primary" type="submit">Add Deal</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <div id="import-modal" class="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="import-title">
+    <div class="modal-card">
+      <div class="modal-head"><h2 id="import-title">Import Deals</h2><button class="modal-close" type="button" onclick="closeImportModal()">Close</button></div>
+      <div class="modal-body">
+        <p class="add-help">Upload an Excel or CSV file with one row per deal. Recognized headers include Property Name, Address, Sale Date, Price, Acres, Buyer, Seller, Property Type, Lat, Lon, Aerial URL, Units, Zoning, Land Use, and Comments.</p>
+        <form id="import-form" onsubmit="event.preventDefault(); importDealsFromFile();">
+          <div class="deal-form-grid">
+            <label class="deal-form-wide">Excel or CSV File<input type="file" id="import-file" accept=".xlsx,.xls,.csv"></label>
+            <label>Default Property Type<select id="import-default-property-type"><option value="Land">Land</option><option value="Multifamily">Multifamily</option><option value="Retail">Retail</option><option value="Industrial">Industrial</option><option value="Office">Office</option><option value="Other">Other</option></select></label>
+            <label>Default Source<input id="import-default-source" value="Imported Excel"></label>
+          </div>
+          <div id="import-preview" class="import-preview">No file selected yet.</div>
+          <div class="modal-actions"><button class="btn btn-secondary" type="button" onclick="closeImportModal()">Cancel</button><button class="btn btn-primary" type="submit">Import Deals</button></div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <div class="stats-grid" id="stats"></div>
+  <div class="panel">
+    <div class="filters">
+      <label class="filter-wide">Search All Fields<input type="text" id="search" placeholder="Address, buyer, seller, zoning, comments, aerial URL..."></label>
+      <label>Filter Any Field<select id="field-filter"><option value="">Select field</option></select></label>
+      <label>Field Contains<input type="text" id="field-value" placeholder="Value"></label>
+      <label>Sale Date From<input type="date" id="sale-date-from"></label>
+      <label>Sale Date To<input type="date" id="sale-date-to"></label>
+      <label>Property Type<select id="filter-type"><option value="">All</option></select></label>
+      <label>Source<select id="filter-source"><option value="">All</option></select></label>
+      <label>ELC Deal<select id="filter-elc"><option value="">All</option><option value="yes">Yes</option><option value="no">No</option></select></label>
+      <label>Transaction Type<select id="filter-transaction"><option value="">All</option></select></label>
+      <label>Aerial<select id="filter-aerial"><option value="">All</option><option value="yes">Has Aerial</option><option value="no">No Aerial</option></select></label>
+      <label>Min Price<input type="number" id="min-price" placeholder="500000"></label>
+      <label>Max Price<input type="number" id="max-price" placeholder="5000000"></label>
+      <label>Min Acres<input type="number" id="min-acres" placeholder="0.5" step="0.1"></label>
+      <label>Max Acres<input type="number" id="max-acres" placeholder="50" step="0.1"></label>
+      <label>Min $/Acre<input type="number" id="min-ppa" placeholder="100000"></label>
+      <label>Max $/Acre<input type="number" id="max-ppa" placeholder="500000"></label>
+      <label class="unit-filter">Min Units<input type="number" id="min-units" placeholder="50"></label>
+      <label class="unit-filter">Max Units<input type="number" id="max-units" placeholder="400"></label>
+      <label class="ppu-filter">Min $/Unit<input type="number" id="min-ppu" placeholder="50000"></label>
+      <label class="ppu-filter">Max $/Unit<input type="number" id="max-ppu" placeholder="150000"></label>
+    </div>
+  </div>
+  <div class="panel section">
+    <h2>Comp Detail Table</h2>
+
+    <div class="selection-bar">
+      <strong id="selected-count">0 selected</strong>
+      <button class="btn btn-secondary btn-small" type="button" onclick="selectVisibleComps()">Select Visible Page</button>
+      <button class="btn btn-secondary btn-small" type="button" onclick="selectAllFilteredComps()">Select All Filtered</button>
+      <button class="btn btn-secondary btn-small" type="button" onclick="clearSelectedComps()">Clear Selected</button>
+      <button class="btn btn-primary btn-small" type="button" onclick="createSelectedReport()">Create Report</button>
+      <button class="btn btn-secondary btn-small" type="button" onclick="showExportChoice(getSelectedComps())">Export Selected</button>
+    </div>
+    <div id="row-count"></div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr id="table-head"></tr></thead>
+        <tbody id="table-body"></tbody>
+      </table>
+    </div>
+    <div id="mobile-cards" class="mobile-cards"></div>
+    <div class="pager">
+      <button id="btn-prev" onclick="changePage(-1)" disabled>Prev</button>
+      <span id="page-info"></span>
+      <button id="btn-next" onclick="changePage(1)">Next</button>
+    </div>
+  </div>
+</div>
+<script>
+const PAGE_SIZE = 500;
+const DISPLAY_COLUMNS = [
+  ['_select','Select'],['_actions','Actions'],['num','#'],['property_name','Property Name'],['property_type','Property Type'],['address','Address'],['sale_date','Sale Date'],
+  ['price','Price'],['acreage','Acres'],['price_per_acre','$/Acre'],['unit_count','Units'],['price_per_unit','$/Unit'],['elc_deal','ELC Deal'],['grantor','Seller'],
+  ['grantee','Buyer'],['zoning','Zoning'],['land_use','Land Use'],['source','Source'],['aerial','Aerial']
+];
+const FIELD_LABELS = {
+  num:'#',property_name:'Property Name',parcel_id:'Parcel ID',parcel_raw_id:'Parcel Raw ID',address:'Address',sale_date:'Sale Date',
+  price:'Price',acreage:'Acres',price_per_acre:'$/Acre',book_page:'Book/Page',transaction_type:'Transaction Type',
+  grantor:'Seller',grantee:'Buyer',deed_type:'Deed Type',property_type:'Property Type',zoning:'Zoning',
+  land_use:'Land Use',source:'Source',comments:'Comments',lat:'Latitude',lon:'Longitude',
+  coords_approx:'Coordinates Approximate',deed_url:'Deed URL',aerial:'Aerial',sale_date_iso:'Sale Date ISO',unit_count:'Unit Count',price_per_unit:'$/Unit',elc_deal:'ELC Deal'
+};
+const currencyFields = new Set(['price','price_per_acre','price_per_unit']);
+const numericFields = new Set(['price','price_per_acre','price_per_unit','acreage','unit_count','lat','lon','num']);
+const escapeHtml = s => String(s ?? '').replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+const hasValue = v => v !== null && v !== undefined && v !== '';
+const AERIAL_FIELDS = ['aerial','photo_url','photoUrl','photoURL','Photo URL','PHOTO URL','photo url','photo','Photo','image_url','imageUrl','image','aerial_url','aerialUrl','Aerial URL','AERIAL URL','Aerial'];
+function getAerialValue(c){
+  for(const field of AERIAL_FIELDS){
+    if(c && hasValue(c[field])) return c[field];
+  }
+  return null;
+}
+function normalizeComp(c){
+  const aerial = getAerialValue(c);
+  return aerial && !hasValue(c.aerial) ? {...c, aerial} : c;
+}
+function compMatchKeys(c){
+  const keys=[];
+  if(hasValue(c.num)) keys.push('num:' + String(c.num));
+  if(hasValue(c.address)) keys.push('addr:' + String(c.address).trim().toLowerCase() + '|date:' + String(c.sale_date||c.sale_date_iso||'').trim().toLowerCase() + '|price:' + String(c.price||''));
+  return keys;
+}
+function mergeAerialsFromBackup(comps, backupComps){
+  const aerialByKey = new Map();
+  (backupComps||[]).map(normalizeComp).forEach(b=>{
+    const aerial = getAerialValue(b);
+    if(!hasValue(aerial)) return;
+    compMatchKeys(b).forEach(k=>{ if(!aerialByKey.has(k)) aerialByKey.set(k, aerial); });
+  });
+  return (comps||[]).map(c=>{
+    let out = normalizeComp(c);
+    if(hasValue(out.aerial)) return out;
+    for(const k of compMatchKeys(out)){
+      if(aerialByKey.has(k)) return {...out, aerial:aerialByKey.get(k)};
+    }
+    return out;
+  });
+}
+async function loadAerialBackup(){
+  for(const file of ['./comps_aerial_backup.json','./comps_updated.json','./comps_with_aerials.json']){
+    try{
+      const res = await fetch(file, {cache:'no-store'});
+      if(res.ok) return await res.json();
+    }catch(e){}
+  }
+  return null;
+}
+const fmtMoney = n => hasValue(n) ? '$' + Math.round(Number(n)).toLocaleString() : '<span class="null-val">—</span>';
+const fmtAcres = n => hasValue(n) ? Number(n).toLocaleString(undefined,{maximumFractionDigits:2}) : '<span class="null-val">—</span>';
+const fmtStr = s => hasValue(s) ? escapeHtml(s) : '<span class="null-val">—</span>';
+const fmtLink = (url,label='Aerial') => hasValue(url) ? `<a class="aerial-btn" href="${escapeHtml(url)}" target="_blank" rel="noopener noreferrer">${label}</a>` : '<span class="null-val">—</span>';
+const parseCompDate = c => {
+  const raw = c.sale_date_iso || c.sale_date;
+  if(!hasValue(raw)) return null;
+  const d = new Date(raw);
+  return Number.isNaN(d.getTime()) ? null : d;
+};
+let allComps=[], filteredComps=[], currentPage=1, sortKey='num', sortDir='asc', baseMeta={};
+const LOCAL_DEALS_KEY='elc_manual_added_deals_v1';
+const LOCAL_EDITS_KEY='elc_comp_edits_v1';
+let selectedCompKeys=new Set();
+let editingCompKey=null;
+async function loadReport(){
+  try{
+    const data = await (await fetch('./comps.json?v=aerials-20260501-2', {cache:'no-store'})).json();
+    const aerialBackup = await loadAerialBackup();
+    baseMeta = data.meta || {};
+    const savedDeals = loadLocalDeals().map(normalizeComp);
+    const baseComps = mergeAerialsFromBackup(data.comps || [], aerialBackup?.comps || aerialBackup || []);
+    allComps = applyLocalEdits([...baseComps, ...savedDeals]);
+    const meta = baseMeta;
+    document.getElementById('title').textContent = `${meta.title || 'Eshenbaugh Land Company Comps'} — ${meta.period || 'Historical'}`;
+    document.getElementById('subtitle').textContent = `${(allComps.length).toLocaleString()} comps | Generated ${meta.generated || ''} | ${allComps.filter(c=>hasValue(getAerialValue(c))).length.toLocaleString()} aerial links${savedDeals.length ? ' | ' + savedDeals.length.toLocaleString() + ' locally added' : ''}`;
+    renderTableHead();
+    populateFilters();
+    addFilterListeners();
+    applyFilters();
+  }catch(e){
+    document.getElementById('title').textContent = 'Error loading data';
+    document.getElementById('subtitle').textContent = e.message;
+  }
+}
+function allFields(){return [...new Set(allComps.flatMap(c=>Object.keys(c)))].sort();}
+function populateSelect(id, values){
+  const sel=document.getElementById(id);
+  [...new Set(values.filter(hasValue))].sort((a,b)=>String(a).localeCompare(String(b))).forEach(v=>{
+    const opt=document.createElement('option'); opt.value=v; opt.textContent=v; sel.appendChild(opt);
+  });
+}
+function resetSelectOptions(id, firstLabel='All'){
+  const sel=document.getElementById(id); if(!sel) return;
+  sel.innerHTML = id === 'field-filter' ? '<option value="">Select field</option>' : `<option value="">${firstLabel}</option>`;
+}
+function populateFilters(){
+  resetSelectOptions('field-filter'); resetSelectOptions('filter-type'); resetSelectOptions('filter-source'); resetSelectOptions('filter-transaction');
+  allFields().forEach(f=>{
+    const opt=document.createElement('option'); opt.value=f; opt.textContent=FIELD_LABELS[f] || f; document.getElementById('field-filter').appendChild(opt);
+  });
+  populateSelect('filter-type', allComps.map(c=>c.property_type));
+  populateSelect('filter-source', allComps.map(c=>c.source));
+  populateSelect('filter-transaction', allComps.map(c=>c.transaction_type));
+  toggleUnitPriceFilters();
+}
+function addFilterListeners(){
+  ['search','field-filter','field-value','sale-date-from','sale-date-to','filter-type','filter-source','filter-elc','filter-transaction','filter-aerial','min-price','max-price','min-acres','max-acres','min-ppa','max-ppa','min-units','max-units','min-ppu','max-ppu'].forEach(id=>{
+    document.getElementById(id).addEventListener('input',()=>{if(id==='filter-type') toggleUnitPriceFilters(); currentPage=1;applyFilters();});
+  });
+}
+function passesSearch(c,q){
+  if(!q) return true;
+  return Object.values(c).filter(hasValue).join(' ').toLowerCase().includes(q);
+}
+function passesFieldFilter(c,field,val){
+  if(!field || !val) return true;
+  const raw = c[field];
+  if(!hasValue(raw)) return false;
+  return String(raw).toLowerCase().includes(val);
+}
+function applyFilters(){
+  const q=document.getElementById('search').value.trim().toLowerCase();
+  const field=document.getElementById('field-filter').value;
+  const fieldVal=document.getElementById('field-value').value.trim().toLowerCase();
+  const type=document.getElementById('filter-type').value;
+  const source=document.getElementById('filter-source').value;
+  const trans=document.getElementById('filter-transaction').value;
+  const elc=document.getElementById('filter-elc').value;
+  const aerial=document.getElementById('filter-aerial').value;
+  const dateFromVal=document.getElementById('sale-date-from').value;
+  const dateToVal=document.getElementById('sale-date-to').value;
+  const dateFrom=dateFromVal ? new Date(dateFromVal + 'T00:00:00') : null;
+  const dateTo=dateToVal ? new Date(dateToVal + 'T23:59:59') : null;
+  const minPrice=parseFloat(document.getElementById('min-price').value);
+  const maxPrice=parseFloat(document.getElementById('max-price').value);
+  const minAcres=parseFloat(document.getElementById('min-acres').value);
+  const maxAcres=parseFloat(document.getElementById('max-acres').value);
+  const minPPA=parseFloat(document.getElementById('min-ppa').value);
+  const maxPPA=parseFloat(document.getElementById('max-ppa').value);
+  const minUnits=parseFloat(document.getElementById('min-units').value);
+  const maxUnits=parseFloat(document.getElementById('max-units').value);
+  const minPPU=parseFloat(document.getElementById('min-ppu').value);
+  const maxPPU=parseFloat(document.getElementById('max-ppu').value);
+  filteredComps=allComps.filter(c=>{
+    if(type && c.property_type!==type) return false;
+    if(source && c.source!==source) return false;
+    if(trans && c.transaction_type!==trans) return false;
+    if(elc==='yes' && c.elc_deal!=='Yes') return false;
+    if(elc==='no' && c.elc_deal==='Yes') return false;
+    if(aerial==='yes' && !hasValue(getAerialValue(c))) return false;
+    if(aerial==='no' && hasValue(getAerialValue(c))) return false;
+    const compDate = parseCompDate(c);
+    if(dateFrom && (!compDate || compDate < dateFrom)) return false;
+    if(dateTo && (!compDate || compDate > dateTo)) return false;
+    if(!Number.isNaN(minPrice) && (!hasValue(c.price) || Number(c.price)<minPrice)) return false;
+    if(!Number.isNaN(maxPrice) && (!hasValue(c.price) || Number(c.price)>maxPrice)) return false;
+    if(!Number.isNaN(minAcres) && (!hasValue(c.acreage) || Number(c.acreage)<minAcres)) return false;
+    if(!Number.isNaN(maxAcres) && (!hasValue(c.acreage) || Number(c.acreage)>maxAcres)) return false;
+    if(!Number.isNaN(minPPA) && (!hasValue(c.price_per_acre) || Number(c.price_per_acre)<minPPA)) return false;
+    if(!Number.isNaN(maxPPA) && (!hasValue(c.price_per_acre) || Number(c.price_per_acre)>maxPPA)) return false;
+    if(!Number.isNaN(minUnits) && (!hasValue(c.unit_count) || Number(c.unit_count)<minUnits)) return false;
+    if(!Number.isNaN(maxUnits) && (!hasValue(c.unit_count) || Number(c.unit_count)>maxUnits)) return false;
+    if(!Number.isNaN(minPPU) && (!hasValue(c.price_per_unit) || Number(c.price_per_unit)<minPPU)) return false;
+    if(!Number.isNaN(maxPPU) && (!hasValue(c.price_per_unit) || Number(c.price_per_unit)>maxPPU)) return false;
+    return passesSearch(c,q) && passesFieldFilter(c,field,fieldVal);
+  });
+  sortComps();
+  renderStats(filteredComps);
+  renderPage();
+}
+function sortComps(){
+  filteredComps.sort((a,b)=>{
+    let av=a[sortKey], bv=b[sortKey];
+    if(numericFields.has(sortKey)){av=hasValue(av)?Number(av):-Infinity; bv=hasValue(bv)?Number(bv):-Infinity;}
+    else {av=hasValue(av)?String(av).toLowerCase():''; bv=hasValue(bv)?String(bv).toLowerCase():'';}
+    if(av<bv) return sortDir==='asc'?-1:1;
+    if(av>bv) return sortDir==='asc'?1:-1;
+    return 0;
+  });
+}
+function renderTableHead(){
+  document.getElementById('table-head').innerHTML = DISPLAY_COLUMNS.map(([key,label])=> key.startsWith('_') ? `<th>${label}</th>` : `<th onclick="setSort('${key}')">${label}<span id="sort-${key}"></span></th>`).join('');
+}
+function setSort(key){
+  if(sortKey===key) sortDir = sortDir==='asc'?'desc':'asc'; else {sortKey=key; sortDir='asc';}
+  document.querySelectorAll('[id^="sort-"]').forEach(e=>e.textContent='');
+  const el=document.getElementById('sort-'+key); if(el) el.textContent=sortDir==='asc'?' ▲':' ▼';
+  applyFilters();
+}
+function renderStats(comps){
+  const withPrice=comps.filter(c=>hasValue(c.price)), withAcres=comps.filter(c=>hasValue(c.acreage)), withPPA=comps.filter(c=>hasValue(c.price_per_acre));
+  const totalVolume=withPrice.reduce((s,c)=>s+Number(c.price),0);
+  const totalAcres=withAcres.reduce((s,c)=>s+Number(c.acreage),0);
+  const avgPPA=withPPA.length ? withPPA.reduce((s,c)=>s+Number(c.price_per_acre),0)/withPPA.length : 0;
+  const aerialCount=comps.filter(c=>hasValue(getAerialValue(c))).length;
+  document.getElementById('stats').innerHTML = `
+    <div class="stat-card"><div class="val">${comps.length.toLocaleString()}</div><div class="lbl">Filtered Comps</div></div>
+    <div class="stat-card"><div class="val">$${(totalVolume/1000000).toFixed(1)}M</div><div class="lbl">Volume</div></div>
+    <div class="stat-card"><div class="val">${Math.round(totalAcres).toLocaleString()}</div><div class="lbl">Total Acres</div></div>
+    <div class="stat-card"><div class="val">$${Math.round(avgPPA).toLocaleString()}</div><div class="lbl">Avg $/Acre</div></div>
+    <div class="stat-card"><div class="val">${aerialCount.toLocaleString()}</div><div class="lbl">Aerial Links</div></div>`;
+}
+function toggleUnitPriceFilters(){
+  const show = document.getElementById('filter-type')?.value === 'Multifamily';
+  document.querySelectorAll('.ppu-filter,.unit-filter').forEach(el=>{el.style.display = show ? '' : 'none';});
+  if(!show){['min-units','max-units','min-ppu','max-ppu'].forEach(id=>{const el=document.getElementById(id); if(el) el.value='';});}
+}
+function fmtCell(c,key){
+  if(key==='_select') return `<input type="checkbox" ${selectedCompKeys.has(c._compKey)?'checked':''} onchange="toggleCompSelection('${escapeHtml(c._compKey||'')}', this.checked)">`;
+  if(key==='_actions') return `<div class="action-cell"><button type="button" onclick="openEditDealModal('${escapeHtml(c._compKey||'')}')">Edit</button></div>`;
+  const v=c[key];
+  if(key==='price' || key==='price_per_acre' || key==='price_per_unit') return fmtMoney(v);
+  if(key==='acreage') return fmtAcres(v);
+  if(key==='unit_count') return hasValue(v) ? Number(v).toLocaleString() : '<span class="null-val">—</span>';
+  if(key==='aerial') return fmtLink(getAerialValue(c),'Aerial');
+  return fmtStr(v);
+}
+function buildMobileCard(c){
+  const comments = hasValue(c.comments) ? `<div class="mobile-card-comments"><strong>Comments:</strong> ${escapeHtml(c.comments)}</div>` : '';
+  return `<div class="mobile-comp-card">
+    <div class="mobile-card-title">${fmtStr(c.address)}</div>
+    <div class="mobile-card-grid">
+      <div class="mobile-card-field"><span>Type</span>${fmtStr(c.property_type)}</div>
+      <div class="mobile-card-field"><span>Sale Date</span>${fmtStr(c.sale_date)}</div>
+      <div class="mobile-card-field"><span>Price</span>${fmtMoney(c.price)}</div>
+      <div class="mobile-card-field"><span>Acres</span>${fmtAcres(c.acreage)}</div>
+      <div class="mobile-card-field"><span>$/Acre</span>${fmtMoney(c.price_per_acre)}</div>
+      <div class="mobile-card-field"><span>Units</span>${hasValue(c.unit_count) ? Number(c.unit_count).toLocaleString() : '<span class="null-val">—</span>'}</div>
+      <div class="mobile-card-field"><span>$/Unit</span>${fmtMoney(c.price_per_unit)}</div>
+      <div class="mobile-card-field"><span>ELC Deal</span>${fmtStr(c.elc_deal)}</div>
+      <div class="mobile-card-field"><span>Aerial</span>${fmtLink(getAerialValue(c),'View Aerial')}</div>
+      <div class="mobile-card-field"><span>Seller</span>${fmtStr(c.grantor)}</div>
+      <div class="mobile-card-field"><span>Buyer</span>${fmtStr(c.grantee)}</div>
+      <div class="mobile-card-field"><span>Source</span>${fmtStr(c.source)}</div>
+      <div class="mobile-card-field"><span>Zoning</span>${fmtStr(c.zoning)}</div>
+    </div>${comments}
+  </div>`;
+}
+function renderPage(){
+  const total=filteredComps.length, totalPages=Math.max(1,Math.ceil(total/PAGE_SIZE));
+  currentPage=Math.min(currentPage,totalPages);
+  const start=(currentPage-1)*PAGE_SIZE, end=Math.min(start+PAGE_SIZE,total);
+  document.getElementById('row-count').textContent = total ? `Showing ${start+1}–${end} of ${total.toLocaleString()} comps` : 'No comps match the current filters';
+  document.getElementById('page-info').textContent = `Page ${currentPage} of ${totalPages}`;
+  document.getElementById('btn-prev').disabled=currentPage<=1;
+  document.getElementById('btn-next').disabled=currentPage>=totalPages;
+  const pageItems = filteredComps.slice(start,end);
+  document.getElementById('table-body').innerHTML = pageItems.map(c=>`<tr class="${selectedCompKeys.has(c._compKey)?'row-selected':''}">${DISPLAY_COLUMNS.map(([key])=>`<td class="${key==='_select'?'checkbox-cell':''}">${fmtCell(c,key)}</td>`).join('')}</tr>`).join('');
+  updateSelectedCount();
+  document.getElementById('mobile-cards').innerHTML = pageItems.map(buildMobileCard).join('');
+}
+function changePage(dir){currentPage+=dir;renderPage();window.scrollTo({top:0,behavior:'smooth'});}
+function loadLocalDeals(){
+  try{return JSON.parse(localStorage.getItem(LOCAL_DEALS_KEY) || '[]');}catch(e){return [];}
+}
+function saveLocalDeals(deals){localStorage.setItem(LOCAL_DEALS_KEY, JSON.stringify(deals));}
+function toNumOrNull(v){ if(v === null || v === undefined || String(v).trim()==='') return null; const n=Number(v); return Number.isFinite(n) ? n : null; }
+function isoToDisplay(iso){
+  if(!iso) return null;
+  const d = new Date(iso + 'T00:00:00'); if(Number.isNaN(d.getTime())) return null;
+  return d.toLocaleDateString('en-US',{month:'short',day:'2-digit',year:'numeric'}).replace(',', '');
+}
+
+function looksLikeMultifamilyComp(c){
+  const text=[c.address,c.comments,c.zoning,c.land_use,c.property_type,c.property_name,c.deed_type,c.source].filter(hasValue).join(' ').toLowerCase();
+  return /(multi[\s-]?family|apartment|apartments|\bapt\b|units?\b|duplex|triplex|quadplex|townhome|townhomes|condo|condominium|residential units?)/.test(text);
+}
+function consolidatePropertyType(c){
+  const raw=String(c.property_type||'').trim(), lower=raw.toLowerCase();
+  if(hasValue(c.unit_count)&&Number(c.unit_count)>0) return 'Multifamily';
+  if(lower==='investment'||lower==='investment property') return looksLikeMultifamilyComp(c)?'Multifamily':'Land';
+  return raw||'Land';
+}
+function getCompKey(c,fallbackIndex){
+  if(hasValue(c._compKey)) return c._compKey;
+  if(hasValue(c._manual_id)) return 'manual:'+String(c._manual_id);
+  if(hasValue(c.num)) return 'num:'+String(c.num);
+  if(hasValue(c.address)) return 'addr:'+String(c.address).trim().toLowerCase()+'|date:'+String(c.sale_date||c.sale_date_iso||'')+'|price:'+String(c.price||'');
+  return 'fallback:'+String(fallbackIndex);
+}
+function loadLocalEdits(){try{return JSON.parse(localStorage.getItem(LOCAL_EDITS_KEY)||'{}');}catch(e){return {};}}
+function saveLocalEdits(edits){localStorage.setItem(LOCAL_EDITS_KEY,JSON.stringify(edits));}
+function applyLocalEdits(comps){
+  const edits=loadLocalEdits();
+  return (comps||[]).map((c,i)=>{const key=getCompKey(c,i); const edited=edits[key]?{...c,...edits[key],edited_locally:true}:c; return deriveCompFields({...edited,_compKey:key});});
+}
+function saveCompEdit(comp){if(!comp||!comp._compKey)return; const edits=loadLocalEdits(); edits[comp._compKey]={...comp,_compKey:undefined}; saveLocalEdits(edits);}
+
+function deriveCompFields(c){
+  c.property_type = consolidatePropertyType(c);
+  if(hasValue(c.price) && hasValue(c.acreage) && Number(c.acreage)!==0) c.price_per_acre = Math.round(Number(c.price)/Number(c.acreage));
+  else c.price_per_acre = null;
+  if(hasValue(c.price) && hasValue(c.unit_count) && Number(c.unit_count)!==0) c.price_per_unit = Math.round(Number(c.price)/Number(c.unit_count));
+  else c.price_per_unit = null;
+  if(c.sale_date_iso && !c.sale_date) c.sale_date = isoToDisplay(c.sale_date_iso);
+  if(c.property_type === 'Multifamily' && !hasValue(c.unit_count)) c.unit_count = null;
+  return c;
+}
+function openAddDealModal(){
+  const form=document.getElementById('add-deal-form'); if(form) form.reset();
+  document.getElementById('new-property-type').value='Land';
+  document.getElementById('new-transaction-type').value='Sale';
+  document.getElementById('new-source').value='Manual Entry';
+  if(document.getElementById('new-property-name')) document.getElementById('new-property-name').value='';
+  document.getElementById('add-deal-modal').classList.add('open');
+}
+function closeAddDealModal(){ document.getElementById('add-deal-modal').classList.remove('open'); editingCompKey=null; document.getElementById('add-deal-title').textContent='Add New Deal'; const btn=document.querySelector('#add-deal-form button[type="submit"]'); if(btn) btn.textContent='Add Deal'; }
+function readFileAsDataURL(file){
+  return new Promise((resolve,reject)=>{const r=new FileReader(); r.onload=()=>resolve(r.result); r.onerror=reject; r.readAsDataURL(file);});
+}
+async function getAerialFromForm(){
+  const pasted=document.getElementById('new-aerial-url').value.trim();
+  if(pasted) return pasted;
+  const file=document.getElementById('new-aerial-file').files[0];
+  if(!file) return null;
+  if(file.size > 1800000){ alert('That image is pretty large. For best performance, upload the image somewhere first and paste the URL, or use a smaller aerial image under about 1.8 MB.'); return null; }
+  return await readFileAsDataURL(file);
+}
+async function addNewDealFromForm(){
+  const aerial = await getAerialFromForm();
+  const nextNum = Math.max(0, ...allComps.map(c=>Number(c.num)||0)) + 1;
+  const saleIso = document.getElementById('new-sale-date').value || null;
+  let comp = {
+    num: nextNum, parcel_id:null, parcel_raw_id:null,
+    property_name: document.getElementById('new-property-name')?.value.trim() || null,
+    address: document.getElementById('new-address').value.trim() || null,
+    sale_date: isoToDisplay(saleIso), sale_date_iso: saleIso,
+    price: toNumOrNull(document.getElementById('new-price').value),
+    acreage: toNumOrNull(document.getElementById('new-acreage').value),
+    price_per_acre:null, book_page:null,
+    transaction_type: document.getElementById('new-transaction-type').value.trim() || 'Sale',
+    grantor: document.getElementById('new-grantor').value.trim() || null,
+    grantee: document.getElementById('new-grantee').value.trim() || null,
+    deed_type:null,
+    property_type: document.getElementById('new-property-type').value || 'Land',
+    zoning: document.getElementById('new-zoning').value.trim() || null,
+    land_use: document.getElementById('new-land-use').value.trim() || null,
+    source: document.getElementById('new-source').value.trim() || 'Manual Entry',
+    comments: document.getElementById('new-comments').value.trim() || null,
+    lat: toNumOrNull(document.getElementById('new-lat').value),
+    lon: toNumOrNull(document.getElementById('new-lon').value),
+    coords_approx:false,
+    deed_url: document.getElementById('new-deed-url').value.trim() || null,
+    aerial: aerial,
+    unit_count: toNumOrNull(document.getElementById('new-unit-count').value),
+    price_per_unit:null,
+    elc_deal: document.getElementById('new-elc-deal').value === 'Yes' ? 'Yes' : null,
+    manual_entry:true
+  };
+  comp = deriveCompFields(comp);
+  const localDeals = loadLocalDeals(); localDeals.push(comp); saveLocalDeals(localDeals);
+  allComps.push(comp);
+  populateFilters(); currentPage=1; applyFilters(); closeAddDealModal();
+  alert('Deal added in this browser. It will show on the map if latitude and longitude were entered.');
+}
+
+function updateSelectedCount(){const el=document.getElementById('selected-count'); if(el) el.textContent=`${selectedCompKeys.size.toLocaleString()} selected`;}
+function toggleCompSelection(key,checked){ if(checked) selectedCompKeys.add(key); else selectedCompKeys.delete(key); renderPage(); }
+function selectVisibleComps(){ const start=(currentPage-1)*PAGE_SIZE,end=Math.min(start+PAGE_SIZE,filteredComps.length); filteredComps.slice(start,end).forEach(c=>selectedCompKeys.add(c._compKey)); renderPage();}
+function selectAllFilteredComps(){ filteredComps.forEach(c=>selectedCompKeys.add(c._compKey)); renderPage();}
+function clearSelectedComps(){ selectedCompKeys.clear(); renderPage();}
+function getSelectedComps(){ return allComps.filter(c=>selectedCompKeys.has(c._compKey)); }
+
+
+const EXPORT_COLUMNS = [
+  ['property_name','Property Name'],
+  ['address','Address'],
+  ['property_type','Property Type'],
+  ['transaction_type','Transaction Type'],
+  ['sale_date','Sale Date'],
+  ['sale_date_iso','Sale Date ISO'],
+  ['price','Sale Price'],
+  ['acreage','Acres'],
+  ['price_per_acre','Price / Acre'],
+  ['unit_count','Unit Count'],
+  ['price_per_unit','Price / Unit'],
+  ['grantor','Seller'],
+  ['grantee','Buyer'],
+  ['zoning','Zoning'],
+  ['land_use','Land Use'],
+  ['parcel_id','Parcel ID'],
+  ['book_page','Book / Page'],
+  ['deed_type','Deed Type'],
+  ['source','Source'],
+  ['elc_deal','ELC Deal'],
+  ['lat','Latitude'],
+  ['lon','Longitude'],
+  ['coords_approx','Coordinates Approximate'],
+  ['geocode_status','Geocode Status'],
+  ['geocode_source','Geocode Source'],
+  ['aerial','Aerial URL'],
+  ['deed_url','Deed URL'],
+  ['comments','Comments']
+];
+function cleanExportValue(v){
+  if(v === null || v === undefined) return '';
+  if(typeof v === 'number') return Number.isFinite(v) ? v : '';
+  if(typeof v === 'boolean') return v ? 'Yes' : 'No';
+  return String(v);
+}
+function selectedExportRows(comps){
+  return comps.map(c => {
+    const row = {};
+    EXPORT_COLUMNS.forEach(([key,label]) => { row[label] = cleanExportValue(c[key]); });
+    return row;
+  });
+}
+function downloadBlob(filename, mimeType, content){
+  const blob = new Blob([content], {type:mimeType});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+function rowsToCsv(rows){
+  const headers = EXPORT_COLUMNS.map(([,label]) => label);
+  const esc = v => {
+    const s = cleanExportValue(v);
+    if(/[",\n\r]/.test(s)) return '"' + s.replace(/"/g,'""') + '"';
+    return s;
+  };
+  return [headers.join(','), ...rows.map(row => headers.map(h => esc(row[h])).join(','))].join('\n');
+}
+function rowsToExcelHtml(rows){
+  const headers = EXPORT_COLUMNS.map(([,label]) => label);
+  const escHtml = v => cleanExportValue(v).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  const head = headers.map(h => `<th>${escHtml(h)}</th>`).join('');
+  const body = rows.map(row => `<tr>${headers.map(h => `<td>${escHtml(row[h])}</td>`).join('')}</tr>`).join('');
+  return `<!DOCTYPE html><html><head><meta charset="utf-8"><style>table{border-collapse:collapse}th,td{border:1px solid #999;padding:4px;vertical-align:top}th{background:#f2f2f2}</style></head><body><table><thead><tr>${head}</tr></thead><tbody>${body}</tbody></table></body></html>`;
+}
+function showExportChoice(comps){
+  if(!comps || !comps.length){ alert('Select at least one comp first.'); return; }
+  const choice = prompt('Export selected comps as:\n\n1 = Excel\n2 = CSV', '1');
+  if(choice === null) return;
+  const normalized = String(choice).trim().toLowerCase();
+  if(normalized === '1' || normalized === 'excel' || normalized === 'xls' || normalized === 'xlsx'){
+    exportSelectedComps('excel', comps);
+  }else if(normalized === '2' || normalized === 'csv'){
+    exportSelectedComps('csv', comps);
+  }else{
+    alert('Please enter 1 for Excel or 2 for CSV.');
+  }
+}
+function exportSelectedComps(format, comps){
+  if(!comps || !comps.length){ alert('Select at least one comp first.'); return; }
+  const rows = selectedExportRows(comps);
+  const stamp = new Date().toISOString().slice(0,10);
+  const prefix = 'ELC_Selected_Comps_' + stamp;
+  if(format === 'excel' || format === 'xls' || format === 'xlsx'){
+    downloadBlob(prefix + '.xls', 'application/vnd.ms-excel;charset=utf-8', rowsToExcelHtml(rows));
+    return;
+  }
+  downloadBlob(prefix + '.csv', 'text/csv;charset=utf-8', rowsToCsv(rows));
+}
+
+function reportMoney(n){return hasValue(n)?'$'+Math.round(Number(n)).toLocaleString():'—';}
+function reportNum(n,d=2){return hasValue(n)?Number(n).toLocaleString(undefined,{maximumFractionDigits:d}):'—';}
+function reportName(c){return c.property_name||String(c.address||'').split(',')[0]||'Comp';}
+function reportMapUrl(comps){
+  const pts=comps.filter(c=>hasValue(c.lat)&&hasValue(c.lon)).map(c=>({lat:Number(c.lat),lon:Number(c.lon)})).filter(p=>Number.isFinite(p.lat)&&Number.isFinite(p.lon)); if(!pts.length)return null;
+  let minLat=Math.min(...pts.map(p=>p.lat)),maxLat=Math.max(...pts.map(p=>p.lat)),minLon=Math.min(...pts.map(p=>p.lon)),maxLon=Math.max(...pts.map(p=>p.lon));
+  const latPad=Math.max((maxLat-minLat)*0.18,0.01), lonPad=Math.max((maxLon-minLon)*0.18,0.01); minLat-=latPad;maxLat+=latPad;minLon-=lonPad;maxLon+=lonPad;
+  return {url:`https://services.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/export?bbox=${minLon},${minLat},${maxLon},${maxLat}&bboxSR=4326&imageSR=4326&size=1200,650&format=png32&transparent=false&f=image`,e:{minLat,maxLat,minLon,maxLon}};
+}
+function svgPin(label,x,y){return `<svg class="pin" style="left:${x}%;top:${y}%" viewBox="0 0 28 36"><path d="M14 35 L3 18 Q0 13 3 7 Q7 1 14 1 Q21 1 25 7 Q28 13 25 18 Z"></path><text x="14" y="16">${escapeHtml(label)}</text></svg>`;}
+function createSelectedReport(){
+
+  const reportComps = getSelectedComps();
+  const reportTitle = 'Sale Comps Map & List Report';
+  if(!reportComps.length){ alert('Select at least one comp first.'); return; }
+
+  const logo = new URL('./EshenbaughLogo.png', location.href).href;
+  const today = new Date().toLocaleDateString();
+
+  const fmtMoney = n => hasValue(n) ? '$' + Math.round(Number(n)).toLocaleString() : '—';
+  const fmtNum = (n,d=2) => hasValue(n) ? Number(n).toLocaleString(undefined,{maximumFractionDigits:d}) : '—';
+  const fmtAcres = n => hasValue(n) ? fmtNum(n,2) + ' ac' : '—';
+  const fmtPPA = n => hasValue(n) ? '$' + Math.round(Number(n)).toLocaleString() + '/ac' : '—';
+  const fmtPPU = n => hasValue(n) ? '$' + Math.round(Number(n)).toLocaleString() + '/unit' : '—';
+  const fmtText = v => hasValue(v) ? escapeHtml(v) : '—';
+  const getAerial = c => (typeof getAerialValue === 'function') ? getAerialValue(c) : (c.aerial || null);
+  const fmtDate = c => {
+    const raw = c.sale_date_iso || c.sale_date;
+    if(!hasValue(raw)) return '—';
+    if(typeof raw === 'string' && /^\d{4}-\d{2}-\d{2}/.test(raw)){
+      const d = new Date(raw + 'T00:00:00');
+      if(!Number.isNaN(d.getTime())) return d.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
+    }
+    return escapeHtml(String(raw));
+  };
+  const locMapFor = c => {
+    if(!hasValue(c.lat) || !hasValue(c.lon)) return null;
+    const lat = Number(c.lat), lon = Number(c.lon);
+    if(!Number.isFinite(lat) || !Number.isFinite(lon)) return null;
+    const pad = 0.0065;
+    return `https://services.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/export?bbox=${lon-pad},${lat-pad},${lon+pad},${lat+pad}&bboxSR=4326&size=900,520&imageSR=4326&format=png32&transparent=false&f=image`;
+  };
+  const summaryMap = reportMapUrl(reportComps);
+
+  const withPrice = reportComps.filter(c => hasValue(c.price));
+  const withAcres = reportComps.filter(c => hasValue(c.acreage));
+  const ppaVals = reportComps.filter(c => hasValue(c.price_per_acre));
+  const ppuVals = reportComps.filter(c => hasValue(c.price_per_unit));
+  const totalPrice = withPrice.reduce((s,c)=>s+Number(c.price),0);
+  const totalAcres = withAcres.reduce((s,c)=>s+Number(c.acreage),0);
+  const avgPrice = withPrice.length ? totalPrice / withPrice.length : null;
+  const avgAcres = withAcres.length ? totalAcres / withAcres.length : null;
+  const avgPPA = ppaVals.length ? ppaVals.reduce((s,c)=>s+Number(c.price_per_acre),0)/ppaVals.length : null;
+  const avgPPU = ppuVals.length ? ppuVals.reduce((s,c)=>s+Number(c.price_per_unit),0)/ppuVals.length : null;
+
+  function chartSvg(items, opts={}){
+    const width = 900, barH = 24, leftPad = opts.leftPad || 190, rightPad = opts.rightPad || 120, topPad = 16, gap = 13;
+    const safeItems = (items || []).filter(it => hasValue(it.value) && Number(it.value) >= 0).slice(0, 10);
+    if(!safeItems.length) return `<div class="chart-empty">Not enough data to chart.</div>`;
+    const maxVal = Math.max(...safeItems.map(it => Number(it.value)), 1);
+    const innerW = width - leftPad - rightPad;
+    const height = topPad*2 + safeItems.length*(barH+gap);
+    const rows = safeItems.map((it, idx) => {
+      const y = topPad + idx*(barH+gap);
+      const barW = Math.max(2, (Number(it.value)/maxVal)*innerW);
+      return `<text x="${leftPad-10}" y="${y + 16}" text-anchor="end" class="chart-label">${escapeHtml(String(it.label || ''))}</text><rect x="${leftPad}" y="${y}" width="${barW}" height="${barH}" rx="4" class="chart-bar"></rect><text x="${leftPad + barW + 8}" y="${y + 16}" class="chart-value">${escapeHtml(String(it.display || fmtMoney(it.value)))}</text>`;
+    }).join('');
+    return `<svg viewBox="0 0 ${width} ${height}" class="chart-svg">${rows}</svg>`;
+  }
+
+  const typeCounts = {};
+  reportComps.forEach(c => {
+    const key = hasValue(c.property_type) ? String(c.property_type).trim() : 'Other';
+    typeCounts[key] = (typeCounts[key] || 0) + 1;
+  });
+  const typeChart = Object.entries(typeCounts).sort((a,b)=>b[1]-a[1]).map(([label,value]) => ({label,value,display:value.toLocaleString()}));
+  const priceChart = reportComps.filter(c=>hasValue(c.price)).sort((a,b)=>Number(b.price)-Number(a.price)).slice(0,10).map(c=>({label:reportName(c),value:Number(c.price),display:fmtMoney(c.price)}));
+  const ppaChart = reportComps.filter(c=>hasValue(c.price_per_acre)).sort((a,b)=>Number(b.price_per_acre)-Number(a.price_per_acre)).slice(0,10).map(c=>({label:reportName(c),value:Number(c.price_per_acre),display:fmtPPA(c.price_per_acre)}));
+  const acresChart = reportComps.filter(c=>hasValue(c.acreage)).sort((a,b)=>Number(b.acreage)-Number(a.acreage)).slice(0,10).map(c=>({label:reportName(c),value:Number(c.acreage),display:fmtAcres(c.acreage)}));
+
+  const overviewRows = reportComps.map((c,i)=>`<tr><td class="num">${i+1}</td><td><strong>${escapeHtml(reportName(c))}</strong><div class="subline">${fmtText(c.address)}</div></td><td>${fmtText(c.property_type)}</td><td>${fmtDate(c)}</td><td>${fmtMoney(c.price)}</td><td>${fmtAcres(c.acreage)}</td><td>${fmtPPA(c.price_per_acre)}</td><td>${fmtNum(c.unit_count,0)}</td><td>${fmtPPU(c.price_per_unit)}</td></tr>`).join('');
+
+  function salesFields(c){
+    const aerial = getAerial(c);
+    const fields = [
+      ['Property Name', c.property_name],
+      ['Address', c.address],
+      ['Sale Date', c.sale_date],
+      ['Sale Date ISO', c.sale_date_iso],
+      ['Transaction Type', c.transaction_type],
+      ['Sale Price', hasValue(c.price) ? fmtMoney(c.price) : null],
+      ['Acreage', hasValue(c.acreage) ? fmtAcres(c.acreage) : null],
+      ['Price / Acre', hasValue(c.price_per_acre) ? fmtPPA(c.price_per_acre) : null],
+      ['Unit Count', hasValue(c.unit_count) ? fmtNum(c.unit_count,0) : null],
+      ['Price / Unit', hasValue(c.price_per_unit) ? fmtPPU(c.price_per_unit) : null],
+      ['Buyer', c.grantee],
+      ['Seller', c.grantor],
+      ['Property Type', c.property_type],
+      ['Zoning', c.zoning],
+      ['Land Use', c.land_use],
+      ['Book / Page', c.book_page],
+      ['Deed Type', c.deed_type],
+      ['Parcel ID', c.parcel_id],
+      ['Source', c.source],
+      ['ELC Deal', c.elc_deal],
+      ['Latitude', c.lat],
+      ['Longitude', c.lon],
+      ['Aerial Link', aerial],
+      ['Deed URL', c.deed_url]
+    ];
+    return fields.filter(([k,v])=>hasValue(v)).map(([k,v])=>`<div><span>${escapeHtml(k)}</span><b>${escapeHtml(String(v))}</b></div>`).join('');
+  }
+
+  const detailPages = reportComps.map((c,i)=>{
+    const aerial = getAerial(c);
+    const locMap = locMapFor(c);
+    const comments = hasValue(c.comments) ? `<div class="detail-comments"><h4>Comments / Description</h4><p>${escapeHtml(c.comments).replace(/\n/g,'<br>')}</p></div>` : `<div class="detail-comments empty"><h4>Comments / Description</h4><p>No comments or description provided.</p></div>`;
+    const locBox = locMap ? `<div class="image-card"><div class="image-title">Aerial Location Map with Pin</div><div class="image-box"><img src="${locMap}" alt="Location map for ${escapeHtml(reportName(c))}"><div class="image-pin">${i+1}</div></div></div>` : '';
+    const aerialBox = aerial ? `<div class="image-card"><div class="image-title">Saved Aerial / Site Image</div><div class="image-box"><img src="${escapeHtml(aerial)}" alt="Aerial image for ${escapeHtml(reportName(c))}" onerror="this.parentElement.classList.add('empty');this.style.display='none';this.parentElement.innerHTML='Aerial preview unavailable. Use the aerial link in the fields below.';"></div></div>` : '';
+    const imageSection = (locBox || aerialBox) ? `<div class="detail-image-grid">${locBox}${aerialBox}</div>` : `<div class="image-box empty">No aerial or location image available.</div>`;
+    const fieldGrid = salesFields(c);
+    return `<section class="detail-page"><div class="detail-head"><div><div class="detail-kicker">Comp ${i+1}</div><h2>${escapeHtml(reportName(c))}</h2><div class="detail-address">${fmtText(c.address)}</div></div><div class="detail-price"><span>Sale Price</span><strong>${fmtMoney(c.price)}</strong></div></div><div class="detail-top-stats"><div><span>Sale Date</span><b>${fmtDate(c)}</b></div><div><span>Acres</span><b>${fmtAcres(c.acreage)}</b></div><div><span>$ / Acre</span><b>${fmtPPA(c.price_per_acre)}</b></div><div><span>Units</span><b>${fmtNum(c.unit_count,0)}</b></div><div><span>$ / Unit</span><b>${fmtPPU(c.price_per_unit)}</b></div></div>${imageSection}${comments}<div class="section-title detail-fields-title">Sales & Property Fields</div><div class="field-grid">${fieldGrid || '<div><span>Fields</span><b>No additional fields available.</b></div>'}</div></section>`;
+  }).join('');
+
+  const mapHtml = summaryMap ? `<div class="map"><img src="${summaryMap.url}" alt="Comp map">${reportComps.map((c,i)=>{ if(!hasValue(c.lat)||!hasValue(c.lon)) return ''; const x=((Number(c.lon)-summaryMap.e.minLon)/(summaryMap.e.maxLon-summaryMap.e.minLon))*100; const y=(1-((Number(c.lat)-summaryMap.e.minLat)/(summaryMap.e.maxLat-summaryMap.e.minLat)))*100; return svgPin(String(i+1),x,y); }).join('')}</div>` : `<div class="map empty">No mapped coordinates available.</div>`;
+
+  const html = `<!DOCTYPE html><html><head><meta charset="utf-8"><title>${escapeHtml(reportTitle)}</title><style>
+    *{box-sizing:border-box;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+    body{font-family:Arial,Helvetica,sans-serif;background:#f3f5f8;color:#17212f;margin:0;font-size:12px}
+    .page{max-width:1080px;margin:0 auto;background:#fff;padding:24px 28px 30px;min-height:100vh}
+    .brand{display:flex;align-items:center;justify-content:space-between;gap:20px;background:#000;color:#fff;border-radius:12px;padding:14px 16px;border-bottom:5px solid #ef1f25}
+    .brand img{height:48px;max-width:320px;background:#fff;border-radius:8px;padding:8px 10px}
+    .brand-copy{font-size:11px;line-height:1.45;text-align:right;color:#e8edf4}
+    .actions{display:flex;justify-content:flex-end;gap:10px;margin:12px 0 16px}
+    .actions button{background:#ef1f25;color:#fff;border:0;border-radius:8px;padding:9px 14px;font-weight:800;cursor:pointer}
+    .title{font-size:26px;font-weight:800;color:#000;margin:0 0 14px;padding-bottom:10px;border-bottom:4px solid #ef1f25}
+    .summary-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin:14px 0 18px}
+    .metric{border:1px solid #d8e0ea;border-top:4px solid #ef1f25;border-radius:10px;padding:12px;background:#fff}
+    .metric span{display:block;font-size:10px;color:#667085;text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px}.metric strong{font-size:18px;color:#000}
+    .section-title{font-size:15px;font-weight:800;color:#000;margin:24px 0 10px;padding-bottom:6px;border-bottom:2px solid #000}.detail-note{font-size:11px;color:#667085;margin:-4px 0 10px;line-height:1.4}
+    .map{position:relative;height:420px;border:1px solid #d9e1ea;border-radius:12px;overflow:hidden;background:#edf2f6}.map.empty{display:flex;align-items:center;justify-content:center;color:#667085;font-weight:700}.map img{width:100%;height:100%;object-fit:cover;display:block}
+    .pin{position:absolute;transform:translate(-50%,-100%);width:28px;height:36px;overflow:visible;filter:drop-shadow(0 1px 4px rgba(0,0,0,.35))}.pin path{fill:#ef1f25;stroke:#fff;stroke-width:2}.pin text{fill:#fff;font-size:11px;font-weight:700;text-anchor:middle;font-family:Arial,Helvetica,sans-serif}
+    .chart-grid{display:grid;grid-template-columns:1fr;gap:16px}.chart-card{border:1px solid #d8e0ea;border-radius:12px;padding:14px;background:#fff}.chart-title{font-weight:800;color:#000;margin-bottom:10px}.chart-svg{width:100%;height:auto;display:block}.chart-label,.chart-value{fill:#344054;font-size:11px;font-weight:700}.chart-bar{fill:#ef1f25}.chart-empty{display:flex;align-items:center;justify-content:center;min-height:120px;color:#667085;background:#f8fafc;border-radius:8px}
+    table{width:100%;border-collapse:collapse}.overview th{font-size:11px;text-align:left;border-bottom:2px solid #000;padding:8px 6px;background:#fafbfc}.overview td{padding:8px 6px;border-bottom:1px solid #e2e8f0;vertical-align:top}.overview .num{width:32px;text-align:center;font-weight:800}.subline{margin-top:3px;color:#667085;font-size:10px;line-height:1.35}
+    .detail-page{page-break-before:always;padding-top:8px}.detail-head{display:flex;justify-content:space-between;gap:16px;align-items:flex-start;margin-bottom:12px}.detail-kicker{font-size:10px;font-weight:800;text-transform:uppercase;color:#ef1f25;letter-spacing:.08em;margin-bottom:4px}.detail-head h2{margin:0;font-size:24px;color:#000}.detail-address{margin-top:4px;color:#667085;font-size:12px}.detail-price{border:1px solid #d8e0ea;border-top:4px solid #ef1f25;border-radius:12px;background:#fff;padding:10px 14px;min-width:170px;text-align:right}.detail-price span{display:block;font-size:10px;color:#667085;text-transform:uppercase;letter-spacing:.06em}.detail-price strong{display:block;font-size:20px;color:#000;margin-top:4px}
+    .detail-top-stats,.field-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:12px 0}.detail-top-stats div,.field-grid div{border:1px solid #d8e0ea;border-radius:10px;padding:10px;background:#fff}.detail-top-stats span,.field-grid span{display:block;font-size:10px;color:#667085;text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px}.field-grid b{font-size:11px;line-height:1.35;word-break:break-word}
+    .detail-image-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:10px}.image-card{border:1px solid #d8e0ea;border-radius:12px;padding:10px;background:#fff}.image-title{font-weight:800;color:#000;margin-bottom:8px}.image-box{position:relative;height:285px;background:#edf2f6;border-radius:10px;overflow:hidden;display:flex;align-items:center;justify-content:center;color:#667085;text-align:center;padding:8px}.image-box img{width:100%;height:100%;object-fit:cover;display:block}.image-box.empty{font-weight:700}.image-pin{position:absolute;left:50%;top:50%;transform:translate(-50%,-100%);min-width:28px;height:34px;padding-top:7px;background:#ef1f25;color:#fff;border:2px solid #fff;border-radius:14px 14px 14px 0;font-weight:800;box-shadow:0 2px 6px rgba(0,0,0,.3)}
+    .detail-comments{border:1px solid #d8e0ea;border-radius:12px;padding:12px;background:#fff;margin-top:14px}.detail-comments h4{margin:0 0 8px;color:#000;font-size:14px}.detail-comments p{margin:0;line-height:1.5;color:#344054}.detail-comments.empty p{color:#667085}.detail-fields-title{page-break-after:avoid}
+    .footer{display:flex;justify-content:space-between;align-items:center;margin-top:20px;padding-top:8px;border-top:3px solid #000;font-size:10px;color:#667085}
+    @media print{body{background:#fff}.page{max-width:none;padding:18px 24px}.actions{display:none}.brand{border-radius:0}.detail-page{break-before:page}}
+    @media(max-width:900px){.summary-grid{grid-template-columns:repeat(2,1fr)}.detail-top-stats,.field-grid{grid-template-columns:1fr 1fr}.detail-image-grid{grid-template-columns:1fr}.detail-head{flex-direction:column}}
+  </style></head><body><!-- Enhanced Detail Report v6 --><div class="page">
+    <div class="brand"><img src="${logo}" alt="Eshenbaugh Land Company" onerror="this.style.display='none'"><div class="brand-copy"><strong>Eshenbaugh Land Company</strong><br>Land is all we do.<br>${today}</div></div>
+    <div class="actions"><button type="button" onclick="window.print()">Download PDF</button></div>
+    <h1 class="title">${escapeHtml(reportTitle)}</h1>
+    <div class="summary-grid"><div class="metric"><span>Selected Comps</span><strong>${reportComps.length.toLocaleString()}</strong></div><div class="metric"><span>Average Sale Price</span><strong>${fmtMoney(avgPrice)}</strong></div><div class="metric"><span>Average Acres</span><strong>${fmtAcres(avgAcres)}</strong></div><div class="metric"><span>Average $ / Acre</span><strong>${fmtPPA(avgPPA)}</strong></div><div class="metric"><span>Average $ / Unit</span><strong>${fmtPPU(avgPPU)}</strong></div></div>
+    <div class="section-title">Comp Map</div>${mapHtml}
+    <div class="section-title">Charts & Graphs</div><div class="chart-grid"><div class="chart-card"><div class="chart-title">Property Type Distribution</div>${chartSvg(typeChart,{leftPad:150,rightPad:70})}</div><div class="chart-card"><div class="chart-title">Top Sale Prices</div>${chartSvg(priceChart,{leftPad:210,rightPad:115})}</div><div class="chart-card"><div class="chart-title">Top $ / Acre</div>${chartSvg(ppaChart,{leftPad:210,rightPad:110})}</div><div class="chart-card"><div class="chart-title">Largest Land Areas</div>${chartSvg(acresChart,{leftPad:210,rightPad:110})}</div></div>
+    <div class="section-title">Comp Overview</div><div class="detail-note">Individual comp detail pages, sales fields, comments, aerial location maps, and saved aerial images follow this overview.</div><table class="overview"><thead><tr><th>#</th><th>Property</th><th>Type</th><th>Sale Date</th><th>Price</th><th>Acres</th><th>$ / Acre</th><th>Units</th><th>$ / Unit</th></tr></thead><tbody>${overviewRows}</tbody></table>
+    ${detailPages}
+    <div class="footer"><span>Eshenbaugh Land Company</span><span>${today}</span></div>
+  </div></body></html>`;
+
+  const w = window.open('', '_blank');
+  if(!w){ alert('Your browser blocked the report window. Please allow pop-ups and try again.'); return; }
+  w.document.open(); w.document.write(html); w.document.close();
+
+}
+function setFormValue(id,val){const el=document.getElementById(id); if(el) el.value=hasValue(val)?val:'';}
+function getCompByKey(key){return allComps.find(c=>c._compKey===key);}
+function fillDealFormFromComp(c){setFormValue('new-property-name',c.property_name);setFormValue('new-property-type',c.property_type||'Land');setFormValue('new-transaction-type',c.transaction_type||'Sale');setFormValue('new-sale-date',c.sale_date_iso||'');setFormValue('new-elc-deal',c.elc_deal==='Yes'?'Yes':'No');setFormValue('new-address',c.address);setFormValue('new-price',c.price);setFormValue('new-acreage',c.acreage);setFormValue('new-unit-count',c.unit_count);setFormValue('new-lat',c.lat);setFormValue('new-lon',c.lon);setFormValue('new-grantee',c.grantee);setFormValue('new-grantor',c.grantor);setFormValue('new-zoning',c.zoning);setFormValue('new-land-use',c.land_use);setFormValue('new-source',c.source||'Manual Entry');setFormValue('new-aerial-url',c.aerial);setFormValue('new-deed-url',c.deed_url);setFormValue('new-comments',c.comments);}
+function openEditDealModal(key){const comp=getCompByKey(key); if(!comp){alert('Could not find that comp.');return;} editingCompKey=key; const form=document.getElementById('add-deal-form'); if(form)form.reset(); fillDealFormFromComp(comp); document.getElementById('add-deal-title').textContent='Edit Deal Fields'; const btn=document.querySelector('#add-deal-form button[type="submit"]'); if(btn)btn.textContent='Save Changes'; document.getElementById('add-deal-modal').classList.add('open');}
+async function saveDealFromForm(){ if(editingCompKey) return await saveEditedDealFromForm(); return await addNewDealFromForm();}
+async function saveEditedDealFromForm(){const existing=getCompByKey(editingCompKey); if(!existing){alert('Could not find that comp.');return;} const aerial=await getAerialFromForm(); const saleIso=document.getElementById('new-sale-date').value||null; let updated={...existing,property_name:document.getElementById('new-property-name')?.value.trim()||null,address:document.getElementById('new-address').value.trim()||null,sale_date:isoToDisplay(saleIso),sale_date_iso:saleIso,price:toNumOrNull(document.getElementById('new-price').value),acreage:toNumOrNull(document.getElementById('new-acreage').value),transaction_type:document.getElementById('new-transaction-type').value.trim()||'Sale',grantor:document.getElementById('new-grantor').value.trim()||null,grantee:document.getElementById('new-grantee').value.trim()||null,property_type:document.getElementById('new-property-type').value||'Land',zoning:document.getElementById('new-zoning').value.trim()||null,land_use:document.getElementById('new-land-use').value.trim()||null,source:document.getElementById('new-source').value.trim()||'Manual Entry',comments:document.getElementById('new-comments').value.trim()||null,lat:toNumOrNull(document.getElementById('new-lat').value),lon:toNumOrNull(document.getElementById('new-lon').value),deed_url:document.getElementById('new-deed-url').value.trim()||null,aerial:aerial||existing.aerial||null,unit_count:toNumOrNull(document.getElementById('new-unit-count').value),elc_deal:document.getElementById('new-elc-deal').value==='Yes'?'Yes':null,edited_locally:true}; updated=deriveCompFields(updated); saveCompEdit(updated); allComps=allComps.map(c=>c._compKey===editingCompKey?updated:c); editingCompKey=null; closeAddDealModal(); populateFilters(); currentPage=1; applyFilters(); alert('Changes saved in this browser.');}
+function openImportModal(){document.getElementById('import-form').reset();document.getElementById('import-preview').textContent='No file selected yet.';document.getElementById('import-default-source').value='Imported Excel';document.getElementById('import-modal').classList.add('open');}
+function closeImportModal(){document.getElementById('import-modal').classList.remove('open');}
+function normalizeHeader(h){return String(h||'').toLowerCase().replace(/[^a-z0-9]+/g,'').trim();}
+const IMPORT_ALIASES={property_name:['propertyname','projectname','listingtitle','title','name'],address:['address','propertyaddress','siteaddress'],sale_date:['saledate','date','closingdate'],price:['price','saleprice','purchaseprice'],acreage:['acreage','acres','landsizeacres','landsizeac'],property_type:['propertytype','type'],grantor:['seller','grantor'],grantee:['buyer','purchaser','grantee'],zoning:['zoning'],land_use:['landuse','futurelanduse','flu'],source:['source'],comments:['comments','notes','description'],lat:['lat','latitude'],lon:['lon','lng','longitude'],aerial:['aerial','aerialurl','photourl','photo','imageurl'],unit_count:['units','unitcount','ofunits']};
+function getImportVal(row,field){const aliases=IMPORT_ALIASES[field]||[field]; for(const [k,v] of Object.entries(row)){if(aliases.includes(normalizeHeader(k)))return v;} return null;}
+function importDateToISO(v){if(!hasValue(v))return null; if(typeof v==='number'&&window.XLSX&&XLSX.SSF){const d=XLSX.SSF.parse_date_code(v); if(d)return `${d.y}-${String(d.m).padStart(2,'0')}-${String(d.d).padStart(2,'0')}`;} const d=new Date(v); return Number.isNaN(d.getTime())?null:d.toISOString().slice(0,10);}
+function makeImportedComp(row,idx){const saleIso=importDateToISO(getImportVal(row,'sale_date')); let c={num:Math.max(0,...allComps.map(c=>Number(c.num)||0))+idx,property_name:String(getImportVal(row,'property_name')||'').trim()||null,address:String(getImportVal(row,'address')||'').trim()||null,sale_date:isoToDisplay(saleIso),sale_date_iso:saleIso,price:toNumOrNull(getImportVal(row,'price')),acreage:toNumOrNull(getImportVal(row,'acreage')),property_type:String(getImportVal(row,'property_type')||document.getElementById('import-default-property-type').value||'Land').trim(),source:String(getImportVal(row,'source')||document.getElementById('import-default-source').value||'Imported Excel').trim(),comments:String(getImportVal(row,'comments')||'').trim()||null,lat:toNumOrNull(getImportVal(row,'lat')),lon:toNumOrNull(getImportVal(row,'lon')),aerial:String(getImportVal(row,'aerial')||'').trim()||null,unit_count:toNumOrNull(getImportVal(row,'unit_count')),manual_entry:true,_manual_id:'imp-'+Date.now()+'-'+idx}; return deriveCompFields(c);}
+async function importDealsFromFile(){const file=document.getElementById('import-file').files[0]; if(!file){alert('Choose an Excel or CSV file first.');return;} if(!window.XLSX){alert('Excel importer did not load. Refresh and try again.');return;} const buf=await file.arrayBuffer(); const wb=XLSX.read(buf,{type:'array'}); const ws=wb.Sheets[wb.SheetNames[0]]; const rows=XLSX.utils.sheet_to_json(ws,{defval:null}); const imported=rows.filter(r=>Object.values(r).some(hasValue)).map((r,i)=>makeImportedComp(r,i+1)).filter(c=>hasValue(c.address)||hasValue(c.property_name)); if(!imported.length){alert('No usable rows found.');return;} const localDeals=loadLocalDeals(); saveLocalDeals([...localDeals,...imported]); allComps=applyLocalEdits([...allComps,...imported]); closeImportModal(); populateFilters(); currentPage=1; applyFilters(); alert(`${imported.length.toLocaleString()} deals imported in this browser.`);}
+document.addEventListener('change',function(e){if(e.target&&e.target.id==='import-file'){const f=e.target.files[0];document.getElementById('import-preview').textContent=f?`Ready to import: ${f.name}`:'No file selected yet.';}});
+
+function resetFilters(){
+  ['search','field-value','sale-date-from','sale-date-to','min-price','max-price','min-acres','max-acres','min-ppa','max-ppa','min-units','max-units','min-ppu','max-ppu'].forEach(id=>document.getElementById(id).value='');
+  ['field-filter','filter-type','filter-source','filter-elc','filter-transaction','filter-aerial'].forEach(id=>document.getElementById(id).value='');
+  currentPage=1;toggleUnitPriceFilters();applyFilters();
+}
+loadReport();
+</script>
+</body>
+</html>

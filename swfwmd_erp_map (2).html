@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Eshenbaugh Land Company SWFWMD ERP Map</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<style>
+:root{--elc-red:#ef1f25;--elc-black:#000;--elc-ink:#17212f;--elc-muted:#667085;--elc-line:#d9e1ea;--elc-bg:#f5f7fa;--elc-white:#fff}
+*{box-sizing:border-box}html,body,#map{margin:0;padding:0;height:100%;font-family:"Segoe UI",Arial,sans-serif;color:var(--elc-ink)}body{background:var(--elc-bg)}
+#wrap{display:flex;width:100%;height:100%;overflow:hidden}
+#panel{width:395px;max-width:94vw;height:100%;background:#fff;z-index:10;box-shadow:2px 0 18px rgba(0,0,0,.22);display:flex;flex-direction:column;border-right:4px solid var(--elc-red)}
+#panel-header{background:#000;color:#fff;padding:14px 14px 12px}
+#brand-row{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+#brand-row img{height:34px;width:auto;background:#fff;border-radius:7px;padding:5px 8px}
+#panel-header h1{margin:0;color:#fff;font-size:15px;line-height:1.2}
+#panel-header p{margin:3px 0 0;color:#d7dde6;font-size:11px;line-height:1.35}
+#summary-row{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-top:10px}
+.summary-card{background:rgba(255,255,255,.09);border:1px solid rgba(255,255,255,.16);border-radius:8px;padding:7px 6px}
+.summary-card b{display:block;color:#fff;font-size:15px}.summary-card span{display:block;color:#cbd5e1;font-size:9px;text-transform:uppercase;letter-spacing:.04em}
+#filters{padding:10px 12px;border-bottom:1px solid var(--elc-line);background:#fff;display:grid;grid-template-columns:1fr 1fr;gap:8px}
+#filters label{font-size:10px;font-weight:800;text-transform:uppercase;color:var(--elc-muted);letter-spacing:.04em}
+#filters select,#filters input{width:100%;margin-top:4px;border:1px solid #cbd5df;border-radius:8px;padding:8px 9px;font-size:12px;background:#fff}.filter-wide{grid-column:1/-1}
+#filter-buttons{grid-column:1/-1;display:flex;gap:7px;flex-wrap:wrap}
+button{border:1px solid #cbd5df;background:#fff;color:var(--elc-ink);border-radius:8px;padding:7px 9px;font-size:11px;font-weight:800;cursor:pointer}button:hover{background:#f1f5f9}.btn-red{background:var(--elc-red);border-color:var(--elc-red);color:#fff}.btn-red:hover{background:#d91a20}
+#count{padding:9px 12px;font-size:12px;color:var(--elc-muted);border-bottom:1px solid var(--elc-line)}
+#list{flex:1;overflow-y:auto;padding:7px 0;background:#f8fafc}#list::-webkit-scrollbar{width:7px}#list::-webkit-scrollbar-track{background:#f2f4f7}#list::-webkit-scrollbar-thumb{background:#c4ccd8;border-radius:7px}
+.permit-card{background:#fff;border:1px solid var(--elc-line);border-left:4px solid var(--elc-red);margin:7px 8px;border-radius:0 9px 9px 0;padding:9px 10px;cursor:pointer;transition:all .15s ease}.permit-card:hover{transform:translateX(2px);box-shadow:0 2px 8px rgba(0,0,0,.08)}.permit-card.active{background:#fff1f1;border-left-color:#000}
+.pc-meta{font-size:10px;color:var(--elc-muted);margin-bottom:4px}.pc-title{font-size:12px;font-weight:900;color:#101828;line-height:1.25;margin-bottom:3px}.pc-permittee{font-size:11px;color:#475467;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:6px}.pc-footer{display:flex;align-items:center;gap:7px}
+.ac-badge{font-size:10px;font-weight:900;padding:3px 7px;border-radius:999px;color:#fff;white-space:nowrap}.ac-500{background:#b42318}.ac-100{background:#e67e22}.ac-10{background:#229954}.ac-lt10{background:#1f6feb}.pc-status{font-size:10px;color:var(--elc-muted);flex:1;text-align:right;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#map{flex:1;min-width:0}.legend{background:rgba(255,255,255,.95);padding:10px 12px;border-radius:9px;box-shadow:0 2px 12px rgba(0,0,0,.20);font-size:11px;color:#344054}.legend b{display:block;color:#000;margin-bottom:6px}.legend-row{display:flex;align-items:center;gap:8px;margin:4px 0}.legend-dot{width:12px;height:12px;border-radius:50%;display:inline-block}.no-results{color:var(--elc-muted);font-size:12px;text-align:center;padding:28px 15px}
+.popup-title{font-size:13px;font-weight:900;color:#111827;margin-bottom:2px}.popup-sub{font-size:10px;color:#667085;margin-bottom:6px}.popup-table{font-size:11px;border-collapse:collapse;width:100%}.popup-table td{padding:2px 7px 2px 0;vertical-align:top}.popup-table td:first-child{color:#667085;white-space:nowrap}.popup-link{display:inline-block;margin-top:8px;background:var(--elc-red);color:#fff!important;text-decoration:none;border-radius:7px;padding:6px 9px;font-weight:800;font-size:11px}
+@media(max-width:760px){#wrap{flex-direction:column}#panel{width:100%;max-width:none;height:47%;border-right:0;border-bottom:4px solid var(--elc-red)}#map{height:53%;width:100%}#filters{grid-template-columns:1fr 1fr}}
+</style>
+</head>
+<body>
+<div id="wrap">
+  <div id="panel">
+    <div id="panel-header">
+      <div id="brand-row"><img src="./EshenbaughLogo.png" alt="Eshenbaugh Land Company" onerror="this.style.display='none'"><div><h1>SWFWMD ERP Permit Activity</h1><p id="subtitle">Loading permit activity...</p></div></div>
+      <div id="summary-row"><div class="summary-card"><b id="sum-total">0</b><span>Visible</span></div><div class="summary-card"><b id="sum-acres">0</b><span>Total Acres</span></div><div class="summary-card"><b id="sum-largest">0</b><span>Largest</span></div></div>
+    </div>
+    <div id="filters">
+      <label>Month<select id="month-filter"></select></label><label>Year<select id="year-filter"></select></label>
+      <label>Size<select id="size-filter"><option value="all">All Sizes</option><option value="500">500+ acres</option><option value="100">100–499 acres</option><option value="10">10–99 acres</option><option value="lt10">&lt;10 acres</option></select></label>
+      <label>District<select id="district-filter"><option value="all">All Districts</option></select></label>
+      <label class="filter-wide">Search ERP Records<input id="search-filter" placeholder="Project, permittee, app ID, district..."></label>
+      <label class="filter-wide">Find Address / Place<input id="address-search" placeholder="Type an address or place, then click Zoom"></label>
+      <div id="filter-buttons"><button class="btn-red" type="button" onclick="resetFilters()">Reset Filters</button><button type="button" onclick="fitVisible()">Zoom to Results</button><button type="button" id="zoom-address-btn">Zoom to Address</button><button type="button" onclick="window.open('index.html','_blank')">Comps Database</button></div>
+    </div>
+    <div id="count">Loading...</div><div id="list"></div>
+  </div>
+  <div id="map"></div>
+</div>
+<script>
+let PERMITS=[];let filteredPermits=[];let map,markersLayer;const markerByIndex=new Map();const rowByIndex=new Map();
+function hasValue(v){return v!==null&&v!==undefined&&String(v).trim()!==''}
+function escapeHtml(s){return String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]))}
+function monthKey(d){return String(d||'').slice(5,7)}function yearKey(d){return String(d||'').slice(0,4)}
+function monthName(mm){const d=new Date(`2026-${mm}-01T00:00:00`);return d.toLocaleString('en-US',{month:'long'})}
+function acreageRange(ac){ac=Number(ac)||0;if(ac>=500)return'500';if(ac>=100)return'100';if(ac>=10)return'10';return'lt10'}
+function acreageColor(ac){ac=Number(ac)||0;if(ac>=500)return'#b42318';if(ac>=100)return'#e67e22';if(ac>=10)return'#229954';return'#1f6feb'}
+function acreageBadgeClass(ac){ac=Number(ac)||0;if(ac>=500)return'ac-500';if(ac>=100)return'ac-100';if(ac>=10)return'ac-10';return'ac-lt10'}
+function fmtAcres(ac){ac=Number(ac)||0;return ac>=1000?ac.toLocaleString(undefined,{maximumFractionDigits:0})+' ac':ac.toLocaleString(undefined,{maximumFractionDigits:2})+' ac'}
+async function loadData(){try{const res=await fetch('./swfwmd_erp_permits.json?cb='+Date.now());const data=await res.json();PERMITS=data.permits||[];const meta=data.meta||{};document.getElementById('subtitle').textContent=`${meta.date_range||''} · ${PERMITS.length.toLocaleString()} applications ≥ ${meta.min_acres||0.5} ac`}catch(e){document.getElementById('subtitle').textContent='Could not load permit data.';console.error(e)}}
+function initMap(){map=L.map('map',{zoomControl:true});L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',{attribution:'ESRI World Imagery | SWFWMD',maxZoom:19}).addTo(map);L.tileLayer('https://services.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}',{attribution:'Esri Places',maxZoom:19,pane:'tilePane',opacity:.9}).addTo(map);markersLayer=L.layerGroup().addTo(map);map.on('click',onMapClickAddress);const legend=L.control({position:'bottomright'});legend.onAdd=function(){const d=L.DomUtil.create('div','legend');d.innerHTML='<b>Project Size</b><div class="legend-row"><span class="legend-dot" style="background:#b42318"></span>500+ ac</div><div class="legend-row"><span class="legend-dot" style="background:#e67e22"></span>100–499 ac</div><div class="legend-row"><span class="legend-dot" style="background:#229954"></span>10–99 ac</div><div class="legend-row"><span class="legend-dot" style="background:#1f6feb"></span>&lt;10 ac</div>';return d};legend.addTo(map)}
+function populateFilters(){const years=[...new Set(PERMITS.map(p=>yearKey(p.recv_date)).filter(Boolean))].sort().reverse();const months=[...new Set(PERMITS.map(p=>monthKey(p.recv_date)).filter(Boolean))].sort();const districts=[...new Set(PERMITS.map(p=>p.district).filter(hasValue))].sort();const ySel=document.getElementById('year-filter');ySel.innerHTML='<option value="all">All Years</option>'+years.map(y=>`<option value="${y}">${y}</option>`).join('');if(years.length===1)ySel.value=years[0];const mSel=document.getElementById('month-filter');mSel.innerHTML='<option value="all">All Months</option>'+months.map(m=>`<option value="${m}">${monthName(m)}</option>`).join('');const dSel=document.getElementById('district-filter');dSel.innerHTML='<option value="all">All Districts</option>'+districts.map(d=>`<option value="${escapeHtml(d)}">${escapeHtml(d)}</option>`).join('');['year-filter','month-filter','size-filter','district-filter','search-filter'].forEach(id=>document.getElementById(id).addEventListener(id==='search-filter'?'input':'change',applyFilters))}
+function passesFilters(p){const y=document.getElementById('year-filter').value,m=document.getElementById('month-filter').value,size=document.getElementById('size-filter').value,district=document.getElementById('district-filter').value,q=document.getElementById('search-filter').value.trim().toLowerCase();if(y!=='all'&&yearKey(p.recv_date)!==y)return false;if(m!=='all'&&monthKey(p.recv_date)!==m)return false;if(size!=='all'&&acreageRange(p.acres)!==size)return false;if(district!=='all'&&String(p.district)!==district)return false;if(q){const hay=[p.app_id,p.project_name,p.permittee,p.permit_label,p.status,p.district,p.permit_type].join(' ').toLowerCase();if(!hay.includes(q))return false}return true}
+function popupHtml(p){return `<div style="font-family:Arial,sans-serif;min-width:235px"><div class="popup-title">${escapeHtml(p.project_name)}</div><div class="popup-sub">App ID ${escapeHtml(p.app_id)} · ${escapeHtml(p.permit_label||'')}</div><table class="popup-table"><tr><td>Permittee</td><td>${escapeHtml(p.permittee)}</td></tr><tr><td>Received</td><td>${escapeHtml(p.recv_date)}</td></tr><tr><td>Acreage</td><td>${fmtAcres(p.acres)}</td></tr><tr><td>Status</td><td>${escapeHtml(p.status)}</td></tr><tr><td>Type</td><td>${escapeHtml(p.permit_type)}</td></tr><tr><td>District</td><td>${escapeHtml(p.district)}</td></tr></table>${p.wmis_url?`<a class="popup-link" href="${escapeHtml(p.wmis_url)}" target="_blank" rel="noopener noreferrer">Open in WMIS ↗</a>`:''}</div>`}
+function buildMarker(p,idx){const radius=Math.min(6+Math.log((Number(p.acres)||0)+1)*1.6,20);const marker=L.circleMarker([Number(p.lat),Number(p.lon)],{radius,color:'#fff',weight:1.5,fillColor:acreageColor(p.acres),fillOpacity:.88});marker.bindPopup(popupHtml(p));marker.on('click',()=>highlightRow(idx));return marker}
+function buildRow(p,idx){const row=document.createElement('div');row.className='permit-card';row.id='permit-row-'+idx;row.innerHTML=`<div class="pc-meta">${escapeHtml(p.recv_date)} · ${escapeHtml(p.district||'')} · App ID ${escapeHtml(p.app_id||'')}</div><div class="pc-title">${escapeHtml(p.project_name||'(Unnamed ERP)')}</div><div class="pc-permittee">${escapeHtml(p.permittee||'')}</div><div class="pc-footer"><span class="ac-badge ${acreageBadgeClass(p.acres)}">${fmtAcres(p.acres)}</span><span class="pc-status">${escapeHtml(p.status||'')} · ${escapeHtml(p.permit_type||'')}</span></div>`;row.addEventListener('click',()=>selectPermit(idx));return row}
+function applyFilters(){filteredPermits=PERMITS.map((p,idx)=>({...p,_idx:idx})).filter(passesFilters);markersLayer.clearLayers();markerByIndex.clear();rowByIndex.clear();const list=document.getElementById('list');list.innerHTML='';let totalAcres=0,largest=0;filteredPermits.forEach(p=>{totalAcres+=Number(p.acres)||0;largest=Math.max(largest,Number(p.acres)||0);if(hasValue(p.lat)&&hasValue(p.lon)){const marker=buildMarker(p,p._idx);markerByIndex.set(p._idx,marker);markersLayer.addLayer(marker)}const row=buildRow(p,p._idx);rowByIndex.set(p._idx,row);list.appendChild(row)});if(!filteredPermits.length)list.innerHTML='<div class="no-results">No ERP applications match the current filters.</div>';document.getElementById('count').textContent=`${filteredPermits.length.toLocaleString()} ERP applications shown`;document.getElementById('sum-total').textContent=filteredPermits.length.toLocaleString();document.getElementById('sum-acres').textContent=Math.round(totalAcres).toLocaleString();document.getElementById('sum-largest').textContent=Math.round(largest).toLocaleString();fitVisible(false)}
+function highlightRow(idx){document.querySelectorAll('.permit-card').forEach(r=>r.classList.remove('active'));const row=rowByIndex.get(idx);if(row){row.classList.add('active');row.scrollIntoView({behavior:'smooth',block:'nearest'})}}
+function selectPermit(idx){highlightRow(idx);const marker=markerByIndex.get(idx);const p=PERMITS[idx];if(marker&&p){map.flyTo([Number(p.lat),Number(p.lon)],14,{duration:.6});setTimeout(()=>marker.openPopup(),650)}}
+function fitVisible(animate=true){const pts=filteredPermits.filter(p=>hasValue(p.lat)&&hasValue(p.lon)).map(p=>[Number(p.lat),Number(p.lon)]);if(pts.length)map.fitBounds(L.latLngBounds(pts),{padding:[35,35],animate});else map.setView([28.0,-82.5],8)}
+
+window.copyMapAddress=function(text){
+  text=text||'';
+  function fallbackCopy(){
+    const ta=document.createElement('textarea');
+    ta.value=text;
+    ta.setAttribute('readonly','');
+    ta.style.position='fixed';
+    ta.style.left='-9999px';
+    ta.style.top='0';
+    document.body.appendChild(ta);
+    ta.focus();
+    ta.select();
+    try{document.execCommand('copy');}catch(e){}
+    document.body.removeChild(ta);
+  }
+  if(navigator.clipboard&&window.isSecureContext&&navigator.clipboard.writeText){
+    navigator.clipboard.writeText(text).catch(fallbackCopy);
+  }else{
+    fallbackCopy();
+  }
+};
+function jsonpArcgis(endpoint, params){
+  return new Promise((resolve,reject)=>{
+    const cb='jsonp_cb_'+Date.now()+'_'+Math.round(Math.random()*100000);
+    const script=document.createElement('script');
+    const qs=new URLSearchParams({...params,f:'json',callback:cb}).toString();
+    const timer=setTimeout(()=>{cleanup();reject(new Error('Geocode timed out'));},12000);
+    function cleanup(){clearTimeout(timer);delete window[cb];if(script.parentNode)script.parentNode.removeChild(script);}
+    window[cb]=function(data){cleanup();resolve(data);};
+    script.onerror=function(){cleanup();reject(new Error('Geocode failed'));};
+    script.src=endpoint+'?'+qs;
+    document.body.appendChild(script);
+  });
+}
+function copyButtonNode(addr){
+  const btn=document.createElement('button');
+  btn.type='button';
+  btn.textContent='Copy Address';
+  btn.style.marginTop='7px';
+  btn.style.background='#ef1f25';
+  btn.style.color='#fff';
+  btn.style.border='0';
+  btn.style.borderRadius='7px';
+  btn.style.padding='6px 9px';
+  btn.style.fontWeight='800';
+  btn.style.cursor='pointer';
+  btn.addEventListener('click',function(e){
+    e.preventDefault();
+    e.stopPropagation();
+    if(window.L&&L.DomEvent){L.DomEvent.stop(e);}
+    window.copyMapAddress(addr||'');
+    btn.textContent='Copied';
+    setTimeout(()=>btn.textContent='Copy Address',1200);
+  });
+  return btn;
+}
+function addressPopupNode(addr, latlng){
+  const wrap=document.createElement('div');
+  wrap.style.fontFamily='Arial,sans-serif';
+  wrap.style.minWidth='220px';
+  if(window.L&&L.DomEvent){L.DomEvent.disableClickPropagation(wrap);L.DomEvent.disableScrollPropagation(wrap);}
+  const b=document.createElement('b');
+  b.textContent=addr||'No address found';
+  wrap.appendChild(b);
+  if(latlng){
+    wrap.appendChild(document.createElement('br'));
+    const small=document.createElement('span');
+    small.style.fontSize='10px';
+    small.style.color='#667085';
+    small.textContent=Number(latlng.lat).toFixed(6)+', '+Number(latlng.lng).toFixed(6);
+    wrap.appendChild(small);
+  }
+  wrap.appendChild(document.createElement('br'));
+  wrap.appendChild(copyButtonNode(addr||''));
+  return wrap;
+}
+
+function pickStreetAddressFromArcgis(result, fallback){
+  const a = (result && (result.attributes || result.address)) || {};
+  if(typeof a === 'string') return a || fallback || 'No address found';
+
+  const place = String(a.PlaceName || a.Name || '').trim();
+  const parts = [];
+
+  const street = String(a.Address || a.StAddr || a.StreetName || a.ShortLabel || '').trim();
+  const city = String(a.City || a.Municipality || a.Subregion || '').trim();
+  const region = String(a.RegionAbbr || a.Region || '').trim();
+  const postal = String(a.Postal || a.PostalExt || '').trim();
+
+  if(street && street.toLowerCase() !== place.toLowerCase()) parts.push(street);
+  if(city) parts.push(city);
+  const stateZip = [region, postal].filter(Boolean).join(' ');
+  if(stateZip) parts.push(stateZip);
+
+  if(parts.length) return parts.join(', ');
+
+  const longLabel = String(a.LongLabel || a.Match_addr || a.MatchAddr || fallback || '').trim();
+  if(place && longLabel.toLowerCase().startsWith(place.toLowerCase())){
+    const stripped = longLabel.slice(place.length).replace(/^[\s,;-]+/,'').trim();
+    if(stripped) return stripped;
+  }
+  return longLabel || fallback || 'No address found';
+}
+
+window.geocodeAddressSearch=async function(){
+  const q=document.getElementById('address-search').value.trim();
+  if(!q){alert('Type an address or place first.');return;}
+  const endpoint='https://geocode.arcgis.com/arcgis/rest/services/World/GeocodeServer/findAddressCandidates';
+  try{
+    const data=await jsonpArcgis(endpoint,{maxLocations:1,outFields:'*',SingleLine:q});
+    const c=data.candidates&&data.candidates[0];
+    if(!c||!c.location){alert('No address match found.');return;}
+    const lat=c.location.y,lon=c.location.x,addr=pickStreetAddressFromArcgis(c,c.address||q);
+    const latlng=L.latLng(lat,lon);
+    map.flyTo(latlng,16,{duration:.7});
+    setTimeout(()=>L.popup().setLatLng(latlng).setContent(addressPopupNode(addr,latlng)).openOn(map),250);
+  }catch(e){
+    alert('Address search failed.');
+    console.error(e);
+  }
+};
+async function onMapClickAddress(e){
+  const lat=e.latlng.lat,lon=e.latlng.lng;
+  const endpoint='https://geocode.arcgis.com/arcgis/rest/services/World/GeocodeServer/reverseGeocode';
+  try{
+    const data=await jsonpArcgis(endpoint,{location:lon+','+lat,distance:80,outSR:4326});
+    const addr=pickStreetAddressFromArcgis(data,`${lat.toFixed(6)}, ${lon.toFixed(6)}`);
+    L.popup().setLatLng(e.latlng).setContent(addressPopupNode(addr,e.latlng)).openOn(map);
+  }catch(err){
+    const addr=`${lat.toFixed(6)}, ${lon.toFixed(6)}`;
+    L.popup().setLatLng(e.latlng).setContent(addressPopupNode(addr,e.latlng)).openOn(map);
+  }
+}
+function setupAddressSearchControls(){
+  const btn=document.getElementById('zoom-address-btn');
+  if(btn) btn.addEventListener('click',function(e){e.preventDefault();window.geocodeAddressSearch();});
+  const input=document.getElementById('address-search');
+  if(input) input.addEventListener('keydown',function(e){if(e.key==='Enter'){e.preventDefault();window.geocodeAddressSearch();}});
+}
+
+function resetFilters(){document.getElementById('year-filter').value='all';document.getElementById('month-filter').value='all';document.getElementById('size-filter').value='all';document.getElementById('district-filter').value='all';document.getElementById('search-filter').value='';applyFilters()}
+(async function init(){await loadData();initMap();populateFilters();setupAddressSearchControls();applyFilters()})();
+</script>
+</body>
+</html>
