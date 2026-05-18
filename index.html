@@ -232,12 +232,12 @@ tr.row-selected td{background:#fff1f1!important}
 <script>
 const PAGE_SIZE = 500;
 const DISPLAY_COLUMNS = [
-  ['_select','Select'],['_actions','Actions'],['num','#'],['property_name','Property Name'],['property_type','Property Type'],['address','Address'],['sale_date','Sale Date'],
+  ['_select','Select'],['_actions','Actions'],['num','#'],['property_name','Property Name'],['property_type','Property Type'],['address','Address'],['sale_date','Sale Date'],['date_added','Date Added'],
   ['price','Price'],['acreage','Acres'],['price_per_acre','$/Acre'],['unit_count','Units'],['price_per_unit','$/Unit'],['elc_deal','ELC Deal'],['grantor','Seller'],
   ['grantee','Buyer'],['zoning','Zoning'],['land_use','Land Use'],['source','Source'],['aerial','Aerial']
 ];
 const FIELD_LABELS = {
-  num:'#',property_name:'Property Name',parcel_id:'Parcel ID',parcel_raw_id:'Parcel Raw ID',address:'Address',sale_date:'Sale Date',
+  num:'#',property_name:'Property Name',parcel_id:'Parcel ID',parcel_raw_id:'Parcel Raw ID',address:'Address',sale_date:'Sale Date',date_added:'Date Added',
   price:'Price',acreage:'Acres',price_per_acre:'$/Acre',book_page:'Book/Page',transaction_type:'Transaction Type',
   grantor:'Seller',grantee:'Buyer',deed_type:'Deed Type',property_type:'Property Type',zoning:'Zoning',
   land_use:'Land Use',source:'Source',comments:'Comments',lat:'Latitude',lon:'Longitude',
@@ -247,6 +247,7 @@ const FIELD_LABELS = {
 };
 const currencyFields = new Set(['price','price_per_acre','price_per_unit']);
 const numericFields = new Set(['price','price_per_acre','price_per_unit','acreage','unit_count','lat','lon','num']);
+const dateFields = new Set(['sale_date','sale_date_iso','date_added']);
 const escapeHtml = s => String(s ?? '').replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
 const hasValue = v => v !== null && v !== undefined && v !== '';
 const AERIAL_FIELDS = ['aerial','photo_url','photoUrl','photoURL','Photo URL','PHOTO URL','photo url','photo','Photo','image_url','imageUrl','image','aerial_url','aerialUrl','Aerial URL','AERIAL URL','Aerial'];
@@ -307,7 +308,7 @@ const parseCompDate = c => {
   const d = new Date(raw);
   return Number.isNaN(d.getTime()) ? null : d;
 };
-let allComps=[], filteredComps=[], currentPage=1, sortKey='num', sortDir='asc', baseMeta={};
+let allComps=[], filteredComps=[], currentPage=1, sortKey='date_added', sortDir='desc', baseMeta={};
 const LOCAL_DEALS_KEY='elc_manual_added_deals_v1';
 const LOCAL_EDITS_KEY='elc_comp_edits_v1';
 let selectedCompKeys=new Set();
@@ -423,6 +424,7 @@ function sortComps(){
   filteredComps.sort((a,b)=>{
     let av=a[sortKey], bv=b[sortKey];
     if(numericFields.has(sortKey)){av=hasValue(av)?Number(av):-Infinity; bv=hasValue(bv)?Number(bv):-Infinity;}
+    else if(dateFields.has(sortKey)){av=Date.parse(av||'')||0; bv=Date.parse(bv||'')||0;}
     else {av=hasValue(av)?String(av).toLowerCase():''; bv=hasValue(bv)?String(bv).toLowerCase():'';}
     if(av<bv) return sortDir==='asc'?-1:1;
     if(av>bv) return sortDir==='asc'?1:-1;
@@ -544,6 +546,7 @@ function deriveCompFields(c){
   if(hasValue(c.price) && hasValue(c.unit_count) && Number(c.unit_count)!==0) c.price_per_unit = Math.round(Number(c.price)/Number(c.unit_count));
   else c.price_per_unit = null;
   if(c.sale_date_iso && !c.sale_date) c.sale_date = isoToDisplay(c.sale_date_iso);
+  if(!hasValue(c.date_added)) c.date_added = '2026-04-30';
   if(c.property_type === 'Multifamily' && !hasValue(c.unit_count)) c.unit_count = null;
   return c;
 }
@@ -596,6 +599,7 @@ async function addNewDealFromForm(){
     unit_count: toNumOrNull(document.getElementById('new-unit-count').value),
     price_per_unit:null,
     elc_deal: document.getElementById('new-elc-deal').value === 'Yes' ? 'Yes' : null,
+    date_added: new Date().toISOString().slice(0,10),
     manual_entry:true
   };
   comp = deriveCompFields(comp);
@@ -620,6 +624,7 @@ const EXPORT_COLUMNS = [
   ['transaction_type','Transaction Type'],
   ['sale_date','Sale Date'],
   ['sale_date_iso','Sale Date ISO'],
+  ['date_added','Date Added'],
   ['price','Sale Price'],
   ['acreage','Acres'],
   ['price_per_acre','Price / Acre'],
@@ -890,7 +895,7 @@ function getImportVal(row,field){const aliases=IMPORT_ALIASES[field]||[field]; f
 function importDateToISO(v){if(!hasValue(v))return null; if(typeof v==='number'&&window.XLSX&&XLSX.SSF){const d=XLSX.SSF.parse_date_code(v); if(d)return `${d.y}-${String(d.m).padStart(2,'0')}-${String(d.d).padStart(2,'0')}`;} const d=new Date(v); return Number.isNaN(d.getTime())?null:d.toISOString().slice(0,10);}
 function importAddress(row){const street=String(getImportVal(row,'address')||'').trim();const city=String(getImportVal(row,'city')||'').trim();const state=String(getImportVal(row,'state')||'').trim();const zip=String(getImportVal(row,'zip')||'').trim();const place=[city,state].filter(hasValue).join(', ')+(zip?' '+zip:'');return [street,place.trim()].filter(hasValue).join(', ')||null;}
 function importTransactionType(row){const raw=String(getImportVal(row,'transaction_type')||'').trim().toLowerCase();if(raw==='closed'||raw==='sold')return'Sale';if(raw)return'Listing';return'Sale';}
-function makeImportedComp(row,idx){const saleIso=importDateToISO(getImportVal(row,'sale_date')); const units=toNumOrNull(getImportVal(row,'unit_count')); let c={num:Math.max(0,...allComps.map(c=>Number(c.num)||0))+idx,property_name:String(getImportVal(row,'property_name')||'').trim()||null,address:importAddress(row),sale_date:isoToDisplay(saleIso),sale_date_iso:saleIso,price:toNumOrNull(getImportVal(row,'price')),acreage:toNumOrNull(getImportVal(row,'acreage')),transaction_type:importTransactionType(row),property_type:String(units?'Multifamily':getImportVal(row,'property_type')||document.getElementById('import-default-property-type').value||'Land').trim(),source:String(getImportVal(row,'source')||document.getElementById('import-default-source').value||'Imported Excel').trim(),comments:String(getImportVal(row,'comments')||'').trim()||null,lat:toNumOrNull(getImportVal(row,'lat')),lon:toNumOrNull(getImportVal(row,'lon')),aerial:String(getImportVal(row,'aerial')||'').trim()||null,unit_count:units,buildout_id:String(getImportVal(row,'buildout_id')||'').trim()||null,buildout_status:String(getImportVal(row,'transaction_type')||'').trim()||null,building_size_sf:toNumOrNull(getImportVal(row,'building_size_sf')),building_class:String(getImportVal(row,'building_class')||'').trim()||null,year_built:toNumOrNull(getImportVal(row,'year_built')),cap_rate:toNumOrNull(getImportVal(row,'cap_rate')),noi:toNumOrNull(getImportVal(row,'noi')),occupancy_percent:toNumOrNull(getImportVal(row,'occupancy_percent')),days_on_market:toNumOrNull(getImportVal(row,'days_on_market')),grm:toNumOrNull(getImportVal(row,'grm')),rev_par:toNumOrNull(getImportVal(row,'rev_par')),adr:toNumOrNull(getImportVal(row,'adr')),manual_entry:true,_manual_id:'imp-'+Date.now()+'-'+idx}; return deriveCompFields(c);}
+function makeImportedComp(row,idx){const saleIso=importDateToISO(getImportVal(row,'sale_date')); const units=toNumOrNull(getImportVal(row,'unit_count')); let c={num:Math.max(0,...allComps.map(c=>Number(c.num)||0))+idx,property_name:String(getImportVal(row,'property_name')||'').trim()||null,address:importAddress(row),sale_date:isoToDisplay(saleIso),sale_date_iso:saleIso,price:toNumOrNull(getImportVal(row,'price')),acreage:toNumOrNull(getImportVal(row,'acreage')),transaction_type:importTransactionType(row),property_type:String(units?'Multifamily':getImportVal(row,'property_type')||document.getElementById('import-default-property-type').value||'Land').trim(),source:String(getImportVal(row,'source')||document.getElementById('import-default-source').value||'Imported Excel').trim(),comments:String(getImportVal(row,'comments')||'').trim()||null,lat:toNumOrNull(getImportVal(row,'lat')),lon:toNumOrNull(getImportVal(row,'lon')),aerial:String(getImportVal(row,'aerial')||'').trim()||null,unit_count:units,buildout_id:String(getImportVal(row,'buildout_id')||'').trim()||null,buildout_status:String(getImportVal(row,'transaction_type')||'').trim()||null,building_size_sf:toNumOrNull(getImportVal(row,'building_size_sf')),building_class:String(getImportVal(row,'building_class')||'').trim()||null,year_built:toNumOrNull(getImportVal(row,'year_built')),cap_rate:toNumOrNull(getImportVal(row,'cap_rate')),noi:toNumOrNull(getImportVal(row,'noi')),occupancy_percent:toNumOrNull(getImportVal(row,'occupancy_percent')),days_on_market:toNumOrNull(getImportVal(row,'days_on_market')),grm:toNumOrNull(getImportVal(row,'grm')),rev_par:toNumOrNull(getImportVal(row,'rev_par')),adr:toNumOrNull(getImportVal(row,'adr')),date_added:new Date().toISOString().slice(0,10),manual_entry:true,_manual_id:'imp-'+Date.now()+'-'+idx}; return deriveCompFields(c);}
 async function importDealsFromFile(){const file=document.getElementById('import-file').files[0]; if(!file){alert('Choose an Excel or CSV file first.');return;} if(!window.XLSX){alert('Excel importer did not load. Refresh and try again.');return;} const buf=await file.arrayBuffer(); const wb=XLSX.read(buf,{type:'array'}); const ws=wb.Sheets[wb.SheetNames[0]]; const rows=XLSX.utils.sheet_to_json(ws,{defval:null}); const imported=rows.filter(r=>Object.values(r).some(hasValue)).map((r,i)=>makeImportedComp(r,i+1)).filter(c=>hasValue(c.address)||hasValue(c.property_name)); if(!imported.length){alert('No usable rows found.');return;} const localDeals=loadLocalDeals(); saveLocalDeals([...localDeals,...imported]); allComps=applyLocalEdits([...allComps,...imported]); closeImportModal(); populateFilters(); currentPage=1; applyFilters(); alert(`${imported.length.toLocaleString()} deals imported in this browser.`);}
 document.addEventListener('change',function(e){if(e.target&&e.target.id==='import-file'){const f=e.target.files[0];document.getElementById('import-preview').textContent=f?`Ready to import: ${f.name}`:'No file selected yet.';}});
 

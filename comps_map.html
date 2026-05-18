@@ -236,6 +236,8 @@ body.sidebar-hidden #sidebar-show-tab{display:block;pointer-events:auto}
     <label class="unit-filter">Max Units<input type="number" id="max-units" placeholder="400"></label>
     <label class="ppu-filter">Min $/Unit<input type="number" id="min-ppu" placeholder="50000"></label>
     <label class="ppu-filter">Max $/Unit<input type="number" id="max-ppu" placeholder="150000"></label>
+    <label>Sort By<select id="map-sort-key"><option value="date_added">Date Added</option><option value="sale_date">Sale Date</option><option value="price">Price</option><option value="acreage">Acres</option><option value="price_per_acre">$/Acre</option><option value="unit_count">Units</option><option value="property_name">Property Name</option><option value="num">#</option></select></label>
+    <label>Order<select id="map-sort-dir"><option value="desc">Newest / High to Low</option><option value="asc">Oldest / Low to High</option></select></label>
     <label class="map-view-toggle"><input type="checkbox" id="sidebar-current-view" onchange="setSidebarCurrentView(this.checked)"> Show only comps in current map view</label>
     <div class="selection-actions">
       <div id="map-selected-count">0 selected</div>
@@ -283,7 +285,7 @@ const PIN_OVERRIDES_KEY='elc_pin_location_overrides_v1';
 let editingCompKey=null;
 const FIELD_LABELS = {
   property_name:'Property Name',
-  num:'#',parcel_id:'Parcel ID',parcel_raw_id:'Parcel Raw ID',address:'Address',sale_date:'Sale Date',
+  num:'#',parcel_id:'Parcel ID',parcel_raw_id:'Parcel Raw ID',address:'Address',sale_date:'Sale Date',date_added:'Date Added',
   price:'Price',acreage:'Acres',price_per_acre:'$/Acre',book_page:'Book/Page',transaction_type:'Transaction Type',
   grantor:'Seller',grantee:'Buyer',deed_type:'Deed Type',property_type:'Property Type',zoning:'Zoning',
   land_use:'Land Use',source:'Source',comments:'Comments',lat:'Latitude',lon:'Longitude',
@@ -347,6 +349,8 @@ const fmtPPA = n => hasValue(n) ? '$' + Math.round(Number(n)).toLocaleString() +
 const fmtPPU = n => hasValue(n) ? '$' + Math.round(Number(n)).toLocaleString() + '/unit' : null;
 const fmtStr = s => hasValue(s) ? escapeHtml(s) : null;
 const fmtLink = (url,label='View Aerial') => hasValue(url) ? `<a class="aerial-btn" href="${escapeHtml(url)}" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation();">${label}</a>` : null;
+const numericSortFields = new Set(['price','price_per_acre','price_per_unit','acreage','unit_count','lat','lon','num']);
+const dateSortFields = new Set(['sale_date','sale_date_iso','date_added']);
 const parseCompDate = c => {
   const raw = c.sale_date_iso || c.sale_date;
   if(!hasValue(raw)) return null;
@@ -371,6 +375,7 @@ function deriveCompFields(c){
   if(hasValue(c.price)&&hasValue(c.acreage)&&Number(c.acreage)!==0) c.price_per_acre=Math.round(Number(c.price)/Number(c.acreage)); else c.price_per_acre=null;
   if(hasValue(c.price)&&hasValue(c.unit_count)&&Number(c.unit_count)!==0) c.price_per_unit=Math.round(Number(c.price)/Number(c.unit_count)); else c.price_per_unit=null;
   if(c.sale_date_iso&&!c.sale_date) c.sale_date=isoToDisplay(c.sale_date_iso);
+  if(!hasValue(c.date_added)) c.date_added='2026-04-30';
   return c;
 }
 function loadLocalEdits(){ try{return JSON.parse(localStorage.getItem(LOCAL_EDITS_KEY)||'{}');}catch(e){return {};} }
@@ -510,6 +515,7 @@ function buildListCard(comp,idx){
   const ppa=fmtPPA(comp.price_per_acre);
   const type=comp.property_type ? `<span class="comp-tag">${escapeHtml(comp.property_type)}</span>` : '';
   const date=comp.sale_date ? `<span class="comp-tag">${escapeHtml(comp.sale_date)}</span>` : '';
+  const added=comp.date_added ? `<span class="comp-tag">Added ${escapeHtml(comp.date_added)}</span>` : '';
   const aerial=comp.aerial ? `<span class="comp-tag comp-tag-red">Aerial</span>` : '';
   const elc=comp.elc_deal==='Yes' ? `<span class="comp-tag comp-tag-red">ELC Deal</span>` : '';
   const units=hasValue(comp.unit_count) ? `<span class="comp-tag">${Number(comp.unit_count).toLocaleString()} Units</span>` : '';
@@ -522,7 +528,7 @@ function buildListCard(comp,idx){
   return `<div class="comp-card${selectedClass}" id="card-${idx}" onclick="zoomToComp(${idx})">
     <label class="comp-select-row" onclick="event.stopPropagation()"><input type="checkbox" ${checked} onchange="toggleMapCompSelection('${escapeHtml(comp._compKey||'')}', this.checked)"> Select for report</label>
     ${pname}<div class="comp-addr">${escapeHtml(comp.address||'(no address)')}</div>
-    <div class="comp-meta">${type}${date}${units}${elc}${aerial}</div>
+    <div class="comp-meta">${type}${date}${added}${units}${elc}${aerial}</div>
     <div class="comp-price-row"><span class="comp-price">${fmtPrice(comp.price)}</span><span class="comp-sub">${fmtAcres(comp.acreage)}${ppa?' &middot; '+ppa:''}${hasValue(comp.price_per_unit)?' &middot; $'+Math.round(Number(comp.price_per_unit)).toLocaleString()+'/unit':''}</span></div>
     ${parties}${links}
   </div>`;
@@ -532,6 +538,19 @@ function populateSelect(id,values){ const sel=document.getElementById(id); [...n
 function populateFilters(){ allFields().forEach(f=>{ const opt=document.createElement('option'); opt.value=f; opt.textContent=FIELD_LABELS[f]||f; document.getElementById('field-filter').appendChild(opt); }); populateSelect('filter-type',allComps.map(c=>c.property_type)); populateSelect('filter-source',allComps.map(c=>c.source)); toggleUnitPriceFilters(); }
 function passesSearch(c,q){ if(!q) return true; return Object.values(c).filter(hasValue).join(' ').toLowerCase().includes(q); }
 function passesFieldFilter(c,field,val){ if(!field||!val) return true; if(!hasValue(c[field])) return false; return String(c[field]).toLowerCase().includes(val); }
+function sortMappedComps(comps){
+  const sortKey=document.getElementById('map-sort-key')?.value||'date_added';
+  const sortDir=document.getElementById('map-sort-dir')?.value||'desc';
+  return comps.sort((a,b)=>{
+    let av=a[sortKey], bv=b[sortKey];
+    if(numericSortFields.has(sortKey)){av=hasValue(av)?Number(av):-Infinity;bv=hasValue(bv)?Number(bv):-Infinity;}
+    else if(dateSortFields.has(sortKey)){av=Date.parse(av||'')||0;bv=Date.parse(bv||'')||0;}
+    else {av=hasValue(av)?String(av).toLowerCase():'';bv=hasValue(bv)?String(bv).toLowerCase():'';}
+    if(av<bv) return sortDir==='asc'?-1:1;
+    if(av>bv) return sortDir==='asc'?1:-1;
+    return 0;
+  });
+}
 function getFilteredMappedComps(){
   const q=document.getElementById('map-search').value.trim().toLowerCase();
   const field=document.getElementById('field-filter').value, fieldVal=document.getElementById('field-value').value.trim().toLowerCase();
@@ -544,7 +563,7 @@ function getFilteredMappedComps(){
   const minPPA=parseFloat(document.getElementById('min-ppa').value), maxPPA=parseFloat(document.getElementById('max-ppa').value);
   const minUnits=parseFloat(document.getElementById('min-units').value), maxUnits=parseFloat(document.getElementById('max-units').value);
   const minPPU=parseFloat(document.getElementById('min-ppu').value), maxPPU=parseFloat(document.getElementById('max-ppu').value);
-  return allMappedComps.filter(c=>{
+  return sortMappedComps(allMappedComps.filter(c=>{
     if(type&&c.property_type!==type) return false;
     if(source&&c.source!==source) return false;
     if(elc==='yes'&&c.elc_deal!=='Yes') return false;
@@ -565,7 +584,7 @@ function getFilteredMappedComps(){
     if(!Number.isNaN(minPPU)&&(!hasValue(c.price_per_unit)||Number(c.price_per_unit)<minPPU)) return false;
     if(!Number.isNaN(maxPPU)&&(!hasValue(c.price_per_unit)||Number(c.price_per_unit)>maxPPU)) return false;
     return passesSearch(c,q)&&passesFieldFilter(c,field,fieldVal);
-  });
+  }));
 }
 function toggleUnitPriceFilters(){ const show=document.getElementById('filter-type')?.value==='Multifamily'; document.querySelectorAll('.ppu-filter,.unit-filter').forEach(el=>{el.style.display=show?'':'none';}); if(!show){['min-units','max-units','min-ppu','max-ppu'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});} }
 
@@ -617,7 +636,7 @@ function applyFilters(){
   });
   refreshSidebarList();
 }
-function addFilterListeners(){ ['map-search','field-filter','field-value','sale-date-from','sale-date-to','filter-type','filter-source','filter-elc','filter-aerial','min-price','max-price','min-acres','max-acres','min-ppa','max-ppa','min-units','max-units','min-ppu','max-ppu'].forEach(id=>{ document.getElementById(id).addEventListener('input',()=>{if(id==='filter-type') toggleUnitPriceFilters(); applyFilters();}); }); }
+function addFilterListeners(){ ['map-search','field-filter','field-value','sale-date-from','sale-date-to','filter-type','filter-source','filter-elc','filter-aerial','min-price','max-price','min-acres','max-acres','min-ppa','max-ppa','min-units','max-units','min-ppu','max-ppu','map-sort-key','map-sort-dir'].forEach(id=>{ document.getElementById(id).addEventListener('input',()=>{if(id==='filter-type') toggleUnitPriceFilters(); applyFilters();}); }); }
 window.startPinEdit=function(compKey){
   const comp=getCompByKey(compKey);
   if(!comp||!hasValue(comp.lat)||!hasValue(comp.lon)){alert('This comp does not have a mapped location to edit.');return;}
@@ -631,7 +650,7 @@ window.startPinEdit=function(compKey){
 window.cancelPinEdit=function(){ pinEditComp=null; document.body.classList.remove('pin-editing'); const banner=document.getElementById('pin-edit-banner'); if(banner) banner.style.display='none'; };
 document.addEventListener('click', function(event){ const btn=event.target.closest&&event.target.closest('.pin-edit-link, .pin-edit-btn'); if(!btn) return; const key=btn.getAttribute('data-pin-key'); if(!key) return; event.preventDefault(); event.stopPropagation(); if(view&&view.popup){view.popup.close();} window.startPinEdit(key); }, true);
 function savePinEdit(comp,lon,lat){ const overrides=loadPinOverrides(); overrides[comp._compKey]={lon:Number(lon),lat:Number(lat),updated:new Date().toISOString(),address:comp.address||null}; savePinOverrides(overrides); allComps=applyPinOverrides(applyLocalEdits(allComps)); allMappedComps=allComps.filter(c=>hasValue(c.lat)&&hasValue(c.lon)).map((c,i)=>({...c,_mappedIndex:i})); const key=comp._compKey; cancelPinEdit(); applyFilters(); const newIdx=sidebarMappedComps.findIndex(c=>c._compKey===key); if(newIdx>=0) setTimeout(()=>zoomToComp(newIdx),100); }
-window.resetFilters=function(){ ['map-search','field-value','sale-date-from','sale-date-to','min-price','max-price','min-acres','max-acres','min-ppa','max-ppa','min-units','max-units','min-ppu','max-ppu'].forEach(id=>document.getElementById(id).value=''); ['field-filter','filter-type','filter-source','filter-elc','filter-aerial'].forEach(id=>document.getElementById(id).value=''); toggleUnitPriceFilters(); applyFilters(); };
+window.resetFilters=function(){ ['map-search','field-value','sale-date-from','sale-date-to','min-price','max-price','min-acres','max-acres','min-ppa','max-ppa','min-units','max-units','min-ppu','max-ppu'].forEach(id=>document.getElementById(id).value=''); ['field-filter','filter-type','filter-source','filter-elc','filter-aerial'].forEach(id=>document.getElementById(id).value=''); document.getElementById('map-sort-key').value='date_added';document.getElementById('map-sort-dir').value='desc'; toggleUnitPriceFilters(); applyFilters(); };
 window.zoomToComp=function(idx){ 
   const comp=sidebarMappedComps[idx]; 
   if(!comp) return; 
@@ -683,6 +702,7 @@ const EXPORT_COLUMNS = [
   ['transaction_type','Transaction Type'],
   ['sale_date','Sale Date'],
   ['sale_date_iso','Sale Date ISO'],
+  ['date_added','Date Added'],
   ['price','Sale Price'],
   ['acreage','Acres'],
   ['price_per_acre','Price / Acre'],
