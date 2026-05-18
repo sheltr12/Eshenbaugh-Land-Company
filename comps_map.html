@@ -287,7 +287,9 @@ const FIELD_LABELS = {
   price:'Price',acreage:'Acres',price_per_acre:'$/Acre',book_page:'Book/Page',transaction_type:'Transaction Type',
   grantor:'Seller',grantee:'Buyer',deed_type:'Deed Type',property_type:'Property Type',zoning:'Zoning',
   land_use:'Land Use',source:'Source',comments:'Comments',lat:'Latitude',lon:'Longitude',
-  coords_approx:'Coordinates Approximate',deed_url:'Deed URL',aerial:'Aerial',sale_date_iso:'Sale Date ISO',unit_count:'Unit Count',price_per_unit:'$/Unit',elc_deal:'ELC Deal'
+  coords_approx:'Coordinates Approximate',deed_url:'Deed URL',aerial:'Aerial',sale_date_iso:'Sale Date ISO',unit_count:'Unit Count',price_per_unit:'$/Unit',elc_deal:'ELC Deal',
+  buildout_id:'Buildout ID',buildout_status:'Buildout Status',building_size_sf:'Building Size (SF)',building_class:'Building Class',year_built:'Year Built',
+  cap_rate:'Cap Rate',noi:'NOI',occupancy_percent:'Occupancy Percent',days_on_market:'Days On Market',grm:'GRM',rev_par:'RevPAR',adr:'ADR'
 };
 const hasValue = v => v !== null && v !== undefined && v !== '';
 const AERIAL_FIELDS = ['aerial','photo_url','photoUrl','photoURL','Photo URL','PHOTO URL','photo url','photo','Photo','image_url','imageUrl','image','aerial_url','aerialUrl','Aerial URL','AERIAL URL','Aerial'];
@@ -305,7 +307,13 @@ function compMatchKeys(c){
   const keys=[];
   if(hasValue(c.num)) keys.push('num:' + String(c.num));
   if(hasValue(c.address)) keys.push('addr:' + String(c.address).trim().toLowerCase() + '|date:' + String(c.sale_date||c.sale_date_iso||'').trim().toLowerCase() + '|price:' + String(c.price||''));
+  if(hasValue(c.property_name)) keys.push('name:' + String(c.property_name).trim().toLowerCase() + '|price:' + String(c.price||''));
+  if(hasValue(c.buildout_id)) keys.push('buildout:' + String(c.buildout_id).trim());
   return keys;
+}
+function isDuplicateLocalDeal(localDeal, baseKeySet){
+  if(!localDeal) return false;
+  return compMatchKeys(localDeal).some(k=>baseKeySet.has(k));
 }
 function mergeAerialsFromBackup(comps, backupComps){
   const aerialByKey = new Map();
@@ -1068,7 +1076,9 @@ require(["esri/Map","esri/views/MapView","esri/Graphic","esri/layers/GraphicsLay
     const data=await(await fetch('./comps.json?v=aerials-20260501-2', {cache:'no-store'})).json();
     const aerialBackup=await loadAerialBackup();
     const baseComps=mergeAerialsFromBackup(data.comps||[], aerialBackup?.comps || aerialBackup || []);
-    allComps=applyPinOverrides(applyLocalEdits([...baseComps,...loadLocalDeals().map(normalizeComp)]));
+    const baseKeySet=new Set(baseComps.flatMap(compMatchKeys));
+    const savedDeals=loadLocalDeals().map(normalizeComp).filter(c=>!isDuplicateLocalDeal(c, baseKeySet));
+    allComps=applyPinOverrides(applyLocalEdits([...baseComps,...savedDeals]));
     allMappedComps=allComps.filter(c=>hasValue(c.lat)&&hasValue(c.lon)).map((c,i)=>({...c,_mappedIndex:i}));
     graphicsLayer=new GraphicsLayer();
     const map=new Map({basemap:"hybrid",layers:[graphicsLayer]});
