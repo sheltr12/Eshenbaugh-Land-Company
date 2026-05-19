@@ -132,6 +132,56 @@ def parcel_centroid(parcel_id):
     return None, None
 
 
+def distance_sq_to_segment(px, py, ax, ay, bx, by):
+    dx = bx - ax
+    dy = by - ay
+    if dx == 0 and dy == 0:
+        return (px - ax) ** 2 + (py - ay) ** 2
+    t = max(0, min(1, ((px - ax) * dx + (py - ay) * dy) / (dx * dx + dy * dy)))
+    x = ax + t * dx
+    y = ay + t * dy
+    return (px - x) ** 2 + (py - y) ** 2
+
+
+def nearest_street_name(lat, lon):
+    if lat is None or lon is None:
+        return None
+    params = urllib.parse.urlencode(
+        {
+            "f": "json",
+            "geometry": json.dumps({"x": lon, "y": lat, "spatialReference": {"wkid": 4326}}),
+            "geometryType": "esriGeometryPoint",
+            "inSR": "4326",
+            "spatialRel": "esriSpatialRelIntersects",
+            "distance": "300",
+            "units": "esriSRUnit_Meter",
+            "outFields": "FULL_STREET_NAME",
+            "returnGeometry": "true",
+            "outSR": "4326",
+        }
+    )
+    url = (
+        "https://mapping.pascopa.com/arcgis/rest/services/Streets/MapServer/0/"
+        f"query?{params}"
+    )
+    try:
+        data = json.loads(fetch(url))
+        best = None
+        for feature in data.get("features") or []:
+            name = (feature.get("attributes") or {}).get("FULL_STREET_NAME")
+            paths = (feature.get("geometry") or {}).get("paths") or []
+            distances = []
+            for path in paths:
+                for a, b in zip(path, path[1:]):
+                    distances.append(distance_sq_to_segment(lon, lat, a[0], a[1], b[0], b[1]))
+            score = min(distances) if distances else float("inf")
+            if name and (best is None or score < best[0]):
+                best = (score, clean_text(name))
+        return best[1] if best else None
+    except Exception:
+        return None
+
+
 def make_aerial(parcel_id):
     return f"https://search.pascopa.com/parcel.aspx?parcel={urllib.parse.quote(parcel_id)}"
 
@@ -274,6 +324,12 @@ def main():
         if lat is None:
             lat, lon = geocode(address)
         time.sleep(0.1)
+        street_label = None
+        if address.lower().startswith("no physical address"):
+            street_label = nearest_street_name(lat, lon)
+            if street_label:
+                address = f"Near {street_label}"
+            time.sleep(0.1)
 
         comps.append(
             {
@@ -299,6 +355,8 @@ def main():
                 "comments": None,
             }
         )
+        if street_label:
+            comps[-1]["comments"] = f"No physical address on Pasco PA parcel page; mapped by parcel centroid near {street_label}."
 
     comps.sort(key=lambda c: (c["sale_date_iso"], -c["price"]))
     (OUT / "pasco_vacant_land_comps_2026-04-19_to_2026-05-19.json").write_text(

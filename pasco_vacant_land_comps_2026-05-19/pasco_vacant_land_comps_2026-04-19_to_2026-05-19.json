@@ -89,7 +89,7 @@
   },
   {
     "parcel_id": "17-25-19-0040-00000-0020",
-    "address": "No Physical Address",
+    "address": "Near OUTLAW WAY",
     "sale_date": "May 07 2026",
     "sale_date_iso": "2026-05-07",
     "price": 525000,
@@ -107,11 +107,11 @@
     "lon": -82.42396718492643,
     "aerial": "https://search.pascopa.com/parcel.aspx?parcel=17-25-19-0040-00000-0020",
     "elc_deal": null,
-    "comments": null
+    "comments": "No physical address on Pasco PA parcel page; mapped by parcel centroid near OUTLAW WAY."
   },
   {
     "parcel_id": "17-25-19-0040-00000-0030",
-    "address": "No Physical Address",
+    "address": "Near OUTLAW WAY",
     "sale_date": "May 07 2026",
     "sale_date_iso": "2026-05-07",
     "price": 525000,
@@ -129,11 +129,11 @@
     "lon": -82.42365802369518,
     "aerial": "https://search.pascopa.com/parcel.aspx?parcel=17-25-19-0040-00000-0030",
     "elc_deal": null,
-    "comments": null
+    "comments": "No physical address on Pasco PA parcel page; mapped by parcel centroid near OUTLAW WAY."
   },
   {
     "parcel_id": "17-25-19-0040-00000-0040",
-    "address": "No Physical Address",
+    "address": "Near OUTLAW WAY",
     "sale_date": "May 07 2026",
     "sale_date_iso": "2026-05-07",
     "price": 525000,
@@ -151,11 +151,11 @@
     "lon": -82.42336966364059,
     "aerial": "https://search.pascopa.com/parcel.aspx?parcel=17-25-19-0040-00000-0040",
     "elc_deal": null,
-    "comments": null
+    "comments": "No physical address on Pasco PA parcel page; mapped by parcel centroid near OUTLAW WAY."
   },
   {
     "parcel_id": "33-25-21-0000-00700-0000",
-    "address": "No Physical Address",
+    "address": "Near FAIRVIEW HEIGHTS ROAD",
     "sale_date": "May 11 2026",
     "sale_date_iso": "2026-05-11",
     "price": 515600,
@@ -173,6 +173,6 @@
     "lon": -82.20712806883375,
     "aerial": "https://search.pascopa.com/parcel.aspx?parcel=33-25-21-0000-00700-0000",
     "elc_deal": null,
-    "comments": null
+    "comments": "No physical address on Pasco PA parcel page; mapped by parcel centroid near FAIRVIEW HEIGHTS ROAD."
   }
 ]
