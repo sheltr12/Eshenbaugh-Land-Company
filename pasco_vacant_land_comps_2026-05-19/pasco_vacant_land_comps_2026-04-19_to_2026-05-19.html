@@ -1,0 +1,261 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Pasco County Vacant Land Comps | Apr 19-May 19 2026</title>
+  <link rel="stylesheet" href="https://js.arcgis.com/4.31/esri/themes/light/main.css">
+  <script src="https://js.arcgis.com/4.31/"></script>
+  <style>
+    html, body, #viewDiv { height: 100%; margin: 0; font-family: Arial, sans-serif; }
+    .panel {
+      position: absolute; z-index: 10; left: 16px; top: 16px; width: min(460px, calc(100% - 32px));
+      max-height: calc(100% - 32px); overflow: auto; background: #fff; color: #1f2933;
+      border: 1px solid #c8d1dc; border-radius: 6px; box-shadow: 0 8px 24px rgba(0,0,0,.18);
+    }
+    .panel header { padding: 14px 16px; border-bottom: 1px solid #d9e0e8; }
+    h1 { font-size: 18px; line-height: 1.2; margin: 0 0 5px; }
+    .meta { font-size: 12px; color: #586575; }
+    table { border-collapse: collapse; width: 100%; font-size: 12px; }
+    th, td { padding: 7px 8px; border-bottom: 1px solid #e5e9ef; text-align: left; vertical-align: top; }
+    th { position: sticky; top: 0; background: #f7f9fb; z-index: 1; }
+    tr { cursor: pointer; }
+    tr:hover { background: #eef6ff; }
+    .pill { display: inline-block; padding: 2px 6px; border-radius: 999px; background: #e8f0f8; font-size: 11px; }
+    a { color: #155da8; }
+    .popup h2 { font-size: 16px; margin: 0 0 8px; }
+    .popup dl { display: grid; grid-template-columns: 110px 1fr; gap: 4px 8px; margin: 0; }
+    .popup dt { font-weight: 700; }
+    .popup dd { margin: 0; }
+  </style>
+</head>
+<body>
+  <div id="viewDiv"></div>
+  <section class="panel" aria-label="Comparable sales list">
+    <header>
+      <h1>Pasco County Vacant Land Comps</h1>
+      <div class="meta">Sale dates Apr 19-May 19, 2026. Source: Pasco County PA weekly files dated May 17, 2026, enriched from parcel pages.</div>
+    </header>
+    <table>
+      <thead><tr><th>Sale</th><th>Parties</th><th>Acres</th><th>$/Ac</th></tr></thead>
+      <tbody id="rows"></tbody>
+    </table>
+  </section>
+  <script>
+    const comps = [
+  {
+    "parcel_id": "08-26-16-0010-03200-0020",
+    "address": "5531 US HIGHWAY 19 , NEW PORT RICHEY, FL 34652",
+    "sale_date": "Apr 28 2026",
+    "sale_date_iso": "2026-04-28",
+    "price": 510000,
+    "acreage": 0.9183,
+    "price_per_acre": 555374,
+    "transaction_type": "Sale",
+    "grantor": "SUSHKO JEMAL & TSIMINTIA TINATIN",
+    "grantee": "GULF COAST 19 HOLDINGS LLC",
+    "deed_type": "WD",
+    "property_type": "Land",
+    "zoning": "00C2",
+    "land_use": "1000",
+    "source": "Pasco County PA",
+    "lat": 28.239794680400394,
+    "lon": -82.72819055256105,
+    "aerial": "https://search.pascopa.com/parcel.aspx?parcel=08-26-16-0010-03200-0020",
+    "elc_deal": null,
+    "comments": null
+  },
+  {
+    "parcel_id": "19-24-18-0010-00000-0010",
+    "address": "15540 LENWAY ROAD, SPRING HILL, FL 34610",
+    "sale_date": "Apr 30 2026",
+    "sale_date_iso": "2026-04-30",
+    "price": 562500,
+    "acreage": 1.98,
+    "price_per_acre": 284091,
+    "transaction_type": "Sale",
+    "grantor": "SCHONACHER INVESTMENTS LLC",
+    "grantee": "SCHONACHER ALEXIS & LLOYD PARKER",
+    "deed_type": "WD",
+    "property_type": "Land",
+    "zoning": "00AC",
+    "land_use": "0100",
+    "source": "Pasco County PA",
+    "lat": 28.382532948521163,
+    "lon": -82.53793709513023,
+    "aerial": "https://search.pascopa.com/parcel.aspx?parcel=19-24-18-0010-00000-0010",
+    "elc_deal": null,
+    "comments": null
+  },
+  {
+    "parcel_id": "35-25-20-0090-00000-0A32",
+    "address": "8040 CURLEY ROAD, WESLEY CHAPEL, FL 33545",
+    "sale_date": "May 04 2026",
+    "sale_date_iso": "2026-05-04",
+    "price": 2522000,
+    "acreage": 0.7907,
+    "price_per_acre": 3189579,
+    "transaction_type": "Sale",
+    "grantor": "RAVE COMMERCIAL EP SE LLC & TOUCH BLUE HUDSON LLC",
+    "grantee": "8040 CURLEY ROAD LLC",
+    "deed_type": "WD",
+    "property_type": "Land",
+    "zoning": "MPUD",
+    "land_use": "1000",
+    "source": "Pasco County PA",
+    "lat": 28.270142953956565,
+    "lon": -82.28389304897429,
+    "aerial": "https://search.pascopa.com/parcel.aspx?parcel=35-25-20-0090-00000-0A32",
+    "elc_deal": null,
+    "comments": null
+  },
+  {
+    "parcel_id": "29-24-21-0040-00000-0470",
+    "address": "14051 SUWANNEE LAKE DRIVE, DADE CITY, FL 33525",
+    "sale_date": "May 07 2026",
+    "sale_date_iso": "2026-05-07",
+    "price": 1030100,
+    "acreage": 0.6091,
+    "price_per_acre": 1691184,
+    "transaction_type": "Sale",
+    "grantor": "ICI HOMES OF TAMPA LLC",
+    "grantee": "WARREN FLORENCE B & ANDRE M",
+    "deed_type": "WD",
+    "property_type": "Land",
+    "zoning": "MPUD",
+    "land_use": "0100",
+    "source": "Pasco County PA",
+    "lat": 28.362096156029697,
+    "lon": -82.22694728229114,
+    "aerial": "https://search.pascopa.com/parcel.aspx?parcel=29-24-21-0040-00000-0470",
+    "elc_deal": null,
+    "comments": null
+  },
+  {
+    "parcel_id": "17-25-19-0040-00000-0020",
+    "address": "No Physical Address",
+    "sale_date": "May 07 2026",
+    "sale_date_iso": "2026-05-07",
+    "price": 525000,
+    "acreage": 1.88,
+    "price_per_acre": 279255,
+    "transaction_type": "Sale",
+    "grantor": "OUTLAW RIDGE LLC",
+    "grantee": "DOTSON JEFFREY",
+    "deed_type": "WD",
+    "property_type": "Land",
+    "zoning": "MPUD",
+    "land_use": "5500",
+    "source": "Pasco County PA",
+    "lat": 28.305459061569987,
+    "lon": -82.42396718492643,
+    "aerial": "https://search.pascopa.com/parcel.aspx?parcel=17-25-19-0040-00000-0020",
+    "elc_deal": null,
+    "comments": null
+  },
+  {
+    "parcel_id": "17-25-19-0040-00000-0030",
+    "address": "No Physical Address",
+    "sale_date": "May 07 2026",
+    "sale_date_iso": "2026-05-07",
+    "price": 525000,
+    "acreage": 1.29,
+    "price_per_acre": 406977,
+    "transaction_type": "Sale",
+    "grantor": "OUTLAW RIDGE LLC",
+    "grantee": "DOTSON JEFFREY",
+    "deed_type": "WD",
+    "property_type": "Land",
+    "zoning": "MPUD",
+    "land_use": "5500",
+    "source": "Pasco County PA",
+    "lat": 28.304863321384556,
+    "lon": -82.42365802369518,
+    "aerial": "https://search.pascopa.com/parcel.aspx?parcel=17-25-19-0040-00000-0030",
+    "elc_deal": null,
+    "comments": null
+  },
+  {
+    "parcel_id": "17-25-19-0040-00000-0040",
+    "address": "No Physical Address",
+    "sale_date": "May 07 2026",
+    "sale_date_iso": "2026-05-07",
+    "price": 525000,
+    "acreage": 1.03,
+    "price_per_acre": 509709,
+    "transaction_type": "Sale",
+    "grantor": "OUTLAW RIDGE LLC",
+    "grantee": "DOTSON JEFFREY",
+    "deed_type": "WD",
+    "property_type": "Land",
+    "zoning": "MPUD",
+    "land_use": "5101",
+    "source": "Pasco County PA",
+    "lat": 28.30455333028835,
+    "lon": -82.42336966364059,
+    "aerial": "https://search.pascopa.com/parcel.aspx?parcel=17-25-19-0040-00000-0040",
+    "elc_deal": null,
+    "comments": null
+  },
+  {
+    "parcel_id": "33-25-21-0000-00700-0000",
+    "address": "No Physical Address",
+    "sale_date": "May 11 2026",
+    "sale_date_iso": "2026-05-11",
+    "price": 515600,
+    "acreage": 6.0,
+    "price_per_acre": 85933,
+    "transaction_type": "Sale",
+    "grantor": "ANIAMMA VALIYAVEEDAN",
+    "grantee": "VOPH SOUTHEAST LAND INVESTMENTS LLC ET AL",
+    "deed_type": "WD",
+    "property_type": "Land",
+    "zoning": "00AC",
+    "land_use": "0110",
+    "source": "Pasco County PA",
+    "lat": 28.26932883302914,
+    "lon": -82.20712806883375,
+    "aerial": "https://search.pascopa.com/parcel.aspx?parcel=33-25-21-0000-00700-0000",
+    "elc_deal": null,
+    "comments": null
+  }
+];
+    const money = new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0 });
+    const rows = document.querySelector("#rows");
+    comps.forEach((c, i) => {
+      const tr = document.createElement("tr");
+      tr.innerHTML = `<td><b>${money.format(c.price)}</b><br>${c.sale_date}<br><span class="pill">${c.deed_type}</span></td>
+        <td><b>Grantor:</b> ${c.grantor || "Unknown"}<br><b>Grantee:</b> ${c.grantee || "Unknown"}<br><a href="${c.aerial}" target="_blank" rel="noopener">Parcel ${c.parcel_id}</a></td>
+        <td>${c.acreage}</td><td>${money.format(c.price_per_acre)}</td>`;
+      tr.addEventListener("click", () => window.focusComp(i));
+      rows.appendChild(tr);
+    });
+    require(["esri/Map", "esri/views/MapView", "esri/Graphic", "esri/layers/GraphicsLayer"], (Map, MapView, Graphic, GraphicsLayer) => {
+      const map = new Map({ basemap: "hybrid" });
+      const view = new MapView({ container: "viewDiv", map, center: [-82.43, 28.28], zoom: 10 });
+      const layer = new GraphicsLayer();
+      map.add(layer);
+      const graphics = comps.filter(c => c.lat && c.lon).map((c, i) => new Graphic({
+        geometry: { type: "point", longitude: c.lon, latitude: c.lat },
+        symbol: { type: "simple-marker", style: "circle", size: 12, color: [11, 105, 170, .92], outline: { color: [255,255,255], width: 1.5 } },
+        attributes: { ...c, index: i },
+        popupTemplate: {
+          title: `${c.grantor || "Grantor unknown"} to ${c.grantee || "Grantee unknown"}`,
+          content: `<div class="popup"><h2>${money.format(c.price)} | ${c.acreage} ac | ${money.format(c.price_per_acre)}/ac</h2>
+            <dl><dt>Sale date</dt><dd>${c.sale_date}</dd><dt>Deed type</dt><dd>${c.deed_type}</dd><dt>Parcel ID</dt><dd>${c.parcel_id}</dd>
+            <dt>Address</dt><dd>${c.address || "No site address"}</dd><dt>Zoning</dt><dd>${c.zoning || ""}</dd><dt>Land use</dt><dd>${c.land_use || ""}</dd></dl>
+            <p><a href="${c.aerial}" target="_blank" rel="noopener">Open Pasco PA property page</a></p></div>`
+        }
+      }));
+      layer.addMany(graphics);
+      if (graphics.length) {
+        view.when(() => view.goTo(graphics, { padding: { left: 480, top: 40, right: 40, bottom: 40 } }));
+      }
+      window.focusComp = (i) => {
+        const g = graphics.find(item => item.attributes.index === i);
+        if (g) view.goTo({ target: g.geometry, zoom: 16 }).then(() => view.openPopup({ features: [g], location: g.geometry }));
+      };
+    });
+  </script>
+</body>
+</html>
