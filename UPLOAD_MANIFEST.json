@@ -56,5 +56,15 @@
     "swfwmd_erp_map.html",
     "swfwmd_erp_permits.json",
     "EshenbaughLogo.png"
-  ]
+  ],
+  "link_fix": {
+    "updated": "2026-05-20",
+    "changed_hillsborough_records_per_database": {
+      "comps.json": 16,
+      "comps_with_aerials.json": 16,
+      "comps_aerial_backup.json": 16
+    },
+    "aerial_example": "https://gis.hcpafl.org/propertysearch/#/parcel/basic/212908C9I000000000220U",
+    "deed_example": "https://pubrec6.hillsclerk.com/ORIPublicAccess/customSearch.html?instrument=2026157486"
+  }
 }
