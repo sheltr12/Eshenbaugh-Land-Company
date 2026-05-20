@@ -6,4 +6,5 @@ Official HCPA import appended to the ELC comps database.
 - Criteria: vacant land only, greater than 0.5 acres, greater than $500,000 sale price
 - Coordinates: HCPA LatLon table joined by folio
 - No-address labels: nearest official Hillsborough County road centerline
-- New comps: 16
+- New transaction comps: 10
+- Multi-parcel same-instrument transactions are consolidated into one comp

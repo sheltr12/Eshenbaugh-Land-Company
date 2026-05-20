@@ -1,28 +1,30 @@
 {
   "status": "complete_replacement_bundle",
   "base": "/Users/patshelton/Documents/Codex/2026-05-19/pull-vacant-land-comps-in-pasco/github_complete_drag_upload_2026-05-19",
-  "new_comp_count": 16,
+  "new_comp_count": 10,
+  "raw_hcpa_parcel_sale_records": 16,
+  "consolidation_note": "Same-instrument/date/price/grantor/grantee parcel rows are consolidated into transaction-level comps.",
   "starting_num": 3818,
-  "ending_num": 3833,
-  "updated_total_comps": 3830,
+  "ending_num": 3827,
+  "updated_total_comps": 3824,
   "validation": {
     "comps.json": {
-      "total_comps": 3830,
-      "meta_total_comps": 3830,
-      "aerial_urls": 3367,
-      "hillsborough_imported_rows": 16
+      "total_comps": 3824,
+      "meta_total_comps": 3824,
+      "aerial_urls": 3361,
+      "hillsborough_imported_rows": 10
     },
     "comps_with_aerials.json": {
-      "total_comps": 3830,
-      "meta_total_comps": 3830,
-      "aerial_urls": 3367,
-      "hillsborough_imported_rows": 16
+      "total_comps": 3824,
+      "meta_total_comps": 3824,
+      "aerial_urls": 3361,
+      "hillsborough_imported_rows": 10
     },
     "comps_aerial_backup.json": {
-      "total_comps": 3830,
-      "meta_total_comps": 3830,
-      "aerial_urls": 3367,
-      "hillsborough_imported_rows": 16
+      "total_comps": 3824,
+      "meta_total_comps": 3824,
+      "aerial_urls": 3361,
+      "hillsborough_imported_rows": 10
     }
   },
   "files_to_drag_to_github_root": [
@@ -60,11 +62,20 @@
   "link_fix": {
     "updated": "2026-05-20",
     "changed_hillsborough_records_per_database": {
-      "comps.json": 16,
-      "comps_with_aerials.json": 16,
-      "comps_aerial_backup.json": 16
+      "comps.json": 10,
+      "comps_with_aerials.json": 10,
+      "comps_aerial_backup.json": 10
     },
     "aerial_example": "https://gis.hcpafl.org/propertysearch/#/parcel/basic/212908C9I000000000220U",
     "deed_example": "https://pubrec6.hillsclerk.com/ORIPublicAccess/customSearch.html?instrument=2026157486"
+  },
+  "deed_button_update": {
+    "updated": "2026-05-20",
+    "changed_hillsborough_records_per_database": {
+      "comps.json": 10,
+      "comps_with_aerials.json": 10,
+      "comps_aerial_backup.json": 10
+    },
+    "note": "Hillsborough deed_url values are null so the app no longer renders View Deed buttons for this import."
   }
 }
