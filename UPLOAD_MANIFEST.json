@@ -1,44 +1,30 @@
 {
-  "created": "2026-05-19",
-  "upload_instruction": "Drag the contents of this folder into the GitHub repository root. Canonical files replace existing GitHub files; the pasco_vacant_land_comps_2026-05-19 folder is new supporting material.",
-  "updated_database_files": {
-    "comps.json": [
-      8,
-      3814
-    ],
-    "comps_with_aerials.json": [
-      8,
-      3814
-    ],
-    "comps_aerial_backup.json": [
-      8,
-      3814
-    ]
-  },
-  "no_address_labels": {
-    "17-25-19-0040-00000-0020": "Near OUTLAW WAY",
-    "17-25-19-0040-00000-0030": "Near OUTLAW WAY",
-    "17-25-19-0040-00000-0040": "Near OUTLAW WAY",
-    "33-25-21-0000-00700-0000": "Near FAIRVIEW HEIGHTS ROAD"
-  },
-  "files": [
-    ".DS_Store",
-    "EshenbaughLogo.png",
-    "UPLOAD_MANIFEST.json",
+  "status": "partial_ready_needs_base_files",
+  "new_comp_count": 16,
+  "drag_folder": "/Users/patshelton/Documents/Codex/2026-05-19/pull-vacant-land-comps-in-hillsborough/deliverables/github_drag_drop_hillsborough_2026-05-19",
+  "zip": "/Users/patshelton/Documents/Codex/2026-05-19/pull-vacant-land-comps-in-hillsborough/deliverables/github_drag_drop_hillsborough_2026-05-19.zip",
+  "files_included": [
+    "hillsborough_vacant_land_comps_2026-05-19/README.md",
+    "hillsborough_vacant_land_comps_2026-05-19/build_hillsborough_comps.py",
+    "hillsborough_vacant_land_comps_2026-05-19/dbf_tools.py",
+    "hillsborough_vacant_land_comps_2026-05-19/download_hcpa_file.mjs",
+    "hillsborough_vacant_land_comps_2026-05-19/hillsborough_new_comps.json",
+    "hillsborough_vacant_land_comps_2026-05-19/hillsborough_new_comps_summary.csv",
+    "hillsborough_vacant_land_comps_2026-05-19/hillsborough_vacant_land_comps_map.html",
+    "hillsborough_vacant_land_comps_2026-05-19/source_files_used.json"
+  ],
+  "base_files_missing_not_updated": [
     "comps.json",
+    "comps_with_aerials.json",
     "comps_aerial_backup.json",
     "comps_map.html",
-    "comps_with_aerials.json",
     "index.html",
     "index_script.js",
     "map_script.js",
-    "pasco_vacant_land_comps_2026-05-19/README.md",
-    "pasco_vacant_land_comps_2026-05-19/build_pasco_comps.py",
-    "pasco_vacant_land_comps_2026-05-19/pasco_vacant_land_comps_2026-04-19_to_2026-05-19.csv",
-    "pasco_vacant_land_comps_2026-05-19/pasco_vacant_land_comps_2026-04-19_to_2026-05-19.html",
-    "pasco_vacant_land_comps_2026-05-19/pasco_vacant_land_comps_2026-04-19_to_2026-05-19.json",
     "proposal_builder.html",
     "swfwmd_erp_map.html",
-    "swfwmd_erp_permits.json"
-  ]
+    "swfwmd_erp_permits.json",
+    "EshenbaughLogo.png"
+  ],
+  "upload_instruction": "Do not upload as replacement database/site files yet. Provide the latest GitHub base files, then append these 16 comps and regenerate the canonical replacement set."
 }

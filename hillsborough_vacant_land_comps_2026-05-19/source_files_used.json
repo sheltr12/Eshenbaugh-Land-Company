@@ -1,0 +1,8 @@
+{
+  "official_downloads_index": "https://downloads.hcpafl.org/Default.aspx",
+  "sales_extract": "allsales_05_15_2026.zip",
+  "parcel_extract": "parcel_05_15_2026.zip",
+  "latlon_extract": "LatLon_Table_05_15_2026.zip",
+  "road_centerline_layer": "https://gisdextweb1.hillsboroughcounty.org/arcgis/rest/services/Hosted/Road_Centerlines/FeatureServer/0",
+  "large_cached_source_files": "Kept in local source_cache, omitted from drag folder because they are large."
+}
