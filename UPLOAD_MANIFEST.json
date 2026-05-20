@@ -1,19 +1,31 @@
 {
-  "status": "partial_ready_needs_base_files",
+  "status": "complete_replacement_bundle",
+  "base": "/Users/patshelton/Documents/Codex/2026-05-19/pull-vacant-land-comps-in-pasco/github_complete_drag_upload_2026-05-19",
   "new_comp_count": 16,
-  "drag_folder": "/Users/patshelton/Documents/Codex/2026-05-19/pull-vacant-land-comps-in-hillsborough/deliverables/github_drag_drop_hillsborough_2026-05-19",
-  "zip": "/Users/patshelton/Documents/Codex/2026-05-19/pull-vacant-land-comps-in-hillsborough/deliverables/github_drag_drop_hillsborough_2026-05-19.zip",
-  "files_included": [
-    "hillsborough_vacant_land_comps_2026-05-19/README.md",
-    "hillsborough_vacant_land_comps_2026-05-19/build_hillsborough_comps.py",
-    "hillsborough_vacant_land_comps_2026-05-19/dbf_tools.py",
-    "hillsborough_vacant_land_comps_2026-05-19/download_hcpa_file.mjs",
-    "hillsborough_vacant_land_comps_2026-05-19/hillsborough_new_comps.json",
-    "hillsborough_vacant_land_comps_2026-05-19/hillsborough_new_comps_summary.csv",
-    "hillsborough_vacant_land_comps_2026-05-19/hillsborough_vacant_land_comps_map.html",
-    "hillsborough_vacant_land_comps_2026-05-19/source_files_used.json"
-  ],
-  "base_files_missing_not_updated": [
+  "starting_num": 3818,
+  "ending_num": 3833,
+  "updated_total_comps": 3830,
+  "validation": {
+    "comps.json": {
+      "total_comps": 3830,
+      "meta_total_comps": 3830,
+      "aerial_urls": 3367,
+      "hillsborough_imported_rows": 16
+    },
+    "comps_with_aerials.json": {
+      "total_comps": 3830,
+      "meta_total_comps": 3830,
+      "aerial_urls": 3367,
+      "hillsborough_imported_rows": 16
+    },
+    "comps_aerial_backup.json": {
+      "total_comps": 3830,
+      "meta_total_comps": 3830,
+      "aerial_urls": 3367,
+      "hillsborough_imported_rows": 16
+    }
+  },
+  "files_to_drag_to_github_root": [
     "comps.json",
     "comps_with_aerials.json",
     "comps_aerial_backup.json",
@@ -24,7 +36,25 @@
     "proposal_builder.html",
     "swfwmd_erp_map.html",
     "swfwmd_erp_permits.json",
-    "EshenbaughLogo.png"
+    "EshenbaughLogo.png",
+    "hillsborough_vacant_land_comps_2026-05-20",
+    "UPLOAD_MANIFEST.json"
   ],
-  "upload_instruction": "Do not upload as replacement database/site files yet. Provide the latest GitHub base files, then append these 16 comps and regenerate the canonical replacement set."
+  "changed_files": [
+    "comps.json",
+    "comps_with_aerials.json",
+    "comps_aerial_backup.json",
+    "hillsborough_vacant_land_comps_2026-05-20/",
+    "UPLOAD_MANIFEST.json"
+  ],
+  "unchanged_but_included_for_canonical_upload": [
+    "comps_map.html",
+    "index.html",
+    "index_script.js",
+    "map_script.js",
+    "proposal_builder.html",
+    "swfwmd_erp_map.html",
+    "swfwmd_erp_permits.json",
+    "EshenbaughLogo.png"
+  ]
 }
