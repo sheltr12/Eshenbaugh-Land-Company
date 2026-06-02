@@ -1,81 +1,91 @@
 {
-  "status": "complete_replacement_bundle",
-  "base": "/Users/patshelton/Documents/Codex/2026-05-19/pull-vacant-land-comps-in-pasco/github_complete_drag_upload_2026-05-19",
-  "new_comp_count": 10,
-  "raw_hcpa_parcel_sale_records": 16,
-  "consolidation_note": "Same-instrument/date/price/grantor/grantee parcel rows are consolidated into transaction-level comps.",
-  "starting_num": 3818,
-  "ending_num": 3827,
-  "updated_total_comps": 3824,
+  "status": "hernando_county_comps_june_2026",
+  "source": "Hernando County Property Appraiser",
+  "period": "May 2026 recording date",
+  "new_comp_count": 9,
+  "raw_pa_records": 9,
+  "starting_num": 3835,
+  "ending_num": 3843,
+  "updated_total_comps": 3840,
+  "generated": "2026-06-02",
+  "filters": {
+    "property_type": "Vacant Land",
+    "min_sale_price": 500000,
+    "min_acreage": 0.5
+  },
   "validation": {
     "comps.json": {
-      "total_comps": 3824,
-      "meta_total_comps": 3824,
-      "aerial_urls": 3361,
-      "hillsborough_imported_rows": 10
+      "total_comps": 3840,
+      "new_hernando_comps": 9
     },
     "comps_with_aerials.json": {
-      "total_comps": 3824,
-      "meta_total_comps": 3824,
-      "aerial_urls": 3361,
-      "hillsborough_imported_rows": 10
-    },
-    "comps_aerial_backup.json": {
-      "total_comps": 3824,
-      "meta_total_comps": 3824,
-      "aerial_urls": 3361,
-      "hillsborough_imported_rows": 10
+      "total_comps": 3833,
+      "new_hernando_comps": 9
     }
   },
-  "files_to_drag_to_github_root": [
-    "comps.json",
-    "comps_with_aerials.json",
-    "comps_aerial_backup.json",
-    "comps_map.html",
-    "index.html",
-    "index_script.js",
-    "map_script.js",
-    "proposal_builder.html",
-    "swfwmd_erp_map.html",
-    "swfwmd_erp_permits.json",
-    "EshenbaughLogo.png",
-    "hillsborough_vacant_land_comps_2026-05-20",
-    "UPLOAD_MANIFEST.json"
-  ],
-  "changed_files": [
-    "comps.json",
-    "comps_with_aerials.json",
-    "comps_aerial_backup.json",
-    "hillsborough_vacant_land_comps_2026-05-20/",
-    "UPLOAD_MANIFEST.json"
-  ],
-  "unchanged_but_included_for_canonical_upload": [
-    "comps_map.html",
-    "index.html",
-    "index_script.js",
-    "map_script.js",
-    "proposal_builder.html",
-    "swfwmd_erp_map.html",
-    "swfwmd_erp_permits.json",
-    "EshenbaughLogo.png"
-  ],
-  "link_fix": {
-    "updated": "2026-05-20",
-    "changed_hillsborough_records_per_database": {
-      "comps.json": 10,
-      "comps_with_aerials.json": 10,
-      "comps_aerial_backup.json": 10
+  "new_comps": [
+    {
+      "num": 3835,
+      "parcel_id": "1807478",
+      "address": "NORTHCLIFFE BLVD",
+      "price": 1957500,
+      "acreage": 31.9
     },
-    "aerial_example": "https://gis.hcpafl.org/propertysearch/#/parcel/basic/212908C9I000000000220U",
-    "deed_example": "https://pubrec6.hillsclerk.com/ORIPublicAccess/customSearch.html?instrument=2026157486"
-  },
-  "deed_button_update": {
-    "updated": "2026-05-20",
-    "changed_hillsborough_records_per_database": {
-      "comps.json": 10,
-      "comps_with_aerials.json": 10,
-      "comps_aerial_backup.json": 10
+    {
+      "num": 3836,
+      "parcel_id": "1406785",
+      "address": "NURSERY RD",
+      "price": 700000,
+      "acreage": 22.0
     },
-    "note": "Hillsborough deed_url values are null so the app no longer renders View Deed buttons for this import."
-  }
+    {
+      "num": 3837,
+      "parcel_id": "103907",
+      "address": "EAKIN ST",
+      "price": 1250000,
+      "acreage": 28.8
+    },
+    {
+      "num": 3838,
+      "parcel_id": "343015",
+      "address": "LOMITA WREN RD",
+      "price": 1250000,
+      "acreage": 79.2
+    },
+    {
+      "num": 3839,
+      "parcel_id": "359506",
+      "address": "WISCON RD",
+      "price": 1295000,
+      "acreage": 31.6
+    },
+    {
+      "num": 3840,
+      "parcel_id": "1134454",
+      "address": "WISCON RD",
+      "price": 1295000,
+      "acreage": 9.6
+    },
+    {
+      "num": 3841,
+      "parcel_id": "1302922",
+      "address": "GAINSBORO AVE",
+      "price": 7380000,
+      "acreage": 68.2
+    },
+    {
+      "num": 3842,
+      "parcel_id": "1717681",
+      "address": "CORTEZ BLVD",
+      "price": 2000000,
+      "acreage": 0.51
+    },
+    {
+      "num": 3843,
+      "parcel_id": "1763684",
+      "address": "OLD TRILBY RD",
+      "price": 725000,
+      "acreage": 41.0
+    }
+  ]
 }
