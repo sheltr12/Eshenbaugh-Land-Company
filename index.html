@@ -94,8 +94,6 @@ tr.row-selected td{background:#fff1f1!important}
 .import-preview{margin-top:10px;padding:10px;border:1px solid var(--elc-line);border-radius:8px;background:#f8fafc;font-size:12px;line-height:1.4;color:var(--elc-muted)}
 .aerial-btn{display:inline-block;background:var(--elc-red);color:#fff!important;border:1px solid var(--elc-red);border-radius:7px;padding:6px 10px;font-size:11px;font-weight:900;text-decoration:none!important;line-height:1.1}
 
-.btn-delete-row{margin-left:6px;background:#c0392b;color:#fff;border:1px solid #c0392b !important;}
-.btn-delete-row:hover{background:#a93226;}
 .btn-danger{background:#c0392b;color:#fff;border:1px solid transparent}
 .btn-danger:hover{background:#a93226}
 </style>
@@ -216,7 +214,6 @@ tr.row-selected td{background:#fff1f1!important}
       <button class="btn btn-secondary btn-small" type="button" onclick="selectAllFilteredComps()">Select All Filtered</button>
       <button class="btn btn-secondary btn-small" type="button" onclick="clearSelectedComps()">Clear Selected</button>
       <button class="btn btn-danger btn-small" type="button" onclick="deleteSelectedComps()">Delete Selected</button>
-      <button class="btn btn-secondary btn-small" type="button" onclick="restoreDeletedComps()">Restore Deleted</button>
       <button class="btn btn-primary btn-small" type="button" onclick="createSelectedReport()">Create Report</button>
       <button class="btn btn-secondary btn-small" type="button" onclick="showExportChoice(getSelectedComps())">Export Selected</button>
     </div>
@@ -469,7 +466,7 @@ function toggleUnitPriceFilters(){
 }
 function fmtCell(c,key){
   if(key==='_select') return `<input type="checkbox" ${selectedCompKeys.has(c._compKey)?'checked':''} onchange="toggleCompSelection('${escapeHtml(c._compKey||'')}', this.checked)">`;
-  if(key==='_actions') return `<div class="action-cell"><button type="button" onclick="openEditDealModal('${escapeHtml(c._compKey||'')}')">Edit</button><button type="button" class="btn-delete-row" onclick="deleteComp('${escapeHtml(c._compKey||'')}')">Delete</button></div>`;
+  if(key==='_actions') return `<div class="action-cell"><button type="button" onclick="openEditDealModal('${escapeHtml(c._compKey||'')}')">Edit</button></div>`;
   const v=c[key];
   if(key==='price' || key==='price_per_acre' || key==='price_per_unit') return fmtMoney(v);
   if(key==='acreage') return fmtAcres(v);
@@ -550,32 +547,15 @@ function saveCompEdit(comp){if(!comp||!comp._compKey)return; const edits=loadLoc
 function loadDeletedKeys(){try{return JSON.parse(localStorage.getItem(LOCAL_DELETED_KEY)||'[]');}catch(e){return [];}}
 function saveDeletedKeys(keys){localStorage.setItem(LOCAL_DELETED_KEY, JSON.stringify([...new Set(keys)]));}
 function removeLocalDealByKey(key){const remaining=loadLocalDeals().filter((d,i)=>getCompKey(normalizeComp(d),i)!==key); saveLocalDeals(remaining);}
-function deleteComp(key){
-  const comp=getCompByKey(key);
-  const label=comp?(comp.property_name||comp.address||('Comp '+(comp.num||''))):'this comp';
-  if(!confirm('Delete this comp?\n\n'+label+'\n\nThis removes it from this browser. Use "Restore Deleted" to bring it back.')) return;
-  const deleted=loadDeletedKeys(); deleted.push(key); saveDeletedKeys(deleted);
-  removeLocalDealByKey(key);
-  allComps=allComps.filter(c=>c._compKey!==key);
-  selectedCompKeys.delete(key);
-  populateFilters(); applyFilters(); updateSelectedCount();
-}
 function deleteSelectedComps(){
   const keys=[...selectedCompKeys];
   if(!keys.length){alert('No comps selected. Tick the checkboxes for the comps you want to delete.');return;}
-  if(!confirm('Delete '+keys.length.toLocaleString()+' selected comp'+(keys.length===1?'':'s')+'?\n\nThis removes them from this browser. Use "Restore Deleted" to bring them back.')) return;
+  if(!confirm('Delete '+keys.length.toLocaleString()+' selected comp'+(keys.length===1?'':'s')+'?\n\nThis removes them from this browser.')) return;
   const deleted=loadDeletedKeys(); keys.forEach(k=>{deleted.push(k); removeLocalDealByKey(k);}); saveDeletedKeys(deleted);
   const keySet=new Set(keys);
   allComps=allComps.filter(c=>!keySet.has(c._compKey));
   selectedCompKeys.clear();
   populateFilters(); applyFilters(); updateSelectedCount();
-}
-function restoreDeletedComps(){
-  const deleted=loadDeletedKeys();
-  if(!deleted.length){alert('No deleted comps to restore.');return;}
-  if(!confirm('Restore '+deleted.length.toLocaleString()+' deleted comp'+(deleted.length===1?'':'s')+'?')) return;
-  saveDeletedKeys([]);
-  loadReport();
 }
 
 function deriveCompFields(c){

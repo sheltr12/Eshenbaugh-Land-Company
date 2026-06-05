@@ -150,7 +150,6 @@ body.sidebar-hidden #sidebar-show-tab{display:block;pointer-events:auto}
   body.sidebar-hidden #panel{transform:translateY(calc(100% + 8px))}
 }
 
-.delete-btn{color:var(--elc-red);font-weight:900;text-decoration:none;background:transparent;border:none;padding:0;font-size:11px;cursor:pointer}.delete-btn:hover{text-decoration:underline;background:transparent}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 </head>
@@ -249,7 +248,6 @@ body.sidebar-hidden #sidebar-show-tab{display:block;pointer-events:auto}
       <button type="button" onclick="selectAllFilteredMapComps()">Select All Filtered</button>
       <button type="button" onclick="clearSelectedMapComps()">Clear Selected</button>
       <button class="btn-red" type="button" onclick="deleteSelectedMapComps()">Delete Selected</button>
-      <button type="button" onclick="restoreDeletedMapComps()">Restore Deleted</button>
       <button class="btn-red" type="button" onclick="createMapSelectedReport()">Create Report</button>
       <button type="button" onclick="showExportChoice(getMapSelectedComps())">Export Selected</button>
     </div>
@@ -531,7 +529,7 @@ function buildListCard(comp,idx){
   const checked=selectedMapCompKeys.has(comp._compKey) ? 'checked' : '';
   const selectedClass=selectedMapCompKeys.has(comp._compKey) ? ' selected' : '';
   const pname=comp.property_name ? `<div class="property-name-line">${escapeHtml(comp.property_name)}</div>` : '';
-  const links=`<div class="comp-links">${comp.aerial ? `<a href="${escapeHtml(comp.aerial)}" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation()">View Aerial</a> &middot; ` : ''}<button class="pin-edit-btn" type="button" data-pin-key="${escapeHtml(comp._compKey||'')}" onclick="event.stopPropagation()">Change Pin</button> &middot; <button class="edit-btn" type="button" onclick="event.stopPropagation(); openEditDealModal('${escapeHtml(comp._compKey||'')}')">Edit Fields</button> &middot; <button class="delete-btn" type="button" onclick="event.stopPropagation(); deleteMapComp('${escapeHtml(comp._compKey||'')}')">Delete</button></div>`;
+  const links=`<div class="comp-links">${comp.aerial ? `<a href="${escapeHtml(comp.aerial)}" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation()">View Aerial</a> &middot; ` : ''}<button class="pin-edit-btn" type="button" data-pin-key="${escapeHtml(comp._compKey||'')}" onclick="event.stopPropagation()">Change Pin</button> &middot; <button class="edit-btn" type="button" onclick="event.stopPropagation(); openEditDealModal('${escapeHtml(comp._compKey||'')}')">Edit Fields</button></div>`;
   return `<div class="comp-card${selectedClass}" id="card-${idx}" onclick="zoomToComp(${idx})">
     <label class="comp-select-row" onclick="event.stopPropagation()"><input type="checkbox" ${checked} onchange="toggleMapCompSelection('${escapeHtml(comp._compKey||'')}', this.checked)"> Select for report</label>
     ${pname}<div class="comp-addr">${escapeHtml(comp.address||'(no address)')}</div>
@@ -971,34 +969,16 @@ function loadDeletedKeys(){try{return JSON.parse(localStorage.getItem(LOCAL_DELE
 function saveDeletedKeys(keys){localStorage.setItem(LOCAL_DELETED_KEY, JSON.stringify([...new Set(keys)]));}
 function removeLocalDealByKey(key){const remaining=loadLocalDeals().filter((d,i)=>getCompKey(normalizeComp(d),i)!==key); saveLocalDeals(remaining);}
 function recomputeMappedComps(){allMappedComps=allComps.filter(c=>hasValue(c.lat)&&hasValue(c.lon)).map((c,i)=>({...c,_mappedIndex:i}));}
-window.deleteMapComp=function(key){
-  const comp=getCompByKey(key);
-  const label=comp?(comp.property_name||comp.address||('Comp '+(comp.num||''))):'this comp';
-  if(!confirm('Delete this comp?\n\n'+label+'\n\nThis removes it from this browser. Use "Restore Deleted" to bring it back.')) return;
-  const deleted=loadDeletedKeys(); deleted.push(key); saveDeletedKeys(deleted);
-  removeLocalDealByKey(key);
-  allComps=allComps.filter(c=>c._compKey!==key);
-  recomputeMappedComps();
-  selectedMapCompKeys.delete(key);
-  applyFilters();
-};
 window.deleteSelectedMapComps=function(){
   const keys=[...selectedMapCompKeys];
   if(!keys.length){alert('No comps selected. Tick "Select for report" on the comps you want to delete.');return;}
-  if(!confirm('Delete '+keys.length.toLocaleString()+' selected comp'+(keys.length===1?'':'s')+'?\n\nThis removes them from this browser. Use "Restore Deleted" to bring them back.')) return;
+  if(!confirm('Delete '+keys.length.toLocaleString()+' selected comp'+(keys.length===1?'':'s')+'?\n\nThis removes them from this browser.')) return;
   const deleted=loadDeletedKeys(); keys.forEach(k=>{deleted.push(k); removeLocalDealByKey(k);}); saveDeletedKeys(deleted);
   const keySet=new Set(keys);
   allComps=allComps.filter(c=>!keySet.has(c._compKey));
   recomputeMappedComps();
   selectedMapCompKeys.clear();
   applyFilters();
-};
-window.restoreDeletedMapComps=function(){
-  const deleted=loadDeletedKeys();
-  if(!deleted.length){alert('No deleted comps to restore.');return;}
-  if(!confirm('Restore '+deleted.length.toLocaleString()+' deleted comp'+(deleted.length===1?'':'s')+'?')) return;
-  saveDeletedKeys([]);
-  location.reload();
 };
 window.createMapSelectedReport=function(){
   const selectedComps=getMapSelectedComps();
