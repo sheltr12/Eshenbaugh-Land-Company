@@ -550,7 +550,7 @@ function removeLocalDealByKey(key){const remaining=loadLocalDeals().filter((d,i)
 function deleteSelectedComps(){
   const keys=[...selectedCompKeys];
   if(!keys.length){alert('No comps selected. Tick the checkboxes for the comps you want to delete.');return;}
-  if(!confirm('Delete '+keys.length.toLocaleString()+' selected comp'+(keys.length===1?'':'s')+'?\n\nThis removes them from this browser.')) return;
+  if(!confirm('Delete '+keys.length.toLocaleString()+' selected comp'+(keys.length===1?'':'s')+'?\n\nThis removes them from this browser. (Admin mode also saves the deletion to GitHub for everyone.)')) return;
   const deleted=loadDeletedKeys(); keys.forEach(k=>{deleted.push(k); removeLocalDealByKey(k);}); saveDeletedKeys(deleted);
   const keySet=new Set(keys);
   allComps=allComps.filter(c=>!keySet.has(c._compKey));
@@ -625,7 +625,7 @@ async function addNewDealFromForm(){
   const localDeals = loadLocalDeals(); localDeals.push(comp); saveLocalDeals(localDeals);
   allComps.push(comp);
   populateFilters(); currentPage=1; applyFilters(); closeAddDealModal();
-  alert('Deal added in this browser. It will show on the map if latitude and longitude were entered.');
+  alert(window.ELC_ADMIN?'Deal added — saving to GitHub (Test-patch-84) for everyone…':'Deal added in this browser. It will show on the map if latitude and longitude were entered.');
 }
 
 function updateSelectedCount(){const el=document.getElementById('selected-count'); if(el) el.textContent=`${selectedCompKeys.size.toLocaleString()} selected`;}
@@ -905,7 +905,7 @@ function getCompByKey(key){return allComps.find(c=>c._compKey===key);}
 function fillDealFormFromComp(c){setFormValue('new-property-name',c.property_name);setFormValue('new-property-type',c.property_type||'Land');setFormValue('new-transaction-type',c.transaction_type||'Sale');setFormValue('new-sale-date',c.sale_date_iso||'');setFormValue('new-elc-deal',c.elc_deal==='Yes'?'Yes':'No');setFormValue('new-address',c.address);setFormValue('new-price',c.price);setFormValue('new-acreage',c.acreage);setFormValue('new-unit-count',c.unit_count);setFormValue('new-lat',c.lat);setFormValue('new-lon',c.lon);setFormValue('new-grantee',c.grantee);setFormValue('new-grantor',c.grantor);setFormValue('new-zoning',c.zoning);setFormValue('new-land-use',c.land_use);setFormValue('new-source',c.source||'Manual Entry');setFormValue('new-aerial-url',c.aerial);setFormValue('new-deed-url',c.deed_url);setFormValue('new-comments',c.comments);}
 function openEditDealModal(key){const comp=getCompByKey(key); if(!comp){alert('Could not find that comp.');return;} editingCompKey=key; const form=document.getElementById('add-deal-form'); if(form)form.reset(); fillDealFormFromComp(comp); document.getElementById('add-deal-title').textContent='Edit Deal Fields'; const btn=document.querySelector('#add-deal-form button[type="submit"]'); if(btn)btn.textContent='Save Changes'; document.getElementById('add-deal-modal').classList.add('open');}
 async function saveDealFromForm(){ if(editingCompKey) return await saveEditedDealFromForm(); return await addNewDealFromForm();}
-async function saveEditedDealFromForm(){const existing=getCompByKey(editingCompKey); if(!existing){alert('Could not find that comp.');return;} const aerial=await getAerialFromForm(); const saleIso=document.getElementById('new-sale-date').value||null; let updated={...existing,property_name:document.getElementById('new-property-name')?.value.trim()||null,address:document.getElementById('new-address').value.trim()||null,sale_date:isoToDisplay(saleIso),sale_date_iso:saleIso,price:toNumOrNull(document.getElementById('new-price').value),acreage:toNumOrNull(document.getElementById('new-acreage').value),transaction_type:document.getElementById('new-transaction-type').value.trim()||'Sale',grantor:document.getElementById('new-grantor').value.trim()||null,grantee:document.getElementById('new-grantee').value.trim()||null,property_type:document.getElementById('new-property-type').value||'Land',zoning:document.getElementById('new-zoning').value.trim()||null,land_use:document.getElementById('new-land-use').value.trim()||null,source:document.getElementById('new-source').value.trim()||'Manual Entry',comments:document.getElementById('new-comments').value.trim()||null,lat:toNumOrNull(document.getElementById('new-lat').value),lon:toNumOrNull(document.getElementById('new-lon').value),deed_url:document.getElementById('new-deed-url').value.trim()||null,aerial:aerial||existing.aerial||null,unit_count:toNumOrNull(document.getElementById('new-unit-count').value),elc_deal:document.getElementById('new-elc-deal').value==='Yes'?'Yes':null,edited_locally:true}; updated=deriveCompFields(updated); saveCompEdit(updated); allComps=allComps.map(c=>c._compKey===editingCompKey?updated:c); editingCompKey=null; closeAddDealModal(); populateFilters(); currentPage=1; applyFilters(); alert('Changes saved in this browser.');}
+async function saveEditedDealFromForm(){const existing=getCompByKey(editingCompKey); if(!existing){alert('Could not find that comp.');return;} const aerial=await getAerialFromForm(); const saleIso=document.getElementById('new-sale-date').value||null; let updated={...existing,property_name:document.getElementById('new-property-name')?.value.trim()||null,address:document.getElementById('new-address').value.trim()||null,sale_date:isoToDisplay(saleIso),sale_date_iso:saleIso,price:toNumOrNull(document.getElementById('new-price').value),acreage:toNumOrNull(document.getElementById('new-acreage').value),transaction_type:document.getElementById('new-transaction-type').value.trim()||'Sale',grantor:document.getElementById('new-grantor').value.trim()||null,grantee:document.getElementById('new-grantee').value.trim()||null,property_type:document.getElementById('new-property-type').value||'Land',zoning:document.getElementById('new-zoning').value.trim()||null,land_use:document.getElementById('new-land-use').value.trim()||null,source:document.getElementById('new-source').value.trim()||'Manual Entry',comments:document.getElementById('new-comments').value.trim()||null,lat:toNumOrNull(document.getElementById('new-lat').value),lon:toNumOrNull(document.getElementById('new-lon').value),deed_url:document.getElementById('new-deed-url').value.trim()||null,aerial:aerial||existing.aerial||null,unit_count:toNumOrNull(document.getElementById('new-unit-count').value),elc_deal:document.getElementById('new-elc-deal').value==='Yes'?'Yes':null,edited_locally:true}; updated=deriveCompFields(updated); saveCompEdit(updated); allComps=allComps.map(c=>c._compKey===editingCompKey?updated:c); editingCompKey=null; closeAddDealModal(); populateFilters(); currentPage=1; applyFilters(); alert(window.ELC_ADMIN?'Changes saved — saving to GitHub (Test-patch-84) for everyone…':'Changes saved in this browser.');}
 function openImportModal(){document.getElementById('import-form').reset();document.getElementById('import-preview').textContent='No file selected yet.';document.getElementById('import-default-source').value='Imported Excel';document.getElementById('import-modal').classList.add('open');}
 function closeImportModal(){document.getElementById('import-modal').classList.remove('open');}
 function normalizeHeader(h){return String(h||'').toLowerCase().replace(/[^a-z0-9]+/g,'').trim();}
@@ -915,7 +915,7 @@ function importDateToISO(v){if(!hasValue(v))return null; if(typeof v==='number'&
 function importAddress(row){const street=String(getImportVal(row,'address')||'').trim();const city=String(getImportVal(row,'city')||'').trim();const state=String(getImportVal(row,'state')||'').trim();const zip=String(getImportVal(row,'zip')||'').trim();const place=[city,state].filter(hasValue).join(', ')+(zip?' '+zip:'');return [street,place.trim()].filter(hasValue).join(', ')||null;}
 function importTransactionType(row){const raw=String(getImportVal(row,'transaction_type')||'').trim().toLowerCase();if(raw==='closed'||raw==='sold')return'Sale';if(raw)return'Listing';return'Sale';}
 function makeImportedComp(row,idx){const saleIso=importDateToISO(getImportVal(row,'sale_date')); const units=toNumOrNull(getImportVal(row,'unit_count')); let c={num:Math.max(0,...allComps.map(c=>Number(c.num)||0))+idx,property_name:String(getImportVal(row,'property_name')||'').trim()||null,address:importAddress(row),sale_date:isoToDisplay(saleIso),sale_date_iso:saleIso,price:toNumOrNull(getImportVal(row,'price')),acreage:toNumOrNull(getImportVal(row,'acreage')),transaction_type:importTransactionType(row),property_type:String(units?'Multifamily':getImportVal(row,'property_type')||document.getElementById('import-default-property-type').value||'Land').trim(),source:String(getImportVal(row,'source')||document.getElementById('import-default-source').value||'Imported Excel').trim(),comments:String(getImportVal(row,'comments')||'').trim()||null,lat:toNumOrNull(getImportVal(row,'lat')),lon:toNumOrNull(getImportVal(row,'lon')),aerial:String(getImportVal(row,'aerial')||'').trim()||null,unit_count:units,buildout_id:String(getImportVal(row,'buildout_id')||'').trim()||null,buildout_status:String(getImportVal(row,'transaction_type')||'').trim()||null,building_size_sf:toNumOrNull(getImportVal(row,'building_size_sf')),building_class:String(getImportVal(row,'building_class')||'').trim()||null,year_built:toNumOrNull(getImportVal(row,'year_built')),cap_rate:toNumOrNull(getImportVal(row,'cap_rate')),noi:toNumOrNull(getImportVal(row,'noi')),occupancy_percent:toNumOrNull(getImportVal(row,'occupancy_percent')),days_on_market:toNumOrNull(getImportVal(row,'days_on_market')),grm:toNumOrNull(getImportVal(row,'grm')),rev_par:toNumOrNull(getImportVal(row,'rev_par')),adr:toNumOrNull(getImportVal(row,'adr')),date_added:new Date().toISOString().slice(0,10),manual_entry:true,_manual_id:'imp-'+Date.now()+'-'+idx}; return deriveCompFields(c);}
-async function importDealsFromFile(){const file=document.getElementById('import-file').files[0]; if(!file){alert('Choose an Excel or CSV file first.');return;} if(!window.XLSX){alert('Excel importer did not load. Refresh and try again.');return;} const buf=await file.arrayBuffer(); const wb=XLSX.read(buf,{type:'array'}); const ws=wb.Sheets[wb.SheetNames[0]]; const rows=XLSX.utils.sheet_to_json(ws,{defval:null}); const imported=rows.filter(r=>Object.values(r).some(hasValue)).map((r,i)=>makeImportedComp(r,i+1)).filter(c=>hasValue(c.address)||hasValue(c.property_name)); if(!imported.length){alert('No usable rows found.');return;} const localDeals=loadLocalDeals(); saveLocalDeals([...localDeals,...imported]); allComps=applyLocalEdits([...allComps,...imported]); closeImportModal(); populateFilters(); currentPage=1; applyFilters(); alert(`${imported.length.toLocaleString()} deals imported in this browser.`);}
+async function importDealsFromFile(){const file=document.getElementById('import-file').files[0]; if(!file){alert('Choose an Excel or CSV file first.');return;} if(!window.XLSX){alert('Excel importer did not load. Refresh and try again.');return;} const buf=await file.arrayBuffer(); const wb=XLSX.read(buf,{type:'array'}); const ws=wb.Sheets[wb.SheetNames[0]]; const rows=XLSX.utils.sheet_to_json(ws,{defval:null}); const imported=rows.filter(r=>Object.values(r).some(hasValue)).map((r,i)=>makeImportedComp(r,i+1)).filter(c=>hasValue(c.address)||hasValue(c.property_name)); if(!imported.length){alert('No usable rows found.');return;} const localDeals=loadLocalDeals(); saveLocalDeals([...localDeals,...imported]); allComps=applyLocalEdits([...allComps,...imported]); closeImportModal(); populateFilters(); currentPage=1; applyFilters(); alert(window.ELC_ADMIN?`${imported.length.toLocaleString()} deals imported — saving to GitHub (Test-patch-84)…`:`${imported.length.toLocaleString()} deals imported in this browser.`);}
 document.addEventListener('change',function(e){if(e.target&&e.target.id==='import-file'){const f=e.target.files[0];document.getElementById('import-preview').textContent=f?`Ready to import: ${f.name}`:'No file selected yet.';}});
 
 function resetFilters(){
@@ -924,6 +924,193 @@ function resetFilters(){
   currentPage=1;toggleUnitPriceFilters();applyFilters();
 }
 loadReport();
+
+/* ===================================================================== */
+/* GitHub Sync (Test-patch-84) — makes Add / Edit / Delete persist for   */
+/* everyone by committing comps.json back to the repo. Added on top of    */
+/* the existing app; the original localStorage logic is left intact.      */
+/* ===================================================================== */
+(function () {
+  const GH = {
+    owner: "sheltr12",
+    repo: "Eshenbaugh-Land-Company",
+    path: "comps.json",
+    branch: "Test-patch-84",
+    tokenKey: "elc_gh_token_v1"
+  };
+  const apiUrl = p => `https://api.github.com/repos/${GH.owner}/${GH.repo}/${p}`;
+  const token = () => localStorage.getItem(GH.tokenKey) || "";
+  const ghHeaders = () => ({
+    "Authorization": "Bearer " + token(),
+    "Accept": "application/vnd.github+json",
+    "X-GitHub-Api-Version": "2022-11-28"
+  });
+  const toB64 = s => btoa(unescape(encodeURIComponent(s)));
+  const fromB64 = s => decodeURIComponent(escape(atob(String(s).replace(/\s/g, ""))));
+
+  window.ELC_ADMIN = false;
+
+  /* ---------- UI: small admin bar injected at bottom-right ---------- */
+  const bar = document.createElement("div");
+  bar.style.cssText =
+    "position:fixed;right:14px;bottom:14px;z-index:99999;font-family:'Segoe UI',Arial,sans-serif;";
+  bar.innerHTML = `
+    <button id="elc-admin-toggle" style="background:#000;color:#fff;border:1px solid #ef1f25;
+      border-radius:8px;padding:8px 12px;font-size:12px;font-weight:800;cursor:pointer;box-shadow:0 4px 14px rgba(0,0,0,.25)">
+      Admin</button>
+    <div id="elc-admin-panel" style="display:none;width:300px;margin-top:8px;background:#0f172a;color:#e2e8f0;
+      border-radius:10px;padding:14px;box-shadow:0 10px 30px rgba(0,0,0,.35)">
+      <div style="font-size:13px;font-weight:800;margin-bottom:8px">Admin access</div>
+      <input id="elc-token" type="password" placeholder="Paste GitHub token"
+        autocomplete="off" style="width:100%;box-sizing:border-box;padding:8px;border-radius:6px;
+        border:1px solid #334155;background:#1e293b;color:#e2e8f0;font-size:12px">
+      <div style="margin-top:8px;display:flex;gap:6px">
+        <button id="elc-unlock" style="flex:1;background:#ef1f25;color:#fff;border:none;border-radius:6px;
+          padding:8px;font-weight:700;font-size:12px;cursor:pointer">Unlock</button>
+        <button id="elc-signout" style="background:transparent;color:#94a3b8;border:1px solid #334155;
+          border-radius:6px;padding:8px;font-size:12px;cursor:pointer">Sign out</button>
+      </div>
+      <div style="font-size:10px;color:#94a3b8;margin-top:8px;line-height:1.5">
+        Token stays in this browser only. Needs <b>Contents: Read &amp; write</b> on this repo.
+        Changes save to <b>${GH.branch}</b>.</div>
+      <div id="elc-status" style="font-size:11px;margin-top:8px;min-height:14px"></div>
+    </div>`;
+  document.body.appendChild(bar);
+
+  const $ = id => document.getElementById(id);
+  function setStatus(msg, kind) {
+    const el = $("elc-status");
+    if (!el) return;
+    el.textContent = msg || "";
+    el.style.color = kind === "ok" ? "#4ade80" : kind === "err" ? "#f87171"
+                   : kind === "working" ? "#fbbf24" : "#94a3b8";
+  }
+  function setToggleState() {
+    const t = $("elc-admin-toggle");
+    if (!t) return;
+    t.textContent = window.ELC_ADMIN ? "Admin: ON" : "Admin";
+    t.style.borderColor = window.ELC_ADMIN ? "#4ade80" : "#ef1f25";
+  }
+
+  $("elc-admin-toggle").addEventListener("click", () => {
+    const p = $("elc-admin-panel");
+    p.style.display = p.style.display === "block" ? "none" : "block";
+  });
+  $("elc-unlock").addEventListener("click", () => {
+    const t = $("elc-token").value.trim();
+    if (t) unlock(t);
+  });
+  $("elc-signout").addEventListener("click", signOut);
+
+  /* ---------- GitHub read/write ---------- */
+  async function pull() {
+    const r = await fetch(apiUrl(`contents/${GH.path}?ref=${GH.branch}&t=${Date.now()}`),
+      { headers: ghHeaders(), cache: "no-store" });
+    if (!r.ok) throw new Error("GitHub " + r.status);
+    const f = await r.json();
+    return { sha: f.sha, json: JSON.parse(fromB64(f.content)) };
+  }
+
+  // Rebuild the in-memory list from a repo copy, preserving any pending
+  // local changes (mirrors the app's own loadReport merge order).
+  function rebuildFrom(json) {
+    baseMeta = json.meta || baseMeta || {};
+    const baseComps = mergeAerialsFromBackup(json.comps || [], []);
+    const baseKeySet = new Set(baseComps.flatMap(compMatchKeys));
+    const savedDeals = loadLocalDeals().map(normalizeComp)
+      .filter(c => !isDuplicateLocalDeal(c, baseKeySet));
+    let comps = applyLocalEdits([...baseComps, ...savedDeals]);
+    const deleted = new Set(loadDeletedKeys());
+    allComps = comps.filter(c => !deleted.has(c._compKey));
+    if (typeof populateFilters === "function") populateFilters();
+    if (typeof applyFilters === "function") applyFilters();
+  }
+
+  async function unlock(tok) {
+    localStorage.setItem(GH.tokenKey, tok);
+    setStatus("Verifying token…", "working");
+    try {
+      const { json } = await pull();
+      rebuildFrom(json);
+      window.ELC_ADMIN = true;
+      setToggleState();
+      setStatus("Admin mode on. Add / Edit / Delete now save to " + GH.branch + ".", "ok");
+    } catch (e) {
+      window.ELC_ADMIN = false;
+      setToggleState();
+      setStatus("Could not verify token: " + e.message, "err");
+    }
+  }
+
+  function signOut() {
+    localStorage.removeItem(GH.tokenKey);
+    window.ELC_ADMIN = false;
+    setToggleState();
+    const ti = $("elc-token"); if (ti) ti.value = "";
+    setStatus("Signed out of admin mode.", "ok");
+  }
+
+  function exportComps() {
+    return (allComps || []).map(c => {
+      const o = { ...c };
+      delete o._compKey;
+      delete o.edited_locally;
+      return o;
+    });
+  }
+
+  async function commit(message) {
+    const { sha } = await pull(); // fresh sha each time
+    const payload = { meta: baseMeta || {}, comps: exportComps() };
+    const body = {
+      message: message,
+      content: toB64(JSON.stringify(payload, null, 2)),
+      sha: sha,
+      branch: GH.branch
+    };
+    const r = await fetch(apiUrl(`contents/${GH.path}`),
+      { method: "PUT", headers: ghHeaders(), body: JSON.stringify(body) });
+    if (!r.ok) throw new Error("GitHub " + r.status + ": " + (await r.text()).slice(0, 120));
+  }
+
+  // Called by the wrappers after a mutation. Commits the current list and,
+  // on success, clears the localStorage deltas (now baked into the repo).
+  window.ELC_SYNC = async function (message) {
+    if (!window.ELC_ADMIN || !token()) return;
+    try {
+      setStatus("Saving to GitHub…", "working");
+      await commit(message);
+      localStorage.removeItem(LOCAL_DEALS_KEY);
+      localStorage.removeItem(LOCAL_EDITS_KEY);
+      localStorage.removeItem(LOCAL_DELETED_KEY);
+      setStatus("Saved — " + GH.branch + " updated for everyone.", "ok");
+    } catch (e) {
+      setStatus("Save FAILED: " + e.message + " — change is still in this browser only.", "err");
+    }
+  };
+
+  /* ---------- Wrap the existing mutations so they sync after running ---------- */
+  const signature = () => JSON.stringify(exportComps());
+  function wrap(name, message) {
+    const orig = window[name];
+    if (typeof orig !== "function") return;
+    window[name] = async function () {
+      const before = signature();
+      const result = await orig.apply(this, arguments);
+      if (window.ELC_ADMIN && token() && signature() !== before) {
+        try { await window.ELC_SYNC(message); } catch (e) {}
+      }
+      return result;
+    };
+  }
+  wrap("deleteSelectedComps", "Delete comp(s) via web app");
+  wrap("addNewDealFromForm", "Add deal via web app");
+  wrap("saveEditedDealFromForm", "Edit deal via web app");
+  wrap("importDealsFromFile", "Import deals via web app");
+
+  setToggleState();
+  if (token()) unlock(token()); // auto-unlock if a token is already saved
+})();
 </script>
 </body>
 </html>
