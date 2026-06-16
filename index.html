@@ -926,31 +926,19 @@ function resetFilters(){
 loadReport();
 
 /* ===================================================================== */
-/* GitHub Sync (Test-patch-84) — makes Add / Edit / Delete persist for   */
-/* everyone by committing comps.json back to the repo. Added on top of    */
-/* the existing app; the original localStorage logic is left intact.      */
+/* Admin via backend service (no GitHub token in the browser).           */
+/* Unlock with a password + the service URL; both are remembered in this  */
+/* browser so you stay admin. Delete / Add / Edit POST to the service,    */
+/* which commits comps.json to Test-patch-84 for everyone.                */
 /* ===================================================================== */
 (function () {
-  const GH = {
-    owner: "sheltr12",
-    repo: "Eshenbaugh-Land-Company",
-    path: "comps.json",
-    branch: "Test-patch-84",
-    tokenKey: "elc_gh_token_v1"
-  };
-  const apiUrl = p => `https://api.github.com/repos/${GH.owner}/${GH.repo}/${p}`;
-  const token = () => localStorage.getItem(GH.tokenKey) || "";
-  const ghHeaders = () => ({
-    "Authorization": "Bearer " + token(),
-    "Accept": "application/vnd.github+json",
-    "X-GitHub-Api-Version": "2022-11-28"
-  });
-  const toB64 = s => btoa(unescape(encodeURIComponent(s)));
-  const fromB64 = s => decodeURIComponent(escape(atob(String(s).replace(/\s/g, ""))));
+  const CFG = { urlKey: "elc_admin_url_v1", pwKey: "elc_admin_pw_v1" };
+  const getUrl = () => localStorage.getItem(CFG.urlKey) || "";
+  const getPw  = () => localStorage.getItem(CFG.pwKey) || "";
 
   window.ELC_ADMIN = false;
 
-  /* ---------- UI: small admin bar injected at bottom-right ---------- */
+  /* ---------- admin bar (injected, no HTML edits) ---------- */
   const bar = document.createElement("div");
   bar.style.cssText =
     "position:fixed;right:14px;bottom:14px;z-index:99999;font-family:'Segoe UI',Arial,sans-serif;";
@@ -961,7 +949,10 @@ loadReport();
     <div id="elc-admin-panel" style="display:none;width:300px;margin-top:8px;background:#0f172a;color:#e2e8f0;
       border-radius:10px;padding:14px;box-shadow:0 10px 30px rgba(0,0,0,.35)">
       <div style="font-size:13px;font-weight:800;margin-bottom:8px">Admin access</div>
-      <input id="elc-token" type="password" placeholder="Paste GitHub token"
+      <input id="elc-url" type="text" placeholder="Admin service URL (https://...workers.dev)"
+        autocomplete="off" style="width:100%;box-sizing:border-box;padding:8px;border-radius:6px;
+        border:1px solid #334155;background:#1e293b;color:#e2e8f0;font-size:12px;margin-bottom:6px">
+      <input id="elc-pw" type="password" placeholder="Admin password"
         autocomplete="off" style="width:100%;box-sizing:border-box;padding:8px;border-radius:6px;
         border:1px solid #334155;background:#1e293b;color:#e2e8f0;font-size:12px">
       <div style="margin-top:8px;display:flex;gap:6px">
@@ -971,23 +962,21 @@ loadReport();
           border-radius:6px;padding:8px;font-size:12px;cursor:pointer">Sign out</button>
       </div>
       <div style="font-size:10px;color:#94a3b8;margin-top:8px;line-height:1.5">
-        Token stays in this browser only. Needs <b>Contents: Read &amp; write</b> on this repo.
-        Changes save to <b>${GH.branch}</b>.</div>
+        Enter these once; this browser remembers them. The GitHub token stays on
+        the service, never here. Changes save to <b>${"Test-patch-84"}</b>.</div>
       <div id="elc-status" style="font-size:11px;margin-top:8px;min-height:14px"></div>
     </div>`;
   document.body.appendChild(bar);
 
   const $ = id => document.getElementById(id);
   function setStatus(msg, kind) {
-    const el = $("elc-status");
-    if (!el) return;
+    const el = $("elc-status"); if (!el) return;
     el.textContent = msg || "";
     el.style.color = kind === "ok" ? "#4ade80" : kind === "err" ? "#f87171"
                    : kind === "working" ? "#fbbf24" : "#94a3b8";
   }
   function setToggleState() {
-    const t = $("elc-admin-toggle");
-    if (!t) return;
+    const t = $("elc-admin-toggle"); if (!t) return;
     t.textContent = window.ELC_ADMIN ? "Admin: ON" : "Admin";
     t.style.borderColor = window.ELC_ADMIN ? "#4ade80" : "#ef1f25";
   }
@@ -995,24 +984,32 @@ loadReport();
   $("elc-admin-toggle").addEventListener("click", () => {
     const p = $("elc-admin-panel");
     p.style.display = p.style.display === "block" ? "none" : "block";
+    if (getUrl()) $("elc-url").value = getUrl();
   });
   $("elc-unlock").addEventListener("click", () => {
-    const t = $("elc-token").value.trim();
-    if (t) unlock(t);
+    const url = $("elc-url").value.trim();
+    const pw = $("elc-pw").value;
+    if (url && pw) unlock(url, pw);
   });
   $("elc-signout").addEventListener("click", signOut);
 
-  /* ---------- GitHub read/write ---------- */
-  async function pull() {
-    const r = await fetch(apiUrl(`contents/${GH.path}?ref=${GH.branch}&t=${Date.now()}`),
-      { headers: ghHeaders(), cache: "no-store" });
-    if (!r.ok) throw new Error("GitHub " + r.status);
-    const f = await r.json();
-    return { sha: f.sha, json: JSON.parse(fromB64(f.content)) };
+  /* ---------- talk to the service ---------- */
+  async function api(action, extra) {
+    const url = getUrl();
+    if (!url) throw new Error("No service URL set");
+    const res = await fetch(url, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ action, password: getPw(), ...(extra || {}) })
+    });
+    if (!res.ok) {
+      let t = ""; try { t = await res.text(); } catch (e) {}
+      throw new Error("Service " + res.status + (t ? ": " + t.slice(0, 120) : ""));
+    }
+    return res.json();
   }
 
-  // Rebuild the in-memory list from a repo copy, preserving any pending
-  // local changes (mirrors the app's own loadReport merge order).
+  // mirror the app's loadReport merge order, but using a given repo copy
   function rebuildFrom(json) {
     baseMeta = json.meta || baseMeta || {};
     const baseComps = mergeAerialsFromBackup(json.comps || [], []);
@@ -1026,70 +1023,53 @@ loadReport();
     if (typeof applyFilters === "function") applyFilters();
   }
 
-  async function unlock(tok) {
-    localStorage.setItem(GH.tokenKey, tok);
-    setStatus("Verifying token…", "working");
+  async function unlock(url, pw) {
+    localStorage.setItem(CFG.urlKey, url);
+    localStorage.setItem(CFG.pwKey, pw);
+    setStatus("Verifying…", "working");
     try {
-      const { json } = await pull();
-      rebuildFrom(json);
-      window.ELC_ADMIN = true;
-      setToggleState();
-      setStatus("Admin mode on. Add / Edit / Delete now save to " + GH.branch + ".", "ok");
+      const r = await api("verify", {});
+      if (!r || r.ok !== true) throw new Error("Wrong password");
+      try {
+        const data = await (await fetch("./comps.json?t=" + Date.now(), { cache: "no-store" })).json();
+        rebuildFrom(data);
+      } catch (e) {}
+      window.ELC_ADMIN = true; setToggleState();
+      setStatus("Admin mode on. Add / Edit / Delete now save for everyone.", "ok");
     } catch (e) {
-      window.ELC_ADMIN = false;
-      setToggleState();
-      setStatus("Could not verify token: " + e.message, "err");
+      window.ELC_ADMIN = false; setToggleState();
+      setStatus("Could not unlock: " + e.message, "err");
     }
   }
 
   function signOut() {
-    localStorage.removeItem(GH.tokenKey);
-    window.ELC_ADMIN = false;
-    setToggleState();
-    const ti = $("elc-token"); if (ti) ti.value = "";
+    localStorage.removeItem(CFG.pwKey); // keep URL for convenience
+    window.ELC_ADMIN = false; setToggleState();
+    const pwi = $("elc-pw"); if (pwi) pwi.value = "";
     setStatus("Signed out of admin mode.", "ok");
   }
 
   function exportComps() {
     return (allComps || []).map(c => {
-      const o = { ...c };
-      delete o._compKey;
-      delete o.edited_locally;
-      return o;
+      const o = { ...c }; delete o._compKey; delete o.edited_locally; return o;
     });
   }
 
-  async function commit(message) {
-    const { sha } = await pull(); // fresh sha each time
-    const payload = { meta: baseMeta || {}, comps: exportComps() };
-    const body = {
-      message: message,
-      content: toB64(JSON.stringify(payload, null, 2)),
-      sha: sha,
-      branch: GH.branch
-    };
-    const r = await fetch(apiUrl(`contents/${GH.path}`),
-      { method: "PUT", headers: ghHeaders(), body: JSON.stringify(body) });
-    if (!r.ok) throw new Error("GitHub " + r.status + ": " + (await r.text()).slice(0, 120));
-  }
-
-  // Called by the wrappers after a mutation. Commits the current list and,
-  // on success, clears the localStorage deltas (now baked into the repo).
   window.ELC_SYNC = async function (message) {
-    if (!window.ELC_ADMIN || !token()) return;
+    if (!window.ELC_ADMIN || !getUrl() || !getPw()) return;
     try {
-      setStatus("Saving to GitHub…", "working");
-      await commit(message);
+      setStatus("Saving…", "working");
+      await api("commit", { message: message, payload: { meta: baseMeta || {}, comps: exportComps() } });
       localStorage.removeItem(LOCAL_DEALS_KEY);
       localStorage.removeItem(LOCAL_EDITS_KEY);
       localStorage.removeItem(LOCAL_DELETED_KEY);
-      setStatus("Saved — " + GH.branch + " updated for everyone.", "ok");
+      setStatus("Saved — live for everyone within about a minute.", "ok");
     } catch (e) {
       setStatus("Save FAILED: " + e.message + " — change is still in this browser only.", "err");
     }
   };
 
-  /* ---------- Wrap the existing mutations so they sync after running ---------- */
+  /* ---------- wrap mutations so they sync after running ---------- */
   const signature = () => JSON.stringify(exportComps());
   function wrap(name, message) {
     const orig = window[name];
@@ -1097,7 +1077,7 @@ loadReport();
     window[name] = async function () {
       const before = signature();
       const result = await orig.apply(this, arguments);
-      if (window.ELC_ADMIN && token() && signature() !== before) {
+      if (window.ELC_ADMIN && getUrl() && getPw() && signature() !== before) {
         try { await window.ELC_SYNC(message); } catch (e) {}
       }
       return result;
@@ -1109,7 +1089,7 @@ loadReport();
   wrap("importDealsFromFile", "Import deals via web app");
 
   setToggleState();
-  if (token()) unlock(token()); // auto-unlock if a token is already saved
+  if (getUrl() && getPw()) unlock(getUrl(), getPw()); // auto-unlock if remembered
 })();
 </script>
 </body>
