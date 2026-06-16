@@ -192,6 +192,7 @@ tr.row-selected td{background:#fff1f1!important}
       <label>Source<select id="filter-source"><option value="">All</option></select></label>
       <label>ELC Deal<select id="filter-elc"><option value="">All</option><option value="yes">Yes</option><option value="no">No</option></select></label>
       <label>Transaction Type<select id="filter-transaction"><option value="">All</option></select></label>
+      <label>County<select id="filter-county"><option value="">All</option></select></label>
       <label>Aerial<select id="filter-aerial"><option value="">All</option><option value="yes">Has Aerial</option><option value="no">No Aerial</option></select></label>
       <label>Min Price<input type="number" id="min-price" placeholder="500000"></label>
       <label>Max Price<input type="number" id="max-price" placeholder="5000000"></label>
@@ -352,17 +353,18 @@ function resetSelectOptions(id, firstLabel='All'){
   sel.innerHTML = id === 'field-filter' ? '<option value="">Select field</option>' : `<option value="">${firstLabel}</option>`;
 }
 function populateFilters(){
-  resetSelectOptions('field-filter'); resetSelectOptions('filter-type'); resetSelectOptions('filter-source'); resetSelectOptions('filter-transaction');
+  resetSelectOptions('field-filter'); resetSelectOptions('filter-type'); resetSelectOptions('filter-source'); resetSelectOptions('filter-transaction'); resetSelectOptions('filter-county');
   allFields().forEach(f=>{
     const opt=document.createElement('option'); opt.value=f; opt.textContent=FIELD_LABELS[f] || f; document.getElementById('field-filter').appendChild(opt);
   });
   populateSelect('filter-type', allComps.map(c=>c.property_type));
   populateSelect('filter-source', allComps.map(c=>c.source));
   populateSelect('filter-transaction', allComps.map(c=>c.transaction_type));
+  populateSelect('filter-county', allComps.map(c=>c.county));
   toggleUnitPriceFilters();
 }
 function addFilterListeners(){
-  ['search','field-filter','field-value','sale-date-from','sale-date-to','filter-type','filter-source','filter-elc','filter-transaction','filter-aerial','min-price','max-price','min-acres','max-acres','min-ppa','max-ppa','min-units','max-units','min-ppu','max-ppu'].forEach(id=>{
+  ['search','field-filter','field-value','sale-date-from','sale-date-to','filter-type','filter-source','filter-elc','filter-transaction','filter-aerial','filter-county','min-price','max-price','min-acres','max-acres','min-ppa','max-ppa','min-units','max-units','min-ppu','max-ppu'].forEach(id=>{
     document.getElementById(id).addEventListener('input',()=>{if(id==='filter-type') toggleUnitPriceFilters(); currentPage=1;applyFilters();});
   });
 }
@@ -383,6 +385,7 @@ function applyFilters(){
   const type=document.getElementById('filter-type').value;
   const source=document.getElementById('filter-source').value;
   const trans=document.getElementById('filter-transaction').value;
+  const county=document.getElementById('filter-county').value;
   const elc=document.getElementById('filter-elc').value;
   const aerial=document.getElementById('filter-aerial').value;
   const dateFromVal=document.getElementById('sale-date-from').value;
@@ -403,6 +406,7 @@ function applyFilters(){
     if(type && c.property_type!==type) return false;
     if(source && c.source!==source) return false;
     if(trans && c.transaction_type!==trans) return false;
+    if(county && c.county!==county) return false;
     if(elc==='yes' && c.elc_deal!=='Yes') return false;
     if(elc==='no' && c.elc_deal==='Yes') return false;
     if(aerial==='yes' && !hasValue(getAerialValue(c))) return false;
@@ -921,7 +925,7 @@ document.addEventListener('change',function(e){if(e.target&&e.target.id==='impor
 
 function resetFilters(){
   ['search','field-value','sale-date-from','sale-date-to','min-price','max-price','min-acres','max-acres','min-ppa','max-ppa','min-units','max-units','min-ppu','max-ppu'].forEach(id=>document.getElementById(id).value='');
-  ['field-filter','filter-type','filter-source','filter-elc','filter-transaction','filter-aerial'].forEach(id=>document.getElementById(id).value='');
+  ['field-filter','filter-type','filter-source','filter-elc','filter-transaction','filter-aerial','filter-county'].forEach(id=>document.getElementById(id).value='');
   currentPage=1;toggleUnitPriceFilters();applyFilters();
 }
 loadReport();
