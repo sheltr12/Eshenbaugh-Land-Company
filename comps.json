@@ -120655,7 +120655,7 @@
       "num": 3814,
       "parcel_id": "17-25-19-0040-00000-0020",
       "parcel_raw_id": "17-25-19-0040-00000-0020",
-      "address": "Outlaw Ridge Lots",
+      "address": "Outlaw Way",
       "sale_date": "May 07 2026",
       "price": 525000,
       "acreage": 4.2,
@@ -120679,7 +120679,7 @@
       "unit_count": null,
       "price_per_unit": null,
       "elc_deal": "Yes",
-      "property_name": null,
+      "property_name": "Outlaw Ridge Lots",
       "date_added": "2026-05-19",
       "geocode_status": "pasco_pa_arcgis_parcel_centroid",
       "geocode_source": "Pasco County PA ArcGIS parcel layer"
