@@ -118,6 +118,7 @@ body.pin-editing #viewDiv{cursor:crosshair}
 .sidebar-filter-toggle button:hover{background:rgba(255,255,255,.22)}
 body.sidebar-filters-hidden #filters{display:none}
 body.sidebar-filters-hidden #comp-list{border-top:1px solid var(--elc-line)}
+[onclick^="deleteSelectedMapComps"],.edit-btn,.pin-edit-btn{display:none !important;}
 
 
 .modal-backdrop{display:none;position:fixed;inset:0;background:rgba(0,0,0,.58);z-index:9999;padding:18px;overflow-y:auto}
@@ -224,6 +225,7 @@ body.sidebar-hidden #sidebar-show-tab{display:block;pointer-events:auto}
     <label>Sale Date From<input type="date" id="sale-date-from"></label>
     <label>Sale Date To<input type="date" id="sale-date-to"></label>
     <label>Property Type<select id="filter-type"><option value="">All</option></select></label>
+    <label>County<select id="filter-county"><option value="">All</option></select></label>
     <label>Source<select id="filter-source"><option value="">All</option></select></label>
     <label>ELC Deal<select id="filter-elc"><option value="">All</option><option value="yes">Yes</option><option value="no">No</option></select></label>
     <label>Aerial<select id="filter-aerial"><option value="">All</option><option value="yes">Has Aerial</option><option value="no">No Aerial</option></select></label>
@@ -381,6 +383,7 @@ function deriveCompFields(c){
   if(hasValue(c.price)&&hasValue(c.unit_count)&&Number(c.unit_count)!==0) c.price_per_unit=Math.round(Number(c.price)/Number(c.unit_count)); else c.price_per_unit=null;
   if(c.sale_date_iso&&!c.sale_date) c.sale_date=isoToDisplay(c.sale_date_iso);
   if(!hasValue(c.date_added)) c.date_added='2026-04-30';
+  if(!hasValue(c.county)) c.county='Polk';
   return c;
 }
 function loadLocalEdits(){ try{return JSON.parse(localStorage.getItem(LOCAL_EDITS_KEY)||'{}');}catch(e){return {};} }
@@ -540,7 +543,7 @@ function buildListCard(comp,idx){
 }
 function allFields(){return [...new Set(allComps.flatMap(c=>Object.keys(c)))].sort();}
 function populateSelect(id,values){ const sel=document.getElementById(id); [...new Set(values.filter(hasValue))].sort((a,b)=>String(a).localeCompare(String(b))).forEach(v=>{ const opt=document.createElement('option'); opt.value=v; opt.textContent=v; sel.appendChild(opt); }); }
-function populateFilters(){ allFields().forEach(f=>{ const opt=document.createElement('option'); opt.value=f; opt.textContent=FIELD_LABELS[f]||f; document.getElementById('field-filter').appendChild(opt); }); populateSelect('filter-type',allComps.map(c=>c.property_type)); populateSelect('filter-source',allComps.map(c=>c.source)); toggleUnitPriceFilters(); }
+function populateFilters(){ allFields().forEach(f=>{ const opt=document.createElement('option'); opt.value=f; opt.textContent=FIELD_LABELS[f]||f; document.getElementById('field-filter').appendChild(opt); }); populateSelect('filter-type',allComps.map(c=>c.property_type)); populateSelect('filter-source',allComps.map(c=>c.source)); populateSelect('filter-county',allComps.map(c=>c.county)); toggleUnitPriceFilters(); }
 function passesSearch(c,q){ if(!q) return true; return Object.values(c).filter(hasValue).join(' ').toLowerCase().includes(q); }
 function passesFieldFilter(c,field,val){ if(!field||!val) return true; if(!hasValue(c[field])) return false; return String(c[field]).toLowerCase().includes(val); }
 function sortMappedComps(comps){
@@ -560,6 +563,7 @@ function getFilteredMappedComps(){
   const q=document.getElementById('map-search').value.trim().toLowerCase();
   const field=document.getElementById('field-filter').value, fieldVal=document.getElementById('field-value').value.trim().toLowerCase();
   const type=document.getElementById('filter-type').value, source=document.getElementById('filter-source').value;
+  const cnty=document.getElementById('filter-county').value;
   const elc=document.getElementById('filter-elc').value, aerial=document.getElementById('filter-aerial').value;
   const dateFromVal=document.getElementById('sale-date-from').value, dateToVal=document.getElementById('sale-date-to').value;
   const dateFrom=dateFromVal?new Date(dateFromVal+'T00:00:00'):null, dateTo=dateToVal?new Date(dateToVal+'T23:59:59'):null;
@@ -571,6 +575,7 @@ function getFilteredMappedComps(){
   return sortMappedComps(allMappedComps.filter(c=>{
     if(type&&c.property_type!==type) return false;
     if(source&&c.source!==source) return false;
+    if(cnty&&c.county!==cnty) return false;
     if(elc==='yes'&&c.elc_deal!=='Yes') return false;
     if(elc==='no'&&c.elc_deal==='Yes') return false;
     if(aerial==='yes'&&!hasValue(getAerialValue(c))) return false;
@@ -641,7 +646,7 @@ function applyFilters(){
   });
   refreshSidebarList();
 }
-function addFilterListeners(){ ['map-search','field-filter','field-value','sale-date-from','sale-date-to','filter-type','filter-source','filter-elc','filter-aerial','min-price','max-price','min-acres','max-acres','min-ppa','max-ppa','min-units','max-units','min-ppu','max-ppu','map-sort-key','map-sort-dir'].forEach(id=>{ document.getElementById(id).addEventListener('input',()=>{if(id==='filter-type') toggleUnitPriceFilters(); applyFilters();}); }); }
+function addFilterListeners(){ ['map-search','field-filter','field-value','sale-date-from','sale-date-to','filter-type','filter-source','filter-county','filter-elc','filter-aerial','min-price','max-price','min-acres','max-acres','min-ppa','max-ppa','min-units','max-units','min-ppu','max-ppu','map-sort-key','map-sort-dir'].forEach(id=>{ document.getElementById(id).addEventListener('input',()=>{if(id==='filter-type') toggleUnitPriceFilters(); applyFilters();}); }); }
 window.startPinEdit=function(compKey){
   const comp=getCompByKey(compKey);
   if(!comp||!hasValue(comp.lat)||!hasValue(comp.lon)){alert('This comp does not have a mapped location to edit.');return;}
@@ -655,7 +660,7 @@ window.startPinEdit=function(compKey){
 window.cancelPinEdit=function(){ pinEditComp=null; document.body.classList.remove('pin-editing'); const banner=document.getElementById('pin-edit-banner'); if(banner) banner.style.display='none'; };
 document.addEventListener('click', function(event){ const btn=event.target.closest&&event.target.closest('.pin-edit-link, .pin-edit-btn'); if(!btn) return; const key=btn.getAttribute('data-pin-key'); if(!key) return; event.preventDefault(); event.stopPropagation(); if(view&&view.popup){view.popup.close();} window.startPinEdit(key); }, true);
 function savePinEdit(comp,lon,lat){ const overrides=loadPinOverrides(); overrides[comp._compKey]={lon:Number(lon),lat:Number(lat),updated:new Date().toISOString(),address:comp.address||null}; savePinOverrides(overrides); allComps=applyPinOverrides(applyLocalEdits(allComps)); allMappedComps=allComps.filter(c=>hasValue(c.lat)&&hasValue(c.lon)).map((c,i)=>({...c,_mappedIndex:i})); const key=comp._compKey; cancelPinEdit(); applyFilters(); const newIdx=sidebarMappedComps.findIndex(c=>c._compKey===key); if(newIdx>=0) setTimeout(()=>zoomToComp(newIdx),100); }
-window.resetFilters=function(){ ['map-search','field-value','sale-date-from','sale-date-to','min-price','max-price','min-acres','max-acres','min-ppa','max-ppa','min-units','max-units','min-ppu','max-ppu'].forEach(id=>document.getElementById(id).value=''); ['field-filter','filter-type','filter-source','filter-elc','filter-aerial'].forEach(id=>document.getElementById(id).value=''); document.getElementById('map-sort-key').value='date_added';document.getElementById('map-sort-dir').value='desc'; toggleUnitPriceFilters(); applyFilters(); };
+window.resetFilters=function(){ ['map-search','field-value','sale-date-from','sale-date-to','min-price','max-price','min-acres','max-acres','min-ppa','max-ppa','min-units','max-units','min-ppu','max-ppu'].forEach(id=>document.getElementById(id).value=''); ['field-filter','filter-type','filter-source','filter-county','filter-elc','filter-aerial'].forEach(id=>document.getElementById(id).value=''); document.getElementById('map-sort-key').value='date_added';document.getElementById('map-sort-dir').value='desc'; toggleUnitPriceFilters(); applyFilters(); };
 window.zoomToComp=function(idx){ 
   const comp=sidebarMappedComps[idx]; 
   if(!comp) return; 
