@@ -125,7 +125,9 @@
       "source": "Lake County Property Appraiser bulk sales (Sales_060126) + Lake County GIS parcel polygons",
       "note": "Newest qualifying recorded vacant-land sales (sale dates Apr 20-24 2026); PA bulk extract lacks a posted-date field so a strict Jun 10-17 posted window could not be isolated."
     },
-    "seminole_pa_vacant_land_import": "2026-06-18: +6 Seminole County PA vacant-land comps (#3900-3905)"
+    "seminole_pa_vacant_land_import": "2026-06-18: +6 Seminole County PA vacant-land comps (#3900-3905)",
+    "count": 3951,
+    "last_updated": "2026-06-22"
   },
   "comps": [
     {
@@ -133116,6 +133118,62 @@
       "book_page": "11439/1470",
       "elc_deal": null,
       "comments": "14 parcels under one deed (OR 11439/1470); acreage summed across all parcels. Secondary parcels: 30-25-19-0230-01900-0040, 30-25-19-0240-02900-0010, 30-25-19-0240-02900-0020, 30-25-19-0240-02900-0030, 30-25-19-0240-02900-0070, 30-25-19-0240-02900-0080, 30-25-19-0240-02900-0090, 30-25-19-0240-03000-0010 \u2026(+5 more)"
+    },
+    {
+      "parcel_id": "U-02-29-19-ZZZ-000001-43730.0",
+      "property_name": "7222 E DR MARTIN LUTHER KING JR BLVD, TAMPA, FL 33619",
+      "address": "7222 E DR MARTIN LUTHER KING JR BLVD, TAMPA, FL 33619",
+      "sale_date": "Jun 03 2026",
+      "sale_date_iso": "2026-06-03",
+      "price": 1725000,
+      "acreage": 2.9,
+      "price_per_acre": 594828,
+      "transaction_type": "Sale",
+      "grantor": "MANALI CHARLES TRUSTEE",
+      "grantee": "KOK TRUCKING LLC",
+      "deed_type": "WD",
+      "property_type": "Land",
+      "zoning": null,
+      "land_use": "Vacant Residential (DOR 0000)",
+      "source": "Hillsborough County PA",
+      "county": "Hillsborough",
+      "county_fips": "12057",
+      "date_added": "2026-06-22",
+      "lat": 27.9824842093,
+      "lon": -82.3739573013,
+      "aerial": "https://gis.hcpafl.org/propertysearch/#/nav/Basic?folio=0411450000",
+      "book_page": "2026214701",
+      "elc_deal": null,
+      "comments": "Single parcel under deed instrument 2026214701; qualified sale (QU=Q). Folio 0411450000.",
+      "num": 3959
+    },
+    {
+      "parcel_id": "U-17-29-20-ZZZ-000002-50800.0",
+      "property_name": "0 GRAVES RD, BRANDON, FL 33510",
+      "address": "0 GRAVES RD, BRANDON, FL 33510",
+      "sale_date": "Jun 03 2026",
+      "sale_date_iso": "2026-06-03",
+      "price": 2800000,
+      "acreage": 12.37,
+      "price_per_acre": 226354,
+      "transaction_type": "Sale",
+      "grantor": "XIAO MA VENTURES LLC",
+      "grantee": "KMF ALTON BRANDON LLC",
+      "deed_type": "WD",
+      "property_type": "Land",
+      "zoning": null,
+      "land_use": "Vacant Commercial (DOR 1003)",
+      "source": "Hillsborough County PA",
+      "county": "Hillsborough",
+      "county_fips": "12057",
+      "date_added": "2026-06-22",
+      "lat": 27.9613350815,
+      "lon": -82.3250834146,
+      "aerial": "https://gis.hcpafl.org/propertysearch/#/nav/Basic?folio=0679070000",
+      "book_page": "2026215279",
+      "elc_deal": null,
+      "comments": "Three parcels under one deed (instrument 2026215279); acreage summed across all parcels (0.48+6.76+5.13=12.37 ac). Primary=Folio 0679070000 (vacant ~5.13 ac, 0 GRAVES RD). Also includes 0679060010 (vacant ~6.76 ac, no street address) and 0679060000 (single family/improved ~0.48 ac, 2408 GRAVES RD). Unqualified sale (QU=U).",
+      "num": 3960
     }
   ]
 }
