@@ -137168,9 +137168,9 @@
       "lon": -81.325935,
       "coords_approx": false,
       "aerial": "https://vcpa.vcgov.org/parcel/summary/?altkey=8028590",
-      "book_page": null,
+      "book_page": "OR Book 8860 / Page 0725",
       "elc_deal": null,
-      "comments": "12 parcels under one deed (grouped by sale date+price+grantee); acreage summed via Volusia GIS = 0.5332 ac. Primary=PARID 8028590 (VACANT RES). Also includes PARIDs: 8028589, 8028588, 8028587, 8028586, 8028585, 8028584, 8028583, 8028582 ... Book/Page & deed type not captured (Volusia summary sales table is JS-rendered); deed_type assumed WD (qualified arm's-length sale)."
+      "comments": "12 parcels under one deed (grouped by sale date+price+grantee); acreage summed via Volusia GIS = 0.5332 ac. Primary=PARID 8028590 (VACANT RES). Also includes PARIDs: 8028589, 8028588, 8028587, 8028586, 8028585, 8028584, 8028583, 8028582 ... Book/Page & deed type not captured (Volusia summary sales table is JS-rendered); deed_type assumed WD (qualified arm's-length sale). Instrument 2026097856."
     },
     {
       "parcel_id": "324103000021",
@@ -137197,9 +137197,9 @@
       "lon": -81.060267,
       "coords_approx": false,
       "aerial": "https://vcpa.vcgov.org/parcel/summary/?altkey=2991780",
-      "book_page": null,
+      "book_page": "OR Book 8860 / Page 0747",
       "elc_deal": null,
-      "comments": "2 parcels under one deed (grouped by sale date+price+grantee); acreage summed via Volusia GIS = 0.9017 ac. Primary=PARID 2991780 (VACANT RES). Also includes PARIDs: 2993421 Book/Page & deed type not captured (Volusia summary sales table is JS-rendered); deed_type assumed WD (qualified arm's-length sale)."
+      "comments": "2 parcels under one deed (grouped by sale date+price+grantee); acreage summed via Volusia GIS = 0.9017 ac. Primary=PARID 2991780 (VACANT RES). Also includes PARIDs: 2993421 Book/Page & deed type not captured (Volusia summary sales table is JS-rendered); deed_type assumed WD (qualified arm's-length sale). Instrument 2026097870."
     },
     {
       "parcel_id": "11-27-30-4950-0001-0080",
