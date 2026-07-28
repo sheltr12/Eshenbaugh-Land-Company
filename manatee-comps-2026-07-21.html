@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Manatee County Vacant Land Comps &mdash; Week of Jul 21 2026</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://unpkg.com/esri-leaflet@3.0.12/dist/esri-leaflet.js"></script>
+<style>
+:root{--ink:#1a2b3c;--accent:#2e6b4f;--line:#dfe4e8;}
+*{box-sizing:border-box}
+body{margin:0;font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;color:var(--ink);background:#f6f8f9}
+header{background:var(--accent);color:#fff;padding:16px 22px}
+header h1{margin:0;font-size:19px}
+header p{margin:4px 0 0;font-size:13px;opacity:.9}
+#map{height:60vh;min-height:420px;width:100%}
+.wrap{padding:14px 18px 40px}
+table{border-collapse:collapse;width:100%;font-size:12.5px;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.08)}
+th,td{border:1px solid var(--line);padding:6px 8px;text-align:left;vertical-align:top}
+th{background:#eef3f0;position:sticky;top:0}
+tr:nth-child(even){background:#fafbfc}
+a{color:var(--accent)}
+.num{text-align:right;white-space:nowrap}
+.pop b{color:var(--accent)}
+.pop{font-size:12.5px;line-height:1.5}
+.legend{font-size:12px;color:#5a6b7a;margin:8px 0}
+</style></head><body>
+<header><h1>Manatee County &mdash; Vacant Land Comps</h1>
+<p>Run date Jul 21 2026 &middot; Recorded 2026-05-11 to 2026-05-21 &middot; &gt;0.5 ac &amp; &gt;$500k &middot; 6 new comps &middot; Source: Manatee County Property Appraiser</p></header>
+<div id="map"></div>
+<div class="wrap">
+<p class="legend">Click any marker for full detail. Coordinates are exact parcel centroids from the Manatee County PA GIS endpoint.</p>
+<table id="tbl"><thead><tr>
+<th>#</th><th>Sale Date</th><th>Address</th><th>Grantor (Seller)</th><th>Grantee (Buyer)</th>
+<th class="num">Price</th><th class="num">Acres</th><th class="num">$/Acre</th><th>Deed</th><th>Land Use</th><th>Parcel ID</th><th>Instr</th><th>PA Page</th><th>Notes</th>
+</tr></thead><tbody></tbody></table>
+</div>
+<script>
+var comps=[{"parcel_id": "608590259", "property_name": "11006 HIDDEN GLADE ST, PARRISH, FL 34219", "address": "11006 HIDDEN GLADE ST, PARRISH, FL 34219", "sale_date": "May 04 2026", "sale_date_iso": "2026-05-04", "price": 1911000, "acreage": 3.2644, "price_per_acre": 585406, "transaction_type": "Sale", "grantor": "OAKFIELD LAKES AND TRAILS PARRISH L P", "grantee": "D R HORTON INC", "deed_type": "SW", "property_type": "Land", "zoning": null, "land_use": "Vacant Residential Platted (1554)", "source": "Manatee County PA", "county": "Manatee", "county_fips": "12081", "date_added": "2026-07-21", "lat": 27.607363066, "lon": -82.451387567, "aerial": "https://www.manateepao.gov/parcel/?parid=608590259", "book_page": "202641053683", "elc_deal": null, "comments": "17 parcels under one deed (instr 202641053683); summed acreage 3.2644. Primary 608590259. Also incl: 608588259 (Vacant Residential Platted ~0.2364ac); 608588309 (Vacant Residential Platted ~0.1377ac); 608589459 (Vacant Residential Platted ~0.1653ac); 608589509 (Vacant Residential Platted ~0.2311ac); 608589559 (Vacant Residential Platted ~0.2121ac); 608589609 (Vacant Residential Platted ~0.1435ac); 608589659 (Vacant Residential Platted ~0.1722ac); 608590059 (Vacant Residential Platted ~0.1436ac) (+8 more)"}, {"parcel_id": "710810359", "property_name": "3920 61ST ST E, PALMETTO, FL 34221", "address": "3920 61ST ST E, PALMETTO, FL 34221", "sale_date": "May 13 2026", "sale_date_iso": "2026-05-13", "price": 700000, "acreage": 4.67, "price_per_acre": 149893, "transaction_type": "Sale", "grantor": "SALAHUDTIN, MURAT", "grantee": "HOOGERHEYDE, THERESA MARIE", "deed_type": "WD", "property_type": "Land", "zoning": null, "land_use": "Vac Unplatted <10 Ac (1554)", "source": "Manatee County PA", "county": "Manatee", "county_fips": "12081", "date_added": "2026-07-21", "lat": 27.567355474, "lon": -82.524272652, "aerial": "https://www.manateepao.gov/parcel/?parid=710810359", "book_page": "202641055233", "elc_deal": null, "comments": null}, {"parcel_id": "480700053", "property_name": "12355 DORIS RD, PARRISH, FL 34219", "address": "12355 DORIS RD, PARRISH, FL 34219", "sale_date": "May 15 2026", "sale_date_iso": "2026-05-15", "price": 525000, "acreage": 22.25, "price_per_acre": 23596, "transaction_type": "Sale", "grantor": "FEDEROWICZ, MARK J", "grantee": "NORMAL 40 ACRES LLC", "deed_type": "WD", "property_type": "Land", "zoning": null, "land_use": "Vacant Acreage, Not Ag 10+ Acres (1555)", "source": "Manatee County PA", "county": "Manatee", "county_fips": "12081", "date_added": "2026-07-21", "lat": 27.566887232, "lon": -82.420960687, "aerial": "https://www.manateepao.gov/parcel/?parid=480700053", "book_page": "202641056327", "elc_deal": null, "comments": null}, {"parcel_id": "306021809", "property_name": "3518 PINTO LN, LAKEWOOD RANCH, FL 34211", "address": "3518 PINTO LN, LAKEWOOD RANCH, FL 34211", "sale_date": "May 13 2026", "sale_date_iso": "2026-05-13", "price": 840000, "acreage": 0.8922, "price_per_acre": 941493, "transaction_type": "Sale", "grantor": "FORESTAR (USA) REAL ESTATE GROUP INC", "grantee": "PERRY HOMES OF FLORIDA LLC", "deed_type": "WD", "property_type": "Land", "zoning": null, "land_use": "Vacant Residential Platted (1554)", "source": "Manatee County PA", "county": "Manatee", "county_fips": "12081", "date_added": "2026-07-21", "lat": 27.466879102, "lon": -82.343553636, "aerial": "https://www.manateepao.gov/parcel/?parid=306021809", "book_page": "202641056553", "elc_deal": null, "comments": "4 parcels under one deed (instr 202641056553); summed acreage 0.8922. Primary 306021809. Also incl: 306021659 (Vacant Residential Platted ~0.2203ac); 306021709 (Vacant Residential Platted ~0.2203ac); 306021759 (Vacant Residential Platted ~0.2203ac)"}, {"parcel_id": "394684959", "property_name": "11926 VIOLET MOONSTONE DR, PARRISH, FL 34219", "address": "11926 VIOLET MOONSTONE DR, PARRISH, FL 34219", "sale_date": "May 14 2026", "sale_date_iso": "2026-05-14", "price": 1489600, "acreage": 4.7583, "price_per_acre": 313053, "transaction_type": "Sale", "grantor": "MILLROSE PROPERTIES FLORIDA II LLC", "grantee": "LENNAR HOMES LLC", "deed_type": "SW", "property_type": "Land", "zoning": null, "land_use": "Vacant Residential Platted (1554)", "source": "Manatee County PA", "county": "Manatee", "county_fips": "12081", "date_added": "2026-07-21", "lat": 27.622271624, "lon": -82.412715148, "aerial": "https://www.manateepao.gov/parcel/?parid=394684959", "book_page": "202641057487", "elc_deal": null, "comments": "32 parcels under one deed (instr 202641057487); summed acreage 4.7583. Primary 394684959. Also incl: 394670809 (Vacant Residential Platted ~0.1464ac); 394670859 (Vacant Residential Platted ~0.1466ac); 394670909 (Vacant Residential Platted ~0.1463ac); 394670959 (Vacant Residential Platted ~0.1468ac); 394671009 (Vacant Residential Platted ~0.1461ac); 394683509 (Vacant Residential Platted ~0.2308ac); 394685009 (Vacant Residential Platted ~0.2297ac); 394685059 (Vacant Residential Platted ~0.1735ac) (+23 more)"}, {"parcel_id": "651014709", "property_name": "8407 MOCCASIN WALLOW RD, PARRISH, FL 34219", "address": "8407 MOCCASIN WALLOW RD, PARRISH, FL 34219", "sale_date": "May 18 2026", "sale_date_iso": "2026-05-18", "price": 1875000, "acreage": 1.1319, "price_per_acre": 1656507, "transaction_type": "Sale", "grantor": "CNL PARRISH LAKES EAST LLC", "grantee": "HALLE PROPERTIES LLC", "deed_type": "SW", "property_type": "Land", "zoning": null, "land_use": "Vacant Com. Land Condo (1555)", "source": "Manatee County PA", "county": "Manatee", "county_fips": "12081", "date_added": "2026-07-21", "lat": 27.600723163, "lon": -82.479345418, "aerial": "https://www.manateepao.gov/parcel/?parid=651014709", "book_page": "202641058706", "elc_deal": null, "comments": null}];
+var map=L.map('map');
+L.esri.basemapLayer('Imagery').addTo(map);
+L.esri.basemapLayer('ImageryLabels').addTo(map);
+var money=function(n){return '$'+Number(n).toLocaleString();};
+var grp=L.featureGroup().addTo(map);
+comps.forEach(function(c,i){
+  var pop='<div class="pop"><b>#'+(i+1)+' &middot; '+money(c.price)+'</b><br/>'
+   +c.address+'<br/><br/>'
+   +'<b>Grantor:</b> '+c.grantor+'<br/>'
+   +'<b>Grantee:</b> '+c.grantee+'<br/>'
+   +'<b>Sale date:</b> '+c.sale_date+'<br/>'
+   +'<b>Acreage:</b> '+c.acreage+' ac<br/>'
+   +'<b>$/acre:</b> '+money(c.price_per_acre)+'<br/>'
+   +'<b>Deed type:</b> '+c.deed_type+'<br/>'
+   +'<b>Land use:</b> '+c.land_use+'<br/>'
+   +'<b>Parcel:</b> '+c.parcel_id+'<br/>'
+   +'<b>Instrument:</b> '+(c.book_page||'&mdash;')+'<br/>'
+   +(c.comments?('<b>Notes:</b> '+c.comments+'<br/>'):'')
+   +'<a href="'+c.aerial+'" target="_blank">Open PA parcel page &rarr;</a></div>';
+  var m=L.marker([c.lat,c.lon]).addTo(grp).bindPopup(pop,{maxWidth:320});
+  m.bindTooltip('#'+(i+1)+' '+money(c.price),{permanent:false});
+});
+map.fitBounds(grp.getBounds().pad(0.25));
+var tb=document.querySelector('#tbl tbody');
+comps.forEach(function(c,i){
+  var tr=document.createElement('tr');
+  tr.innerHTML='<td>'+(i+1)+'</td><td>'+c.sale_date+'</td><td>'+c.address+'</td>'
+   +'<td>'+c.grantor+'</td><td>'+c.grantee+'</td>'
+   +'<td class="num">'+money(c.price)+'</td><td class="num">'+c.acreage+'</td>'
+   +'<td class="num">'+money(c.price_per_acre)+'</td><td>'+c.deed_type+'</td>'
+   +'<td>'+c.land_use+'</td><td>'+c.parcel_id+'</td><td>'+(c.book_page||'&mdash;')+'</td>'
+   +'<td><a href="'+c.aerial+'" target="_blank">link</a></td>'
+   +'<td>'+(c.comments||'')+'</td>';
+  tr.style.cursor='pointer';
+  tr.onclick=function(){map.setView([c.lat,c.lon],15);};
+  tb.appendChild(tr);
+});
+</script></body></html>
