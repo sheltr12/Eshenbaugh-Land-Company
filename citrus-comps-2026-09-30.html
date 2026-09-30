@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Citrus County Vacant Land Comps &mdash; 2026-09-30</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://unpkg.com/esri-leaflet@3.0.12/dist/esri-leaflet.js"></script>
+<style>
+:root{--ink:#1a2b3c;--accent:#2e6b4f;--line:#dfe4e8;}
+*{box-sizing:border-box}
+body{margin:0;font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;color:var(--ink);background:#f6f8f9}
+header{background:var(--accent);color:#fff;padding:16px 22px}
+header h1{margin:0;font-size:19px}
+header p{margin:4px 0 0;font-size:13px;opacity:.9}
+#map{height:60vh;min-height:420px;width:100%}
+.wrap{padding:14px 18px 40px;overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:12.5px;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.08)}
+th,td{border:1px solid var(--line);padding:6px 8px;text-align:left;vertical-align:top}
+th{background:#eef3f0;position:sticky;top:0}
+tr:nth-child(even){background:#fafbfc}
+a{color:var(--accent)}
+.num{text-align:right;white-space:nowrap}
+.pop b{color:var(--accent)}
+.pop{font-size:12.5px;line-height:1.5}
+.legend{font-size:12px;color:#5a6b7a;margin:8px 0}
+</style></head><body>
+<header><h1>Citrus County Vacant Land Comps</h1><p>Run date 2026-09-30 &middot; Sale dates Aug 12 - Aug 31 2026 (newly posted to PA; recorded 08/28-09/10) &middot; &gt;0.5 ac &amp; &gt;$500k &middot; 3 new comps &middot; Source: Citrus County PA</p></header>
+<div id="map"></div>
+<div class="wrap">
+<p class="legend">Click any marker for full detail. Coordinates are exact parcel centroids from the Citrus County PA GIS endpoint, not geocoded addresses.</p>
+<table id="tbl"><thead><tr>
+<th>#</th><th>Sale Date</th><th>Address</th><th>Grantor (Seller)</th><th>Grantee (Buyer)</th>
+<th class="num">Price</th><th class="num">Acres</th><th class="num">$/Acre</th><th>Deed</th><th>Land Use</th><th>Zoning</th><th>Parcel ID</th><th>Book/Page</th><th>PA Page</th><th>Notes</th>
+</tr></thead><tbody></tbody></table>
+</div>
+<script>
+var comps=[{"parcel_id": "19E19S12      22310", "property_name": "1940 Forest Dr, Inverness, FL 34453", "address": "1940 Forest Dr, Inverness, FL 34453", "sale_date": "Aug 12 2026", "sale_date_iso": "2026-08-12", "price": 1227000, "acreage": 6.51, "price_per_acre": 188479, "transaction_type": "Sale", "grantor": "STRICKLAND PROPERTIES LAKELAND LLC", "grantee": "LONGWOOD GARDENS LTD", "deed_type": "WD", "property_type": "Land", "zoning": null, "land_use": "Vacant (PC 0000 - Vacant)", "source": "Citrus County PA", "county": "Citrus", "county_fips": "12017", "date_added": "2026-09-30", "lat": 28.845104, "lon": -82.356415, "aerial": "https://www.citruspa.org/_web/datalets/datalet.aspx?mode=profileall&UseSearch=no&pin=3529296", "book_page": "OR Book 3702 / Page 0576", "elc_deal": null, "comments": "Instr #2026051818 (OR 3702/0576), recorded 08/28/2026 (PA sale date 08/12/2026). Warranty Deed. Single parcel (Lots 40-42 Blk 38 Inverness Acres Unit 2 + adjacent pcl, Sec 12-19S-19E), PA-assessed 6.51 ac. Coordinates: Citrus County GIS PublicData/LandDevelopment MapServer layer 0 (LOTS) polygon centroid. Grantor/grantee per Citrus Clerk LandmarkWeb. ALTKEY 3529296."}, {"parcel_id": "17E17S200220  00290 0100", "property_name": "7863 N Flame Vine Way, Crystal River, FL 34428", "address": "7863 N Flame Vine Way, Crystal River, FL 34428", "sale_date": "Aug 31 2026", "sale_date_iso": "2026-08-31", "price": 1125000, "acreage": 31.91, "price_per_acre": 35255, "transaction_type": "Sale", "grantor": "LEAGAS LEE ROBERT & LEAGAS SHEILA ANNE", "grantee": "LOGGINS MARVIN & LOGGINS TAMMY", "deed_type": "Deed", "property_type": "Land", "zoning": null, "land_use": "Vacant (PC 0000 - Vacant)", "source": "Citrus County PA", "county": "Citrus", "county_fips": "12017", "date_added": "2026-09-30", "lat": 28.975559, "lon": -82.627362, "aerial": "https://www.citruspa.org/_web/datalets/datalet.aspx?mode=profileall&UseSearch=no&pin=3223262", "book_page": "OR Book 3705 / Page 0679", "elc_deal": null, "comments": "Instr #2026053974 (OR 3705/0679), recorded 09/08/2026 (PA sale date 08/31/2026). Deed (PA instrument code 14 - sale/more than 1 parcel; exact deed form not stated by PA/Clerk index). Two parcels under one deed: 3223262 / 17E17S200220 00290 0100 (vacant, PC 0000, 1.37 ac, primary) and 3528679 / 17E17S30 14000 (improved agri, PC 5000, 30.54 ac, 7845 N Flame Vine Way - includes residence). Summed PA acreage 31.91 ac; price includes improvements on the agri parcel. ALTKEY 3223262."}, {"parcel_id": "17E18S17002B  00190 0170", "property_name": "2008 NW 18th St, Crystal River, FL 34428", "address": "2008 NW 18th St, Crystal River, FL 34428", "sale_date": "Aug 21 2026", "sale_date_iso": "2026-08-21", "price": 1500000, "acreage": 0.58, "price_per_acre": 2586207, "transaction_type": "Sale", "grantor": "EKIP PROPERTIES LLC", "grantee": "MUNZ HOLDINGS LLC", "deed_type": "Deed", "property_type": "Land", "zoning": null, "land_use": "Vacant (PC 0000 - Vacant)", "source": "Citrus County PA", "county": "Citrus", "county_fips": "12017", "date_added": "2026-09-30", "lat": 28.911632, "lon": -82.624135, "aerial": "https://www.citruspa.org/_web/datalets/datalet.aspx?mode=profileall&UseSearch=no&pin=1061571", "book_page": "OR Book 3705 / Page 1756", "elc_deal": null, "comments": "Instr #2026054322 (OR 3705/1756), recorded 09/10/2026 (PA sale date 08/21/2026). Deed (PA instrument code 14 - sale/more than 1 parcel). Two parcels under one deed: 1061571 / 17E18S17002B 00190 0170 (vacant, PC 0000, 0.26 ac, primary) and 2793155 / 17E18S18 2C190 0180 (improved SFR, PC 0100, 0.32 ac, 2010 NW 18th St). Summed PA acreage 0.58 ac; price includes an improved single-family parcel, so $/ac is not a land-only metric. ALTKEY 1061571."}];
+var map=L.map('map');
+L.esri.basemapLayer('Imagery').addTo(map);
+L.esri.basemapLayer('ImageryLabels').addTo(map);
+var money=function(n){return n==null?'\u2014':'$'+Number(n).toLocaleString();};
+var esc=function(s){return s==null?'\u2014':String(s).replace(/[&<>]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;'}[c];});};
+var grp=L.featureGroup().addTo(map);
+comps.forEach(function(c,i){
+  var pop='<div class="pop"><b>#'+(i+1)+' \u00b7 '+money(c.price)+'</b><br/>'+esc(c.address)+'<br/><br/>'
+   +'<b>Grantor:</b> '+esc(c.grantor)+'<br/>'
+   +'<b>Grantee:</b> '+esc(c.grantee)+'<br/>'
+   +'<b>Sale date:</b> '+esc(c.sale_date)+'<br/>'
+   +'<b>Acreage:</b> '+c.acreage+' ac<br/>'
+   +'<b>$/acre:</b> '+money(c.price_per_acre)+'<br/>'
+   +'<b>Deed type:</b> '+esc(c.deed_type)+'<br/>'
+   +'<b>Land use:</b> '+esc(c.land_use)+'<br/>'
+   +'<b>Zoning:</b> '+esc(c.zoning)+'<br/>'
+   +'<b>Parcel:</b> '+esc(c.parcel_id)+'<br/>'
+   +'<b>Book/Page:</b> '+esc(c.book_page)+'<br/>'
+   +(c.comments?('<b>Notes:</b> '+esc(c.comments)+'<br/>'):'')
+   +'<a href="'+c.aerial+'" target="_blank" rel="noopener">Open PA parcel page \u2192</a></div>';
+  if(c.lat==null||c.lon==null) return;
+  var m=L.marker([c.lat,c.lon]).addTo(grp).bindPopup(pop,{maxWidth:340});
+  m.bindTooltip('#'+(i+1)+' '+money(c.price));
+});
+if(grp.getLayers().length) map.fitBounds(grp.getBounds().pad(0.25)); else map.setView([28.8,-81.2],9);
+var tb=document.querySelector('#tbl tbody');
+comps.forEach(function(c,i){
+  var tr=document.createElement('tr');
+  tr.innerHTML='<td>'+(i+1)+'</td><td>'+esc(c.sale_date)+'</td><td>'+esc(c.address)+'</td>'
+   +'<td>'+esc(c.grantor)+'</td><td>'+esc(c.grantee)+'</td>'
+   +'<td class="num">'+money(c.price)+'</td><td class="num">'+c.acreage+'</td>'
+   +'<td class="num">'+money(c.price_per_acre)+'</td><td>'+esc(c.deed_type)+'</td>'
+   +'<td>'+esc(c.land_use)+'</td><td>'+esc(c.zoning)+'</td><td>'+esc(c.parcel_id)+'</td>'
+   +'<td>'+esc(c.book_page)+'</td>'
+   +'<td><a href="'+c.aerial+'" target="_blank" rel="noopener">link</a></td>'
+   +'<td>'+esc(c.comments)+'</td>';
+  tr.style.cursor='pointer';
+  tr.onclick=function(){ if(c.lat!=null) map.setView([c.lat,c.lon],16); };
+  tb.appendChild(tr);
+});
+</script></body></html>
