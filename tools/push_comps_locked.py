@@ -89,8 +89,11 @@ def keys_of(c):
     b = nbp(c.get('book_page'))
     if b:
         k.add(('bp', (c.get('county') or '').lower(), b))
-    for i in re.findall(r'Instr #?(\d{8,12})', str(c.get('comments') or '')):
+    for i in re.findall(r'Instr(?:ument)? #?(\d{8,12})', str(c.get('comments') or ''), re.I):
         k.add(('in', (c.get('county') or '').lower(), i))
+    # Counties like Sarasota store the bare Clerk instrument number in book_page
+    if re.fullmatch(r'\d{8,12}', str(c.get('book_page') or '').strip()):
+        k.add(('in', (c.get('county') or '').lower(), str(c.get('book_page')).strip()))
     return k
 
 
