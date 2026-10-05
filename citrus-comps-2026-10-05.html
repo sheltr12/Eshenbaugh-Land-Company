@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Citrus County Vacant Land Comps &mdash; 2026-10-05</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://unpkg.com/esri-leaflet@3.0.12/dist/esri-leaflet.js"></script>
+<style>
+:root{--ink:#1a2b3c;--accent:#2e6b4f;--line:#dfe4e8;}
+*{box-sizing:border-box}
+body{margin:0;font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;color:var(--ink);background:#f6f8f9}
+header{background:var(--accent);color:#fff;padding:16px 22px}
+header h1{margin:0;font-size:19px}
+header p{margin:4px 0 0;font-size:13px;opacity:.9}
+#map{height:60vh;min-height:420px;width:100%}
+.wrap{padding:14px 18px 40px;overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:12.5px;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.08)}
+th,td{border:1px solid var(--line);padding:6px 8px;text-align:left;vertical-align:top}
+th{background:#eef3f0;position:sticky;top:0}
+tr:nth-child(even){background:#fafbfc}
+a{color:var(--accent)}
+.num{text-align:right;white-space:nowrap}
+.pop b{color:var(--accent)}
+.pop{font-size:12.5px;line-height:1.5}
+.legend{font-size:12px;color:#5a6b7a;margin:8px 0}
+</style></head><body>
+<header><h1>Citrus County Vacant Land Comps</h1><p>Run date 2026-10-05 &middot; Sale dates 2026-07-31 &ndash; 2026-07-31 &middot; &gt;0.5 ac &amp; &gt;$500k &middot; 1 new comps &middot; Source: Citrus County PA sales CSV + Citrus GIS + Clerk LandmarkWeb</p></header>
+<div id="map"></div>
+<div class="wrap">
+<p class="legend">Click any marker for full detail. Coordinates are exact parcel centroids from the Citrus County PA GIS endpoint, not geocoded addresses.</p>
+<table id="tbl"><thead><tr>
+<th>#</th><th>Sale Date</th><th>Address</th><th>Grantor (Seller)</th><th>Grantee (Buyer)</th>
+<th class="num">Price</th><th class="num">Acres</th><th class="num">$/Acre</th><th>Deed</th><th>Land Use</th><th>Zoning</th><th>Parcel ID</th><th>Book/Page</th><th>PA Page</th><th>Notes</th>
+</tr></thead><tbody></tbody></table>
+</div>
+<script>
+var comps=[{"parcel_id": "18E19S35 2A310 00G0", "property_name": "1387 W Mansfield St, Lecanto, FL 34461", "address": "1387 W Mansfield St, Lecanto, FL 34461", "sale_date": "Jul 31 2026", "sale_date_iso": "2026-07-31", "price": 825000, "acreage": 9.39, "price_per_acre": 87859, "transaction_type": "Sale", "grantor": "MOORE CHARLES K III & MOORE CHRISTINA M REVOCABLE TRUST & MOORE CHRISTINE", "grantee": "HACKETT JAY & HACKETT KELLY", "deed_type": "Deed", "property_type": "Land", "zoning": "AGRMH", "land_use": "0000 - VACANT (0008-SFR NON-WATERFRONT)", "source": "Citrus County PA", "county": "Citrus", "county_fips": "12017", "date_added": "2026-10-05", "lat": 28.780694, "lon": -82.457579, "aerial": "https://www.citruspa.org/_web/datalets/datalet.aspx?mode=profileall&UseSearch=no&pin=3522202", "book_page": "OR Book 3695 / Page 0120", "elc_deal": null, "comments": "MIXED SALE (vacant + improved parcels) - Instr #2026046434 (OR 3695/0120), Clerk doc type DEED, recorded 08/05/2026 (PA sale date 2026-07-31). PA instrument code 14. 3 parcels under one deed, PA-assessed acreage summed (9.39 ac): 3522202 / 18E19S35 2A310 00G0 (0000 - VACANT, 4.49 ac, primary); 3530224 / 18E19S35 2A310 00G5 (0100 - SINGLE FAMILY, 4.2 ac, improved at sale); 3522473 / 18E19S35 2A310 00G1 (0000 - VACANT, 0.7 ac). NOTE: price includes improvements; not a pure land comp. Coordinates: Citrus GIS LandDevelopment LOTS polygon centroid. ALTKEY 3522202."}];
+var map=L.map('map');
+L.esri.basemapLayer('Imagery').addTo(map);
+L.esri.basemapLayer('ImageryLabels').addTo(map);
+var money=function(n){return n==null?'\u2014':'$'+Number(n).toLocaleString();};
+var esc=function(s){return s==null?'\u2014':String(s).replace(/[&<>]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;'}[c];});};
+var grp=L.featureGroup().addTo(map);
+comps.forEach(function(c,i){
+  var pop='<div class="pop"><b>#'+(i+1)+' \u00b7 '+money(c.price)+'</b><br/>'+esc(c.address)+'<br/><br/>'
+   +'<b>Grantor:</b> '+esc(c.grantor)+'<br/>'
+   +'<b>Grantee:</b> '+esc(c.grantee)+'<br/>'
+   +'<b>Sale date:</b> '+esc(c.sale_date)+'<br/>'
+   +'<b>Acreage:</b> '+c.acreage+' ac<br/>'
+   +'<b>$/acre:</b> '+money(c.price_per_acre)+'<br/>'
+   +'<b>Deed type:</b> '+esc(c.deed_type)+'<br/>'
+   +'<b>Land use:</b> '+esc(c.land_use)+'<br/>'
+   +'<b>Zoning:</b> '+esc(c.zoning)+'<br/>'
+   +'<b>Parcel:</b> '+esc(c.parcel_id)+'<br/>'
+   +'<b>Book/Page:</b> '+esc(c.book_page)+'<br/>'
+   +(c.comments?('<b>Notes:</b> '+esc(c.comments)+'<br/>'):'')
+   +'<a href="'+c.aerial+'" target="_blank" rel="noopener">Open PA parcel page \u2192</a></div>';
+  if(c.lat==null||c.lon==null) return;
+  var m=L.marker([c.lat,c.lon]).addTo(grp).bindPopup(pop,{maxWidth:340});
+  m.bindTooltip('#'+(i+1)+' '+money(c.price));
+});
+if(grp.getLayers().length) map.fitBounds(grp.getBounds().pad(0.25)); else map.setView([28.8,-81.2],9);
+var tb=document.querySelector('#tbl tbody');
+comps.forEach(function(c,i){
+  var tr=document.createElement('tr');
+  tr.innerHTML='<td>'+(i+1)+'</td><td>'+esc(c.sale_date)+'</td><td>'+esc(c.address)+'</td>'
+   +'<td>'+esc(c.grantor)+'</td><td>'+esc(c.grantee)+'</td>'
+   +'<td class="num">'+money(c.price)+'</td><td class="num">'+c.acreage+'</td>'
+   +'<td class="num">'+money(c.price_per_acre)+'</td><td>'+esc(c.deed_type)+'</td>'
+   +'<td>'+esc(c.land_use)+'</td><td>'+esc(c.zoning)+'</td><td>'+esc(c.parcel_id)+'</td>'
+   +'<td>'+esc(c.book_page)+'</td>'
+   +'<td><a href="'+c.aerial+'" target="_blank" rel="noopener">link</a></td>'
+   +'<td>'+esc(c.comments)+'</td>';
+  tr.style.cursor='pointer';
+  tr.onclick=function(){ if(c.lat!=null) map.setView([c.lat,c.lon],16); };
+  tb.appendChild(tr);
+});
+</script></body></html>
