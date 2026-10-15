@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Eshenbaugh Land Company Rezoning Tracker</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<style>
+:root{--elc-red:#ef1f25;--elc-black:#000;--elc-ink:#17212f;--elc-muted:#667085;--elc-line:#d9e1ea;--elc-bg:#f5f7fa;--elc-white:#fff;
+--st-filed:#1f6feb;--st-hearing:#f59e0b;--st-continued:#8b5cf6;--st-approved:#16a34a;--st-denied:#b42318;--st-withdrawn:#6b7280}
+*{box-sizing:border-box}html,body,#map{margin:0;padding:0;height:100%;font-family:"Segoe UI",Arial,sans-serif;color:var(--elc-ink)}body{background:var(--elc-bg)}
+#wrap{display:flex;width:100%;height:100%;overflow:hidden}
+#panel{width:395px;max-width:94vw;height:100%;background:#fff;z-index:1000;box-shadow:2px 0 18px rgba(0,0,0,.22);display:flex;flex-direction:column;border-right:4px solid var(--elc-red);position:relative}
+#panel-header{background:#000;color:#fff;padding:14px 14px 12px}
+#brand-row{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+#brand-row img{height:34px;width:auto;background:#fff;border-radius:7px;padding:5px 8px}
+#brand-text{flex:1;min-width:0}
+#panel-header h1{margin:0;color:#fff;font-size:15px;line-height:1.2}
+#panel-header p{margin:3px 0 0;color:#d7dde6;font-size:11px;line-height:1.35}
+#mobile-btns{display:none;flex-direction:column;gap:5px}
+#mobile-btns button{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.3);color:#fff;padding:5px 9px;font-size:11px}
+#mobile-btns button:hover,#mobile-btns button.on{background:rgba(255,255,255,.26)}
+#summary-row{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:10px}
+.summary-card{background:rgba(255,255,255,.09);border:1px solid rgba(255,255,255,.16);border-radius:8px;padding:7px 6px;cursor:default}
+.summary-card.clickable{cursor:pointer}.summary-card.clickable:hover{background:rgba(255,255,255,.16)}
+.summary-card b{display:block;color:#fff;font-size:15px}.summary-card span{display:block;color:#cbd5e1;font-size:9px;text-transform:uppercase;letter-spacing:.04em;line-height:1.25}
+#panel-body{flex:1;min-height:0;display:flex;flex-direction:column}
+#filters{padding:10px 12px;border-bottom:1px solid var(--elc-line);background:#fff;display:grid;grid-template-columns:1fr 1fr;gap:7px 8px}
+#filters label,.flabel{font-size:10px;font-weight:800;text-transform:uppercase;color:var(--elc-muted);letter-spacing:.04em}
+#filters select,#filters input[type=text],#filters input[type=number],#filters input[type=date],#filters input[type=search]{width:100%;margin-top:4px;border:1px solid #cbd5df;border-radius:8px;padding:7px 9px;font-size:12px;background:#fff;color:var(--elc-ink);font-family:inherit}
+.filter-wide{grid-column:1/-1}
+#filter-buttons{grid-column:1/-1;display:flex;gap:7px;flex-wrap:wrap}
+button{border:1px solid #cbd5df;background:#fff;color:var(--elc-ink);border-radius:8px;padding:7px 9px;font-size:11px;font-weight:800;cursor:pointer;font-family:inherit}button:hover{background:#f1f5f9}.btn-red{background:var(--elc-red);border-color:var(--elc-red);color:#fff}.btn-red:hover{background:#d91a20}
+#toggles{grid-column:1/-1;display:flex;gap:4px;flex-wrap:wrap}
+.chip{display:inline-flex;align-items:center;gap:5px;border:1px solid #cbd5df;border-radius:999px;padding:5px 8px;font-size:10.5px;font-weight:800;color:var(--elc-ink);cursor:pointer;user-select:none;background:#fff;text-transform:none;letter-spacing:0}
+#filters label.chip{text-transform:none;letter-spacing:0;font-size:10.5px;padding:4px 7px 4px 5px;color:var(--elc-ink);font-weight:700}#filters label.chip.on{color:#b42318}
+.chip input{margin:0;accent-color:var(--elc-red);width:12px;height:12px}.chip.on{background:#fff1f1;border-color:var(--elc-red);color:#b42318}
+/* jurisdiction multi-select */
+#juris-wrap{position:relative}
+#juris-btn{width:100%;margin-top:4px;text-align:left;font-weight:400;font-size:12px;padding:7px 26px 7px 9px;position:relative;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-transform:none;letter-spacing:0}
+#juris-btn:after{content:"";position:absolute;right:10px;top:50%;margin-top:-2px;border:4px solid transparent;border-top-color:#475467}
+#juris-menu{display:none;position:absolute;left:0;top:100%;margin-top:3px;width:250px;max-height:280px;overflow:auto;background:#fff;border:1px solid #cbd5df;border-radius:9px;box-shadow:0 8px 24px rgba(0,0,0,.18);z-index:2000;padding:6px}
+#juris-menu.open{display:block}
+#juris-menu label{display:flex;align-items:center;gap:7px;padding:5px 6px;border-radius:6px;font-size:12px;font-weight:400;text-transform:none;letter-spacing:0;color:var(--elc-ink);cursor:pointer}
+#juris-menu label:hover{background:#f1f5f9}#juris-menu .jm-count{margin-left:auto;color:var(--elc-muted);font-size:10px}
+#juris-menu .jm-actions{display:flex;gap:6px;padding:4px 4px 6px;border-bottom:1px solid var(--elc-line);margin-bottom:4px}
+#juris-menu .jm-actions button{padding:4px 7px;font-size:10px}
+details#more{grid-column:1/-1;border-top:1px dashed var(--elc-line);padding-top:6px}
+details#more summary{font-size:10px;font-weight:800;text-transform:uppercase;color:var(--elc-muted);letter-spacing:.04em;cursor:pointer;list-style:none}
+details#more summary::-webkit-details-marker{display:none}
+details#more summary:before{content:"+ "}details#more[open] summary:before{content:"- "}
+#more-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px}
+#count{padding:9px 12px;font-size:12px;color:var(--elc-muted);border-bottom:1px solid var(--elc-line);display:flex;justify-content:space-between;gap:8px}
+#list{flex:1;overflow-y:auto;padding:7px 0;background:#f8fafc;min-height:0}#list::-webkit-scrollbar{width:7px}#list::-webkit-scrollbar-track{background:#f2f4f7}#list::-webkit-scrollbar-thumb{background:#c4ccd8;border-radius:7px}
+#meta-line{padding:7px 12px;font-size:10px;line-height:1.4;color:var(--elc-muted);border-top:1px solid var(--elc-line);background:#fff}
+#meta-line .bad{color:#b42318;font-weight:800}#meta-line .good{color:#15803d;font-weight:800}
+.rz-card{background:#fff;border:1px solid var(--elc-line);border-left:4px solid var(--elc-red);margin:7px 8px;border-radius:0 9px 9px 0;padding:9px 10px;cursor:pointer;transition:all .15s ease}.rz-card:hover{transform:translateX(2px);box-shadow:0 2px 8px rgba(0,0,0,.08)}.rz-card.active{background:#fff1f1}
+.pc-meta{font-size:10px;color:var(--elc-muted);margin-bottom:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.pc-title{font-size:12px;font-weight:900;color:#101828;line-height:1.25;margin-bottom:3px}.pc-permittee{font-size:11px;color:#475467;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:6px}
+.pc-badges{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:6px}
+.badge{font-size:9.5px;font-weight:900;padding:3px 7px;border-radius:999px;color:#fff;white-space:nowrap;letter-spacing:.02em}
+.badge.cat{background:#17212f}.badge.new{background:var(--elc-red);box-shadow:0 0 0 2px #ffd5d6}.badge.chg{background:#fff;color:#17212f;border:1px solid #17212f;padding:2px 6px}
+.badge.ac{background:#e9eef5;color:#17212f}
+.pc-footer{display:flex;align-items:center;gap:7px;font-size:10.5px;color:#344054}
+.pc-change{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pc-hearing{font-size:10.5px;color:#344054;margin-top:5px}.pc-hearing b{color:#101828}
+.pc-noloc{font-size:10px;color:#b54708;margin-top:5px;font-weight:700}
+.pc-detail{margin-top:8px;border-top:1px dashed var(--elc-line);padding-top:8px;cursor:auto}
+#map{flex:1;min-width:0}
+.legend{background:rgba(255,255,255,.95);padding:10px 12px;border-radius:9px;box-shadow:0 2px 12px rgba(0,0,0,.20);font-size:11px;color:#344054;max-width:190px}
+.legend b{display:block;color:#000;margin-bottom:6px}.legend b.sec{margin-top:8px}.legend-row{display:flex;align-items:center;gap:8px;margin:4px 0}.legend-dot{width:12px;height:12px;border-radius:50%;display:inline-block;flex:none}
+.legend-toggle{display:none}
+.no-results{color:var(--elc-muted);font-size:12px;text-align:center;padding:28px 15px}
+/* markers */
+.rz-icon{background:none;border:0}
+.rz-pin{position:relative;width:100%;height:100%;display:flex;align-items:center;justify-content:center}
+.rz-shape{position:absolute;inset:0;border:2px solid #fff;box-shadow:0 1px 5px rgba(0,0,0,.45)}
+.rz-pin.cat-R .rz-shape{border-radius:50%}
+.rz-pin.cat-PD .rz-shape{border-radius:22%}
+.rz-pin.cat-CPA .rz-shape{border-radius:3px;transform:rotate(45deg) scale(.86)}
+.rz-pin.unk .rz-shape{border-style:dashed}
+.rz-letter{position:relative;color:#fff;font-weight:900;font-size:10px;letter-spacing:-.02em;text-shadow:0 1px 2px rgba(0,0,0,.45);line-height:1}
+.rz-pin.is-new:before,.rz-pin.is-new:after{content:"";position:absolute;inset:-5px;border-radius:50%;border:3px solid var(--elc-red);animation:rzpulse 1.8s ease-out infinite;pointer-events:none}
+.rz-pin.is-new:after{animation-delay:.9s}
+.rz-new-tag{position:absolute;bottom:72%;left:62%;background:var(--elc-red);color:#fff;font-size:8px;font-weight:900;padding:1px 4px;border-radius:5px;border:1px solid #fff;letter-spacing:.03em;line-height:1.2}
+.zoom-low .rz-pin{transform:scale(.62)}.zoom-low .rz-new-tag{display:none}.zoom-mid .rz-pin{transform:scale(.82)}
+@keyframes rzpulse{0%{transform:scale(.85);opacity:.95}100%{transform:scale(1.7);opacity:0}}
+.legend-shape{width:14px;height:14px;display:inline-flex;align-items:center;justify-content:center;background:#475467;color:#fff;font-size:7px;font-weight:900;flex:none}
+.legend-ring{width:14px;height:14px;border-radius:50%;border:3px solid var(--elc-red);flex:none}
+/* popup */
+.leaflet-popup-content{margin:12px 14px}
+.popup-title{font-size:13px;font-weight:900;color:#111827;margin-bottom:2px}.popup-sub{font-size:10px;color:#667085;margin-bottom:6px}.popup-table{font-size:11px;border-collapse:collapse;width:100%}.popup-table td{padding:2px 7px 2px 0;vertical-align:top}.popup-table td:first-child{color:#667085;white-space:nowrap}.popup-link{display:inline-block;margin-top:8px;margin-right:5px;background:var(--elc-red);color:#fff!important;text-decoration:none;border-radius:7px;padding:6px 9px;font-weight:800;font-size:11px}
+.popup-link.alt{background:#17212f}
+.pop-sec{font-size:10px;font-weight:900;text-transform:uppercase;letter-spacing:.04em;color:#667085;margin:9px 0 4px}
+.timeline{list-style:none;margin:0;padding:0 0 0 12px;border-left:2px solid var(--elc-line)}
+.timeline li{position:relative;font-size:11px;margin:0 0 5px;line-height:1.35}
+.timeline li:before{content:"";position:absolute;left:-17px;top:4px;width:8px;height:8px;border-radius:50%;background:#98a2b3;border:2px solid #fff}
+.timeline li.future:before{background:var(--st-hearing)}.timeline li.past:before{background:#17212f}
+.timeline .t-date{font-weight:800;color:#101828}.timeline .t-res{color:#475467}
+.pop-desc{font-size:11px;color:#344054;margin-top:6px;line-height:1.4}
+.pid{display:inline-block;background:#f2f4f7;border-radius:5px;padding:1px 5px;margin:0 3px 3px 0;font-family:Consolas,monospace;font-size:10.5px}
+.copy-btn{margin-top:8px;background:#fff;border:1px solid #cbd5df;border-radius:7px;padding:5px 9px;font-weight:800;cursor:pointer;font-size:11px}
+@media(max-width:760px){
+ #wrap{flex-direction:column}
+ #panel{width:100%;max-width:none;height:52%;border-right:0;border-bottom:4px solid var(--elc-red)}
+ #panel.collapsed{height:auto}#panel.collapsed #panel-body{display:none}
+ #panel-body{overflow-y:auto;-webkit-overflow-scrolling:touch}
+ #list{flex:none;overflow:visible;min-height:120px}
+ #panel:not(.show-filters) .f-adv{display:none}
+ #map{height:auto;flex:1;width:100%;min-height:0}
+ #panel-header{padding:10px 12px 10px}#brand-row{margin-bottom:4px}#brand-row img{height:28px}
+ #mobile-btns{display:flex}
+ #summary-row{margin-top:7px;gap:5px}.summary-card{padding:5px 5px}.summary-card b{font-size:14px}.summary-card span{font-size:8px}
+ #filters{gap:7px;padding:8px 10px}
+ .legend{font-size:10px;padding:7px 9px}.legend .legend-body{display:none}.legend.open .legend-body{display:block}
+ .legend-toggle{display:block;cursor:pointer}.legend b.lt{margin:0}
+}
+</style>
+</head>
+<body>
+<div id="wrap">
+  <div id="panel">
+    <div id="panel-header">
+      <div id="brand-row"><img src="./EshenbaughLogo.png" alt="Eshenbaugh Land Company" onerror="this.style.display='none'"><div id="brand-text"><h1>Rezoning Tracker</h1><p id="subtitle">Loading rezoning activity...</p></div><div id="mobile-btns"><button type="button" id="filters-toggle" aria-expanded="false">Filters</button><button type="button" id="panel-toggle" aria-expanded="true">Hide list</button></div></div>
+      <div id="summary-row">
+        <div class="summary-card"><b id="sum-total">0</b><span>Shown</span></div>
+        <div class="summary-card clickable" id="card-new" title="Show only new this week"><b id="sum-new">0</b><span>New this week</span></div>
+        <div class="summary-card clickable" id="card-hear" title="Sort by next hearing"><b id="sum-hear">0</b><span>Hearings next 30 days</span></div>
+        <div class="summary-card clickable" id="card-appr" title="Show approved"><b id="sum-appr">0</b><span>Approved last 30 days</span></div>
+      </div>
+    </div>
+    <div id="panel-body">
+    <div id="filters">
+      <label class="filter-wide">Search Applications<input id="search-filter" type="search" placeholder="App #, applicant, project, address, parcel ID..."></label>
+      <div class="f-adv"><span class="flabel">Jurisdiction</span><div id="juris-wrap"><button type="button" id="juris-btn">All jurisdictions</button><div id="juris-menu"></div></div></div>
+      <label class="f-adv">Status<select id="status-filter"><option value="all">All statuses</option><option value="open">Open (not decided)</option></select></label>
+      <label class="f-adv">Category<select id="category-filter"><option value="all">All categories</option><option value="Rezoning">Rezoning</option><option value="PD">PD</option><option value="Comp Plan Amendment">Comp Plan Amendment</option></select></label>
+      <label class="f-adv">Sort<select id="sort-filter"><option value="filed_desc">Filed date, newest</option><option value="filed_asc">Filed date, oldest</option><option value="acres_desc">Acres, largest</option><option value="hearing_asc">Next hearing, soonest</option><option value="changed_desc">Recently changed</option></select></label>
+      <div id="toggles">
+        <label class="chip" id="chip-new"><input type="checkbox" id="new-filter">New this week</label>
+        <label class="chip" id="chip-chg"><input type="checkbox" id="changed-filter">Changed this week</label>
+        <label class="chip" id="chip-hear" title="Has an upcoming hearing date"><input type="checkbox" id="hearing-filter">Hearing set</label>
+      </div>
+      <details id="more" class="f-adv"><summary>More filters and address search</summary>
+        <div id="more-grid">
+          <label>Min Acres<input id="acres-filter" type="number" min="0" step="0.5" placeholder="0.5"></label>
+          <label>Unknown Acres<select id="unk-filter"><option value="show">Include</option><option value="hide">Hide</option></select></label>
+          <label>Filed From<input id="from-filter" type="date"></label>
+          <label>Filed To<input id="to-filter" type="date"></label>
+          <label class="filter-wide">Find Address / Place<input id="address-search" type="text" placeholder="Type an address or place, then press Enter"></label>
+          <div class="filter-wide"><button type="button" id="zoom-address-btn">Zoom to Address</button></div>
+        </div>
+      </details>
+      <div id="filter-buttons" class="f-adv"><button class="btn-red" type="button" onclick="resetFilters()">Reset Filters</button><button type="button" onclick="fitVisible()">Zoom to Results</button><button type="button" onclick="window.open('index.html','_blank')">Comps Database</button></div>
+    </div>
+    <div id="count">Loading...</div><div id="list"></div>
+    <div id="meta-line">Loading data date...</div>
+    </div>
+  </div>
+  <div id="map"></div>
+</div>
+<script>
+const STATUS_ORDER=['Filed','Hearing Scheduled','Continued','Approved','Denied','Withdrawn'];
+const STATUS_COLOR={'Filed':'#1f6feb','Hearing Scheduled':'#f59e0b','Continued':'#8b5cf6','Approved':'#16a34a','Denied':'#b42318','Withdrawn':'#6b7280'};
+const STATUS_LABEL={'Filed':'Filed / In review','Hearing Scheduled':'Hearing scheduled','Continued':'Continued','Approved':'Approved','Denied':'Denied','Withdrawn':'Withdrawn'};
+const CAT_CODE={'Rezoning':'R','PD':'PD','Comp Plan Amendment':'CPA'};
+const CLOSED=new Set(['Approved','Denied','Withdrawn']);
+let RECORDS=[],META={},filtered=[],map,markersLayer,RUN_DATE=null,TODAY=null;const markerByIndex=new Map(),rowByIndex=new Map();let selectedJuris=new Set();let allJuris=[];
+
+function hasValue(v){return v!==null&&v!==undefined&&String(v).trim()!==''}
+function escapeHtml(s){return String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]))}
+function noDash(s){return String(s??'').replace(/\s*\u2014\s*/g,', ').replace(/[\u2013\u2012\u2015]/g,'-')}
+function txt(s){return escapeHtml(noDash(s))}
+function dateOnly(s){if(!s)return null;const t=Date.parse(String(s).slice(0,10)+'T00:00:00');return Number.isNaN(t)?null:t}
+const DAY=864e5;
+function daysBetween(a,b){return Math.round((a-b)/DAY)}
+function fmtDate(s,withYear=true){const t=dateOnly(s);if(t===null)return '';return new Date(t).toLocaleDateString('en-US',withYear?{month:'short',day:'numeric',year:'numeric'}:{month:'short',day:'numeric'})}
+function fmtAcres(ac){if(!hasValue(ac))return 'Acres unknown';ac=Number(ac);return ac>=1000?ac.toLocaleString(undefined,{maximumFractionDigits:0})+' ac':ac.toLocaleString(undefined,{maximumFractionDigits:2})+' ac'}
+function catCode(c){return CAT_CODE[c]||'R'}
+function statusColor(s){return STATUS_COLOR[s]||'#475467'}
+function isNew(p){if(p.backfilled)return false;const f=dateOnly(p.first_seen);return f!==null&&RUN_DATE!==null&&daysBetween(RUN_DATE,f)<=7&&daysBetween(RUN_DATE,f)>=0}
+function isChanged(p){const c=dateOnly(p.status_changed);return c!==null&&RUN_DATE!==null&&daysBetween(RUN_DATE,c)<=7&&daysBetween(RUN_DATE,c)>=0}
+function nextHearing(p){const hs=(p.hearings||[]).filter(h=>{const t=dateOnly(h.date);return t!==null&&t>=TODAY}).sort((a,b)=>a.date.localeCompare(b.date));if(CLOSED.has(p.status))return null;return hs[0]||null}
+function filedValue(p){return dateOnly(p.filed_date)??dateOnly(p.first_seen)??0}
+function changeText(p){const z=(p.from_zoning||p.to_zoning)?`${p.from_zoning||'?'} → ${p.to_zoning||'?'}`:'';const f=(p.from_flu||p.to_flu)?`FLU ${p.from_flu||'?'} → ${p.to_flu||'?'}`:'';return [z,f].filter(Boolean).join(' · ')}
+function decisionValue(p){return dateOnly(p.decision_date)??dateOnly(p.status_changed)}
+
+async function loadData(){
+  try{
+    const res=await fetch('./rezonings.json?cb='+Date.now());if(!res.ok)throw new Error('HTTP '+res.status);
+    const data=await res.json();RECORDS=(data.records||[]).map((p,i)=>({...p,_idx:i}));META=data.meta||{};
+    RUN_DATE=dateOnly(META.run_date)??dateOnly(new Date().toISOString());
+    TODAY=dateOnly(new Date().toISOString().slice(0,10));if(TODAY<RUN_DATE)TODAY=RUN_DATE;
+    const located=RECORDS.filter(p=>hasValue(p.lat)&&hasValue(p.lon)).length;
+    document.getElementById('subtitle').textContent=`Data as of ${fmtDate(META.run_date)} · ${RECORDS.length.toLocaleString()} applications ≥ ${META.min_acres||0.5} ac · ${located.toLocaleString()} mapped`;
+    renderMetaLine();
+  }catch(e){document.getElementById('subtitle').textContent='Could not load rezoning data.';document.getElementById('meta-line').textContent='rezonings.json could not be loaded.';console.error(e);TODAY=RUN_DATE=dateOnly(new Date().toISOString().slice(0,10))}
+}
+function renderMetaLine(){
+  const h=META.adapter_health||[];const ok=h.filter(x=>x.status==='ok');const failed=h.filter(x=>x.status!=='ok');const zero=ok.filter(x=>!x.count);
+  const gen=META.generated?new Date(META.generated).toLocaleString('en-US',{month:'short',day:'numeric',year:'numeric',hour:'numeric',minute:'2-digit'}):'';
+  let html=`Data date ${txt(fmtDate(META.run_date))}${gen?' · built '+txt(gen):''} · Sources: <span class="good">${ok.length} ok</span>`;
+  if(failed.length){html+=` · <span class="bad">Failed this run: ${failed.map(x=>txt((x.jurisdictions&&x.jurisdictions.length?x.jurisdictions.join(', '):x.adapter))).join('; ')}</span> (records from these sources were kept from the last good run)`}
+  if(zero.length){html+=` · No new records: ${zero.map(x=>txt((x.jurisdictions||[]).join(', ')||x.adapter)).join('; ')}`}
+  document.getElementById('meta-line').innerHTML=html;
+}
+
+function initMap(){
+  map=L.map('map',{zoomControl:true});
+  L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',{attribution:'ESRI World Imagery | ELC Rezoning Tracker',maxZoom:19}).addTo(map);
+  L.tileLayer('https://services.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}',{attribution:'Esri Places',maxZoom:19,pane:'tilePane',opacity:.9}).addTo(map);
+  markersLayer=L.layerGroup().addTo(map);map.on('click',onMapClickAddress);
+  const zc=()=>{const z=map.getZoom(),c=map.getContainer().classList;c.toggle('zoom-low',z<=8);c.toggle('zoom-mid',z>8&&z<=10)};map.on('zoomend',zc);map.whenReady(zc);
+  const legend=L.control({position:'bottomright'});
+  legend.onAdd=function(){const d=L.DomUtil.create('div','legend');
+    const st=STATUS_ORDER.map(s=>`<div class="legend-row"><span class="legend-dot" style="background:${STATUS_COLOR[s]}"></span>${STATUS_LABEL[s]}</div>`).join('');
+    const sh=[['R','50%','Rezoning'],['PD','22%','Planned Development'],['CPA','2px','Comp Plan Amendment']].map(([c,r,l])=>`<div class="legend-row"><span class="legend-shape" style="border-radius:${r};${c==='CPA'?'transform:rotate(45deg) scale(.85)':''}"><span style="${c==='CPA'?'transform:rotate(-45deg)':''}">${c==='CPA'?'C':c}</span></span>${l}</div>`).join('');
+    d.innerHTML=`<div class="legend-toggle"><b class="lt">Legend +</b></div><div class="legend-body"><b>Status</b>${st}<b class="sec">Category</b>${sh}<div class="legend-row"><span class="legend-ring"></span>New this week</div><div class="legend-row" style="color:#667085;font-size:10px">Marker size scales with acres. Dashed outline means acres unknown.</div></div>`;
+    L.DomEvent.disableClickPropagation(d);d.querySelector('.legend-toggle').addEventListener('click',()=>d.classList.toggle('open'));return d};
+  legend.addTo(map);
+}
+
+function populateFilters(){
+  const counts={};RECORDS.forEach(p=>{const j=p.jurisdiction||'Unknown';counts[j]=(counts[j]||0)+1});
+  allJuris=Object.keys(counts).sort();
+  const menu=document.getElementById('juris-menu');
+  menu.innerHTML=`<div class="jm-actions"><button type="button" data-act="all">All</button><button type="button" data-act="none">Clear</button></div>`+allJuris.map(j=>`<label><input type="checkbox" value="${escapeHtml(j)}">${txt(j)}<span class="jm-count">${counts[j]}</span></label>`).join('');
+  menu.addEventListener('change',e=>{if(e.target.type==='checkbox'){e.target.checked?selectedJuris.add(e.target.value):selectedJuris.delete(e.target.value);updateJurisBtn();applyFilters()}});
+  menu.querySelectorAll('.jm-actions button').forEach(b=>b.addEventListener('click',()=>{selectedJuris.clear();menu.querySelectorAll('input').forEach(i=>i.checked=false);updateJurisBtn();applyFilters()}));
+  const btn=document.getElementById('juris-btn');btn.addEventListener('click',e=>{e.stopPropagation();menu.classList.toggle('open')});
+  document.addEventListener('click',e=>{if(!document.getElementById('juris-wrap').contains(e.target))menu.classList.remove('open')});
+  const sSel=document.getElementById('status-filter');
+  sSel.innerHTML='<option value="all">All statuses</option><option value="open">Open (not decided)</option>'+STATUS_ORDER.map(s=>`<option value="${s}">${STATUS_LABEL[s]}</option>`).join('');
+  ['status-filter','category-filter','sort-filter','unk-filter','from-filter','to-filter'].forEach(id=>document.getElementById(id).addEventListener('change',applyFilters));
+  ['search-filter','acres-filter'].forEach(id=>document.getElementById(id).addEventListener('input',applyFilters));
+  [['new-filter','chip-new'],['changed-filter','chip-chg'],['hearing-filter','chip-hear']].forEach(([id,chip])=>document.getElementById(id).addEventListener('change',e=>{document.getElementById(chip).classList.toggle('on',e.target.checked);applyFilters()}));
+  document.getElementById('card-new').addEventListener('click',()=>{const c=document.getElementById('new-filter');c.checked=!c.checked;c.dispatchEvent(new Event('change'))});
+  document.getElementById('card-hear').addEventListener('click',()=>{const c=document.getElementById('hearing-filter');c.checked=true;document.getElementById('chip-hear').classList.add('on');document.getElementById('sort-filter').value='hearing_asc';applyFilters()});
+  document.getElementById('card-appr').addEventListener('click',()=>{document.getElementById('status-filter').value='Approved';document.getElementById('sort-filter').value='changed_desc';applyFilters()});
+}
+function updateJurisBtn(){const b=document.getElementById('juris-btn');const n=selectedJuris.size;b.textContent=n===0?'All jurisdictions':n===1?[...selectedJuris][0]:`${n} jurisdictions`}
+
+function passesFilters(p){
+  const st=document.getElementById('status-filter').value,cat=document.getElementById('category-filter').value,q=document.getElementById('search-filter').value.trim().toLowerCase();
+  const minAc=parseFloat(document.getElementById('acres-filter').value),unk=document.getElementById('unk-filter').value;
+  const from=dateOnly(document.getElementById('from-filter').value),to=dateOnly(document.getElementById('to-filter').value);
+  if(selectedJuris.size&&!selectedJuris.has(p.jurisdiction||'Unknown'))return false;
+  if(st==='open'&&CLOSED.has(p.status))return false;if(st!=='all'&&st!=='open'&&p.status!==st)return false;
+  if(cat!=='all'&&p.category!==cat)return false;
+  if(!hasValue(p.acres)){if(unk==='hide')return false}else if(!Number.isNaN(minAc)&&Number(p.acres)<minAc)return false;
+  if(from!==null||to!==null){const f=dateOnly(p.filed_date)??dateOnly(p.first_seen);if(f===null)return false;if(from!==null&&f<from)return false;if(to!==null&&f>to)return false}
+  if(document.getElementById('new-filter').checked&&!isNew(p))return false;
+  if(document.getElementById('changed-filter').checked&&!isChanged(p))return false;
+  if(document.getElementById('hearing-filter').checked&&!nextHearing(p))return false;
+  if(q){const hay=[p.app_num,p.applicant,p.project_name,p.address,(p.parcel_ids||[]).join(' '),(p.parcel_ids||[]).map(x=>String(x).replace(/[^0-9a-z]/gi,'')).join(' '),p.description,p.jurisdiction,p.app_type,p.from_zoning,p.to_zoning].join(' ').toLowerCase();if(!q.split(/\s+/).every(t=>hay.includes(t)))return false}
+  return true;
+}
+function sorter(mode){
+  const tie=(a,b)=>String(a.app_num||'').localeCompare(String(b.app_num||''),undefined,{numeric:true});
+  if(mode==='filed_asc')return(a,b)=>(filedValue(a)-filedValue(b))||tie(a,b);
+  if(mode==='acres_desc')return(a,b)=>((Number(b.acres)||-1)-(Number(a.acres)||-1))||tie(a,b);
+  if(mode==='hearing_asc')return(a,b)=>{const ha=nextHearing(a),hb=nextHearing(b);const va=ha?dateOnly(ha.date):Infinity,vb=hb?dateOnly(hb.date):Infinity;return (va===vb?0:va<vb?-1:1)||(filedValue(b)-filedValue(a))};
+  if(mode==='changed_desc')return(a,b)=>((dateOnly(b.status_changed)||dateOnly(b.first_seen)||0)-(dateOnly(a.status_changed)||dateOnly(a.first_seen)||0))||(filedValue(b)-filedValue(a));
+  return(a,b)=>(filedValue(b)-filedValue(a))||tie(b,a);
+}
+
+function badgesHtml(p){
+  const s=p.status||'Filed';
+  return `<span class="badge cat" title="${txt(p.category)}">${catCode(p.category)}</span><span class="badge" style="background:${statusColor(s)}">${txt(STATUS_LABEL[s]||s)}</span>${isNew(p)?'<span class="badge new">NEW</span>':''}${isChanged(p)&&!isNew(p)?'<span class="badge chg">CHANGED</span>':''}`;
+}
+function detailHtml(p){
+  const nh=nextHearing(p);
+  const rows=[
+    ['Category',[p.category,p.app_type&&p.app_type!==p.category?p.app_type:null].filter(Boolean).join(' · ')],
+    ['Status',(STATUS_LABEL[p.status]||p.status||'')+(p.status_raw&&String(p.status_raw).toLowerCase()!==String(p.status||'').toLowerCase()?` (${p.status_raw})`:'')],
+    ['Applicant',p.applicant],['Address',p.address],
+    ['Acreage',fmtAcres(p.acres)+(p.acres_source==='parcels'?' (from parcel data)':'')],
+    ['Zoning',(p.from_zoning||p.to_zoning)?`${p.from_zoning||'?'} → ${p.to_zoning||'?'}`:null],
+    ['Future land use',(p.from_flu||p.to_flu)?`${p.from_flu||'?'} → ${p.to_flu||'?'}`:null],
+    ['Filed',fmtDate(p.filed_date)],['Next hearing',nh?`${fmtDate(nh.date)}, ${nh.body}`:null],
+    ['Decision',p.decision_date?fmtDate(p.decision_date):null],
+    ['County',p.county],['First seen',fmtDate(p.first_seen)],['Last updated',fmtDate(p.last_seen)],['Source',p.source]
+  ].filter(r=>hasValue(r[1]));
+  let html=`<table class="popup-table">${rows.map(r=>`<tr><td>${r[0]}</td><td>${txt(r[1])}</td></tr>`).join('')}</table>`;
+  if(p.description&&p.description!==p.project_name&&p.description!==p.applicant&&!(p.description.length<=90&&!p.project_name&&!p.applicant))html+=`<div class="pop-desc">${txt(p.description)}</div>`;
+  if((p.parcel_ids||[]).length)html+=`<div class="pop-sec">Parcel IDs</div><div>${p.parcel_ids.map(x=>`<span class="pid">${txt(x)}</span>`).join('')}</div>`;
+  const hs=(p.hearings||[]).slice().sort((a,b)=>String(a.date).localeCompare(String(b.date)));
+  if(hs.length)html+=`<div class="pop-sec">Hearing timeline</div><ul class="timeline">${hs.map(h=>{const fut=(dateOnly(h.date)??0)>=TODAY;return `<li class="${fut?'future':'past'}"><span class="t-date">${txt(fmtDate(h.date))}</span> ${txt(h.body)}${h.result?` <span class="t-res">· ${txt(h.result)}</span>`:fut?' <span class="t-res">· upcoming</span>':''}</li>`}).join('')}</ul>`;
+  const hist=p.history||[];
+  if(hist.length)html+=`<div class="pop-sec">Status history</div><ul class="timeline">${hist.map(h=>`<li class="past"><span class="t-date">${txt(fmtDate(h.date))}</span> ${h.from?`${txt(STATUS_LABEL[h.from]||h.from)} → `:'First tracked as '}${txt(STATUS_LABEL[h.status]||h.status)}</li>`).join('')}</ul>`;
+  html+=`<div>${p.url?`<a class="popup-link" href="${escapeHtml(p.url)}" target="_blank" rel="noopener noreferrer">Open application ↗</a>`:''}${p.docs_url?`<a class="popup-link alt" href="${escapeHtml(p.docs_url)}" target="_blank" rel="noopener noreferrer">Documents ↗</a>`:''}</div>`;
+  html+=`<span class="copy-slot"></span>`;
+  return html;
+}
+function copyAddressText(p){if(p.address)return p.address+(p.county&&!/,\s*FL\b/i.test(p.address)?`, ${p.county} County, FL`:'');if(hasValue(p.lat))return `${Number(p.lat).toFixed(6)}, ${Number(p.lon).toFixed(6)}`;return (p.parcel_ids||[]).join(', ')}
+function popupNode(p){
+  const wrap=document.createElement('div');wrap.style.fontFamily='Arial,sans-serif';wrap.style.minWidth='250px';
+  const pdesc=p.description?(p.description.length>90?p.description.slice(0,88)+'...':p.description):'';
+  wrap.innerHTML=`<div class="popup-title">${txt(p.project_name||p.applicant||pdesc||p.address||(p.category+' '+p.app_num))}</div><div class="popup-sub">#${txt(p.app_num)} · ${txt(p.jurisdiction)}</div><div class="pc-badges">${badgesHtml(p)}</div>`+detailHtml(p);
+  const slot=wrap.querySelector('.copy-slot');const btn=copyButtonNode(copyAddressText(p));btn.textContent=p.address?'Copy Address':'Copy Location';btn.dataset.label=btn.textContent;slot.replaceWith(btn);
+  return wrap;
+}
+function markerSize(p){if(!hasValue(p.acres))return 22;return Math.round(Math.min(20+Math.log(Number(p.acres)+1)*3.4,44))}
+function buildMarker(p){
+  const sz=markerSize(p),code=catCode(p.category),nw=isNew(p);
+  const icon=L.divIcon({className:'rz-icon',iconSize:[sz,sz],iconAnchor:[sz/2,sz/2],popupAnchor:[0,-sz/2],
+    html:`<div class="rz-pin cat-${code}${nw?' is-new':''}${hasValue(p.acres)?'':' unk'}"><span class="rz-shape" style="background:${statusColor(p.status)}"></span><span class="rz-letter" style="font-size:${code==='CPA'?(sz>26?9:8):(sz>26?11:10)}px">${code}</span>${nw?'<span class="rz-new-tag">NEW</span>':''}</div>`});
+  const m=L.marker([Number(p.lat),Number(p.lon)],{icon,zIndexOffset:(nw?2000:0)+Math.round(1000-sz*10),title:`${p.app_num} ${p.project_name||''}`.trim(),riseOnHover:true});
+  m.bindPopup(()=>popupNode(p),{maxWidth:340,minWidth:260,maxHeight:380,autoPanPaddingTopLeft:[20,20]});
+  m.on('click',()=>highlightRow(p._idx));return m;
+}
+function buildRow(p){
+  const row=document.createElement('div');row.className='rz-card';row.style.borderLeftColor=statusColor(p.status);
+  const nh=nextHearing(p),ch=changeText(p),loc=hasValue(p.lat)&&hasValue(p.lon);
+  const shortDesc=p.description?(p.description.length>90?p.description.slice(0,88)+'...':p.description):'';
+  const title=p.project_name||p.applicant||shortDesc||p.address||p.app_type||'(Unnamed application)';
+  const sub=p.project_name?(p.applicant||p.address||''):((p.applicant||shortDesc)&&title!==p.address?(p.address||''):'');
+  row.innerHTML=`<div class="pc-meta">${p.filed_date?'Filed '+txt(fmtDate(p.filed_date)):'First seen '+txt(fmtDate(p.first_seen))} · ${txt(p.jurisdiction)} · #${txt(p.app_num)}</div><div class="pc-title">${txt(title)}</div>${sub?`<div class="pc-permittee">${txt(sub)}</div>`:''}<div class="pc-badges">${badgesHtml(p)}</div><div class="pc-footer"><span class="badge ac">${fmtAcres(p.acres)}</span><span class="pc-change">${txt(ch)}</span></div>${nh?`<div class="pc-hearing">Next hearing: <b>${txt(fmtDate(nh.date))}</b> · ${txt(nh.body)}</div>`:''}${loc?'':'<div class="pc-noloc">No map location. Tap for details.</div>'}`;
+  row.addEventListener('click',e=>{if(e.target.closest('.pc-detail'))return;selectRecord(p,row)});return row;
+}
+function applyFilters(){
+  filtered=RECORDS.filter(passesFilters).sort(sorter(document.getElementById('sort-filter').value));
+  markersLayer.clearLayers();markerByIndex.clear();rowByIndex.clear();
+  const list=document.getElementById('list');list.innerHTML='';const frag=document.createDocumentFragment();
+  let nNew=0,nHear=0,nAppr=0,noLoc=0;
+  filtered.forEach(p=>{
+    if(isNew(p))nNew++;const nh=nextHearing(p);if(nh&&daysBetween(dateOnly(nh.date),TODAY)<=30)nHear++;
+    const dv=decisionValue(p);if(p.status==='Approved'&&dv!==null&&daysBetween(TODAY,dv)<=30)nAppr++;
+    if(hasValue(p.lat)&&hasValue(p.lon)){const m=buildMarker(p);markerByIndex.set(p._idx,m);markersLayer.addLayer(m)}else noLoc++;
+    const row=buildRow(p);rowByIndex.set(p._idx,row);frag.appendChild(row);
+  });
+  list.appendChild(frag);
+  if(!filtered.length)list.innerHTML='<div class="no-results">No applications match the current filters.</div>';
+  document.getElementById('count').innerHTML=`<span>${filtered.length.toLocaleString()} applications shown</span>${noLoc?`<span>${noLoc.toLocaleString()} not mapped</span>`:''}`;
+  document.getElementById('sum-total').textContent=filtered.length.toLocaleString();document.getElementById('sum-new').textContent=nNew.toLocaleString();document.getElementById('sum-hear').textContent=nHear.toLocaleString();document.getElementById('sum-appr').textContent=nAppr.toLocaleString();
+  fitVisible(false);
+}
+function highlightRow(idx){document.querySelectorAll('.rz-card').forEach(r=>r.classList.remove('active'));const row=rowByIndex.get(idx);if(row){row.classList.add('active');row.scrollIntoView({behavior:'smooth',block:'nearest'})}}
+function selectRecord(p,row){
+  highlightRow(p._idx);const marker=markerByIndex.get(p._idx);
+  if(marker){map.flyTo([Number(p.lat),Number(p.lon)],Math.max(map.getZoom(),14),{duration:.6});setTimeout(()=>marker.openPopup(),650);return}
+  const ex=row.querySelector('.pc-detail');if(ex){ex.remove();return}
+  const d=document.createElement('div');d.className='pc-detail';d.appendChild(popupNode(p));row.appendChild(d);
+}
+function fitVisible(animate=true){const pts=filtered.filter(p=>hasValue(p.lat)&&hasValue(p.lon)).map(p=>[Number(p.lat),Number(p.lon)]);if(pts.length)map.fitBounds(L.latLngBounds(pts),{padding:[35,35],animate,maxZoom:14});else map.setView([28.0,-82.5],8)}
+
+window.copyMapAddress=function(text){
+  text=text||'';
+  function fallbackCopy(){const ta=document.createElement('textarea');ta.value=text;ta.setAttribute('readonly','');ta.style.position='fixed';ta.style.left='-9999px';ta.style.top='0';document.body.appendChild(ta);ta.focus();ta.select();try{document.execCommand('copy');}catch(e){}document.body.removeChild(ta);}
+  if(navigator.clipboard&&window.isSecureContext&&navigator.clipboard.writeText){navigator.clipboard.writeText(text).catch(fallbackCopy);}else{fallbackCopy();}
+};
+function jsonpArcgis(endpoint,params){
+  return new Promise((resolve,reject)=>{
+    const cb='jsonp_cb_'+Date.now()+'_'+Math.round(Math.random()*100000);const script=document.createElement('script');
+    const qs=new URLSearchParams({...params,f:'json',callback:cb}).toString();
+    const timer=setTimeout(()=>{cleanup();reject(new Error('Geocode timed out'));},12000);
+    function cleanup(){clearTimeout(timer);delete window[cb];if(script.parentNode)script.parentNode.removeChild(script);}
+    window[cb]=function(data){cleanup();resolve(data);};script.onerror=function(){cleanup();reject(new Error('Geocode failed'));};
+    script.src=endpoint+'?'+qs;document.body.appendChild(script);
+  });
+}
+function copyButtonNode(addr){
+  const btn=document.createElement('button');btn.type='button';btn.textContent='Copy Address';btn.dataset.label='Copy Address';
+  btn.style.marginTop='7px';btn.style.background='#ef1f25';btn.style.color='#fff';btn.style.border='0';btn.style.borderRadius='7px';btn.style.padding='6px 9px';btn.style.fontWeight='800';btn.style.cursor='pointer';
+  btn.addEventListener('click',function(e){e.preventDefault();e.stopPropagation();if(window.L&&L.DomEvent){L.DomEvent.stop(e);}window.copyMapAddress(addr||'');btn.textContent='Copied';setTimeout(()=>btn.textContent=btn.dataset.label||'Copy Address',1200);});
+  return btn;
+}
+function addressPopupNode(addr,latlng){
+  const wrap=document.createElement('div');wrap.style.fontFamily='Arial,sans-serif';wrap.style.minWidth='220px';
+  if(window.L&&L.DomEvent){L.DomEvent.disableClickPropagation(wrap);L.DomEvent.disableScrollPropagation(wrap);}
+  const b=document.createElement('b');b.textContent=addr||'No address found';wrap.appendChild(b);
+  if(latlng){wrap.appendChild(document.createElement('br'));const small=document.createElement('span');small.style.fontSize='10px';small.style.color='#667085';small.textContent=Number(latlng.lat).toFixed(6)+', '+Number(latlng.lng).toFixed(6);wrap.appendChild(small);}
+  wrap.appendChild(document.createElement('br'));wrap.appendChild(copyButtonNode(addr||''));return wrap;
+}
+function pickStreetAddressFromArcgis(result,fallback){
+  const a=(result&&(result.attributes||result.address))||{};if(typeof a==='string')return a||fallback||'No address found';
+  const place=String(a.PlaceName||a.Name||'').trim();const parts=[];
+  const street=String(a.Address||a.StAddr||a.StreetName||a.ShortLabel||'').trim();const city=String(a.City||a.Municipality||a.Subregion||'').trim();
+  const region=String(a.RegionAbbr||a.Region||'').trim();const postal=String(a.Postal||a.PostalExt||'').trim();
+  if(street&&street.toLowerCase()!==place.toLowerCase())parts.push(street);if(city)parts.push(city);
+  const stateZip=[region,postal].filter(Boolean).join(' ');if(stateZip)parts.push(stateZip);if(parts.length)return parts.join(', ');
+  const longLabel=String(a.LongLabel||a.Match_addr||a.MatchAddr||fallback||'').trim();
+  if(place&&longLabel.toLowerCase().startsWith(place.toLowerCase())){const stripped=longLabel.slice(place.length).replace(/^[\s,;-]+/,'').trim();if(stripped)return stripped;}
+  return longLabel||fallback||'No address found';
+}
+window.geocodeAddressSearch=async function(){
+  const q=document.getElementById('address-search').value.trim();
+  if(!q){document.getElementById('more').open=true;document.getElementById('address-search').focus();return;}
+  const endpoint='https://geocode.arcgis.com/arcgis/rest/services/World/GeocodeServer/findAddressCandidates';
+  try{const data=await jsonpArcgis(endpoint,{maxLocations:1,outFields:'*',SingleLine:q});const c=data.candidates&&data.candidates[0];
+    if(!c||!c.location){alert('No address match found.');return;}
+    const lat=c.location.y,lon=c.location.x,addr=pickStreetAddressFromArcgis(c,c.address||q);const latlng=L.latLng(lat,lon);
+    map.flyTo(latlng,16,{duration:.7});setTimeout(()=>L.popup().setLatLng(latlng).setContent(addressPopupNode(addr,latlng)).openOn(map),250);
+  }catch(e){alert('Address search failed.');console.error(e);}
+};
+async function onMapClickAddress(e){
+  const lat=e.latlng.lat,lon=e.latlng.lng;const endpoint='https://geocode.arcgis.com/arcgis/rest/services/World/GeocodeServer/reverseGeocode';
+  try{const data=await jsonpArcgis(endpoint,{location:lon+','+lat,distance:80,outSR:4326});const addr=pickStreetAddressFromArcgis(data,`${lat.toFixed(6)}, ${lon.toFixed(6)}`);L.popup().setLatLng(e.latlng).setContent(addressPopupNode(addr,e.latlng)).openOn(map);}
+  catch(err){const addr=`${lat.toFixed(6)}, ${lon.toFixed(6)}`;L.popup().setLatLng(e.latlng).setContent(addressPopupNode(addr,e.latlng)).openOn(map);}
+}
+function setupAddressSearchControls(){
+  const btn=document.getElementById('zoom-address-btn');if(btn)btn.addEventListener('click',function(e){e.preventDefault();window.geocodeAddressSearch();});
+  const input=document.getElementById('address-search');if(input)input.addEventListener('keydown',function(e){if(e.key==='Enter'){e.preventDefault();window.geocodeAddressSearch();}});
+}
+function setupPanelToggle(){
+  const t=document.getElementById('panel-toggle'),panel=document.getElementById('panel'),ft=document.getElementById('filters-toggle');
+  ft.addEventListener('click',()=>{const on=panel.classList.toggle('show-filters');ft.classList.toggle('on',on);ft.setAttribute('aria-expanded',String(on));if(panel.classList.contains('collapsed'))t.click();document.getElementById('panel-body').scrollTop=0});
+  t.addEventListener('click',()=>{const c=panel.classList.toggle('collapsed');t.textContent=c?'Show list':'Hide list';t.setAttribute('aria-expanded',String(!c));setTimeout(()=>map.invalidateSize(),60)});
+  window.addEventListener('resize',()=>map.invalidateSize());
+}
+function resetFilters(){
+  ['status-filter','category-filter'].forEach(id=>document.getElementById(id).value='all');document.getElementById('sort-filter').value='filed_desc';document.getElementById('unk-filter').value='show';
+  ['search-filter','acres-filter','from-filter','to-filter'].forEach(id=>document.getElementById(id).value='');
+  [['new-filter','chip-new'],['changed-filter','chip-chg'],['hearing-filter','chip-hear']].forEach(([id,chip])=>{document.getElementById(id).checked=false;document.getElementById(chip).classList.remove('on')});
+  selectedJuris.clear();document.querySelectorAll('#juris-menu input').forEach(i=>i.checked=false);updateJurisBtn();applyFilters();
+}
+(async function init(){await loadData();initMap();populateFilters();setupAddressSearchControls();setupPanelToggle();applyFilters()})();
+</script>
+</body>
+</html>
