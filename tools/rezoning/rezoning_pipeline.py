@@ -334,6 +334,17 @@ with open(outfile, "a") as fh:
 """
 
 
+APN_RUNNER = r"""
+import json, sys, os
+rzdir, county, idfile, outfile = sys.argv[1:5]
+sys.path.insert(0, rzdir)
+import parcels
+ids = json.load(open(idfile))
+res = parcels.lookup(county, ids) or {}
+json.dump({k: {"norm_id": v.get("norm_id"), "alt_key": v.get("alt_key")} for k, v in res.items()},
+          open(outfile, "w"), default=str)
+"""
+
 def run_subprocess(argv, timeout, log_path, cwd):
     """Run argv in its own process group; kill the whole group on timeout.
     Returns (returncode or None on timeout, stderr tail)."""
@@ -555,6 +566,113 @@ def enrich(records, existing, timeout, workdir, parcels_dir=HERE):
     return info
 
 
+# ---------------------------------------------------------------- full parcel numbers (APNs)
+# parcel_ids are kept exactly as the source posted them. apns holds the full parcel number for
+# each one (same order) for display: Hillsborough folio -> PIN; a short Alternate Key / PA key in
+# Lake, Citrus, Marion or Hernando -> that county's parcel number. Everything else is already the
+# full number and is copied as is. apns_src records the parcel_ids the apns were built from, so a
+# record is only looked up again when its parcel_ids change or a lookup was incomplete.
+APN_PIN_RE = re.compile(r"^[A-Z]-\d{2}-\d{2}-\d{2}-")
+APN_ALTKEY_COUNTIES = {"Lake", "Citrus", "Marion", "Hernando"}
+
+
+def _apn_needs_lookup(county, pid):
+    if county == "Hillsborough":
+        return not APN_PIN_RE.match(pid)
+    if county in APN_ALTKEY_COUNTIES:
+        return bool(re.fullmatch(r"\d{1,9}", re.sub(r"[\s-]", "", pid)))
+    return False
+
+
+def _apn_value(county, hit):
+    if not isinstance(hit, dict):
+        return None
+    if county == "Hillsborough":
+        v = hit.get("alt_key")
+        return v if v and APN_PIN_RE.match(str(v)) else None
+    v = hit.get("norm_id")
+    return v if v and not re.fullmatch(r"\d{1,9}", re.sub(r"[\s-]", "", str(v))) else None
+
+
+def fill_apns(records, timeout, workdir, parcels_dir=HERE):
+    """Set r['apns'] (full parcel numbers, aligned with r['parcel_ids']) where missing or stale."""
+    if not os.path.exists(os.path.join(parcels_dir, "parcels.py")):
+        return {"status": "skipped", "reason": "parcels.py missing"}
+    todo, need = [], {}
+    for r in records:
+        pids = list(r.get("parcel_ids") or [])
+        if not pids:
+            r.pop("apns", None)
+            r.pop("apns_src", None)
+            continue
+        if r.get("apns_src") == pids and len(r.get("apns") or []) == len(pids):
+            continue
+        county = r.get("county") or ""
+        todo.append(r)
+        for pid in pids:
+            if _apn_needs_lookup(county, pid):
+                need.setdefault(county, set()).add(pid)
+    found, problems, t0 = {}, [], time.time()
+    deadline = t0 + timeout
+    procs = []
+    for county, ids in need.items():
+        slug = slugify(county) or "unknown"
+        idfile = os.path.join(workdir, f"apns.{slug}.ids.json")
+        outfile = os.path.join(workdir, f"apns.{slug}.out.json")
+        json.dump(sorted(ids), open(idfile, "w"))
+        if os.path.exists(outfile):
+            os.remove(outfile)
+        logf = open(os.path.join(workdir, f"apns.{slug}.log"), "w")
+        proc = subprocess.Popen([sys.executable, "-c", APN_RUNNER, parcels_dir, county, idfile, outfile],
+                                cwd=HERE, stdout=logf, stderr=subprocess.STDOUT, start_new_session=True)
+        procs.append((county, proc, logf, outfile))
+    for county, proc, logf, outfile in procs:
+        try:
+            rc = proc.wait(timeout=max(1, deadline - time.time()))
+        except subprocess.TimeoutExpired:
+            try:
+                os.killpg(proc.pid, signal.SIGKILL)
+            except Exception:  # noqa: BLE001
+                proc.kill()
+            proc.wait()
+            rc = "timeout"
+        logf.close()
+        if rc != 0:
+            problems.append(f"{county}: {'timed out' if rc == 'timeout' else 'exit ' + str(rc)}")
+            continue
+        try:
+            for k, v in (json.load(open(outfile)) or {}).items():
+                found[(county, k)] = v
+        except (OSError, ValueError) as e:
+            problems.append(f"{county}: bad output ({e})")
+    converted = unresolved = 0
+    for r in todo:
+        county = r.get("county") or ""
+        pids = list(r["parcel_ids"])
+        out, complete = [], True
+        for pid in pids:
+            if _apn_needs_lookup(county, pid):
+                v = _apn_value(county, found.get((county, pid)))
+                if v:
+                    converted += 1
+                else:
+                    complete = False
+                    unresolved += 1
+                out.append(v or pid)
+            else:
+                out.append(pid)
+        r["apns"] = out
+        if complete:
+            r["apns_src"] = pids
+        else:
+            r.pop("apns_src", None)  # try again next run
+    info = {"status": "ok" if not problems else "partial", "records": len(todo),
+            "converted": converted, "unresolved": unresolved, "seconds": round(time.time() - t0, 1)}
+    if problems:
+        info["error"] = "; ".join(problems)[:300]
+    log(f"apns: {info}")
+    return info
+
 # ---------------------------------------------------------------- merge
 MERGE_FIELDS = STR_FIELDS + ("parcel_ids", "acres", "lat", "lon", "acres_source", "location_source",
                              "adapter")
@@ -745,6 +863,7 @@ def build_digest(records, new_ids, changes, health, run_date, enrich_info):
         "source_health": health,
         "source_problems": problems,
         "enrichment": enrich_info,
+        "apns": apn_info,
     }
 
 
@@ -862,6 +981,7 @@ def main(argv=None):
     ap.add_argument("--parallel", type=int, default=4, help="adapters to run at once (1 = sequential)")
     ap.add_argument("--enrich-timeout", type=int, default=1200, help="seconds for all parcel lookups")
     ap.add_argument("--parcels-dir", default=HERE, help="directory holding parcels.py")
+    ap.add_argument("--apn-timeout", type=int, default=900, help="seconds for full parcel number lookups")
     ap.add_argument("--log-dir", help="keep adapter logs here (default: temp dir, deleted)")
     a = ap.parse_args(argv)
 
@@ -908,6 +1028,11 @@ def main(argv=None):
     fresh, dropped_cat, dropped_small = apply_filters(fresh)
     records, new_ids, changes = merge(db_records, fresh, run_date)
     records = sort_records(records)
+    try:
+        apn_info = fill_apns(records, a.apn_timeout, workdir, a.parcels_dir)
+    except Exception as e:  # noqa: BLE001
+        apn_info = {"status": "failed", "error": str(e)[:300]}
+        log(f"apn lookup crashed: {e}")
 
     covered = set(old_meta.get("covered_jurisdictions") or [])
     for h in health:
@@ -940,6 +1065,7 @@ def main(argv=None):
         "adapter_health": health,
         "failed_sources": failed,
         "enrichment": enrich_info,
+        "apns": apn_info,
         "covered_jurisdictions": sorted(covered),
         "covered_adapters": sorted(covered_adapters),
         "located_count": sum(1 for r in records if r.get("lat") is not None),

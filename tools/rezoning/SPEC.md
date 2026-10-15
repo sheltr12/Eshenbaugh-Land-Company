@@ -46,6 +46,10 @@ project_name   str|None
 description    str|None  short request summary, e.g. "Rezone 42.1 ac from AG to PD for 120 SF lots"
 applicant      str|None  applicant / owner / agent (prefer applicant; include agent if that's all there is)
 parcel_ids     list[str] parcel/folio IDs in the county property-appraiser format (may be empty)
+                     (adapters return IDs exactly as the source posts them; the pipeline adds
+                     `apns`, the full parcel number for each one in the same order, used for display:
+                     Hillsborough folio -> PIN, Lake/Citrus/Marion/Hernando alternate key -> parcel
+                     number, all other counties copied as is. Do not set apns in an adapter.)
 address        str|None
 acres          float|None
 from_zoning    str|None   to_zoning   str|None
