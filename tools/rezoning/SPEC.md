@@ -48,8 +48,9 @@ applicant      str|None  applicant / owner / agent (prefer applicant; include ag
 parcel_ids     list[str] parcel/folio IDs in the county property-appraiser format (may be empty)
                      (adapters return IDs exactly as the source posts them; the pipeline adds
                      `apns`, the full parcel number for each one in the same order, used for display:
-                     Hillsborough folio -> PIN, Lake/Citrus/Marion/Hernando alternate key -> parcel
-                     number, all other counties copied as is. Do not set apns in an adapter.)
+                     Hillsborough folio -> PIN, Lake/Citrus/Marion/Hernando/Volusia alternate key and
+                     Brevard tax account -> parcel number, undashed Osceola/Orange/Seminole number ->
+                     dashed PA format, all other counties copied as is. Do not set apns in an adapter.)
 address        str|None
 acres          float|None
 from_zoning    str|None   to_zoning   str|None

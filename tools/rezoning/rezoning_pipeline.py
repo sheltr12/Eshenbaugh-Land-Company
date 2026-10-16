@@ -568,12 +568,15 @@ def enrich(records, existing, timeout, workdir, parcels_dir=HERE):
 
 # ---------------------------------------------------------------- full parcel numbers (APNs)
 # parcel_ids are kept exactly as the source posted them. apns holds the full parcel number for
-# each one (same order) for display: Hillsborough folio -> PIN; a short Alternate Key / PA key in
-# Lake, Citrus, Marion or Hernando -> that county's parcel number. Everything else is already the
+# each one (same order) for display: Hillsborough folio -> PIN; a short Alternate Key / PA key /
+# tax account in Lake, Citrus, Marion, Hernando, Volusia or Brevard -> that county's parcel number;
+# an undashed Osceola / Orange / Seminole number -> the PA's dashed display format. Everything else is already the
 # full number and is copied as is. apns_src records the parcel_ids the apns were built from, so a
 # record is only looked up again when its parcel_ids change or a lookup was incomplete.
 APN_PIN_RE = re.compile(r"^[A-Z]-\d{2}-\d{2}-\d{2}-")
-APN_ALTKEY_COUNTIES = {"Lake", "Citrus", "Marion", "Hernando"}
+APN_ALTKEY_COUNTIES = {"Lake", "Citrus", "Marion", "Hernando", "Volusia", "Brevard"}
+# counties whose sources sometimes print the parcel number with no separators
+APN_COMPACT_COUNTIES = {"Osceola", "Orange", "Seminole"}
 
 
 def _apn_needs_lookup(county, pid):
@@ -581,6 +584,8 @@ def _apn_needs_lookup(county, pid):
         return not APN_PIN_RE.match(pid)
     if county in APN_ALTKEY_COUNTIES:
         return bool(re.fullmatch(r"\d{1,9}", re.sub(r"[\s-]", "", pid)))
+    if county in APN_COMPACT_COUNTIES:
+        return bool(re.fullmatch(r"[0-9A-Za-z]{12,}", pid))
     return False
 
 
@@ -863,7 +868,6 @@ def build_digest(records, new_ids, changes, health, run_date, enrich_info):
         "source_health": health,
         "source_problems": problems,
         "enrichment": enrich_info,
-        "apns": apn_info,
     }
 
 

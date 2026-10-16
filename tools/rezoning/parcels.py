@@ -27,6 +27,14 @@ Cadastral layer as a fallback; the statewide layer also fills missing site addre
   Alachua       services1.arcgis.com (Alachua Co.) Parcels35/FeatureServer/0   (parcel)
   Citrus        statewide layer (PARCELNO fixed-width, ALT_KEY), then county
                 maps.citrusbocc.com LandDevelopment/MapServer/0 lots by ALTKEY
+  Orange        ocgis4.ocfl.net AGOL_Open_Data/MapServer/56                    (PARCEL rng-twp-sec, SEC_TWN_RNG display)
+                vgispublic.ocpafl.org DYNAMIC/Dynamic_Parcels/MapServer/3      (OCPA, same fields)
+  Seminole      utility.arcgis.com/usrsvcs/servers/9b9c9fd4.../InformationKiosk/MapServer/1
+                (county kiosk via the ArcGIS Online proxy; ParcelNumber, ParcelFormat; the county's own
+                gis.seminolecountyfl.gov and scpagis.scpafl.org refuse connections from here)
+  Osceola       paags.property-appraiser.org FabricParcel/MapServer/0          (Osceola PA: PARCELID, dsp_strap)
+  Volusia       maps5.vcgov.org Open_Data/Open_Data_3/FeatureServer/34         (PID short, ALTKEY)
+  Brevard       gis.brevardfl.gov Base_Map/Parcel_New_WKID2881/MapServer/5     (PARCEL_ID 'TT RRSS-..', TaxAcct)
   fallback      services9.arcgis.com Florida_Statewide_Cadastral/FeatureServer/0 (CO_NO + PARCEL_ID / ALT_KEY)
 
 ID normalization (input -> canonical value(s) queried; several candidates are tried in order
@@ -62,6 +70,26 @@ when the input is ambiguous, the first one that exists wins and "ambiguous" is s
                 1-3 blank-able fields). Matched against the statewide fixed-width PARCELNO
                 ('18E20S060020        0040') by LIKE on the tokens + exact compare with blanks
                 removed; 1-7 digit input = AltKey. norm_id = '18E-20S-06-0020-0040', alt_key = AltKey.
+  Orange        OCPA display 'SS-TT-RR-SSSS-BB-LLL' (sec-twp-rng, e.g. '28-22-29-0000-00-001'; dashes,
+                spaces or none) and the OCPA compact / URL form rng-twp-sec ('292228000000001'). Dashed
+                input is read sec-twp-rng first, 15 undashed digits rng-twp-sec first; the other reading is
+                tried when its numbers fit (twp 19-25, rng 26-34), so 'ambiguous' is set when both exist
+                (e.g. sec 27 rng 30 vs sec 30 rng 27). Queried on PARCEL (rng-twp-sec).
+                norm_id = 'SS-TT-RR-SSSS-BB-LLL', alt_key None, pa_url = ocpaweb.ocpafl.org Parcel ID link.
+  Seminole      'SS-TT-RR-SSS-BBBB-LLLL' (sec-twp-rng, alphanumeric, e.g. '26-20-30-5AR-0000-0010'),
+                tokens padded (2,2,2,3,4,4) or 17 chars undashed. norm_id = PA ParcelFormat, alt_key None.
+  Osceola       'SS-TT-RR-SSSS-BBBB-LLLL' (sec-twp-rng, alphanumeric block/lot, e.g. '05-25-27-4092-0001-1890'),
+                optional leading 'R' ('R052527-409200011890'), 18 chars undashed accepted.
+                norm_id = PA dsp_strap, alt_key None (the statewide ALT_KEY is not used by the PA).
+  Volusia       1-8 digit input = altkey ('3967402'). Short PID 'PPPP-SS-BB-LLLL' ('8402-41-00-0160', i.e. twp
+                last digit, rng last digit, sec, sub, block, lot; 12 chars undashed, lot may be alphanumeric).
+                Full PID sec-twp-rng '02-18-34-41-00-0160' / '021834-41-00-0160' (or DOR rng-twp-sec order) is
+                converted to the short PID. norm_id = 'PPPP-SS-BB-LLLL', alt_key = altkey.
+  Brevard       1-8 digit input = tax account ('2105702'). BCPAO parcel ID twp-rng-sec-sub-blk-lot
+                '21-35-29-02-*-11' (township may be '20G'; lot optional for acreage parcels '28-36-03-00-4'),
+                the layer form '21 3529-02-*-11', and the long zero-padded form '24-36-23-00-00001.0-0000.00'
+                (block/lot zeros and '.0' / '.00' stripped, the as-typed form tried second). Queried on PARCEL_ID.
+                norm_id = '21-35-29-02-*-11', alt_key = tax account, pa_url = bcpao.us account link.
 
 Cache: set RZ_PARCEL_CACHE=/path/cache.json to cache hits (180 d) and misses (5 d).
 Only python stdlib + requests.
@@ -224,7 +252,7 @@ def _addr(street, city=None, zipc=None):
     street = _clean(street)
     if street:
         street = re.sub(r'^0+\s+', '', street) or None
-    if not street:
+    if not street or street.upper() == 'UNKNOWN':  # Brevard / statewide placeholder
         return None
     tail = ' '.join(x for x in [_clean(city), _clean(zipc)] if x)
     return f'{street}, {tail}' if tail else street
@@ -251,19 +279,20 @@ class Src:
         self.slow = set(slow)     # kinds on unindexed fields: single try
 
 
-def _sw_rec(pa_url=None, norm=None):
+def _sw_rec(pa_url=None, norm=None, alt=None):
     def rec(a):
         z = _int_str(a.get('PHY_ZIPCD'))
         return dict(address=_addr(a.get('PHY_ADDR1'), a.get('PHY_CITY'), z if z and z != '0' else None),
                     owner=_clean(a.get('OWN_NAME')), pa_url=pa_url(a) if pa_url else None,
                     norm_id=norm(a) if norm else _clean(a.get('PARCEL_ID')),
-                    alt_key=_clean(a.get('ALT_KEY')), pa_acres=None)
+                    alt_key=alt(a) if alt else _clean(a.get('ALT_KEY')), pa_acres=None)
     return rec
 
 
-def _sw(co_no, pa_url=None, norm=None, canon=None):
+def _sw(co_no, pa_url=None, norm=None, canon=None, alt=None):
     # PARCEL_ID / PARCELNO / CO_NO are indexed; ALT_KEY is not (a CO_NO-filtered ALT_KEY query takes ~45 s)
-    return Src('FL Statewide Cadastral', SW_URL, {'id': 'PARCEL_ID', 'alt': 'ALT_KEY'}, _sw_rec(pa_url, norm),
+    # alt: fn(attrs) -> alt_key, for counties whose statewide ALT_KEY is not the PA's alternate key
+    return Src('FL Statewide Cadastral', SW_URL, {'id': 'PARCEL_ID', 'alt': 'ALT_KEY'}, _sw_rec(pa_url, norm, alt),
                'PARCEL_ID,ALT_KEY,OWN_NAME,PHY_ADDR1,PHY_CITY,PHY_ZIPCD', where=f'CO_NO={co_no}', canon=canon,
                slow=('alt',))
 
@@ -576,6 +605,191 @@ def _cit_lots_rec(a):
     return dict(address=None, owner=None, pa_url=_cit_pa(a), norm_id=_cit_dsp(a.get('PARCELID')), alt_key=ak, pa_acres=None)
 
 
+def _names(*xs):
+    return _clean(' '.join(str(x).strip() for x in xs if x and str(x).strip()))
+
+
+def _dashed(pid, widths):
+    p = _split(_clean(pid) or '', widths)
+    return '-'.join(p) if p else _clean(pid)
+
+
+# ---- Orange (OCPA display 'SS-TT-RR-SSSS-BB-LLL' sec-twp-rng; county GIS PARCEL / OCPA URL = rng-twp-sec)
+_ORA_W = (2, 2, 2, 4, 2, 3)
+
+
+def _ora_norm(raw):
+    p = _parts(raw, _ORA_W)
+    if not p or not ''.join(p).isdigit():
+        return []
+    ok = lambda x: 1 <= int(x[0]) <= 36 and 19 <= int(x[1]) <= 25 and 26 <= int(x[2]) <= 34  # noqa: E731 (sec, twp, rng)
+    a = p                           # as given: sec-twp-rng (OCPA display)
+    b = [p[2], p[1], p[0]] + p[3:]  # input was rng-twp-sec (OCPA compact / URL form)
+    order = [a, b] if len(_toks(raw)) > 1 else [b, a]  # undashed 15 digits: compact PA form first
+    out = []
+    for x in [x for x in order if ok(x)] or [a]:
+        v = ''.join([x[2], x[1], x[0]] + x[3:])  # queried as rng-twp-sec
+        if ('id', v) not in out:
+            out.append(('id', v))
+    return out
+
+
+def _ora_dsp(pid):  # rng-twp-sec compact -> 'SS-TT-RR-SSSS-BB-LLL'
+    p = _split(_clean(pid) or '', _ORA_W)
+    return '-'.join([p[2], p[1], p[0]] + p[3:]) if p else _clean(pid)
+
+
+def _ora_pa(pid):
+    return f'https://ocpaweb.ocpafl.org/parcelsearch/Parcel%20ID/{pid}' if pid else None
+
+
+def _ora_rec(a):
+    pid = _clean(a.get('PARCEL'))
+    return dict(address=_addr(a.get('SITUS'), a.get('SITUS_CITY'), a.get('SITUS_ZIP')),
+                owner=_names(a.get('NAME1'), a.get('NAME2')), pa_url=_ora_pa(pid),
+                norm_id=_clean(a.get('SEC_TWN_RNG')) or _ora_dsp(pid), alt_key=None, pa_acres=a.get('ACREAGE'))
+
+
+def _ora_sw(kind, v):  # county PARCEL rng-twp-sec -> statewide PARCEL_ID sec-twp-rng
+    return ('id', v[4:6] + v[2:4] + v[0:2] + v[6:]) if kind == 'id' and len(v) == 15 else None
+
+
+def _ora_sw_compact(a):  # statewide PARCEL_ID sec-twp-rng -> rng-twp-sec
+    v = _clean(a.get('PARCEL_ID')) or ''
+    return v[4:6] + v[2:4] + v[0:2] + v[6:] if len(v) == 15 else None
+
+
+# ---- Seminole ('SS-TT-RR-SSS-BBBB-LLLL', sec-twp-rng, alphanumeric sub/block/lot; layer stores 17 chars)
+_SEM_W = (2, 2, 2, 3, 4, 4)
+
+
+def _sem_norm(raw):
+    return [('id', v) for v in _str_order_candidates(raw, _SEM_W, 29, 33, sep='')]
+
+
+def _sem_pa(pid):
+    return f'https://scpafl.org/search/parcels/details/?PID={pid}' if pid else None
+
+
+def _sem_rec(a):
+    pid = _clean(a.get('ParcelNumber'))
+    return dict(address=_clean(a.get('PropertyAddress')), owner=_clean(a.get('OwnerName')), pa_url=_sem_pa(pid),
+                norm_id=_clean(a.get('ParcelFormat')) or _dashed(pid, _SEM_W), alt_key=None, pa_acres=a.get('GISAcres'))
+
+
+# ---- Osceola ('SS-TT-RR-SSSS-BBBB-LLLL', sec-twp-rng, alphanumeric block/lot; optional 'R' prefix)
+_OSC_W = (2, 2, 2, 4, 4, 4)
+
+
+def _osc_norm(raw):
+    s = re.sub(r'^\s*R(?=[\s\-]*\d)', '', str(raw).upper())
+    return [('id', v) for v in _str_order_candidates(s, _OSC_W, 26, 34, sep='')]
+
+
+def _osc_pa(pid):
+    return f'https://search.property-appraiser.org/Search/MainSearch?pin={pid}' if pid else None
+
+
+def _osc_rec(a):
+    pid = _clean(a.get('PARCELID'))
+    return dict(address=_addr(a.get('Situs')), owner=_clean('; '.join(x.strip() for x in str(a.get('Owners') or '').split(';') if x.strip())),
+                pa_url=_osc_pa(pid), norm_id=_clean(a.get('dsp_strap')) or _dashed(pid, _OSC_W), alt_key=None, pa_acres=None)
+
+
+# ---- Volusia (short PID 'PPPP-SS-BB-LLLL' = twp digit + rng digit + sec, sub, block, lot; 7-digit altkey)
+_VOL_W = (4, 2, 2, 4)
+
+
+def _vol_norm(raw):
+    s = str(raw).strip().upper()
+    q = _sq(s)
+    t = _toks(s)
+    if q.isdigit() and len(q) <= 8 and len(t) == 1:
+        return [('alt', str(int(q)))]
+    if len(t) == 4 and len(t[0]) == 6:      # full PID '091730-03-00-0190'
+        t = [t[0][:2], t[0][2:4], t[0][4:]] + t[1:]
+    full = _pad(t, (2, 2, 2, 2, 2, 4)) if len(t) == 6 else (_split(q, (2, 2, 2, 2, 2, 4)) if len(t) == 1 else None)
+    if full:                                # full PID sec-twp-rng (or DOR rng-twp-sec) -> short PID
+        out = []                            # (land-grant 'sections' run past 36, e.g. '3740-00-00-0010')
+        for sec, twp, rng in ((full[0], full[1], full[2]), (full[2], full[1], full[0])):
+            if (sec + twp + rng).isdigit() and 1 <= int(sec) <= 99 and 12 <= int(twp) <= 21 and 27 <= int(rng) <= 36:
+                v = twp[-1] + rng[-1] + sec + ''.join(full[3:])
+                if ('id', v) not in out:
+                    out.append(('id', v))
+        return out or [('id', full[1][-1] + full[2][-1] + full[0] + ''.join(full[3:]))]
+    p = _parts(s, _VOL_W)
+    return [('id', ''.join(p))] if p else []
+
+
+def _vol_pa(ak):
+    return f'https://vcpa.vcgov.org/parcel/summary/?altkey={ak}' if ak else None
+
+
+def _vol_rec(a):
+    ak = _int_str(a.get('ALTKEY'))
+    return dict(address=_addr(a.get('ADDRFULL'), a.get('CITYNAME'), a.get('ZIP1')), owner=_names(a.get('OWNER1'), a.get('OWNER2')),
+                pa_url=_vol_pa(ak), norm_id=_dashed(a.get('PID'), _VOL_W), alt_key=ak, pa_acres=a.get('CALCACRES'))
+
+
+# ---- Brevard (BCPAO 'TT-RR-SS-SUB-BLK-LOT' twp-rng-sec; layer stores 'TT RRSS-SUB-BLK-LOT', twp may be '20G';
+#      long form '24-36-23-00-00001.0-0000.00' zero-pads block/lot; 7-digit tax account)
+_BRE_RE = re.compile(r'^(\d{2}[A-Z]?)[\s-]*(\d{2})[\s-]*(\d{2})[\s-]+(\S.*)$')
+
+
+def _bre_part(tok):
+    """'00001.0' -> '1', '0000.00' -> '', '0004.03' -> '4.03', '0000B.0' -> 'B', '*' -> '*'."""
+    m = re.fullmatch(r'([0-9A-Z]*?)(\.[0-9A-Z]*)?', tok)
+    if not m:
+        return tok
+    head, frac = m.group(1).lstrip('0'), m.group(2) or ''
+    if re.fullmatch(r'\.0*', frac):
+        frac = ''
+    return head + frac
+
+
+def _bre_norm(raw):
+    s = str(raw).strip().upper()
+    q = _sq(s)
+    if q.isdigit() and len(q) <= 8 and not re.search(r'[\s\-.*]', s):
+        return [('alt', str(int(q)))]
+    m = _BRE_RE.match(s)
+    if not m:
+        return []
+    twp, rng, sec, rest = m.groups()
+    toks = [x for x in re.split(r'[\s-]+', rest) if x]
+    if not 2 <= len(toks) <= 3:
+        return []
+    head = f"{twp}{' ' if len(twp) == 2 else ''}{rng}{sec}-{toks[0].zfill(2)}-"
+    out = []
+    for parts in ([_bre_part(x) for x in toks[1:]], toks[1:]):  # zeros stripped first, then as typed
+        if len(parts) == 2 and not parts[1]:
+            parts = parts[:1]
+        if not parts[0]:
+            continue
+        v = head + '-'.join(parts)
+        if ('id', v) not in out:
+            out.append(('id', v))
+    return out
+
+
+def _bre_dsp(pid):
+    m = re.match(r'^(\d\d[A-Z]?)\s*(\d\d)(\d\d)-(.*)$', str(pid or '').strip())
+    return f'{m.group(1)}-{m.group(2)}-{m.group(3)}-{m.group(4)}' if m else _clean(pid)
+
+
+def _bre_pa(acct):
+    return f'https://www.bcpao.us/PropertySearch/#/account/{acct}' if acct else None
+
+
+def _bre_rec(a):
+    acct = _int_str(a.get('TaxAcct'))
+    st = _clean(a.get('STREET_NAME'))
+    street = None if not st or st == 'UNKNOWN' else _names(a.get('STREET_NUMBER'), a.get('STREET_DIRECTION_PREFIX'), st,
+                                                           a.get('STREET_TYPE'))
+    return dict(address=_addr(street, a.get('CITY'), a.get('ZIP_CODE')), owner=_names(a.get('OWNER_NAME1'), a.get('OWNER_NAME2')),
+                pa_url=_bre_pa(acct), norm_id=_bre_dsp(a.get('PARCEL_ID')), alt_key=acct, pa_acres=a.get('ACRES'))
+
+
 COUNTIES = {}
 
 
@@ -672,6 +886,49 @@ _reg(County('Citrus', 19, _cit_norm, [
 ], sw_map=lambda k, v: (k, v)))
 # the Citrus statewide source also answers the fixed-width parcel-number ('like') candidates
 COUNTIES['citrus'].sources[1].fields['like'] = 'PARCEL_ID'
+
+_ORA_OUT = 'PARCEL,SEC_TWN_RNG,NAME1,NAME2,SITUS,SITUS_CITY,SITUS_ZIP,ACREAGE'
+_reg(County('Orange', 58, _ora_norm, [
+    Src('Orange County Parcels (AGOL_Open_Data)', 'https://ocgis4.ocfl.net/arcgis/rest/services/AGOL_Open_Data/MapServer/56',
+        {'id': 'PARCEL'}, _ora_rec, _ORA_OUT),
+    Src('OCPA Parcels_Poly', 'https://vgispublic.ocpafl.org/server/rest/services/DYNAMIC/Dynamic_Parcels/MapServer/3',
+        {'id': 'PARCEL'}, _ora_rec, _ORA_OUT),
+    _sw(58, pa_url=lambda a: _ora_pa(_ora_sw_compact(a)), norm=lambda a: _dashed(a.get('PARCEL_ID'), _ORA_W),
+        alt=lambda a: None),
+], sw_map=_ora_sw))
+
+_reg(County('Seminole', 69, _sem_norm, [
+    Src('Seminole County Property Details (InformationKiosk)',
+        'https://utility.arcgis.com/usrsvcs/servers/9b9c9fd45bdc4c39a2bd518da39d1e1c/rest/services/InformationKiosk/MapServer/1',
+        {'id': 'ParcelNumber'}, _sem_rec, 'ParcelNumber,ParcelFormat,OwnerName,PropertyAddress,GISAcres'),
+    _sw(69, pa_url=lambda a: _sem_pa(_clean(a.get('PARCEL_ID'))), norm=lambda a: _dashed(a.get('PARCEL_ID'), _SEM_W),
+        alt=lambda a: None),
+], sw_map=lambda k, v: (k, v)))
+
+_reg(County('Osceola', 59, _osc_norm, [
+    Src('Osceola PA FabricParcel', 'https://paags.property-appraiser.org/server/rest/services/FabricParcel/MapServer/0',
+        {'id': 'PARCELID'}, _osc_rec, 'PARCELID,dsp_strap,Owners,Situs'),
+    _sw(59, pa_url=lambda a: _osc_pa(_clean(a.get('PARCEL_ID'))), norm=lambda a: _dashed(a.get('PARCEL_ID'), _OSC_W),
+        alt=lambda a: None),
+], sw_map=lambda k, v: (k, v)))
+
+_reg(County('Volusia', 74, _vol_norm, [
+    Src('Volusia County Parcel Ownership (Open_Data_3)',
+        'https://maps5.vcgov.org/arcgis/rest/services/Open_Data/Open_Data_3/FeatureServer/34',
+        {'id': 'PID', 'alt': 'ALTKEY'}, _vol_rec, 'ALTKEY,PID,ADDRFULL,CITYNAME,ZIP1,OWNER1,OWNER2,CALCACRES',
+        numeric=('alt',)),
+    _sw(74, pa_url=lambda a: _vol_pa(_int_str(a.get('ALT_KEY'))), norm=lambda a: _dashed(a.get('PARCEL_ID'), _VOL_W),
+        alt=lambda a: _int_str(a.get('ALT_KEY')), canon={'alt': lambda v: _int_str(v)}),
+], sw_map=lambda k, v: (k, v)))
+
+_reg(County('Brevard', 15, _bre_norm, [
+    Src('Brevard County Parcel Property', 'https://gis.brevardfl.gov/gissrv/rest/services/Base_Map/Parcel_New_WKID2881/MapServer/5',
+        {'id': 'PARCEL_ID', 'alt': 'TaxAcct'}, _bre_rec,
+        'TaxAcct,PARCEL_ID,OWNER_NAME1,OWNER_NAME2,STREET_NUMBER,STREET_DIRECTION_PREFIX,STREET_NAME,STREET_TYPE,CITY,ZIP_CODE,ACRES',
+        numeric=('alt',)),
+    _sw(15, pa_url=lambda a: _bre_pa(_int_str(a.get('ALT_KEY'))), norm=lambda a: _bre_dsp(a.get('PARCEL_ID')),
+        alt=lambda a: _int_str(a.get('ALT_KEY')), canon={'alt': lambda v: _int_str(v)}),
+], sw_map=lambda k, v: (k, v)))
 
 
 # ---------------------------------------------------------------- core
@@ -802,7 +1059,8 @@ def _county(name):
 
 def lookup(county: str, parcel_ids: list) -> dict:
     """county is one of: Hillsborough, Pasco, Pinellas, Manatee, Polk, Sarasota, Charlotte,
-    Hernando, Lake, Marion, Citrus, Alachua. parcel_ids are in whatever format a county planning
+    Hernando, Lake, Marion, Citrus, Alachua, Orange, Seminole, Osceola, Volusia, Brevard
+    ("X County" also accepted). parcel_ids are in whatever format a county planning
     portal shows them (dashes, dots, spaces vary). Returns {input_id: {"lat": float, "lon": float,
     "acres": float, "address": str|None, "owner": str|None, "pa_url": str|None, "norm_id": str}}
     for every id that was found (plus "alt_key", "source", and "ambiguous" when set).
