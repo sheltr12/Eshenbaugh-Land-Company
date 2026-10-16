@@ -1,7 +1,7 @@
 {
  "meta": {
   "title": "ELC Rezoning Tracker",
-  "generated": "2026-10-16T15:41:01+00:00",
+  "generated": "2026-10-16T19:49:55+00:00",
   "run_date": "2026-10-16",
   "record_count": 502,
   "min_acres": 0.5,
@@ -625,7 +625,7 @@
    "status": "Hearing Scheduled",
    "status_raw": "next hearing Zoning Hearing Master 2027-01-26",
    "decision_date": null,
-   "url": "https://hillsborough.maps.arcgis.com/apps/webappviewer/index.html?id=be7f0f9c93c0460984d1223f6b329fa8&find=27-0045",
+   "url": "https://experience.arcgis.com/experience/870491f64f9744dca53c9f54ed4b7407/#widget_29=center:-82.248722%2C27.896278%2C4326,scale:4000",
    "docs_url": null,
    "source": "Hillsborough Zoning Hearings GIS + Legistar",
    "parcel_ids": [
@@ -693,7 +693,7 @@
    "status": "Hearing Scheduled",
    "status_raw": "next hearing Zoning Hearing Master 2027-01-26",
    "decision_date": null,
-   "url": "https://hillsborough.maps.arcgis.com/apps/webappviewer/index.html?id=be7f0f9c93c0460984d1223f6b329fa8&find=27-0041",
+   "url": "https://experience.arcgis.com/experience/870491f64f9744dca53c9f54ed4b7407/#widget_29=center:-82.332731%2C27.714576%2C4326,scale:4000",
    "docs_url": null,
    "source": "Hillsborough Zoning Hearings GIS + Legistar",
    "parcel_ids": [
@@ -1022,7 +1022,7 @@
    "status": "Hearing Scheduled",
    "status_raw": "next hearing Zoning Hearing Master 2027-01-26",
    "decision_date": null,
-   "url": "https://hillsborough.maps.arcgis.com/apps/webappviewer/index.html?id=be7f0f9c93c0460984d1223f6b329fa8&find=27-0030",
+   "url": "https://experience.arcgis.com/experience/870491f64f9744dca53c9f54ed4b7407/#widget_29=center:-82.557758%2C27.982025%2C4326,scale:4000",
    "docs_url": null,
    "source": "Hillsborough Zoning Hearings GIS + Legistar",
    "parcel_ids": [
@@ -1099,7 +1099,7 @@
    "status": "Hearing Scheduled",
    "status_raw": "next hearing Zoning Hearing Master 2027-01-26",
    "decision_date": null,
-   "url": "https://hillsborough.maps.arcgis.com/apps/webappviewer/index.html?id=be7f0f9c93c0460984d1223f6b329fa8&find=27-0029",
+   "url": "https://experience.arcgis.com/experience/870491f64f9744dca53c9f54ed4b7407/#widget_29=center:-82.516801%2C28.021422%2C4326,scale:4000",
    "docs_url": null,
    "source": "Hillsborough Zoning Hearings GIS + Legistar",
    "parcel_ids": [
@@ -1275,7 +1275,7 @@
    "status": "Hearing Scheduled",
    "status_raw": "next hearing Zoning Hearing Master 2027-01-26",
    "decision_date": null,
-   "url": "https://hillsborough.maps.arcgis.com/apps/webappviewer/index.html?id=be7f0f9c93c0460984d1223f6b329fa8&find=27-0021",
+   "url": "https://experience.arcgis.com/experience/870491f64f9744dca53c9f54ed4b7407/#widget_29=center:-82.353848%2C28.003162%2C4326,scale:4000",
    "docs_url": null,
    "source": "Hillsborough Zoning Hearings GIS + Legistar",
    "parcel_ids": [
@@ -1346,7 +1346,7 @@
    "status": "Hearing Scheduled",
    "status_raw": "next hearing Zoning Hearing Master 2027-01-26",
    "decision_date": null,
-   "url": "https://hillsborough.maps.arcgis.com/apps/webappviewer/index.html?id=be7f0f9c93c0460984d1223f6b329fa8&find=27-0007",
+   "url": "https://experience.arcgis.com/experience/870491f64f9744dca53c9f54ed4b7407/#widget_29=center:-82.226461%2C28.019696%2C4326,scale:4000",
    "docs_url": null,
    "source": "Hillsborough Zoning Hearings GIS + Legistar",
    "parcel_ids": [
@@ -2558,7 +2558,7 @@
    "status": "Hearing Scheduled",
    "status_raw": "next hearing Zoning Hearing Master 2027-01-26",
    "decision_date": null,
-   "url": "https://hillsborough.maps.arcgis.com/apps/webappviewer/index.html?id=be7f0f9c93c0460984d1223f6b329fa8&find=26-1602",
+   "url": "https://experience.arcgis.com/experience/870491f64f9744dca53c9f54ed4b7407/#widget_29=center:-82.326204%2C27.848858%2C4326,scale:4000",
    "docs_url": null,
    "source": "Hillsborough Zoning Hearings GIS + Legistar",
    "parcel_ids": [
@@ -3602,7 +3602,7 @@
    "status": "Filed",
    "status_raw": "Under staff review (DRC comments)",
    "decision_date": null,
-   "url": "https://seminolecountyfl.legistar.com/LegislationDetail.aspx?ID=7211&GUID=C7B50935-D2E8-4724-A8E4-2FB70EAF27FF",
+   "url": "https://seminolecountyfl.legistar.com/LegislationDetail.aspx?ID=8284131&GUID=8A76A8FE-C754-41E5-900C-7900D7E8FA5B&G=E2DF9C83-4A2C-4390-86EE-5C088F5B9D50",
    "docs_url": null,
    "source": "Seminole County Legistar (DRC applications + P&Z Commission/LPA + BCC hearings)",
    "parcel_ids": [
@@ -3720,7 +3720,7 @@
    "status": "Hearing Scheduled",
    "status_raw": "next hearing Zoning Hearing Master 2026-11-16",
    "decision_date": null,
-   "url": "https://hillsborough.maps.arcgis.com/apps/webappviewer/index.html?id=be7f0f9c93c0460984d1223f6b329fa8&find=26-1580",
+   "url": "https://experience.arcgis.com/experience/870491f64f9744dca53c9f54ed4b7407/#widget_29=center:-82.304988%2C27.820545%2C4326,scale:4000",
    "docs_url": null,
    "source": "Hillsborough Zoning Hearings GIS + Legistar",
    "parcel_ids": [
@@ -3788,7 +3788,7 @@
    "status": "Hearing Scheduled",
    "status_raw": "next hearing Zoning Hearing Master 2026-11-16",
    "decision_date": null,
-   "url": "https://hillsborough.maps.arcgis.com/apps/webappviewer/index.html?id=be7f0f9c93c0460984d1223f6b329fa8&find=26-1569",
+   "url": "https://experience.arcgis.com/experience/870491f64f9744dca53c9f54ed4b7407/#widget_29=center:-82.279395%2C28.005515%2C4326,scale:4000",
    "docs_url": null,
    "source": "Hillsborough Zoning Hearings GIS + Legistar",
    "parcel_ids": [
@@ -3856,7 +3856,7 @@
    "status": "Hearing Scheduled",
    "status_raw": "next hearing Zoning Hearing Master 2026-11-16",
    "decision_date": null,
-   "url": "https://hillsborough.maps.arcgis.com/apps/webappviewer/index.html?id=be7f0f9c93c0460984d1223f6b329fa8&find=26-1501",
+   "url": "https://experience.arcgis.com/experience/870491f64f9744dca53c9f54ed4b7407/#widget_29=center:-82.446450%2C28.128714%2C4326,scale:4000",
    "docs_url": null,
    "source": "Hillsborough Zoning Hearings GIS + Legistar",
    "parcel_ids": [
@@ -4356,7 +4356,7 @@
    "status": "Hearing Scheduled",
    "status_raw": "Planning & Zoning Commission 2026-09-28: Recommended Approval; next BOCC 2026-10-20",
    "decision_date": null,
-   "url": "https://marionfl.legistar.com/LegislationDetail.aspx?ID=26595&GUID=8C6171DD-A549-4CDA-868D-F01B95C639DC",
+   "url": "https://marionfl.legistar.com/LegislationDetail.aspx?ID=8238542&GUID=82FD54D5-6A81-4C90-8519-CA408DAA297C&G=BE8E0F50-D386-42B0-BD7D-99F05C7CA750",
    "docs_url": "https://marionfl.legistar1.com/marionfl/attachments/4f09407f-15d2-4c80-9b18-2fd24c62eed4.pdf",
    "source": "Marion County Legistar (P&Z Commission + BOCC agendas)",
    "parcel_ids": [
@@ -4431,7 +4431,7 @@
    "status": "Withdrawn",
    "status_raw": "CASE WITHDRAWN (agenda title)",
    "decision_date": null,
-   "url": "https://marionfl.legistar.com/LegislationDetail.aspx?ID=26581&GUID=A9015D1E-F519-4605-9776-9B0A5B1B9BB0",
+   "url": "https://marionfl.legistar.com/LegislationDetail.aspx?ID=8238540&GUID=D3433A55-8CB2-40A6-9524-00FEE42A943D&G=BE8E0F50-D386-42B0-BD7D-99F05C7CA750",
    "docs_url": null,
    "source": "Marion County Legistar (P&Z Commission + BOCC agendas)",
    "parcel_ids": [
@@ -4495,7 +4495,7 @@
    "status": "Hearing Scheduled",
    "status_raw": "Planning & Zoning Commission 2026-09-28: Recommended Approval; next BOCC 2026-10-20",
    "decision_date": null,
-   "url": "https://marionfl.legistar.com/LegislationDetail.aspx?ID=26594&GUID=2722EB6B-24A3-4A5A-94C3-9B22B9C59071",
+   "url": "https://marionfl.legistar.com/LegislationDetail.aspx?ID=8238541&GUID=3490D7F2-D893-45E5-A929-0A9FD38F677F&G=BE8E0F50-D386-42B0-BD7D-99F05C7CA750",
    "docs_url": "https://marionfl.legistar1.com/marionfl/attachments/eae66364-b691-4344-8eb9-b31e35569833.pdf",
    "source": "Marion County Legistar (P&Z Commission + BOCC agendas)",
    "parcel_ids": [
@@ -4567,7 +4567,7 @@
    "status": "Withdrawn",
    "status_raw": "CASE WITHDRAWN (agenda title)",
    "decision_date": null,
-   "url": "https://marionfl.legistar.com/LegislationDetail.aspx?ID=26580&GUID=CC2F4160-0FAD-4E6E-8C2E-8A738AC69232",
+   "url": "https://marionfl.legistar.com/LegislationDetail.aspx?ID=8238539&GUID=BFABA6F1-11C2-4F8D-BCA4-670556D04DF9&G=BE8E0F50-D386-42B0-BD7D-99F05C7CA750",
    "docs_url": null,
    "source": "Marion County Legistar (P&Z Commission + BOCC agendas)",
    "parcel_ids": [
@@ -4631,7 +4631,7 @@
    "status": "Continued",
    "status_raw": "Planning & Zoning Commission 2026-09-28: continued",
    "decision_date": null,
-   "url": "https://marionfl.legistar.com/LegislationDetail.aspx?ID=26578&GUID=65ADE2A4-7EA8-44DD-9F40-E72C90D1D34C",
+   "url": "https://marionfl.legistar.com/LegislationDetail.aspx?ID=8238537&GUID=D4481D21-CA98-4B2E-9234-B60A377D92AD&G=BE8E0F50-D386-42B0-BD7D-99F05C7CA750",
    "docs_url": "https://marionfl.legistar1.com/marionfl/attachments/b77e9fd6-55e5-4dde-a289-e55b1b14735b.pdf",
    "source": "Marion County Legistar (P&Z Commission + BOCC agendas)",
    "parcel_ids": [
@@ -5228,7 +5228,7 @@
    "status": "Filed",
    "status_raw": "Under DRC review (DRC 2026-09-30)",
    "decision_date": null,
-   "url": "https://seminolecountyfl.legistar.com/LegislationDetail.aspx?ID=7183&GUID=3FBAE69C-CDB7-4968-A159-1AADD029A8A0",
+   "url": "https://seminolecountyfl.legistar.com/LegislationDetail.aspx?ID=8239079&GUID=CCA5DC55-FE3D-4EAB-A83D-920E4B153ECF&G=E2DF9C83-4A2C-4390-86EE-5C088F5B9D50",
    "docs_url": null,
    "source": "Seminole County Legistar (DRC applications + P&Z Commission/LPA + BCC hearings)",
    "parcel_ids": [
@@ -5352,7 +5352,7 @@
    "status": "Withdrawn",
    "status_raw": "Inactive in GIS hearing layer (no Legistar outcome)",
    "decision_date": null,
-   "url": "https://hillsborough.maps.arcgis.com/apps/webappviewer/index.html?id=be7f0f9c93c0460984d1223f6b329fa8&find=26-1514",
+   "url": "https://experience.arcgis.com/experience/870491f64f9744dca53c9f54ed4b7407/#widget_29=center:-82.516801%2C28.021422%2C4326,scale:4000",
    "docs_url": null,
    "source": "Hillsborough Zoning Hearings GIS + Legistar",
    "parcel_ids": [
@@ -5735,7 +5735,7 @@
    "status": "Hearing Scheduled",
    "status_raw": "next hearing Zoning Hearing Master 2026-12-14",
    "decision_date": null,
-   "url": "https://hillsborough.maps.arcgis.com/apps/webappviewer/index.html?id=be7f0f9c93c0460984d1223f6b329fa8&find=26-1500",
+   "url": "https://experience.arcgis.com/experience/870491f64f9744dca53c9f54ed4b7407/#widget_29=center:-82.259407%2C28.092568%2C4326,scale:4000",
    "docs_url": null,
    "source": "Hillsborough Zoning Hearings GIS + Legistar",
    "parcel_ids": [
@@ -5803,7 +5803,7 @@
    "status": "Hearing Scheduled",
    "status_raw": "next hearing Zoning Hearing Master 2026-12-14",
    "decision_date": null,
-   "url": "https://hillsborough.maps.arcgis.com/apps/webappviewer/index.html?id=be7f0f9c93c0460984d1223f6b329fa8&find=26-1498",
+   "url": "https://experience.arcgis.com/experience/870491f64f9744dca53c9f54ed4b7407/#widget_29=center:-82.251657%2C28.013718%2C4326,scale:4000",
    "docs_url": null,
    "source": "Hillsborough Zoning Hearings GIS + Legistar",
    "parcel_ids": [
@@ -5866,7 +5866,7 @@
    "status": "Hearing Scheduled",
    "status_raw": "next hearing Zoning Hearing Master 2026-12-14",
    "decision_date": null,
-   "url": "https://hillsborough.maps.arcgis.com/apps/webappviewer/index.html?id=be7f0f9c93c0460984d1223f6b329fa8&find=26-1497",
+   "url": "https://experience.arcgis.com/experience/870491f64f9744dca53c9f54ed4b7407/#widget_29=center:-82.642978%2C28.065745%2C4326,scale:4000",
    "docs_url": null,
    "source": "Hillsborough Zoning Hearings GIS + Legistar",
    "parcel_ids": [
@@ -5929,7 +5929,7 @@
    "status": "Hearing Scheduled",
    "status_raw": "next hearing Zoning Hearing Master 2026-12-14",
    "decision_date": null,
-   "url": "https://hillsborough.maps.arcgis.com/apps/webappviewer/index.html?id=be7f0f9c93c0460984d1223f6b329fa8&find=26-1496",
+   "url": "https://experience.arcgis.com/experience/870491f64f9744dca53c9f54ed4b7407/#widget_29=center:-82.385933%2C27.936365%2C4326,scale:4000",
    "docs_url": null,
    "source": "Hillsborough Zoning Hearings GIS + Legistar",
    "parcel_ids": [
@@ -6003,7 +6003,7 @@
    "status": "Hearing Scheduled",
    "status_raw": "next hearing Zoning Hearing Master 2026-12-14",
    "decision_date": null,
-   "url": "https://hillsborough.maps.arcgis.com/apps/webappviewer/index.html?id=be7f0f9c93c0460984d1223f6b329fa8&find=26-1495",
+   "url": "https://experience.arcgis.com/experience/870491f64f9744dca53c9f54ed4b7407/#widget_29=center:-82.347374%2C27.675135%2C4326,scale:4000",
    "docs_url": null,
    "source": "Hillsborough Zoning Hearings GIS + Legistar",
    "parcel_ids": [
@@ -6071,7 +6071,7 @@
    "status": "Hearing Scheduled",
    "status_raw": "next hearing Zoning Hearing Master 2026-11-16",
    "decision_date": null,
-   "url": "https://hillsborough.maps.arcgis.com/apps/webappviewer/index.html?id=be7f0f9c93c0460984d1223f6b329fa8&find=26-1468",
+   "url": "https://experience.arcgis.com/experience/870491f64f9744dca53c9f54ed4b7407/#widget_29=center:-82.481889%2C28.132076%2C4326,scale:4000",
    "docs_url": null,
    "source": "Hillsborough Zoning Hearings GIS + Legistar",
    "parcel_ids": [
@@ -6683,7 +6683,7 @@
    "status": "Hearing Scheduled",
    "status_raw": "next hearing Zoning Hearing Master 2026-12-14",
    "decision_date": null,
-   "url": "https://hillsborough.maps.arcgis.com/apps/webappviewer/index.html?id=be7f0f9c93c0460984d1223f6b329fa8&find=26-1490",
+   "url": "https://experience.arcgis.com/experience/870491f64f9744dca53c9f54ed4b7407/#widget_29=center:-82.316694%2C27.982402%2C4326,scale:4000",
    "docs_url": null,
    "source": "Hillsborough Zoning Hearings GIS + Legistar",
    "parcel_ids": [
@@ -6754,7 +6754,7 @@
    "status": "Hearing Scheduled",
    "status_raw": "next hearing Zoning Hearing Master 2026-12-14",
    "decision_date": null,
-   "url": "https://hillsborough.maps.arcgis.com/apps/webappviewer/index.html?id=be7f0f9c93c0460984d1223f6b329fa8&find=26-1488",
+   "url": "https://experience.arcgis.com/experience/870491f64f9744dca53c9f54ed4b7407/#widget_29=center:-82.336428%2C27.989214%2C4326,scale:4000",
    "docs_url": null,
    "source": "Hillsborough Zoning Hearings GIS + Legistar",
    "parcel_ids": [
@@ -7167,7 +7167,7 @@
    "status": "Hearing Scheduled",
    "status_raw": "next hearing Zoning Hearing Master 2026-12-14",
    "decision_date": null,
-   "url": "https://hillsborough.maps.arcgis.com/apps/webappviewer/index.html?id=be7f0f9c93c0460984d1223f6b329fa8&find=26-1467",
+   "url": "https://experience.arcgis.com/experience/870491f64f9744dca53c9f54ed4b7407/#widget_29=center:-82.057266%2C27.966835%2C4326,scale:4000",
    "docs_url": null,
    "source": "Hillsborough Zoning Hearings GIS + Legistar",
    "parcel_ids": [
@@ -7230,7 +7230,7 @@
    "status": "Hearing Scheduled",
    "status_raw": "next hearing Zoning Hearing Master 2026-12-14",
    "decision_date": null,
-   "url": "https://hillsborough.maps.arcgis.com/apps/webappviewer/index.html?id=be7f0f9c93c0460984d1223f6b329fa8&find=26-1432",
+   "url": "https://experience.arcgis.com/experience/870491f64f9744dca53c9f54ed4b7407/#widget_29=center:-82.347742%2C27.786972%2C4326,scale:4000",
    "docs_url": null,
    "source": "Hillsborough Zoning Hearings GIS + Legistar",
    "parcel_ids": [
@@ -7663,7 +7663,7 @@
    "status_raw": "BCC 2026-10-13: Approved",
    "decision_date": "2026-10-13",
    "url": "https://fasttrack.ocfl.net/onlineservices/folderinformation.aspx?referencefile=CDR-25-11-275",
-   "docs_url": "https://occompt.legistar.com/LegislationDetail.aspx?ID=19414&GUID=D91D91F6-6289-4716-8968-A4E1D753A7A0",
+   "docs_url": "https://occompt.legistar.com/LegislationDetail.aspx?ID=8195963&GUID=210F59DC-1363-421B-A01D-F851F12B8FE3&G=671217FC-A8C9-41BD-BA90-3804D546A607",
    "source": "Orange County Public Notification GIS + BCC Legistar (occompt) + PZC recommendation books",
    "parcel_ids": [
     "26-22-30-2770-01-000",
@@ -7913,7 +7913,7 @@
    "status_raw": "BCC 2026-09-29: Approved",
    "decision_date": "2026-09-29",
    "url": "https://fasttrack.ocfl.net/onlineservices/folderinformation.aspx?referencefile=SS-26-03-008",
-   "docs_url": "https://occompt.legistar.com/LegislationDetail.aspx?ID=19407&GUID=1FA498BD-CC2C-48AC-BF48-75F4E8D58081",
+   "docs_url": "https://occompt.legistar.com/LegislationDetail.aspx?ID=8194642&GUID=BEE744D0-F123-4969-8299-73EDDD212922&G=671217FC-A8C9-41BD-BA90-3804D546A607",
    "source": "Orange County Public Notification GIS + BCC Legistar (occompt) + PZC recommendation books",
    "parcel_ids": [
     "22-23-29-7268-07-001"
@@ -8119,7 +8119,7 @@
    "status": "Hearing Scheduled",
    "status_raw": "Legistar: Agenda Ready; next hearing Zoning Hearing Master 2026-10-19",
    "decision_date": null,
-   "url": "https://hillsboroughcounty.legistar.com/LegislationDetail.aspx?ID=5219&GUID=DC311CFA-D205-4E4E-AFB2-E8B07060177C",
+   "url": "https://hillsboroughcounty.legistar.com/LegislationDetail.aspx?ID=8286537&GUID=D4264F71-3AB3-46C7-BC51-650AC7805983&G=3144BC14-0EA0-4A0F-BC83-C4F8B333D0E8",
    "docs_url": "https://hillsboroughcounty.legistar1.com/hillsboroughcounty/attachments/45ec74d9-68f6-43fd-b1a5-424199864afb.pdf",
    "source": "Hillsborough Zoning Hearings GIS + Legistar",
    "parcel_ids": [
@@ -8190,7 +8190,7 @@
    "status": "Hearing Scheduled",
    "status_raw": "Legistar: Agenda Ready; next hearing Zoning Hearing Master 2026-12-14",
    "decision_date": null,
-   "url": "https://hillsboroughcounty.legistar.com/LegislationDetail.aspx?ID=5218&GUID=E5A9A6EF-3455-4B3E-97B2-6E87E6746FAF",
+   "url": "https://hillsboroughcounty.legistar.com/LegislationDetail.aspx?ID=8286536&GUID=07CEA1AD-77D0-4BB6-8033-ACB8E414F10F&G=3144BC14-0EA0-4A0F-BC83-C4F8B333D0E8",
    "docs_url": "https://hillsboroughcounty.legistar1.com/hillsboroughcounty/attachments/d9957705-e3a1-4b05-95d5-b66494323dec.pdf",
    "source": "Hillsborough Zoning Hearings GIS + Legistar",
    "parcel_ids": [
@@ -8258,7 +8258,7 @@
    "status": "Hearing Scheduled",
    "status_raw": "Legistar: Agenda Ready; next hearing Zoning Hearing Master 2026-10-19",
    "decision_date": null,
-   "url": "https://hillsboroughcounty.legistar.com/LegislationDetail.aspx?ID=5217&GUID=00C68290-3736-4378-82AD-9906E21B498B",
+   "url": "https://hillsboroughcounty.legistar.com/LegislationDetail.aspx?ID=8286535&GUID=F3B26C28-C9DE-46CD-9254-17E8AF7A1A4D&G=3144BC14-0EA0-4A0F-BC83-C4F8B333D0E8",
    "docs_url": "https://hillsboroughcounty.legistar1.com/hillsboroughcounty/attachments/91042759-8797-4312-a2e4-517a0a4c4304.pdf",
    "source": "Hillsborough Zoning Hearings GIS + Legistar",
    "parcel_ids": [
@@ -8326,7 +8326,7 @@
    "status": "Hearing Scheduled",
    "status_raw": "Legistar: Agenda Ready; next hearing Zoning Hearing Master 2026-12-14",
    "decision_date": null,
-   "url": "https://hillsboroughcounty.legistar.com/LegislationDetail.aspx?ID=5216&GUID=F36D703A-4590-4D2A-B2BA-494EE061CFD5",
+   "url": "https://hillsboroughcounty.legistar.com/LegislationDetail.aspx?ID=8286534&GUID=62211DA0-1B8F-4544-AE61-EC8960413E53&G=3144BC14-0EA0-4A0F-BC83-C4F8B333D0E8",
    "docs_url": "https://hillsboroughcounty.legistar1.com/hillsboroughcounty/attachments/2b6521e1-4c52-477d-b7af-351180d0d203.pdf",
    "source": "Hillsborough Zoning Hearings GIS + Legistar",
    "parcel_ids": [
@@ -9683,7 +9683,7 @@
    "status_raw": "BCC 2026-09-29: Approved",
    "decision_date": "2026-09-29",
    "url": "https://fasttrack.ocfl.net/onlineservices/folderinformation.aspx?referencefile=CDR-26-04-094",
-   "docs_url": "https://occompt.legistar.com/LegislationDetail.aspx?ID=19339&GUID=E1FBC2B3-4A6B-486D-8178-E73BC049FF4F",
+   "docs_url": "https://occompt.legistar.com/LegislationDetail.aspx?ID=8176183&GUID=0AA41D42-B97B-4E93-ADE5-AB2B87BB8539&G=671217FC-A8C9-41BD-BA90-3804D546A607",
    "source": "Orange County Public Notification GIS + BCC Legistar (occompt) + PZC recommendation books",
    "parcel_ids": [
     "32-24-31-2203-11-004"
@@ -9999,7 +9999,7 @@
    "status_raw": "BCC 2026-09-29: Continued; next BCC 2026-10-27",
    "decision_date": null,
    "url": "https://fasttrack.ocfl.net/onlineservices/folderinformation.aspx?referencefile=CDR-25-12-295",
-   "docs_url": "https://occompt.legistar.com/LegislationDetail.aspx?ID=19336&GUID=3ACF5A85-0937-47C9-953B-D3D8A35D27C4",
+   "docs_url": "https://occompt.legistar.com/LegislationDetail.aspx?ID=8174723&GUID=924FE4E0-8B18-417D-904D-C6AA2B996711&G=671217FC-A8C9-41BD-BA90-3804D546A607",
    "source": "Orange County Public Notification GIS + BCC Legistar (occompt) + PZC recommendation books",
    "parcel_ids": [
     "28-24-30-3140-03-000"
@@ -10070,7 +10070,7 @@
    "status": "Approved",
    "status_raw": "BOCC 2026-09-15: Approved",
    "decision_date": "2026-09-15",
-   "url": "https://marionfl.legistar.com/LegislationDetail.aspx?ID=26354&GUID=9E490858-4573-4C4F-A50A-6397EAC6C52B",
+   "url": "https://marionfl.legistar.com/LegislationDetail.aspx?ID=8205985&GUID=AE021648-ED31-4D88-86AE-13128A179ECF&G=BE8E0F50-D386-42B0-BD7D-99F05C7CA750",
    "docs_url": "https://marionfl.legistar1.com/marionfl/attachments/34a30e8e-a8a6-4cb5-856f-91e53a53d92d.pdf",
    "source": "Marion County Legistar (P&Z Commission + BOCC agendas)",
    "parcel_ids": [
@@ -10151,7 +10151,7 @@
    "status": "Hearing Scheduled",
    "status_raw": "BOCC 2026-10-06: result not yet posted",
    "decision_date": null,
-   "url": "https://marionfl.legistar.com/LegislationDetail.aspx?ID=26362&GUID=11FA42B0-0BF8-4495-9E44-18B790E193BD",
+   "url": "https://marionfl.legistar.com/LegislationDetail.aspx?ID=8193927&GUID=E58EA08E-CE97-4590-AF25-9501C04E6FBA&G=BE8E0F50-D386-42B0-BD7D-99F05C7CA750",
    "docs_url": "https://marionfl.legistar1.com/marionfl/attachments/1ab74214-0893-4882-9f18-c9ca666017ba.pdf",
    "source": "Marion County Legistar (P&Z Commission + BOCC agendas)",
    "parcel_ids": [
@@ -10220,7 +10220,7 @@
    "status": "Approved",
    "status_raw": "BOCC 2026-09-15: Approved",
    "decision_date": "2026-09-15",
-   "url": "https://marionfl.legistar.com/LegislationDetail.aspx?ID=26353&GUID=9BB766F0-EE04-4C67-894D-FB10455DACC3",
+   "url": "https://marionfl.legistar.com/LegislationDetail.aspx?ID=8205984&GUID=7A46260D-CB73-4E4F-8B78-EE851D160C99&G=BE8E0F50-D386-42B0-BD7D-99F05C7CA750",
    "docs_url": "https://marionfl.legistar1.com/marionfl/attachments/aa6f0189-9996-4eb3-bd28-bc162b6ee56c.pdf",
    "source": "Marion County Legistar (P&Z Commission + BOCC agendas)",
    "parcel_ids": [
@@ -10289,7 +10289,7 @@
    "status": "Approved",
    "status_raw": "BOCC 2026-10-06: Approved",
    "decision_date": "2026-10-06",
-   "url": "https://marionfl.legistar.com/LegislationDetail.aspx?ID=26359&GUID=40000682-0E66-4FF3-A8E5-D33F9732D8D7",
+   "url": "https://marionfl.legistar.com/LegislationDetail.aspx?ID=8257299&GUID=5C29D0C4-E91D-4C95-8B50-4614F61860EA&G=BE8E0F50-D386-42B0-BD7D-99F05C7CA750",
    "docs_url": "https://marionfl.legistar1.com/marionfl/attachments/3475412d-1ba2-49ba-a96f-3c93afeb1b0c.pdf",
    "source": "Marion County Legistar (P&Z Commission + BOCC agendas)",
    "parcel_ids": [
@@ -10358,7 +10358,7 @@
    "status": "Hearing Scheduled",
    "status_raw": "BOCC 2026-10-06: result not yet posted",
    "decision_date": null,
-   "url": "https://marionfl.legistar.com/LegislationDetail.aspx?ID=26361&GUID=B8823668-65CB-43CB-B0FC-B31338833434",
+   "url": "https://marionfl.legistar.com/LegislationDetail.aspx?ID=8193926&GUID=4024E375-A6F3-4EA6-A999-C16D6A4B9B4C&G=BE8E0F50-D386-42B0-BD7D-99F05C7CA750",
    "docs_url": "https://marionfl.legistar1.com/marionfl/attachments/45d6a7b5-b126-44ec-af01-992bf1c6434d.pdf",
    "source": "Marion County Legistar (P&Z Commission + BOCC agendas)",
    "parcel_ids": [
@@ -11229,7 +11229,7 @@
    "status": "Hearing Scheduled",
    "status_raw": "next hearing Zoning Hearing Master 2026-12-14",
    "decision_date": null,
-   "url": "https://hillsborough.maps.arcgis.com/apps/webappviewer/index.html?id=be7f0f9c93c0460984d1223f6b329fa8&find=26-1372",
+   "url": "https://experience.arcgis.com/experience/870491f64f9744dca53c9f54ed4b7407/#widget_29=center:-82.314959%2C27.997782%2C4326,scale:4000",
    "docs_url": null,
    "source": "Hillsborough Zoning Hearings GIS + Legistar",
    "parcel_ids": [
@@ -11298,7 +11298,7 @@
    "status": "Hearing Scheduled",
    "status_raw": "next hearing Zoning Hearing Master 2026-11-16",
    "decision_date": null,
-   "url": "https://hillsborough.maps.arcgis.com/apps/webappviewer/index.html?id=be7f0f9c93c0460984d1223f6b329fa8&find=26-1366",
+   "url": "https://experience.arcgis.com/experience/870491f64f9744dca53c9f54ed4b7407/#widget_29=center:-82.456034%2C28.089142%2C4326,scale:4000",
    "docs_url": null,
    "source": "Hillsborough Zoning Hearings GIS + Legistar",
    "parcel_ids": [
@@ -11366,7 +11366,7 @@
    "status": "Hearing Scheduled",
    "status_raw": "next hearing Zoning Hearing Master 2026-11-16",
    "decision_date": null,
-   "url": "https://hillsborough.maps.arcgis.com/apps/webappviewer/index.html?id=be7f0f9c93c0460984d1223f6b329fa8&find=26-1370",
+   "url": "https://experience.arcgis.com/experience/870491f64f9744dca53c9f54ed4b7407/#widget_29=center:-82.472227%2C27.686798%2C4326,scale:4000",
    "docs_url": null,
    "source": "Hillsborough Zoning Hearings GIS + Legistar",
    "parcel_ids": [
@@ -11429,7 +11429,7 @@
    "status": "Hearing Scheduled",
    "status_raw": "next hearing Zoning Hearing Master 2026-12-14",
    "decision_date": null,
-   "url": "https://hillsborough.maps.arcgis.com/apps/webappviewer/index.html?id=be7f0f9c93c0460984d1223f6b329fa8&find=26-1359",
+   "url": "https://experience.arcgis.com/experience/870491f64f9744dca53c9f54ed4b7407/#widget_29=center:-82.280423%2C27.935305%2C4326,scale:4000",
    "docs_url": null,
    "source": "Hillsborough Zoning Hearings GIS + Legistar",
    "parcel_ids": [
@@ -11497,7 +11497,7 @@
    "status": "Hearing Scheduled",
    "status_raw": "next hearing Zoning Hearing Master 2026-11-16",
    "decision_date": null,
-   "url": "https://hillsborough.maps.arcgis.com/apps/webappviewer/index.html?id=be7f0f9c93c0460984d1223f6b329fa8&find=26-1358",
+   "url": "https://experience.arcgis.com/experience/870491f64f9744dca53c9f54ed4b7407/#widget_29=center:-82.245532%2C28.015242%2C4326,scale:4000",
    "docs_url": null,
    "source": "Hillsborough Zoning Hearings GIS + Legistar",
    "parcel_ids": [
@@ -12249,7 +12249,7 @@
    "status_raw": "BCC 2026-09-15: Approved",
    "decision_date": "2026-09-15",
    "url": "https://fasttrack.ocfl.net/onlineservices/folderinformation.aspx?referencefile=CDR-26-02-025",
-   "docs_url": "https://occompt.legistar.com/LegislationDetail.aspx?ID=19321&GUID=5AE0754C-5154-446F-8BBD-DA25361EA892",
+   "docs_url": "https://occompt.legistar.com/LegislationDetail.aspx?ID=8163815&GUID=D06C2D32-31F5-45E7-9772-DA6B3115435A&G=671217FC-A8C9-41BD-BA90-3804D546A607",
    "source": "Orange County Public Notification GIS + BCC Legistar (occompt) + PZC recommendation books",
    "parcel_ids": [
     "22-22-31-8469-00-050",
@@ -12397,7 +12397,7 @@
    "status": "Hearing Scheduled",
    "status_raw": "Legistar: Held; next hearing BOCC 2026-12-08",
    "decision_date": null,
-   "url": "https://hillsboroughcounty.legistar.com/LegislationDetail.aspx?ID=5182&GUID=8D5302D2-CCFE-495E-987F-3B36D2C6ECD8",
+   "url": "https://hillsboroughcounty.legistar.com/LegislationDetail.aspx?ID=8223488&GUID=5CCC9196-214E-48B8-8AEA-CB7797020AB9&G=3144BC14-0EA0-4A0F-BC83-C4F8B333D0E8",
    "docs_url": "https://hillsboroughcounty.legistar1.com/hillsboroughcounty/attachments/8874a581-4e23-49df-a993-0669f88944c6.pdf",
    "source": "Hillsborough Zoning Hearings GIS + Legistar",
    "parcel_ids": [
@@ -12472,7 +12472,7 @@
    "status": "Hearing Scheduled",
    "status_raw": "Legistar: Agenda Ready; next hearing Zoning Hearing Master 2026-11-16",
    "decision_date": null,
-   "url": "https://hillsboroughcounty.legistar.com/LegislationDetail.aspx?ID=5215&GUID=6CC29A70-1A38-451C-8262-CD2DECC03881",
+   "url": "https://hillsboroughcounty.legistar.com/LegislationDetail.aspx?ID=8286533&GUID=61E4AE95-7C03-4087-B8EB-E9D651A9C478&G=3144BC14-0EA0-4A0F-BC83-C4F8B333D0E8",
    "docs_url": "https://hillsboroughcounty.legistar1.com/hillsboroughcounty/attachments/3ae9991c-32a1-4595-b842-376e18f3dae7.pdf",
    "source": "Hillsborough Zoning Hearings GIS + Legistar",
    "parcel_ids": [
@@ -12540,7 +12540,7 @@
    "status": "Hearing Scheduled",
    "status_raw": "next hearing Zoning Hearing Master 2026-12-14",
    "decision_date": null,
-   "url": "https://hillsborough.maps.arcgis.com/apps/webappviewer/index.html?id=be7f0f9c93c0460984d1223f6b329fa8&find=26-1344",
+   "url": "https://experience.arcgis.com/experience/870491f64f9744dca53c9f54ed4b7407/#widget_29=center:-82.357002%2C28.032157%2C4326,scale:4000",
    "docs_url": null,
    "source": "Hillsborough Zoning Hearings GIS + Legistar",
    "parcel_ids": [
@@ -12608,7 +12608,7 @@
    "status": "Filed",
    "status_raw": "Legistar: Agenda Ready",
    "decision_date": null,
-   "url": "https://hernandocountyfl.legistar.com/LegislationDetail.aspx?ID=9081&GUID=51A0582E-D7B7-4952-A013-7916D2609F34",
+   "url": "https://hernandocountyfl.legistar.com/LegislationDetail.aspx?ID=8171516&GUID=2D4AB152-D269-452C-A13C-94FDC3F79F9F&G=6D9E70B1-EE34-4778-AE40-08B82D73C4B2",
    "docs_url": "https://hernandocountyfl.legistar1.com/hernandocountyfl/attachments/4937636c-ee0b-4696-bc7b-82929f9304df.pdf",
    "source": "Hernando Legistar",
    "parcel_ids": [
@@ -13219,7 +13219,7 @@
    "status": "Filed",
    "status_raw": "Legistar: Agenda Ready",
    "decision_date": null,
-   "url": "https://hernandocountyfl.legistar.com/LegislationDetail.aspx?ID=9080&GUID=1883CB92-2559-4206-BFA8-C80E1059474F",
+   "url": "https://hernandocountyfl.legistar.com/LegislationDetail.aspx?ID=8171515&GUID=97843BE1-42E1-44D2-A192-8C7B9C0A8F72&G=6D9E70B1-EE34-4778-AE40-08B82D73C4B2",
    "docs_url": "https://hernandocountyfl.legistar1.com/hernandocountyfl/attachments/b1fe3e6e-4aba-439e-bbae-49615954d37f.pdf",
    "source": "Hernando Legistar",
    "parcel_ids": [
@@ -13363,7 +13363,7 @@
    "status": "Filed",
    "status_raw": "Under staff review (DRC comments)",
    "decision_date": null,
-   "url": "https://seminolecountyfl.legistar.com/LegislationDetail.aspx?ID=7040&GUID=10EDEA32-456B-46B2-8CFD-35A0B6C9D924",
+   "url": "https://seminolecountyfl.legistar.com/LegislationDetail.aspx?ID=8172098&GUID=F2FA9E62-2B75-425D-BC5C-A4071FC041EE&G=E2DF9C83-4A2C-4390-86EE-5C088F5B9D50",
    "docs_url": null,
    "source": "Seminole County Legistar (DRC applications + P&Z Commission/LPA + BCC hearings)",
    "parcel_ids": [
@@ -13417,7 +13417,7 @@
    "status": "Filed",
    "status_raw": "Under staff review (DRC comments)",
    "decision_date": null,
-   "url": "https://seminolecountyfl.legistar.com/LegislationDetail.aspx?ID=7039&GUID=5EF44DE6-6770-4376-A518-44103393A7F2",
+   "url": "https://seminolecountyfl.legistar.com/LegislationDetail.aspx?ID=8172097&GUID=6D6F7A7C-4ACE-4931-9DB5-4B263B0B130F&G=E2DF9C83-4A2C-4390-86EE-5C088F5B9D50",
    "docs_url": null,
    "source": "Seminole County Legistar (DRC applications + P&Z Commission/LPA + BCC hearings)",
    "parcel_ids": [
@@ -13771,7 +13771,7 @@
    "status": "Hearing Scheduled",
    "status_raw": "Legistar: Held; next hearing BOCC 2026-12-08",
    "decision_date": null,
-   "url": "https://hillsboroughcounty.legistar.com/LegislationDetail.aspx?ID=5179&GUID=46411D4E-4F05-40E9-81B4-B1160C61D278",
+   "url": "https://hillsboroughcounty.legistar.com/LegislationDetail.aspx?ID=8223485&GUID=D488EC27-098E-427E-B495-A1860180C2A7&G=3144BC14-0EA0-4A0F-BC83-C4F8B333D0E8",
    "docs_url": "https://hillsboroughcounty.legistar1.com/hillsboroughcounty/attachments/44452eab-b4e8-45eb-9d51-759c02305a7a.pdf",
    "source": "Hillsborough Zoning Hearings GIS + Legistar",
    "parcel_ids": [
@@ -13843,7 +13843,7 @@
    "status": "Continued",
    "status_raw": "Zoning Hearing Master Continued: Continued to the Zoning Hearing Master due back on 11/16/2026",
    "decision_date": null,
-   "url": "https://hillsboroughcounty.legistar.com/LegislationDetail.aspx?ID=5178&GUID=6BB2EF66-F37F-4739-866C-0EE9C02BE2FF",
+   "url": "https://hillsboroughcounty.legistar.com/LegislationDetail.aspx?ID=8223484&GUID=33DD5B0C-3C38-4D28-839E-1DF8C10FB99A&G=3144BC14-0EA0-4A0F-BC83-C4F8B333D0E8",
    "docs_url": "https://hillsboroughcounty.legistar1.com/hillsboroughcounty/attachments/dd8a4c43-f20e-4d9c-9fa2-968677d633c4.pdf",
    "source": "Hillsborough Zoning Hearings GIS + Legistar",
    "parcel_ids": [
@@ -13920,7 +13920,7 @@
    "status": "Withdrawn",
    "status_raw": "Inactive in GIS hearing layer (no Legistar outcome)",
    "decision_date": null,
-   "url": "https://hillsborough.maps.arcgis.com/apps/webappviewer/index.html?id=be7f0f9c93c0460984d1223f6b329fa8&find=26-1269",
+   "url": "https://experience.arcgis.com/experience/870491f64f9744dca53c9f54ed4b7407/#widget_29=center:-82.353848%2C28.003162%2C4326,scale:4000",
    "docs_url": null,
    "source": "Hillsborough Zoning Hearings GIS + Legistar",
    "parcel_ids": [
@@ -14894,7 +14894,7 @@
    "status": "Filed",
    "status_raw": "Legistar: Agenda Ready",
    "decision_date": null,
-   "url": "https://hernandocountyfl.legistar.com/LegislationDetail.aspx?ID=9077&GUID=5A6EF881-7988-4A61-BCD2-E1E993AC8444",
+   "url": "https://hernandocountyfl.legistar.com/LegislationDetail.aspx?ID=8171513&GUID=261F56C0-7274-4772-97D1-F44B2E641792&G=6D9E70B1-EE34-4778-AE40-08B82D73C4B2",
    "docs_url": "https://hernandocountyfl.legistar1.com/hernandocountyfl/attachments/c5982055-f479-4d19-8246-d5e143049e56.pdf",
    "source": "Hernando Legistar",
    "parcel_ids": [
@@ -15637,7 +15637,7 @@
    "status_raw": "BCC 2026-08-25: Denied",
    "decision_date": "2026-08-25",
    "url": "https://fasttrack.ocfl.net/onlineservices/folderinformation.aspx?referencefile=SS-26-07-038",
-   "docs_url": "https://occompt.legistar.com/LegislationDetail.aspx?ID=19242&GUID=1F3E0013-B360-4D4E-ACD3-BB065824C931",
+   "docs_url": "https://occompt.legistar.com/LegislationDetail.aspx?ID=8143135&GUID=727DDE9A-43D5-489E-B096-41301D596C8F&G=671217FC-A8C9-41BD-BA90-3804D546A607",
    "source": "Orange County Public Notification GIS + BCC Legistar (occompt) + PZC recommendation books",
    "parcel_ids": [
     "24-23-29-3404-00-080"
@@ -15701,7 +15701,7 @@
    "status_raw": "BCC 2026-08-25: Approved",
    "decision_date": "2026-08-25",
    "url": "https://fasttrack.ocfl.net/onlineservices/folderinformation.aspx?referencefile=SS-26-03-009",
-   "docs_url": "https://occompt.legistar.com/LegislationDetail.aspx?ID=19243&GUID=E42CD703-EDF8-44D5-9916-B9A5B8096DC8",
+   "docs_url": "https://occompt.legistar.com/LegislationDetail.aspx?ID=8143409&GUID=6EE55E30-8AFE-4F19-9645-D4C33643C1EA&G=671217FC-A8C9-41BD-BA90-3804D546A607",
    "source": "Orange County Public Notification GIS + BCC Legistar (occompt) + PZC recommendation books",
    "parcel_ids": [
     "33-21-29-0000-00-061"
@@ -15840,7 +15840,7 @@
    "status_raw": "BCC 2026-08-25: Denied",
    "decision_date": "2026-08-25",
    "url": "https://fasttrack.ocfl.net/onlineservices/folderinformation.aspx?referencefile=RZ-26-07-038",
-   "docs_url": "https://occompt.legistar.com/LegislationDetail.aspx?ID=19242&GUID=1F3E0013-B360-4D4E-ACD3-BB065824C931",
+   "docs_url": "https://occompt.legistar.com/LegislationDetail.aspx?ID=8143135&GUID=727DDE9A-43D5-489E-B096-41301D596C8F&G=671217FC-A8C9-41BD-BA90-3804D546A607",
    "source": "Orange County Public Notification GIS + BCC Legistar (occompt) + PZC recommendation books",
    "parcel_ids": [
     "24-23-29-3404-00-080"
@@ -15904,7 +15904,7 @@
    "status_raw": "BCC 2026-08-25: Approved",
    "decision_date": "2026-08-25",
    "url": "https://fasttrack.ocfl.net/onlineservices/folderinformation.aspx?referencefile=RZ-26-03-009",
-   "docs_url": "https://occompt.legistar.com/LegislationDetail.aspx?ID=19243&GUID=E42CD703-EDF8-44D5-9916-B9A5B8096DC8",
+   "docs_url": "https://occompt.legistar.com/LegislationDetail.aspx?ID=8143409&GUID=6EE55E30-8AFE-4F19-9645-D4C33643C1EA&G=671217FC-A8C9-41BD-BA90-3804D546A607",
    "source": "Orange County Public Notification GIS + BCC Legistar (occompt) + PZC recommendation books",
    "parcel_ids": [
     "33-21-29-0000-00-061"
@@ -16030,7 +16030,7 @@
    "status": "Filed",
    "status_raw": "Under staff review (DRC comments)",
    "decision_date": null,
-   "url": "https://seminolecountyfl.legistar.com/LegislationDetail.aspx?ID=6994&GUID=39AE38EA-576F-45D3-A377-15784CC2B4A8",
+   "url": "https://seminolecountyfl.legistar.com/LegislationDetail.aspx?ID=8158756&GUID=4D0C48A2-1440-4F16-BE2B-F22277D6F3DF&G=E2DF9C83-4A2C-4390-86EE-5C088F5B9D50",
    "docs_url": null,
    "source": "Seminole County Legistar (DRC applications + P&Z Commission/LPA + BCC hearings)",
    "parcel_ids": [
@@ -16217,7 +16217,7 @@
    "status_raw": "BCC 2026-09-15: Approved",
    "decision_date": "2026-09-15",
    "url": "https://fasttrack.ocfl.net/onlineservices/folderinformation.aspx?referencefile=RZ-26-07-049",
-   "docs_url": "https://occompt.legistar.com/LegislationDetail.aspx?ID=19330&GUID=FA784A54-FABD-469D-AB4E-A9C1CB542D10",
+   "docs_url": "https://occompt.legistar.com/LegislationDetail.aspx?ID=8167169&GUID=865E3EFB-09DC-4B6C-B1DD-86B6FFBC0DB1&G=671217FC-A8C9-41BD-BA90-3804D546A607",
    "source": "Orange County Public Notification GIS + BCC Legistar (occompt) + PZC recommendation books",
    "parcel_ids": [
     "14-20-27-5439-00-030"
@@ -16568,7 +16568,7 @@
    "status": "Continued",
    "status_raw": "Zoning Hearing Master Continued: Continued to the Zoning Hearing Master due back on 10/19/2026",
    "decision_date": null,
-   "url": "https://hillsboroughcounty.legistar.com/LegislationDetail.aspx?ID=5176&GUID=52A9EA75-97DE-480D-8F26-B0828A5BEA53",
+   "url": "https://hillsboroughcounty.legistar.com/LegislationDetail.aspx?ID=8223482&GUID=89ACCD18-09F6-4E12-A94D-40227E819BE1&G=3144BC14-0EA0-4A0F-BC83-C4F8B333D0E8",
    "docs_url": "https://hillsboroughcounty.legistar1.com/hillsboroughcounty/attachments/1369b31e-d31c-44b2-adf0-b538ea88dff9.pdf",
    "source": "Hillsborough Zoning Hearings GIS + Legistar",
    "parcel_ids": [
@@ -16901,7 +16901,7 @@
    "status": "Hearing Scheduled",
    "status_raw": "Legistar: Agenda Ready; next hearing Zoning Hearing Master 2026-11-16",
    "decision_date": null,
-   "url": "https://hillsboroughcounty.legistar.com/LegislationDetail.aspx?ID=5214&GUID=D34729B2-9914-4D20-A6EE-4DF8A6DD607E",
+   "url": "https://hillsboroughcounty.legistar.com/LegislationDetail.aspx?ID=8286532&GUID=44784CB9-DA4A-4ADA-BDEA-181CC65EF290&G=3144BC14-0EA0-4A0F-BC83-C4F8B333D0E8",
    "docs_url": "https://hillsboroughcounty.legistar1.com/hillsboroughcounty/attachments/6e1bf200-46fe-4cb7-978e-317f0729d306.pdf",
    "source": "Hillsborough Zoning Hearings GIS + Legistar",
    "parcel_ids": [
@@ -16972,7 +16972,7 @@
    "status": "Hearing Scheduled",
    "status_raw": "Legistar: Agenda Ready; next hearing Zoning Hearing Master 2026-11-16",
    "decision_date": null,
-   "url": "https://hillsboroughcounty.legistar.com/LegislationDetail.aspx?ID=5213&GUID=93A5EE6B-CD43-4C1E-BF03-08F1F4634F6B",
+   "url": "https://hillsboroughcounty.legistar.com/LegislationDetail.aspx?ID=8286531&GUID=09DBCACF-5C01-4D50-8F03-06A43D8AF294&G=3144BC14-0EA0-4A0F-BC83-C4F8B333D0E8",
    "docs_url": "https://hillsboroughcounty.legistar1.com/hillsboroughcounty/attachments/2897e4b9-9a21-4db1-9a7a-aeee66bc4a6d.pdf",
    "source": "Hillsborough Zoning Hearings GIS + Legistar",
    "parcel_ids": [
@@ -17049,7 +17049,7 @@
    "status": "Hearing Scheduled",
    "status_raw": "Legistar: Agenda Ready; next hearing Zoning Hearing Master 2026-11-16",
    "decision_date": null,
-   "url": "https://hillsboroughcounty.legistar.com/LegislationDetail.aspx?ID=5212&GUID=B97733DE-B77E-4C84-897D-2DE71A62CF2D",
+   "url": "https://hillsboroughcounty.legistar.com/LegislationDetail.aspx?ID=8286530&GUID=7EE0AC79-5B9E-4B84-AC37-CA15F82DA76D&G=3144BC14-0EA0-4A0F-BC83-C4F8B333D0E8",
    "docs_url": "https://hillsboroughcounty.legistar1.com/hillsboroughcounty/attachments/45302794-5205-46a9-bd0c-05168c8d3150.pdf",
    "source": "Hillsborough Zoning Hearings GIS + Legistar",
    "parcel_ids": [
@@ -17126,7 +17126,7 @@
    "status": "Hearing Scheduled",
    "status_raw": "Legistar: Agenda Ready; next hearing Zoning Hearing Master 2026-11-16",
    "decision_date": null,
-   "url": "https://hillsboroughcounty.legistar.com/LegislationDetail.aspx?ID=5211&GUID=5B74988B-ACC2-4382-8F9F-26D196498B2E",
+   "url": "https://hillsboroughcounty.legistar.com/LegislationDetail.aspx?ID=8286529&GUID=31FFBE5F-B86A-4F43-8901-FF10B4A3B19E&G=3144BC14-0EA0-4A0F-BC83-C4F8B333D0E8",
    "docs_url": "https://hillsboroughcounty.legistar1.com/hillsboroughcounty/attachments/97c2b94d-6d81-40d3-8d79-4097955d1408.pdf",
    "source": "Hillsborough Zoning Hearings GIS + Legistar",
    "parcel_ids": [
@@ -17197,7 +17197,7 @@
    "status": "Hearing Scheduled",
    "status_raw": "Legistar: Agenda Ready; next hearing Zoning Hearing Master 2026-10-19",
    "decision_date": null,
-   "url": "https://hillsboroughcounty.legistar.com/LegislationDetail.aspx?ID=5210&GUID=84541606-AE8E-4C89-AF6C-D91C675CEC74",
+   "url": "https://hillsboroughcounty.legistar.com/LegislationDetail.aspx?ID=8286528&GUID=CFF0D115-2642-4D7E-A1DC-74086205B3C5&G=3144BC14-0EA0-4A0F-BC83-C4F8B333D0E8",
    "docs_url": "https://hillsboroughcounty.legistar1.com/hillsboroughcounty/attachments/751ad8fe-33db-4e11-98b5-72d97095e5e2.pdf",
    "source": "Hillsborough Zoning Hearings GIS + Legistar",
    "parcel_ids": [
@@ -17641,7 +17641,7 @@
    "status_raw": "BCC 2026-08-25: Approved",
    "decision_date": "2026-08-25",
    "url": "https://fasttrack.ocfl.net/onlineservices/folderinformation.aspx?referencefile=CDR-25-10-248",
-   "docs_url": "https://occompt.legistar.com/LegislationDetail.aspx?ID=19196&GUID=F092813D-2080-4610-AEFE-6C8BB943925E",
+   "docs_url": "https://occompt.legistar.com/LegislationDetail.aspx?ID=8134935&GUID=17A8BA2F-F3EA-46D0-B177-EDD28465C4A5&G=671217FC-A8C9-41BD-BA90-3804D546A607",
    "source": "Orange County Public Notification GIS + BCC Legistar (occompt) + PZC recommendation books",
    "parcel_ids": [
     "03-22-30-2510-01-000"
@@ -17830,7 +17830,7 @@
    "status": "Denied",
    "status_raw": "BOCC 2026-08-18: Denied",
    "decision_date": "2026-08-18",
-   "url": "https://marionfl.legistar.com/LegislationDetail.aspx?ID=25970&GUID=CC71E5B8-D63D-400C-B02C-850A595D9C9D",
+   "url": "https://marionfl.legistar.com/LegislationDetail.aspx?ID=8169334&GUID=B3E32363-882B-4D2E-92A0-AAC664F43BEE&G=BE8E0F50-D386-42B0-BD7D-99F05C7CA750",
    "docs_url": "https://marionfl.legistar1.com/marionfl/attachments/19aef6ce-c9b9-42e3-adf0-99c625be3a00.pdf",
    "source": "Marion County Legistar (P&Z Commission + BOCC agendas)",
    "parcel_ids": [
@@ -17899,7 +17899,7 @@
    "status": "Filed",
    "status_raw": "Planning & Zoning Commission 2026-07-27: Recommended Approval; BOCC hearing not yet scheduled",
    "decision_date": null,
-   "url": "https://marionfl.legistar.com/LegislationDetail.aspx?ID=25758&GUID=0A3BFD60-06FE-4E14-AE24-07355AED491E",
+   "url": "https://marionfl.legistar.com/LegislationDetail.aspx?ID=8144541&GUID=FBB3CA77-1FEE-40C2-8857-E779606BC4D2&G=BE8E0F50-D386-42B0-BD7D-99F05C7CA750",
    "docs_url": "https://marionfl.legistar1.com/marionfl/attachments/296b8b16-6a9f-40d0-b414-fb730f0bbda3.pdf",
    "source": "Marion County Legistar (P&Z Commission + BOCC agendas)",
    "parcel_ids": [
@@ -18315,7 +18315,7 @@
    "status_raw": "BCC 2026-08-25: Approved",
    "decision_date": "2026-08-25",
    "url": "https://fasttrack.ocfl.net/onlineservices/folderinformation.aspx?referencefile=CDR-26-03-057",
-   "docs_url": "https://occompt.legistar.com/LegislationDetail.aspx?ID=19174&GUID=41834ADE-EBF4-4712-91EF-3C5354C02B46",
+   "docs_url": "https://occompt.legistar.com/LegislationDetail.aspx?ID=8134811&GUID=6B651613-F8A0-44A5-8D6C-1A2758694630&G=671217FC-A8C9-41BD-BA90-3804D546A607",
    "source": "Orange County Public Notification GIS + BCC Legistar (occompt) + PZC recommendation books",
    "parcel_ids": [
     "36-23-28-7168-01-000"
@@ -18378,7 +18378,7 @@
    "status": "Hearing Scheduled",
    "status_raw": "Legistar: Agenda Ready; next hearing Zoning Hearing Master 2026-11-16",
    "decision_date": null,
-   "url": "https://hillsboroughcounty.legistar.com/LegislationDetail.aspx?ID=5209&GUID=7DCAB2F6-D093-494E-A777-86FEA0C2DC8D",
+   "url": "https://hillsboroughcounty.legistar.com/LegislationDetail.aspx?ID=8286527&GUID=61998BE8-176E-481C-A646-F5B137E614A2&G=3144BC14-0EA0-4A0F-BC83-C4F8B333D0E8",
    "docs_url": "https://hillsboroughcounty.legistar1.com/hillsboroughcounty/attachments/31563977-2229-4010-8ed3-02bee325d4e8.pdf",
    "source": "Hillsborough Zoning Hearings GIS + Legistar",
    "parcel_ids": [
@@ -18450,7 +18450,7 @@
    "status": "Hearing Scheduled",
    "status_raw": "Legistar: Agenda Ready; next hearing Zoning Hearing Master 2026-11-16",
    "decision_date": null,
-   "url": "https://hillsboroughcounty.legistar.com/LegislationDetail.aspx?ID=5208&GUID=0CBAC939-72BF-45D0-88D5-B74B1AF6AAD5",
+   "url": "https://hillsboroughcounty.legistar.com/LegislationDetail.aspx?ID=8286526&GUID=CD0D77B0-E584-41C5-9FA6-864989B4C312&G=3144BC14-0EA0-4A0F-BC83-C4F8B333D0E8",
    "docs_url": "https://hillsboroughcounty.legistar1.com/hillsboroughcounty/attachments/464147d2-da73-484d-82f8-0778bba2ce70.pdf",
    "source": "Hillsborough Zoning Hearings GIS + Legistar",
    "parcel_ids": [
@@ -18584,7 +18584,7 @@
    "status": "Filed",
    "status_raw": "Under staff review (DRC comments)",
    "decision_date": null,
-   "url": "https://seminolecountyfl.legistar.com/LegislationDetail.aspx?ID=6956&GUID=F4DC93E3-1D05-486F-9BB0-D8B219EB9E88",
+   "url": "https://seminolecountyfl.legistar.com/LegislationDetail.aspx?ID=8140270&GUID=2FBE7AC7-D63F-48B8-A9D6-0D8D0D67AF25&G=E2DF9C83-4A2C-4390-86EE-5C088F5B9D50",
    "docs_url": null,
    "source": "Seminole County Legistar (DRC applications + P&Z Commission/LPA + BCC hearings)",
    "parcel_ids": [
@@ -18638,7 +18638,7 @@
    "status": "Filed",
    "status_raw": "Under staff review (DRC comments)",
    "decision_date": null,
-   "url": "https://seminolecountyfl.legistar.com/LegislationDetail.aspx?ID=6955&GUID=EF2A1267-9F5C-4191-AEB1-A792ABF25631",
+   "url": "https://seminolecountyfl.legistar.com/MeetingDetail.aspx?LEGID=3643&GID=921&G=E2DF9C83-4A2C-4390-86EE-5C088F5B9D50",
    "docs_url": null,
    "source": "Seminole County Legistar (DRC applications + P&Z Commission/LPA + BCC hearings)",
    "parcel_ids": [
@@ -19255,7 +19255,7 @@
    "status": "Approved",
    "status_raw": "BOCC Approved (Legistar: Passed)",
    "decision_date": "2026-10-13",
-   "url": "https://hillsboroughcounty.legistar.com/LegislationDetail.aspx?ID=5132&GUID=82268367-A864-4623-A804-0B762F07D853",
+   "url": "https://hillsboroughcounty.legistar.com/LegislationDetail.aspx?ID=8176096&GUID=236B994B-061C-48DC-85A5-D204D8393667&G=3144BC14-0EA0-4A0F-BC83-C4F8B333D0E8",
    "docs_url": "https://hillsboroughcounty.legistar1.com/hillsboroughcounty/attachments/744d863d-e8af-4394-9790-c1de1ca35208.pdf",
    "source": "Hillsborough Zoning Hearings GIS + Legistar",
    "parcel_ids": [
@@ -19485,7 +19485,7 @@
    "status_raw": "BCC 2026-10-13: Approved",
    "decision_date": "2026-10-13",
    "url": "https://fasttrack.ocfl.net/onlineservices/folderinformation.aspx?referencefile=SS-25-12-020",
-   "docs_url": "https://occompt.legistar.com/LegislationDetail.aspx?ID=19146&GUID=D63FCBC2-9286-4D81-B540-2AB21C76E5E2",
+   "docs_url": "https://occompt.legistar.com/LegislationDetail.aspx?ID=8124274&GUID=DA64B8D8-8A03-4ED6-ADD5-51E8A56E869E&G=671217FC-A8C9-41BD-BA90-3804D546A607",
    "source": "Orange County Public Notification GIS + BCC Legistar (occompt) + PZC recommendation books",
    "parcel_ids": [
     "23-23-30-0892-00-030",
@@ -19562,7 +19562,7 @@
    "status_raw": "BCC 2026-10-13: Approved",
    "decision_date": "2026-10-13",
    "url": "https://fasttrack.ocfl.net/onlineservices/folderinformation.aspx?referencefile=RZ-25-12-020",
-   "docs_url": "https://occompt.legistar.com/LegislationDetail.aspx?ID=19146&GUID=D63FCBC2-9286-4D81-B540-2AB21C76E5E2",
+   "docs_url": "https://occompt.legistar.com/LegislationDetail.aspx?ID=8124274&GUID=DA64B8D8-8A03-4ED6-ADD5-51E8A56E869E&G=671217FC-A8C9-41BD-BA90-3804D546A607",
    "source": "Orange County Public Notification GIS + BCC Legistar (occompt) + PZC recommendation books",
    "parcel_ids": [
     "23-23-30-0892-00-030",
@@ -19639,7 +19639,7 @@
    "status_raw": "BCC 2026-08-04: Approved",
    "decision_date": "2026-08-04",
    "url": "https://fasttrack.ocfl.net/onlineservices/folderinformation.aspx?referencefile=CDR-25-12-300",
-   "docs_url": "https://occompt.legistar.com/LegislationDetail.aspx?ID=19144&GUID=ED9B0281-3A4E-4781-943C-1BEE68888B0B",
+   "docs_url": "https://occompt.legistar.com/LegislationDetail.aspx?ID=8124077&GUID=9740FEF5-B972-4D80-9744-E8CFF187FD53&G=671217FC-A8C9-41BD-BA90-3804D546A607",
    "source": "Orange County Public Notification GIS + BCC Legistar (occompt) + PZC recommendation books",
    "parcel_ids": [
     "30-23-27-2699-01-002",
@@ -20326,7 +20326,7 @@
    "status": "Withdrawn",
    "status_raw": "Withdrawn",
    "decision_date": null,
-   "url": "https://hillsboroughcounty.legistar.com/LegislationDetail.aspx?ID=5130&GUID=F66E2B3F-4324-438F-B2AB-68D587495FCD",
+   "url": "https://hillsboroughcounty.legistar.com/LegislationDetail.aspx?ID=8176094&GUID=69E77BAC-7910-46B7-95B3-FD8CB624BEE1&G=3144BC14-0EA0-4A0F-BC83-C4F8B333D0E8",
    "docs_url": "https://hillsboroughcounty.legistar1.com/hillsboroughcounty/attachments/0c41ea2d-7015-48e5-b416-5f8a119f2469.pdf",
    "source": "Hillsborough Zoning Hearings GIS + Legistar",
    "parcel_ids": [
@@ -20720,7 +20720,7 @@
    "status_raw": "BCC 2026-08-25: Approved",
    "decision_date": "2026-08-25",
    "url": "https://fasttrack.ocfl.net/onlineservices/folderinformation.aspx?referencefile=CDR-26-02-032",
-   "docs_url": "https://occompt.legistar.com/LegislationDetail.aspx?ID=19140&GUID=12BC947F-5202-4C43-A20C-F6F8693D3491",
+   "docs_url": "https://occompt.legistar.com/LegislationDetail.aspx?ID=8119905&GUID=996E103D-C813-4947-A32F-9B93E7F3B482&G=671217FC-A8C9-41BD-BA90-3804D546A607",
    "source": "Orange County Public Notification GIS + BCC Legistar (occompt) + PZC recommendation books",
    "parcel_ids": [
     "12-24-28-3275-00-010"
@@ -20924,7 +20924,7 @@
    "status": "Continued",
    "status_raw": "Zoning Hearing Master Continued: Continued to the Zoning Hearing Master due back on 10/19/2026",
    "decision_date": null,
-   "url": "https://hillsboroughcounty.legistar.com/LegislationDetail.aspx?ID=5160&GUID=927F721B-5F81-4DD4-BDE5-C53AB6A4F62A",
+   "url": "https://hillsboroughcounty.legistar.com/LegislationDetail.aspx?ID=8223481&GUID=9ECCCB01-CC4F-4EE1-BF17-A22D5F4D38A8&G=3144BC14-0EA0-4A0F-BC83-C4F8B333D0E8",
    "docs_url": "https://hillsboroughcounty.legistar1.com/hillsboroughcounty/attachments/d0fe03bf-e684-41b9-bb5a-e759c622cc63.pdf",
    "source": "Hillsborough Zoning Hearings GIS + Legistar",
    "parcel_ids": [
@@ -21007,7 +21007,7 @@
    "status": "Continued",
    "status_raw": "Zoning Hearing Master Continued: Continued to the Zoning Hearing Master due back on 10/19/2026",
    "decision_date": null,
-   "url": "https://hillsboroughcounty.legistar.com/LegislationDetail.aspx?ID=5158&GUID=159D248B-EF86-4D29-BE62-48729D2A810A",
+   "url": "https://hillsboroughcounty.legistar.com/LegislationDetail.aspx?ID=8223479&GUID=D5A36DDD-7549-499E-AFED-3ADF827E6D27&G=3144BC14-0EA0-4A0F-BC83-C4F8B333D0E8",
    "docs_url": "https://hillsboroughcounty.legistar1.com/hillsboroughcounty/attachments/3b2ec476-2b00-43f8-8cc5-8ebb3065db7d.pdf",
    "source": "Hillsborough Zoning Hearings GIS + Legistar",
    "parcel_ids": [
@@ -21351,7 +21351,7 @@
    "status": "Continued",
    "status_raw": "Zoning Hearing Master Continued: Continued to the Zoning Hearing Master due back on 10/19/2026",
    "decision_date": null,
-   "url": "https://hillsboroughcounty.legistar.com/LegislationDetail.aspx?ID=5159&GUID=5ACAD63F-72F4-45ED-B8C5-934FD280311F",
+   "url": "https://hillsboroughcounty.legistar.com/LegislationDetail.aspx?ID=8223480&GUID=B92A966D-5BE1-4032-97F0-12B8405FD574&G=3144BC14-0EA0-4A0F-BC83-C4F8B333D0E8",
    "docs_url": "https://hillsboroughcounty.legistar1.com/hillsboroughcounty/attachments/7c7b8ed2-90db-415c-920b-0db4f68a5991.pdf",
    "source": "Hillsborough Zoning Hearings GIS + Legistar",
    "parcel_ids": [
@@ -21434,7 +21434,7 @@
    "status": "Continued",
    "status_raw": "Zoning Hearing Master Continued: Continued to the Zoning Hearing Master due back on 10/19/2026",
    "decision_date": null,
-   "url": "https://hillsboroughcounty.legistar.com/LegislationDetail.aspx?ID=5157&GUID=8CD32A6A-8233-4B16-B6E8-AE2FD7B05835",
+   "url": "https://hillsboroughcounty.legistar.com/LegislationDetail.aspx?ID=8223478&GUID=5E7D5B52-7D3F-408F-A06F-9AC0CC547F21&G=3144BC14-0EA0-4A0F-BC83-C4F8B333D0E8",
    "docs_url": "https://hillsboroughcounty.legistar1.com/hillsboroughcounty/attachments/7e19ebbc-cf8e-4e4e-9d82-dad69eb8087e.pdf",
    "source": "Hillsborough Zoning Hearings GIS + Legistar",
    "parcel_ids": [
@@ -21517,7 +21517,7 @@
    "status": "Continued",
    "status_raw": "Zoning Hearing Master Continued: Continued to the Zoning Hearing Master due back on 10/19/2026",
    "decision_date": null,
-   "url": "https://hillsboroughcounty.legistar.com/LegislationDetail.aspx?ID=5156&GUID=1E6F2FCD-BE1A-4295-B153-7573CC9892C7",
+   "url": "https://hillsboroughcounty.legistar.com/LegislationDetail.aspx?ID=8223477&GUID=48D37E9E-2A08-4DA1-A0EE-C6C1BA62E1C2&G=3144BC14-0EA0-4A0F-BC83-C4F8B333D0E8",
    "docs_url": "https://hillsboroughcounty.legistar1.com/hillsboroughcounty/attachments/1067cdb3-ca0d-4a17-bece-0ec5dc133e1a.pdf",
    "source": "Hillsborough Zoning Hearings GIS + Legistar",
    "parcel_ids": [
@@ -21594,7 +21594,7 @@
    "status": "Hearing Scheduled",
    "status_raw": "Legistar: Held; next hearing BOCC 2026-12-08",
    "decision_date": null,
-   "url": "https://hillsboroughcounty.legistar.com/LegislationDetail.aspx?ID=5155&GUID=1EA8DA3C-21C4-4BA9-B4ED-B4F08BD1F222",
+   "url": "https://hillsboroughcounty.legistar.com/LegislationDetail.aspx?ID=8223476&GUID=3376882E-9CE2-4D06-8CD4-7E6B35AD129F&G=3144BC14-0EA0-4A0F-BC83-C4F8B333D0E8",
    "docs_url": "https://hillsboroughcounty.legistar1.com/hillsboroughcounty/attachments/3bd7c19c-e7b2-40fc-a4d0-e6831287ea5d.pdf",
    "source": "Hillsborough Zoning Hearings GIS + Legistar",
    "parcel_ids": [
@@ -21666,7 +21666,7 @@
    "status": "Continued",
    "status_raw": "Zoning Hearing Master Continued: Continued to the Zoning Hearing Master due back on 10/19/2026",
    "decision_date": null,
-   "url": "https://hillsboroughcounty.legistar.com/LegislationDetail.aspx?ID=5154&GUID=242A5C0D-3DED-4DF5-A5E5-CEC84B1782B0",
+   "url": "https://hillsboroughcounty.legistar.com/LegislationDetail.aspx?ID=8223475&GUID=483750D9-CD4C-4199-885E-FAC4B7654C87&G=3144BC14-0EA0-4A0F-BC83-C4F8B333D0E8",
    "docs_url": "https://hillsboroughcounty.legistar1.com/hillsboroughcounty/attachments/00943419-95ca-41f8-a00b-9954e03a579b.pdf",
    "source": "Hillsborough Zoning Hearings GIS + Legistar",
    "parcel_ids": [
@@ -21743,7 +21743,7 @@
    "status": "Continued",
    "status_raw": "Zoning Hearing Master Continued: Continued to the Zoning Hearing Master due back on 10/19/2026",
    "decision_date": null,
-   "url": "https://hillsboroughcounty.legistar.com/LegislationDetail.aspx?ID=5153&GUID=62BA31F9-F6BE-40DC-BA94-F464E3CE3697",
+   "url": "https://hillsboroughcounty.legistar.com/LegislationDetail.aspx?ID=8223474&GUID=900A2FFE-97D9-47CA-8ED2-12BB60873FCF&G=3144BC14-0EA0-4A0F-BC83-C4F8B333D0E8",
    "docs_url": "https://hillsboroughcounty.legistar1.com/hillsboroughcounty/attachments/adaed7f0-2085-4634-abf1-f82e31f00e0e.pdf",
    "source": "Hillsborough Zoning Hearings GIS + Legistar",
    "parcel_ids": [
@@ -22219,7 +22219,7 @@
    "status": "Approved",
    "status_raw": "Legistar: Agenda Ready (Approved by BOCC 2026-09-01)",
    "decision_date": "2026-09-01",
-   "url": "https://hernandocountyfl.legistar.com/LegislationDetail.aspx?ID=8977&GUID=BBA7C8D9-5401-4C30-A8D9-1563FAD70CEA",
+   "url": "https://hernandocountyfl.legistar.com/LegislationDetail.aspx?ID=8191437&GUID=93F02A76-A002-464A-86CB-1A4C080DC2A6&G=6D9E70B1-EE34-4778-AE40-08B82D73C4B2",
    "docs_url": "https://hernandocountyfl.legistar1.com/hernandocountyfl/attachments/d1fdfe98-deea-400b-bc46-aef4ef36b40e.pdf",
    "source": "Hernando Legistar",
    "parcel_ids": [
@@ -23194,7 +23194,7 @@
    "status_raw": "BCC 2026-07-14: Denied",
    "decision_date": "2026-07-14",
    "url": "https://fasttrack.ocfl.net/onlineservices/folderinformation.aspx?referencefile=CDR-25-12-306",
-   "docs_url": "https://occompt.legistar.com/LegislationDetail.aspx?ID=19093&GUID=EFFB3300-11B3-47CB-AFB5-7AEB46D954BF",
+   "docs_url": "https://occompt.legistar.com/LegislationDetail.aspx?ID=8070155&GUID=2E9E531C-9F28-4949-A624-87AA1493242C&G=671217FC-A8C9-41BD-BA90-3804D546A607",
    "source": "Orange County Public Notification GIS + BCC Legistar (occompt) + PZC recommendation books",
    "parcel_ids": [
     "21-23-27-2719-02-002"
@@ -23475,7 +23475,7 @@
    "status": "Approved",
    "status_raw": "BOCC 2026-07-22: Approved",
    "decision_date": "2026-07-22",
-   "url": "https://marionfl.legistar.com/LegislationDetail.aspx?ID=25560&GUID=2031DFAA-D9CE-4AA7-BF24-D7B723042A2D",
+   "url": "https://marionfl.legistar.com/LegislationDetail.aspx?ID=8137840&GUID=617D1616-1CB5-45D0-9A17-49A204466BD7&G=BE8E0F50-D386-42B0-BD7D-99F05C7CA750",
    "docs_url": "https://marionfl.legistar1.com/marionfl/attachments/322d016a-ccb3-4d22-91f5-a4596d343f8b.pdf",
    "source": "Marion County Legistar (P&Z Commission + BOCC agendas)",
    "parcel_ids": [
@@ -23544,7 +23544,7 @@
    "status": "Approved",
    "status_raw": "BOCC 2026-07-21: Approved",
    "decision_date": "2026-07-21",
-   "url": "https://marionfl.legistar.com/LegislationDetail.aspx?ID=25554&GUID=DEE87C7B-DD0D-4911-8874-AEDA877E8C9F",
+   "url": "https://marionfl.legistar.com/LegislationDetail.aspx?ID=8137834&GUID=F761C3BC-528F-4A44-BE92-4674639B1A71&G=BE8E0F50-D386-42B0-BD7D-99F05C7CA750",
    "docs_url": "https://marionfl.legistar1.com/marionfl/attachments/c0859be1-feed-4791-9c59-3d920ff199be.pdf",
    "source": "Marion County Legistar (P&Z Commission + BOCC agendas)",
    "parcel_ids": [
@@ -23613,7 +23613,7 @@
    "status": "Approved",
    "status_raw": "BOCC 2026-07-22: Approved",
    "decision_date": "2026-07-22",
-   "url": "https://marionfl.legistar.com/LegislationDetail.aspx?ID=25559&GUID=CE7ACBF0-84A1-436F-9774-9E42BA67C836",
+   "url": "https://marionfl.legistar.com/LegislationDetail.aspx?ID=8137839&GUID=BE0520C1-41D9-45D4-B5E7-39973EE45FDB&G=BE8E0F50-D386-42B0-BD7D-99F05C7CA750",
    "docs_url": "https://marionfl.legistar1.com/marionfl/attachments/2b7c1d12-5049-4465-9862-2346e2ae425a.pdf",
    "source": "Marion County Legistar (P&Z Commission + BOCC agendas)",
    "parcel_ids": [
@@ -23682,7 +23682,7 @@
    "status": "Approved",
    "status_raw": "BOCC 2026-07-22: Approved",
    "decision_date": "2026-07-22",
-   "url": "https://marionfl.legistar.com/LegislationDetail.aspx?ID=25558&GUID=1A23E52B-91B9-432D-B3A9-A56E375B3484",
+   "url": "https://marionfl.legistar.com/LegislationDetail.aspx?ID=8137838&GUID=34DFE944-3715-48C3-9E35-78EE182555C2&G=BE8E0F50-D386-42B0-BD7D-99F05C7CA750",
    "docs_url": "https://marionfl.legistar1.com/marionfl/attachments/c56dae9e-90df-45b5-ab8f-8b4aa02ae332.pdf",
    "source": "Marion County Legistar (P&Z Commission + BOCC agendas)",
    "parcel_ids": [
@@ -24918,7 +24918,7 @@
    "status": "Continued",
    "status_raw": "Zoning Hearing Master Continued: Continued to the Zoning Hearing Master due back on 10/19/2026",
    "decision_date": null,
-   "url": "https://hillsboroughcounty.legistar.com/LegislationDetail.aspx?ID=5152&GUID=1FC311EF-AC0F-4D61-9D00-B8CE45CE9DF9",
+   "url": "https://hillsboroughcounty.legistar.com/LegislationDetail.aspx?ID=8223473&GUID=F38CF1A3-DEF0-451D-97CC-AAF7A1AEB2ED&G=3144BC14-0EA0-4A0F-BC83-C4F8B333D0E8",
    "docs_url": "https://hillsboroughcounty.legistar1.com/hillsboroughcounty/attachments/80304ecf-ca32-41c6-89ab-3da13aea7f7b.pdf",
    "source": "Hillsborough Zoning Hearings GIS + Legistar",
    "parcel_ids": [
@@ -25064,7 +25064,7 @@
    "status": "Approved",
    "status_raw": "BOCC 2026-06-16: Approved",
    "decision_date": "2026-06-16",
-   "url": "https://marionfl.legistar.com/LegislationDetail.aspx?ID=25357&GUID=217E8E86-03CB-4F19-B4C4-28D53C936530",
+   "url": "https://marionfl.legistar.com/LegislationDetail.aspx?ID=8067352&GUID=D16CF945-5BD3-48A0-BA58-85BF77621B48&G=BE8E0F50-D386-42B0-BD7D-99F05C7CA750",
    "docs_url": "https://marionfl.legistar1.com/marionfl/attachments/ca79e734-1391-46e4-9bf9-9783b2b61c15.pdf",
    "source": "Marion County Legistar (P&Z Commission + BOCC agendas)",
    "parcel_ids": [
@@ -25815,7 +25815,7 @@
    "status": "Continued",
    "status_raw": "Zoning Hearing Master Continued: Continued to the Zoning Hearing Master due back on 10/19/2026",
    "decision_date": null,
-   "url": "https://hillsboroughcounty.legistar.com/LegislationDetail.aspx?ID=5151&GUID=3616840A-36D9-48FF-B766-3810D8191D81",
+   "url": "https://hillsboroughcounty.legistar.com/LegislationDetail.aspx?ID=8223472&GUID=4A9320BA-6232-4056-9F44-2420F3907609&G=3144BC14-0EA0-4A0F-BC83-C4F8B333D0E8",
    "docs_url": "https://hillsboroughcounty.legistar1.com/hillsboroughcounty/attachments/945247d4-33de-45c4-a73b-01effbcc8b77.pdf",
    "source": "Hillsborough Zoning Hearings GIS + Legistar",
    "parcel_ids": [
@@ -25892,7 +25892,7 @@
    "status": "Continued",
    "status_raw": "Zoning Hearing Master Continued: Continued to the Zoning Hearing Master due back on 10/19/2026",
    "decision_date": null,
-   "url": "https://hillsboroughcounty.legistar.com/LegislationDetail.aspx?ID=5150&GUID=513815C9-1269-413B-9C30-AA9D36CE3D6E",
+   "url": "https://hillsboroughcounty.legistar.com/LegislationDetail.aspx?ID=8223471&GUID=BC3E93D8-D778-45FC-822D-5B470EB50548&G=3144BC14-0EA0-4A0F-BC83-C4F8B333D0E8",
    "docs_url": "https://hillsboroughcounty.legistar1.com/hillsboroughcounty/attachments/3a9e4912-0410-4bb1-b97c-27947eefe6e5.pdf",
    "source": "Hillsborough Zoning Hearings GIS + Legistar",
    "parcel_ids": [
@@ -26761,7 +26761,7 @@
    "status": "Continued",
    "status_raw": "Zoning Hearing Master Continued: Continued to the Zoning Hearing Master due back on 10/19/2026",
    "decision_date": null,
-   "url": "https://hillsboroughcounty.legistar.com/LegislationDetail.aspx?ID=5127&GUID=BEF301E8-D38E-4118-80BC-1FF85FD60279",
+   "url": "https://hillsboroughcounty.legistar.com/LegislationDetail.aspx?ID=8176091&GUID=8035A543-6F90-40BB-A955-1F92BE5D7F39&G=3144BC14-0EA0-4A0F-BC83-C4F8B333D0E8",
    "docs_url": "https://hillsboroughcounty.legistar1.com/hillsboroughcounty/attachments/a8d5df4e-f1c2-4e9e-83ac-7599aeb74392.pdf",
    "source": "Hillsborough Zoning Hearings GIS + Legistar",
    "parcel_ids": [
@@ -27782,7 +27782,7 @@
    "status": "Approved",
    "status_raw": "Legistar: Agenda Ready (Approved by BOCC 2026-08-04)",
    "decision_date": "2026-08-04",
-   "url": "https://hernandocountyfl.legistar.com/LegislationDetail.aspx?ID=8848&GUID=FD1465D6-7D10-4D9F-AB90-341B948B8626",
+   "url": "https://hernandocountyfl.legistar.com/LegislationDetail.aspx?ID=8142821&GUID=8ADACAD7-DC94-42AF-BB05-A3713248AB6F&G=6D9E70B1-EE34-4778-AE40-08B82D73C4B2",
    "docs_url": "https://hernandocountyfl.legistar1.com/hernandocountyfl/attachments/e23e559f-9f51-47c6-9d93-cace67140970.pdf",
    "source": "Hernando Legistar",
    "parcel_ids": [
@@ -28037,7 +28037,7 @@
    "status": "Withdrawn",
    "status_raw": "Withdrawn",
    "decision_date": null,
-   "url": "https://hillsboroughcounty.legistar.com/LegislationDetail.aspx?ID=5113&GUID=57A862A9-E41B-4BD1-9E16-AD977B2EA2FE",
+   "url": "https://hillsboroughcounty.legistar.com/LegislationDetail.aspx?ID=8136345&GUID=1DDC8B91-864E-4E4A-A7CC-C079FC527775&G=3144BC14-0EA0-4A0F-BC83-C4F8B333D0E8",
    "docs_url": "https://hillsboroughcounty.legistar1.com/hillsboroughcounty/attachments/5a2029ca-98e3-4cc9-b6ec-23c51951fe31.pdf",
    "source": "Hillsborough Zoning Hearings GIS + Legistar",
    "parcel_ids": [
@@ -28106,7 +28106,7 @@
    "status": "Denied",
    "status_raw": "BOCC Denied (Legistar: Failed)",
    "decision_date": "2026-10-13",
-   "url": "https://hillsboroughcounty.legistar.com/LegislationDetail.aspx?ID=5129&GUID=886A8C86-EC22-4C40-ACB8-885F2EA89F75",
+   "url": "https://hillsboroughcounty.legistar.com/LegislationDetail.aspx?ID=8176093&GUID=02037754-5948-408E-AB41-EB2B0B7B9D3D&G=3144BC14-0EA0-4A0F-BC83-C4F8B333D0E8",
    "docs_url": "https://hillsboroughcounty.legistar1.com/hillsboroughcounty/attachments/7c2b5b62-dc9d-4409-b919-fe687e210887.pdf",
    "source": "Hillsborough Zoning Hearings GIS + Legistar",
    "parcel_ids": [
@@ -28178,7 +28178,7 @@
    "status": "Continued",
    "status_raw": "Zoning Hearing Master Continued: Continued to the Zoning Hearing Master due back on 11/16/2026",
    "decision_date": null,
-   "url": "https://hillsboroughcounty.legistar.com/LegislationDetail.aspx?ID=5128&GUID=B74698DB-F25B-404B-82F3-C2C97652D9A5",
+   "url": "https://hillsboroughcounty.legistar.com/LegislationDetail.aspx?ID=8176092&GUID=95C1978D-5680-4799-9919-3DAF5863C7A2&G=3144BC14-0EA0-4A0F-BC83-C4F8B333D0E8",
    "docs_url": "https://hillsboroughcounty.legistar1.com/hillsboroughcounty/attachments/2a187bc9-8a60-4eac-ac4b-839ac4c7edcd.pdf",
    "source": "Hillsborough Zoning Hearings GIS + Legistar",
    "parcel_ids": [
@@ -28891,7 +28891,7 @@
    "status": "Filed",
    "status_raw": "Planning & Zoning Commission 2026-05-27: Recommended Approval; BOCC hearing not yet scheduled",
    "decision_date": null,
-   "url": "https://marionfl.legistar.com/LegislationDetail.aspx?ID=25113&GUID=F6E808A3-B5F9-413E-8535-57909536875A",
+   "url": "https://marionfl.legistar.com/LegislationDetail.aspx?ID=8036512&GUID=FB8518C2-E0BF-4321-8AE2-3F20450FEF6E&G=BE8E0F50-D386-42B0-BD7D-99F05C7CA750",
    "docs_url": "https://marionfl.legistar1.com/marionfl/attachments/ae79fd47-3027-4f21-af75-e4a77e73faa8.pdf",
    "source": "Marion County Legistar (P&Z Commission + BOCC agendas)",
    "parcel_ids": [
@@ -28963,7 +28963,7 @@
    "status": "Approved",
    "status_raw": "BOCC 2026-06-16: Approved",
    "decision_date": "2026-06-16",
-   "url": "https://marionfl.legistar.com/LegislationDetail.aspx?ID=25324&GUID=188DD02E-F47A-40FC-8415-A0CEE1EC71FC",
+   "url": "https://marionfl.legistar.com/LegislationDetail.aspx?ID=8067338&GUID=8D70F54F-17E9-47D7-93E0-57C01943C496&G=BE8E0F50-D386-42B0-BD7D-99F05C7CA750",
    "docs_url": "https://marionfl.legistar1.com/marionfl/attachments/a7f533cb-d620-4bf0-8e07-506ee55dd6ed.pdf",
    "source": "Marion County Legistar (P&Z Commission + BOCC agendas)",
    "parcel_ids": [
@@ -29032,7 +29032,7 @@
    "status": "Approved",
    "status_raw": "BOCC Approved (Legistar: Passed)",
    "decision_date": "2026-09-22",
-   "url": "https://hillsboroughcounty.legistar.com/LegislationDetail.aspx?ID=5112&GUID=81F39218-6073-4DAD-9CE6-FDDC49B137CC",
+   "url": "https://hillsboroughcounty.legistar.com/LegislationDetail.aspx?ID=8136344&GUID=EEC90F13-16E9-4102-8D4E-8CF70B56552B&G=3144BC14-0EA0-4A0F-BC83-C4F8B333D0E8",
    "docs_url": "https://hillsboroughcounty.legistar1.com/hillsboroughcounty/attachments/c2bb01f3-9a58-444b-b208-715b81e3a95f.pdf",
    "source": "Hillsborough Zoning Hearings GIS + Legistar",
    "parcel_ids": [
@@ -30342,7 +30342,7 @@
    "status_raw": "BCC 2026-06-02: Approved",
    "decision_date": "2026-06-02",
    "url": "https://fasttrack.ocfl.net/onlineservices/folderinformation.aspx?referencefile=SS-26-01-032",
-   "docs_url": "https://occompt.legistar.com/LegislationDetail.aspx?ID=18882&GUID=D18564BA-66B7-4892-A29A-F7718D149207",
+   "docs_url": "https://occompt.legistar.com/LegislationDetail.aspx?ID=7999534&GUID=9D15C731-8261-40B6-96D2-44A51D9DC1BF&G=671217FC-A8C9-41BD-BA90-3804D546A607",
    "source": "Orange County Public Notification GIS + BCC Legistar (occompt) + PZC recommendation books",
    "parcel_ids": [
     "12-23-30-0000-00-005",
@@ -30409,7 +30409,7 @@
    "status_raw": "BCC 2026-06-02: Approved",
    "decision_date": "2026-06-02",
    "url": "https://fasttrack.ocfl.net/onlineservices/folderinformation.aspx?referencefile=RZ-26-01-032",
-   "docs_url": "https://occompt.legistar.com/LegislationDetail.aspx?ID=18882&GUID=D18564BA-66B7-4892-A29A-F7718D149207",
+   "docs_url": "https://occompt.legistar.com/LegislationDetail.aspx?ID=7999534&GUID=9D15C731-8261-40B6-96D2-44A51D9DC1BF&G=671217FC-A8C9-41BD-BA90-3804D546A607",
    "source": "Orange County Public Notification GIS + BCC Legistar (occompt) + PZC recommendation books",
    "parcel_ids": [
     "12-23-30-0000-00-005",
@@ -30475,7 +30475,7 @@
    "status": "Approved",
    "status_raw": "BOCC Approved (Legistar: Passed)",
    "decision_date": "2026-09-22",
-   "url": "https://hillsboroughcounty.legistar.com/LegislationDetail.aspx?ID=5111&GUID=5FE1C3F8-894C-40BF-B0BE-DFB44C344077",
+   "url": "https://hillsboroughcounty.legistar.com/LegislationDetail.aspx?ID=8136343&GUID=7BD52F61-78E9-440A-ABCA-F72F086A04A4&G=3144BC14-0EA0-4A0F-BC83-C4F8B333D0E8",
    "docs_url": "https://hillsboroughcounty.legistar1.com/hillsboroughcounty/attachments/b535922a-deab-4993-ba20-498307be128d.pdf",
    "source": "Hillsborough Zoning Hearings GIS + Legistar",
    "parcel_ids": [
@@ -30544,7 +30544,7 @@
    "status": "Approved",
    "status_raw": "BOCC Approved (Legistar: Passed)",
    "decision_date": "2026-08-11",
-   "url": "https://hillsboroughcounty.legistar.com/LegislationDetail.aspx?ID=5075&GUID=70A690B0-2776-4A79-82CD-C1438AE5BC12",
+   "url": "https://hillsboroughcounty.legistar.com/LegislationDetail.aspx?ID=8073180&GUID=40BBFBFC-07AD-41B7-9F15-CB4E37285B2D&G=3144BC14-0EA0-4A0F-BC83-C4F8B333D0E8",
    "docs_url": "https://hillsboroughcounty.legistar1.com/hillsboroughcounty/attachments/5ad88801-94d1-4c04-bee3-6b700e52170c.pdf",
    "source": "Hillsborough Zoning Hearings GIS + Legistar",
    "parcel_ids": [
@@ -31131,7 +31131,7 @@
    "status": "Approved",
    "status_raw": "Legistar: Adopted (Approved by BOCC 2026-07-07)",
    "decision_date": "2026-07-07",
-   "url": "https://hernandocountyfl.legistar.com/LegislationDetail.aspx?ID=8739&GUID=436BD1F3-4AB0-46C1-BE4C-7117A33CC0B2",
+   "url": "https://hernandocountyfl.legistar.com/LegislationDetail.aspx?ID=8122172&GUID=AB46D402-28A9-41F6-86C8-E0B2337B32FC&G=6D9E70B1-EE34-4778-AE40-08B82D73C4B2",
    "docs_url": "https://hernandocountyfl.legistar1.com/hernandocountyfl/attachments/744f874d-fde8-46f5-99b4-4cb8a1354834.pdf",
    "source": "Hernando Legistar",
    "parcel_ids": [
@@ -31233,7 +31233,7 @@
    "status": "Approved",
    "status_raw": "Legistar: Adopted (Approved by BOCC 2026-07-07)",
    "decision_date": "2026-07-07",
-   "url": "https://hernandocountyfl.legistar.com/LegislationDetail.aspx?ID=8738&GUID=63D8BC83-075C-4DCB-B1BC-2AFABFD619E3",
+   "url": "https://hernandocountyfl.legistar.com/LegislationDetail.aspx?ID=8122180&GUID=BF555B2D-7B38-45A3-809F-40F7D4C1C934&G=6D9E70B1-EE34-4778-AE40-08B82D73C4B2",
    "docs_url": "https://hernandocountyfl.legistar1.com/hernandocountyfl/attachments/4ec7d7aa-5eb3-4ffc-8cb4-5b4296bffa60.pdf",
    "source": "Hernando Legistar",
    "parcel_ids": [
@@ -31305,7 +31305,7 @@
    "status": "Approved",
    "status_raw": "Legistar: Adopted (Approved by BOCC 2026-07-07)",
    "decision_date": "2026-07-07",
-   "url": "https://hernandocountyfl.legistar.com/LegislationDetail.aspx?ID=8736&GUID=321A6047-4579-4975-89A6-7B5F1E9384E7",
+   "url": "https://hernandocountyfl.legistar.com/LegislationDetail.aspx?ID=8122154&GUID=B5FE2D65-B1E5-4A0F-88A8-B78A6ED4433E&G=6D9E70B1-EE34-4778-AE40-08B82D73C4B2",
    "docs_url": "https://hernandocountyfl.legistar1.com/hernandocountyfl/attachments/2d821c25-c0ea-46ae-982a-ff530c5db3f1.pdf",
    "source": "Hernando Legistar",
    "parcel_ids": [
@@ -31409,7 +31409,7 @@
    "status": "Approved",
    "status_raw": "Legistar: Agenda Ready (Approved by BOCC 2026-09-01)",
    "decision_date": "2026-09-01",
-   "url": "https://hernandocountyfl.legistar.com/LegislationDetail.aspx?ID=8964&GUID=682C3417-634D-4785-9255-BDFE9B62B636",
+   "url": "https://hernandocountyfl.legistar.com/LegislationDetail.aspx?ID=8191421&GUID=7DE38E6C-0390-48B5-A182-F928DD37AF14&G=6D9E70B1-EE34-4778-AE40-08B82D73C4B2",
    "docs_url": "https://hernandocountyfl.legistar1.com/hernandocountyfl/attachments/6444789d-6b30-49fe-92ad-5e91ea5350bb.pdf",
    "source": "Hernando Legistar",
    "parcel_ids": [
@@ -31488,7 +31488,7 @@
    "status": "Approved",
    "status_raw": "Legistar: Agenda Ready (Approved by BOCC 2026-08-04)",
    "decision_date": "2026-08-04",
-   "url": "https://hernandocountyfl.legistar.com/LegislationDetail.aspx?ID=8846&GUID=79C14EB5-0887-4AA7-B6EF-2B9FD0C4C2EA",
+   "url": "https://hernandocountyfl.legistar.com/LegislationDetail.aspx?ID=8149912&GUID=491B0FF7-4B20-471F-B606-E42A456F5951&G=6D9E70B1-EE34-4778-AE40-08B82D73C4B2",
    "docs_url": "https://hernandocountyfl.legistar1.com/hernandocountyfl/attachments/8af5d703-6eeb-4be6-ae60-11a02d919e63.pdf",
    "source": "Hernando Legistar",
    "parcel_ids": [
@@ -31890,7 +31890,7 @@
    "status": "Filed",
    "status_raw": "Under staff review (DRC comments)",
    "decision_date": null,
-   "url": "https://seminolecountyfl.legistar.com/LegislationDetail.aspx?ID=6753&GUID=BAD3D853-5079-4C9D-9B2B-71AF90579BA2",
+   "url": "https://seminolecountyfl.legistar.com/LegislationDetail.aspx?ID=8011911&GUID=5F106B73-4FCA-4EBB-83C1-A3496961A4B0&G=E2DF9C83-4A2C-4390-86EE-5C088F5B9D50",
    "docs_url": null,
    "source": "Seminole County Legistar (DRC applications + P&Z Commission/LPA + BCC hearings)",
    "parcel_ids": [
@@ -34181,7 +34181,7 @@
    "status_raw": "next BCC 2026-12-01 | FastTrack status: BCC",
    "decision_date": null,
    "url": "https://fasttrack.ocfl.net/onlineservices/folderinformation.aspx?referencefile=CDR-25-08-196",
-   "docs_url": "https://occompt.legistar.com/LegislationDetail.aspx?ID=19552&GUID=8A315DB7-D72E-43A8-88A6-5C170EC06325",
+   "docs_url": null,
    "source": "Orange County Public Notification GIS + BCC Legistar (occompt) + PZC recommendation books",
    "parcel_ids": [
     "22-22-31-9111-01-000"
