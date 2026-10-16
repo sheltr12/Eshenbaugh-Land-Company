@@ -212,7 +212,9 @@ function renderMetaLine(){
 function initMap(){
   map=L.map('map',{zoomControl:true});
   L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',{attribution:'ESRI World Imagery | ELC Rezoning Tracker',maxZoom:19}).addTo(map);
-  L.tileLayer('https://services.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}',{attribution:'Esri Places',maxZoom:19,pane:'tilePane',opacity:.9}).addTo(map);
+  const roads=L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Transportation/MapServer/tile/{z}/{y}/{x}',{attribution:'Esri Transportation',maxZoom:19,pane:'tilePane'}).addTo(map);
+  const places=L.tileLayer('https://services.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}',{attribution:'Esri Places',maxZoom:19,pane:'tilePane',opacity:.9}).addTo(map);
+  L.control.layers(null,{'Roads and street names':roads,'Place names':places},{position:'topright',collapsed:window.innerWidth<760}).addTo(map);
   markersLayer=L.layerGroup().addTo(map);map.on('click',onMapClickAddress);
   const zc=()=>{const z=map.getZoom(),c=map.getContainer().classList;c.toggle('zoom-low',z<=8);c.toggle('zoom-mid',z>8&&z<=10)};map.on('zoomend',zc);map.whenReady(zc);
   const legend=L.control({position:'bottomright'});
