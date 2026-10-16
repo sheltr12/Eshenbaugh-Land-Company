@@ -13,6 +13,9 @@ import sys
 import time
 
 import requests
+import os as _os_ll
+sys.path.insert(0, _os_ll.path.dirname(_os_ll.path.abspath(__file__)))
+import legistar_links as LL  # noqa: E402
 
 JURISDICTIONS = ["Hillsborough County"]
 
@@ -22,6 +25,9 @@ LEG = "https://webapi.legistar.com/v1/hillsboroughcounty"
 LEG_SITE = "https://hillsboroughcounty.legistar.com"
 SOURCE = "Hillsborough Zoning Hearings GIS + Legistar"
 UA = "Mozilla/5.0 (compatible; ELC-RezoningTracker/1.0; +https://thedirtdog.com)"
+# The county's public hearing map (ArcGIS Experience Builder). It replaced the retired Web AppBuilder
+# viewer; widget_29 is its map, so a link can open it centered and zoomed on a case.
+HEARING_MAP = "https://experience.arcgis.com/experience/870491f64f9744dca53c9f54ed4b7407/"
 
 # GIS Type_ -> category
 TYPE_MAP = {
@@ -165,6 +171,12 @@ def find_matters(appnum):
     return [m for m in d if re.search(rf"(^|\D){re.escape(appnum)}(\D|$)", m.get("MatterFile") or "")]
 
 
+def hearing_map_url(lat, lon):
+    if lat is None or lon is None:
+        return HEARING_MAP
+    return f"{HEARING_MAP}#widget_29=center:{lon:.6f}%2C{lat:.6f}%2C4326,scale:4000"
+
+
 def matter_histories(mid):
     return get_json(f"{LEG}/matters/{mid}/histories")
 
@@ -228,7 +240,7 @@ def build_record(appnum, pts, polys, today):
         "from_zoning": None, "to_zoning": None, "from_flu": None, "to_flu": None,
         "filed_date": filed, "status": "Filed", "status_raw": None,
         "hearings": [], "decision_date": None,
-        "url": f"https://hillsborough.maps.arcgis.com/apps/webappviewer/index.html?id=be7f0f9c93c0460984d1223f6b329fa8&find={appnum}",
+        "url": hearing_map_url(lat, lon),
         "docs_url": None, "lat": lat, "lon": lon, "source": SOURCE,
     }
 
@@ -258,8 +270,9 @@ def build_record(appnum, pts, polys, today):
         main = matters[-1]
 
     if main:
-        rec["url"] = (f"{LEG_SITE}/LegislationDetail.aspx?ID={main['MatterId']}"
-                      f"&GUID={main['MatterGuid']}")
+        site = LL.site_link(LEG, [main] + [m for m in matters if m is not main], hist)
+        if site:
+            rec["url"] = site
         atts = matter_attachments(main["MatterId"])
         pdfs = [x.get("MatterAttachmentHyperlink") for x in atts if x.get("MatterAttachmentHyperlink")]
         if pdfs:

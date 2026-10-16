@@ -32,6 +32,9 @@ import sys
 import time
 
 import requests
+import os as _os_ll
+sys.path.insert(0, _os_ll.path.dirname(_os_ll.path.abspath(__file__)))
+import legistar_links as LL  # noqa: E402
 
 try:
     import pypdf
@@ -570,9 +573,9 @@ def build(app_num, c, today):
 
     if hms:
         mm_ = next((m for m in reversed(hms) if m.get("MatterBodyId") == BODY_BCC), hms[-1])
-        url = f"{SITE}/LegislationDetail.aspx?ID={mm_['MatterId']}&GUID={mm_['MatterGuid']}"
+        url = LL.site_link(LEG, [mm_] + [m for m in hms if m is not mm_]) or f"{SITE}/Calendar.aspx"
     else:
-        url = f"{SITE}/LegislationDetail.aspx?ID={d0['matter']['MatterId']}&GUID={d0['matter']['MatterGuid']}"
+        url = LL.site_link(LEG, [d0['matter']]) or f"{SITE}/Calendar.aspx"
     filed = min([d["date"] for d in drc] + [d10(m.get("MatterIntroDate")) for m in hms if m.get("MatterIntroDate")])
     pname = None
     if hms:

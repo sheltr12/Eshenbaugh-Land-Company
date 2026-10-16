@@ -33,6 +33,9 @@ import sys
 import time
 
 import requests
+import os as _os_ll
+sys.path.insert(0, _os_ll.path.dirname(_os_ll.path.abspath(__file__)))
+import legistar_links as LL  # noqa: E402
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import accela_core as C  # noqa: E402
@@ -398,7 +401,7 @@ def build(row, d, matters, by_matter, today):
     url_leg = None
     if matters:
         lm = sorted(matters, key=lambda m: (m.get("MatterAgendaDate") or "", m["MatterId"]))[-1]
-        url_leg = f"{LEG_SITE}/LegislationDetail.aspx?ID={lm['MatterId']}&GUID={lm['MatterGuid']}"
+        url_leg = LL.site_link(LEG, [lm] + [m for m in matters if m is not lm])
         try:
             atts = leg_get(f"matters/{lm['MatterId']}/attachments")
             rpt = [a for a in atts if re.search(r"staff comment|staff report", a.get("MatterAttachmentName") or "", re.I)]

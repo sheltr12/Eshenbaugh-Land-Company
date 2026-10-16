@@ -19,6 +19,7 @@ adapters/hillsborough.py
 adapters/kissimmee.py
 adapters/lake.py
 adapters/leesburg.py
+adapters/legistar_links.py
 adapters/marion.py
 adapters/minneola.py
 adapters/ocoee.py

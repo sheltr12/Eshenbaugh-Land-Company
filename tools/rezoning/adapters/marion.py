@@ -16,6 +16,9 @@ import sys
 import time
 
 import requests
+import os as _os_ll
+sys.path.insert(0, _os_ll.path.dirname(_os_ll.path.abspath(__file__)))
+import legistar_links as LL  # noqa: E402
 
 JURISDICTIONS = ["Marion County"]
 
@@ -314,7 +317,7 @@ def build(case, matters, by_matter, today):
         if body_label(m.get("MatterBodyName")) == "BOCC":
             main = m
             break
-    url = f"{SITE}/LegislationDetail.aspx?ID={main['MatterId']}&GUID={main['MatterGuid']}"
+    url = LL.site_link(LEG, [main] + [m for m in matters if m is not main]) or f"{SITE}/Calendar.aspx"
     docs = None
     try:
         pz = next((m for m in reversed(matters) if body_label(m.get("MatterBodyName")) != "BOCC"), main)

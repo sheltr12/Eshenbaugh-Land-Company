@@ -39,6 +39,9 @@ import time
 from urllib.parse import quote
 
 import requests
+import os as _os_ll
+sys.path.insert(0, _os_ll.path.dirname(_os_ll.path.abspath(__file__)))
+import legistar_links as LL  # noqa: E402
 
 try:
     import pypdf
@@ -334,7 +337,7 @@ def attachments(mid):
 
 
 def matter_url(m):
-    return f"{LEG_SITE}/LegislationDetail.aspx?ID={m['MatterId']}&GUID={m['MatterGuid']}"
+    return LL.site_link(LEG, [m])
 
 
 def bcc_result(action, passed, title):

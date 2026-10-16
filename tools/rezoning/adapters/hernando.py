@@ -21,6 +21,9 @@ import sys
 import time
 
 import requests
+import os as _os_ll
+sys.path.insert(0, _os_ll.path.dirname(_os_ll.path.abspath(__file__)))
+import legistar_links as LL  # noqa: E402
 
 JURISDICTIONS = ["Hernando County"]
 
@@ -472,14 +475,14 @@ def build_record(num, eg, matters, since):
     if eg:
         url = f"{ENERGOV}#/plan/{eg['CaseId']}"
     else:
-        url = f"{LEGISTAR_WEB}/LegislationDetail.aspx?ID={latest['MatterId']}&GUID={latest['MatterGuid']}"
+        url = LL.site_link(LEGISTAR, [latest] + [m for m in matters if m is not latest]) or f"{LEGISTAR_WEB}/Legislation.aspx"
     docs = None
     for m in sorted(matters, key=lambda x: x.get("MatterIntroDate") or "", reverse=True)[:2]:
         docs = matter_staff_report(m["MatterId"])
         if docs:
             break
     if not docs and latest:
-        docs = f"{LEGISTAR_WEB}/LegislationDetail.aspx?ID={latest['MatterId']}&GUID={latest['MatterGuid']}"
+        docs = LL.site_link(LEGISTAR, [latest] + [m for m in matters if m is not latest])
 
     descr = req or _clean(eg.get("Description") if eg else None) or _clean(title)
     if descr and acres and "acre" not in descr.lower():
