@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Polk County Vacant Land Comps &mdash; 2026-10-20</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://unpkg.com/esri-leaflet@3.0.12/dist/esri-leaflet.js"></script>
+<style>
+:root{--ink:#1a2b3c;--accent:#2e6b4f;--line:#dfe4e8;}
+*{box-sizing:border-box}
+body{margin:0;font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;color:var(--ink);background:#f6f8f9}
+header{background:var(--accent);color:#fff;padding:16px 22px}
+header h1{margin:0;font-size:19px}
+header p{margin:4px 0 0;font-size:13px;opacity:.9}
+#map{height:60vh;min-height:420px;width:100%}
+.wrap{padding:14px 18px 40px;overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:12.5px;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.08)}
+th,td{border:1px solid var(--line);padding:6px 8px;text-align:left;vertical-align:top}
+th{background:#eef3f0;position:sticky;top:0}
+tr:nth-child(even){background:#fafbfc}
+a{color:var(--accent)}
+.num{text-align:right;white-space:nowrap}
+.pop b{color:var(--accent)}
+.pop{font-size:12.5px;line-height:1.5}
+.legend{font-size:12px;color:#5a6b7a;margin:8px 0}
+.lbl{font-size:10.5px;padding:1px 4px;font-weight:600}
+.dot{display:inline-block;width:10px;height:10px;border-radius:50%;margin:0 4px 0 10px;vertical-align:middle}
+</style></head><body>
+<header><h1>Polk County Vacant Land Comps</h1><p>Run date 2026-10-20 &middot; Sale dates 2026-08-25 &ndash; 2026-09-09 &middot; &gt;0.5 ac &amp; &gt;$500k &middot; 6 new comps &middot; Source: Polk County PA GIS (SALES / WEBEXPORT / PARCELS layers)</p></header>
+<div id="map"></div>
+<div class="wrap">
+<p class="legend">Click any marker for full detail. Coordinates are exact parcel centroids from the Polk County PA GIS endpoint, not geocoded addresses.<span class="dot" style="background:#1f9d55"></span>Vacant land deed<span class="dot" style="background:#e8871e"></span>Mixed deed (vacant + improved parcels &mdash; price includes improvements)</p>
+<table id="tbl"><thead><tr>
+<th>#</th><th>Sale Date</th><th>Address</th><th>Grantor (Seller)</th><th>Grantee (Buyer)</th>
+<th class="num">Price</th><th class="num">Acres</th><th class="num">$/Acre</th><th>Deed</th><th>Land Use</th><th>Zoning</th><th>Parcel ID</th><th>Book/Page</th><th>PA Page</th><th>Notes</th>
+</tr></thead><tbody></tbody></table>
+</div>
+<script>
+var comps=[{"parcel_id": "25-29-30-362451-000130", "property_name": "J K STUART BLVD, BARTOW, FL 33830", "address": "J K STUART BLVD, BARTOW, FL 33830", "sale_date": "Aug 29 2026", "sale_date_iso": "2026-08-29", "price": 14358000, "acreage": 49.389, "price_per_acre": 290713, "transaction_type": "Sale", "grantor": "J K STUART PROPERTIES LLC", "grantee": "CORTA MYTHRI BARTOW LLC", "deed_type": "WD", "property_type": "Land", "zoning": null, "land_use": "0989 - Split and/or Combine in Progress", "source": "Polk County PA", "county": "Polk", "county_fips": "12105", "date_added": "2026-10-20", "lat": 27.9286042, "lon": -81.8506089, "aerial": "https://www.polkflpa.gov/CamaDisplay.aspx?OutputMode=Display&SearchType=RealEstate&ParcelID=252930362451000130", "book_page": "14143/01290", "elc_deal": null, "comments": "Deed OR 14143/01290 (Warranty Deed); 15 parcels under one deed, acreage summed (49.39 ac total, GIS parcel-polygon area). Bulk lot takedown. Land-use mix: Split and/or Combine in Progress x15. Other parcel IDs: 25-29-30-362451-000010, 25-29-30-362451-000020, 25-29-30-362451-000030, 25-29-30-362451-000040, 25-29-30-362451-000050, 25-29-30-362451-000060, 25-29-30-362451-000070, 25-29-30-362451-000080, 25-29-30-362451-000090, 25-29-30-362451-000100, 25-29-30-362451-000111, 25-29-30-362451-000120, 25-29-30-362451-000170, 25-29-30-362451-000190."}, {"parcel_id": "25-27-10-000000-042060", "property_name": "745 HWY 559, AUBURNDALE, FL 33823", "address": "745 HWY 559, AUBURNDALE, FL 33823", "sale_date": "Aug 31 2026", "sale_date_iso": "2026-08-31", "price": 4700000, "acreage": 1.4925, "price_per_acre": 3149079, "transaction_type": "Sale", "grantor": "L&CO AUBURNDALE 7 11 LLC", "grantee": "SIR REALTY CORP", "deed_type": "WD", "property_type": "Land", "zoning": null, "land_use": "1000 - Vacant Commercial", "source": "Polk County PA", "county": "Polk", "county_fips": "12105", "date_added": "2026-10-20", "lat": 28.1462115, "lon": -81.7985342, "aerial": "https://www.polkflpa.gov/CamaDisplay.aspx?OutputMode=Display&SearchType=RealEstate&ParcelID=252710000000042060", "book_page": "14139/02134", "elc_deal": null, "comments": "Deed OR 14139/02134 (Warranty Deed); single parcel, vacant at sale."}, {"parcel_id": "24-28-35-000000-033030", "property_name": "REYNOLDS RD, LAKELAND, FL 33803", "address": "REYNOLDS RD, LAKELAND, FL 33803", "sale_date": "Aug 25 2026", "sale_date_iso": "2026-08-25", "price": 3500000, "acreage": 20.3883, "price_per_acre": 171667, "transaction_type": "Sale", "grantor": "S & C INVESTMENTS LLC", "grantee": "REYNOLDS STORAGE AND LOGISTICS LLC", "deed_type": "WD", "property_type": "Land", "zoning": null, "land_use": "4001 - Vacant Industrial", "source": "Polk County PA", "county": "Polk", "county_fips": "12105", "date_added": "2026-10-20", "lat": 28.0105025, "lon": -81.8882214, "aerial": "https://www.polkflpa.gov/CamaDisplay.aspx?OutputMode=Display&SearchType=RealEstate&ParcelID=242835000000033030", "book_page": "14142/02091", "elc_deal": null, "comments": "Deed OR 14142/02091 (Warranty Deed); single parcel, vacant at sale."}, {"parcel_id": "24-28-35-000000-044030", "property_name": "3620 REYNOLDS RD, LAKELAND, FL 33803", "address": "3620 REYNOLDS RD, LAKELAND, FL 33803", "sale_date": "Aug 28 2026", "sale_date_iso": "2026-08-28", "price": 2200000, "acreage": 6.2624, "price_per_acre": 351303, "transaction_type": "Sale", "grantor": "BAKERS PROPERTIES OF LAKELAND LC", "grantee": "SCG IOS LLC", "deed_type": "WD", "property_type": "Land", "zoning": null, "land_use": "4007 - Industrial w/ impr of some value (XFOB)", "source": "Polk County PA", "county": "Polk", "county_fips": "12105", "date_added": "2026-10-20", "lat": 27.9987192, "lon": -81.8897612, "aerial": "https://www.polkflpa.gov/CamaDisplay.aspx?OutputMode=Display&SearchType=RealEstate&ParcelID=242835000000044030", "book_page": "14140/00766", "elc_deal": null, "comments": "Deed OR 14140/00766 (Warranty Deed); single parcel, vacant at sale."}, {"parcel_id": "29-30-19-000000-033010", "property_name": "DOG YARD RD, LAKE WALES, FL 33898", "address": "DOG YARD RD, LAKE WALES, FL 33898", "sale_date": "Aug 31 2026", "sale_date_iso": "2026-08-31", "price": 720000, "acreage": 40.6683, "price_per_acre": 17704, "transaction_type": "Sale", "grantor": "TOWNS HERMAN M", "grantee": "POLK AG HOLDINGS LLC", "deed_type": "WD", "property_type": "Land", "zoning": null, "land_use": "5100 - Cropland", "source": "Polk County PA", "county": "Polk", "county_fips": "12105", "date_added": "2026-10-20", "lat": 27.8631946, "lon": -81.463167, "aerial": "https://www.polkflpa.gov/CamaDisplay.aspx?OutputMode=Display&SearchType=RealEstate&ParcelID=293019000000033010", "book_page": "14138/00984", "elc_deal": null, "comments": "Deed OR 14138/00984 (Warranty Deed); single parcel, vacant at sale."}, {"parcel_id": "26-28-26-000000-014160", "property_name": "EXECUTIVE RD S, WINTER HAVEN, FL 33884", "address": "EXECUTIVE RD S, WINTER HAVEN, FL 33884", "sale_date": "Sep 09 2026", "sale_date_iso": "2026-09-09", "price": 700000, "acreage": 5.8602, "price_per_acre": 119450, "transaction_type": "Sale", "grantor": "LNW FOREVER HOLDINGS LLC", "grantee": "IAN TOWING CORP", "deed_type": "WD", "property_type": "Land", "zoning": null, "land_use": "4001 - Vacant Industrial", "source": "Polk County PA", "county": "Polk", "county_fips": "12105", "date_added": "2026-10-20", "lat": 28.0196844, "lon": -81.6840705, "aerial": "https://www.polkflpa.gov/CamaDisplay.aspx?OutputMode=Display&SearchType=RealEstate&ParcelID=262826000000014160", "book_page": "14153/01616", "elc_deal": null, "comments": "Deed OR 14153/01616 (Warranty Deed); single parcel, vacant at sale."}];
+var map=L.map('map');
+L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',{maxZoom:19,attribution:'Imagery &copy; Esri, Maxar, Earthstar Geographics'}).addTo(map);
+L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}',{maxZoom:19}).addTo(map);
+L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Transportation/MapServer/tile/{z}/{y}/{x}',{maxZoom:19,opacity:0.7}).addTo(map);
+var money=function(n){return n==null?'\u2014':'$'+Number(n).toLocaleString();};
+var esc=function(s){return s==null?'\u2014':String(s).replace(/[&<>]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;'}[c];});};
+var grp=L.featureGroup().addTo(map);
+comps.forEach(function(c,i){
+  var pop='<div class="pop"><b>#'+(i+1)+' \u00b7 '+money(c.price)+'</b><br/>'+esc(c.address)+'<br/><br/>'
+   +'<b>Grantor:</b> '+esc(c.grantor)+'<br/>'
+   +'<b>Grantee:</b> '+esc(c.grantee)+'<br/>'
+   +'<b>Sale date:</b> '+esc(c.sale_date)+'<br/>'
+   +'<b>Acreage:</b> '+c.acreage+' ac<br/>'
+   +'<b>$/acre:</b> '+money(c.price_per_acre)+'<br/>'
+   +'<b>Deed type:</b> '+esc(c.deed_type)+'<br/>'
+   +'<b>Land use:</b> '+esc(c.land_use)+'<br/>'
+   +'<b>Zoning:</b> '+esc(c.zoning)+'<br/>'
+   +'<b>Parcel:</b> '+esc(c.parcel_id)+'<br/>'
+   +'<b>Book/Page:</b> '+esc(c.book_page)+'<br/>'
+   +(c.comments?('<b>Notes:</b> '+esc(c.comments)+'<br/>'):'')
+   +'<a href="'+c.aerial+'" target="_blank" rel="noopener">Open PA parcel page \u2192</a></div>';
+  if(c.lat==null||c.lon==null) return;
+  var mixed=/^MIXED/.test(c.comments||'');var m=L.circleMarker([c.lat,c.lon],{radius:Math.max(7,Math.min(16,5+Math.log10(c.price)-3)),color:'#fff',weight:2,fillColor:mixed?'#e8871e':'#1f9d55',fillOpacity:.95}).addTo(grp).bindPopup(pop,{maxWidth:340});
+  m.bindTooltip('#'+(i+1)+' '+money(c.price),{permanent:comps.length<=60,direction:'top',offset:[0,-6],className:'lbl'});
+});
+if(grp.getLayers().length) map.fitBounds(grp.getBounds().pad(0.25)); else map.setView([27.95,-81.7],10);
+var tb=document.querySelector('#tbl tbody');
+comps.forEach(function(c,i){
+  var tr=document.createElement('tr');
+  tr.innerHTML='<td>'+(i+1)+'</td><td>'+esc(c.sale_date)+'</td><td>'+esc(c.address)+'</td>'
+   +'<td>'+esc(c.grantor)+'</td><td>'+esc(c.grantee)+'</td>'
+   +'<td class="num">'+money(c.price)+'</td><td class="num">'+c.acreage+'</td>'
+   +'<td class="num">'+money(c.price_per_acre)+'</td><td>'+esc(c.deed_type)+'</td>'
+   +'<td>'+esc(c.land_use)+'</td><td>'+esc(c.zoning)+'</td><td>'+esc(c.parcel_id)+'</td>'
+   +'<td>'+esc(c.book_page)+'</td>'
+   +'<td><a href="'+c.aerial+'" target="_blank" rel="noopener">link</a></td>'
+   +'<td>'+esc(c.comments)+'</td>';
+  tr.style.cursor='pointer';
+  tr.onclick=function(){ if(c.lat!=null) map.setView([c.lat,c.lon],16); };
+  tb.appendChild(tr);
+});
+</script></body></html>
