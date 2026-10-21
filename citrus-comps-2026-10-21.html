@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Citrus County Vacant Land Comps &mdash; 2026-10-21</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://unpkg.com/esri-leaflet@3.0.12/dist/esri-leaflet.js"></script>
+<style>
+:root{--ink:#1a2b3c;--accent:#2e6b4f;--line:#dfe4e8;}
+*{box-sizing:border-box}
+body{margin:0;font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;color:var(--ink);background:#f6f8f9}
+header{background:var(--accent);color:#fff;padding:16px 22px}
+header h1{margin:0;font-size:19px}
+header p{margin:4px 0 0;font-size:13px;opacity:.9}
+#map{height:60vh;min-height:420px;width:100%}
+.wrap{padding:14px 18px 40px;overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:12.5px;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.08)}
+th,td{border:1px solid var(--line);padding:6px 8px;text-align:left;vertical-align:top}
+th{background:#eef3f0;position:sticky;top:0}
+tr:nth-child(even){background:#fafbfc}
+a{color:var(--accent)}
+.num{text-align:right;white-space:nowrap}
+.pop b{color:var(--accent)}
+.pop{font-size:12.5px;line-height:1.5}
+.legend{font-size:12px;color:#5a6b7a;margin:8px 0}
+</style></head><body>
+<header><h1>Citrus County Vacant Land Comps</h1><p>Run date 2026-10-21 &middot; Sale dates 2026-09-24 &ndash; 2026-09-30 &middot; &gt;0.5 ac &amp; &gt;$500k &middot; 3 new comps &middot; Source: Citrus County PA sales CSV + Citrus GIS + Clerk LandmarkWeb</p></header>
+<div id="map"></div>
+<div class="wrap">
+<p class="legend">Click any marker for full detail. Coordinates are exact parcel centroids from the Citrus County PA GIS endpoint, not geocoded addresses.</p>
+<table id="tbl"><thead><tr>
+<th>#</th><th>Sale Date</th><th>Address</th><th>Grantor (Seller)</th><th>Grantee (Buyer)</th>
+<th class="num">Price</th><th class="num">Acres</th><th class="num">$/Acre</th><th>Deed</th><th>Land Use</th><th>Zoning</th><th>Parcel ID</th><th>Book/Page</th><th>PA Page</th><th>Notes</th>
+</tr></thead><tbody></tbody></table>
+</div>
+<script>
+var comps=[{"parcel_id": "20E21S09 10000 TRB0", "property_name": "13496 S Oakview Ave, Floral City, FL 34436", "address": "13496 S Oakview Ave, Floral City, FL 34436", "sale_date": "Sep 29 2026", "sale_date_iso": "2026-09-29", "price": 1000000, "acreage": 34.84, "price_per_acre": 28703, "transaction_type": "Sale", "grantor": "WICKHAM HARRY E REVOCABLE FAMILY TRUST & WICKHAM IONE M REVOCABLE FAMILY TRUST & WICKHAM ROBERT ALAN & WICKHAM WILLIAM ANDREW", "grantee": "OZER OMER", "deed_type": "Deed", "property_type": "Land", "zoning": "AGRMH", "land_use": "9900 - NON AG (9908-ACREAGE NON-WATERFRONT)", "source": "Citrus County PA", "county": "Citrus", "county_fips": "12017", "date_added": "2026-10-21", "lat": null, "lon": null, "aerial": "https://www.citruspa.org/_web/datalets/datalet.aspx?mode=profileall&UseSearch=no&pin=3524563", "book_page": "OR Book 3712 / Page 0133", "elc_deal": null, "comments": "MIXED SALE (vacant + improved parcels) - Instr #2026058997 (OR 3712/0133), Clerk doc type DEED, recorded 10/01/2026 (PA sale date 2026-09-29). PA instrument code 14. 2 parcels under one deed, PA-assessed acreage summed (34.84 ac): 3524563 / 20E21S09 10000 TRB0 (9900 - NON AG, 33.82 ac, primary); 3522886 / 20E21S09 10000 0070 (0100 - SINGLE FAMILY, 1.02 ac, improved at sale). NOTE: price includes improvements; not a pure land comp. Coordinates: Citrus GIS LandDevelopment LOTS polygon centroid. ALTKEY 3524563."}, {"parcel_id": "18E17S100060 05880 0130", "property_name": "3021 W Century Blvd, Dunnellon, FL 34433", "address": "3021 W Century Blvd, Dunnellon, FL 34433", "sale_date": "Sep 30 2026", "sale_date_iso": "2026-09-30", "price": 900000, "acreage": 12.55, "price_per_acre": 71713, "transaction_type": "Sale", "grantor": "BCC PRODUCTIONS CORP", "grantee": "CITRUSCRAFT HOMES LLC", "deed_type": "Deed", "property_type": "Land", "zoning": "RUR", "land_use": "0000 - VACANT (0008-SFR NON-WATERFRONT)", "source": "Citrus County PA", "county": "Citrus", "county_fips": "12017", "date_added": "2026-10-21", "lat": 28.985501, "lon": -82.48548, "aerial": "https://www.citruspa.org/_web/datalets/datalet.aspx?mode=profileall&UseSearch=no&pin=2900491", "book_page": "OR Book 3712 / Page 0742", "elc_deal": null, "comments": "Instr #2026059161 (OR 3712/0742), Clerk doc type DEED, recorded 10/01/2026 (PA sale date 2026-09-30). PA instrument code 14. 50 parcels under one deed, PA-assessed acreage summed (12.55 ac): 2900491 / 18E17S100060 05880 0130 (0000 - VACANT, 0.46 ac, primary); 1262801 / 18E17S100030 02870 0060 (0000 - VACANT, 0.34 ac); 1344476 / 18E17S100090 06130 0170 (0000 - VACANT, 0.33 ac); 1399025 / 18E17S100160 09800 0190 (0000 - VACANT, 0.31 ac); 2189258 / 18E17S100220 15970 0010 (0000 - VACANT, 0.31 ac); 1320828 / 18E17S100060 05860 0060 (0000 - VACANT, 0.3 ac); 2046422 / 18E17S100230 16670 0170 (0000 - VACANT, 0.3 ac); 1292425 / 18E17S100040 04400 0190 (0000 - VACANT, 0.29 ac); 2207736 / 18E17S100220 15830 0080 (0000 - VACANT, 0.29 ac); 1322774 / 18E17S100060 05940 0170 (0000 - VACANT, 0.28 ac); 1399084 / 18E17S100160 09810 0060 (0000 - VACANT, 0.26 ac); 1269601 / 18E17S100030 03280 0070 (0000 - VACANT, 0.25 ac); 1271703 / 18E17S100040 03310 0070 (0000 - VACANT, 0.25 ac); 1284902 / 18E17S100040 03990 0050 (0000 - VACANT, 0.25 ac); 1323801 / 18E17S100060 06000 0110 (0000 - VACANT, 0.25 ac); 1269393 / 18E17S100030 03270 0030 (0000 - VACANT, 0.24 ac); 1269407 / 18E17S100030 03270 0040 (0000 - VACANT, 0.24 ac); 1269482 / 18E17S100030 03270 0120 (0000 - VACANT, 0.24 ac); 1220726 / 18E17S100010 00620 0130 (0000 - VACANT, 0.23 ac); 1261112 / 18E17S100030 02770 0150 (0000 - VACANT, 0.23 ac); 1262143 / 18E17S100030 02830 0020 (0000 - VACANT, 0.23 ac); 3234756 / 18E17S100030 03230 0030 (0000 - VACANT, 0.23 ac); 3234768 / 18E17S100030 03230 0040 (0000 - VACANT, 0.23 ac); 3496096 / 18E17S100030 03240 0020 (0000 - VACANT, 0.23 ac); 1269890 / 18E17S100030 03300 0130 (0000 - VACANT, 0.23 ac); 1278201 / 18E17S100040 03630 0220 (0000 - VACANT, 0.23 ac); 1285500 / 18E17S100040 04030 0080 (0000 - VACANT, 0.23 ac); 1285518 / 18E17S100040 04030 0090 (0000 - VACANT, 0.23 ac); 1319129 / 18E17S100060 05810 0160 (0000 - VACANT, 0.23 ac); 1321123 / 18E17S100060 05870 0120 (0000 - VACANT, 0.23 ac); 1322804 / 18E17S100060 05940 0200 (0000 - VACANT, 0.23 ac); 1329701 / 18E17S100070 07850 0200 (0000 - VACANT, 0.23 ac); 1333466 / 18E17S100070 08050 0020 (0000 - VACANT, 0.23 ac); 1335892 / 18E17S100080 07420 0100 (0000 - VACANT, 0.23 ac); 1336058 / 18E17S100080 07420 0260 (0000 - VACANT, 0.23 ac); 1336589 / 18E17S100080 07500 0230 (0000 - VACANT, 0.23 ac); 1337119 / 18E17S100080 07520 0200 (0000 - VACANT, 0.23 ac); 1338212 / 18E17S100080 07600 0070 (0000 - VACANT, 0.23 ac); 1338221 / 18E17S100080 07600 0080 (0000 - VACANT, 0.23 ac); 1338239 / 18E17S100080 07600 0090 (0000 - VACANT, 0.23 ac); 1338484 / 18E17S100080 07600 0340 (0000 - VACANT, 0.23 ac); 1343046 / 18E17S100080 08150 0040 (0000 - VACANT, 0.23 ac); 1349745 / 18E17S100090 06380 0250 (0000 - VACANT, 0.23 ac); 1364001 / 18E17S100110 06550 0120 (0000 - VACANT, 0.23 ac); 1378699 / 18E17S100130 09380 0040 (0000 - VACANT, 0.23 ac); 1395551 / 18E17S100160 09610 0110 (0000 - VACANT, 0.23 ac); 1396409 / 18E17S100160 09670 0080 (0000 - VACANT, 0.23 ac); 2083778 / 18E17S100230 17160 0220 (0000 - VACANT, 0.23 ac); 2085908 / 18E17S100230 17210 0080 (0000 - VACANT, 0.23 ac); 2146044 / 18E17S100230 17530 0150 (0000 - VACANT, 0.23 ac). Coordinates: Citrus GIS LandDevelopment LOTS polygon centroid. ALTKEY 2900491."}, {"parcel_id": "20E19S080070 0740", "property_name": "570 San Remo Cir, Inverness, FL 34450", "address": "570 San Remo Cir, Inverness, FL 34450", "sale_date": "Sep 24 2026", "sale_date_iso": "2026-09-24", "price": 600000, "acreage": 0.63, "price_per_acre": 952381, "transaction_type": "Sale", "grantor": "FURIA SALVATORE", "grantee": "VITTER LARA R REVOCABLE TRUST & VITTER LARA R TRUSTEE & VITTER ROBERT S REVOCABLE TRUST & VITTER ROBERT S TRUSTEE", "deed_type": "Deed", "property_type": "Land", "zoning": "U-UNIT", "land_use": "0000 - VACANT (0057-0 LT LN - VIEW)", "source": "Citrus County PA", "county": "Citrus", "county_fips": "12017", "date_added": "2026-10-21", "lat": 28.844586, "lon": -82.328518, "aerial": "https://www.citruspa.org/_web/datalets/datalet.aspx?mode=profileall&UseSearch=no&pin=3528121", "book_page": "OR Book 3710 / Page 1414", "elc_deal": null, "comments": "MIXED SALE (vacant + improved parcels) - Instr #2026057938 (OR 3710/1414), Clerk doc type DEED, recorded 09/28/2026 (PA sale date 2026-09-24). PA instrument code 14. 3 parcels under one deed, PA-assessed acreage summed (0.63 ac): 3528121 / 20E19S080070 0740 (0000 - VACANT, 0.23 ac, primary); 3528122 / 20E19S080070 0750 (0100 - SINGLE FAMILY, 0.21 ac, improved at sale); 3528120 / 20E19S080070 0730 (0000 - VACANT, 0.19 ac). NOTE: price includes improvements; not a pure land comp. Coordinates: Citrus GIS LandDevelopment LOTS polygon centroid. ALTKEY 3528121."}];
+var map=L.map('map');
+L.esri.basemapLayer('Imagery').addTo(map);
+L.esri.basemapLayer('ImageryLabels').addTo(map);
+var money=function(n){return n==null?'\u2014':'$'+Number(n).toLocaleString();};
+var esc=function(s){return s==null?'\u2014':String(s).replace(/[&<>]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;'}[c];});};
+var grp=L.featureGroup().addTo(map);
+comps.forEach(function(c,i){
+  var pop='<div class="pop"><b>#'+(i+1)+' \u00b7 '+money(c.price)+'</b><br/>'+esc(c.address)+'<br/><br/>'
+   +'<b>Grantor:</b> '+esc(c.grantor)+'<br/>'
+   +'<b>Grantee:</b> '+esc(c.grantee)+'<br/>'
+   +'<b>Sale date:</b> '+esc(c.sale_date)+'<br/>'
+   +'<b>Acreage:</b> '+c.acreage+' ac<br/>'
+   +'<b>$/acre:</b> '+money(c.price_per_acre)+'<br/>'
+   +'<b>Deed type:</b> '+esc(c.deed_type)+'<br/>'
+   +'<b>Land use:</b> '+esc(c.land_use)+'<br/>'
+   +'<b>Zoning:</b> '+esc(c.zoning)+'<br/>'
+   +'<b>Parcel:</b> '+esc(c.parcel_id)+'<br/>'
+   +'<b>Book/Page:</b> '+esc(c.book_page)+'<br/>'
+   +(c.comments?('<b>Notes:</b> '+esc(c.comments)+'<br/>'):'')
+   +'<a href="'+c.aerial+'" target="_blank" rel="noopener">Open PA parcel page \u2192</a></div>';
+  if(c.lat==null||c.lon==null) return;
+  var m=L.marker([c.lat,c.lon]).addTo(grp).bindPopup(pop,{maxWidth:340});
+  m.bindTooltip('#'+(i+1)+' '+money(c.price));
+});
+if(grp.getLayers().length) map.fitBounds(grp.getBounds().pad(0.25)); else map.setView([28.8,-81.2],9);
+var tb=document.querySelector('#tbl tbody');
+comps.forEach(function(c,i){
+  var tr=document.createElement('tr');
+  tr.innerHTML='<td>'+(i+1)+'</td><td>'+esc(c.sale_date)+'</td><td>'+esc(c.address)+'</td>'
+   +'<td>'+esc(c.grantor)+'</td><td>'+esc(c.grantee)+'</td>'
+   +'<td class="num">'+money(c.price)+'</td><td class="num">'+c.acreage+'</td>'
+   +'<td class="num">'+money(c.price_per_acre)+'</td><td>'+esc(c.deed_type)+'</td>'
+   +'<td>'+esc(c.land_use)+'</td><td>'+esc(c.zoning)+'</td><td>'+esc(c.parcel_id)+'</td>'
+   +'<td>'+esc(c.book_page)+'</td>'
+   +'<td><a href="'+c.aerial+'" target="_blank" rel="noopener">link</a></td>'
+   +'<td>'+esc(c.comments)+'</td>';
+  tr.style.cursor='pointer';
+  tr.onclick=function(){ if(c.lat!=null) map.setView([c.lat,c.lon],16); };
+  tb.appendChild(tr);
+});
+</script></body></html>
