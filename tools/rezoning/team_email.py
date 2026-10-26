@@ -145,6 +145,46 @@ U/A AGREEMENT DATED JR SR II III IV MR MRS MS H W HW JTWRS JT WROS TEN ENT RLT F
 CONSULTANT_RX = re.compile(r"\b(engineer\w*|associates|consult\w*|kimley|planning|design|survey\w*|law|attorney|"
                            r"esq|p\.?\s?a\.?$|pllc|partners\s+inc|group|land\s+use|permitting|horn|"
                            r"\bP\.?E\.?\b|AICP|architect\w*)\b", re.I)
+# Professional representatives (engineers, land use attorneys, planners, consultants). A contact or applicant that
+# matches is called out so nobody calls them thinking they are the property owner. Order matters: first match names it.
+REP_KINDS = [
+    ("Land use attorney", re.compile(r"\b(attorneys?|law\s*(firm|group|office|offices)?|legal|esq\.?|p\.?\s?a\.?|pllc|llp|"
+                                     r"counsel|lawyers?)\b|law\.(com|net)|@\w*law\w*\.", re.I)),
+    ("Engineer", re.compile(r"\b(engineer\w*|p\.?e\.?|civil|kimley|horn|stantec|wsp|atwell|bowman|dewberry|"
+                            r"environmental\s+(services|consult\w*))\b|@\w*(eng|engineering)\w*\.", re.I)),
+    ("Land planner", re.compile(r"\b(planning|planners?|aicp|land\s+use|land\s+planning|zoning\s+consult\w*)\b|"
+                                r"@\w*plan\w*\.", re.I)),
+    ("Surveyor / architect / designer", re.compile(r"\b(survey\w*|architect\w*|design)\b|@\w*design\w*\.", re.I)),
+    ("Consultant / agent", re.compile(r"\b(consult\w*|associates|assoc\.?|permitting|authorized\s+agent|agent|"
+                                      r"representative)\b|@\w*consult\w*\.", re.I)),
+    ("Representative", re.compile(r"\bon behalf of\b|\bc/o\b|\bas agent\b", re.I)),
+]
+# Add individual repeat filers here when they are known representatives, e.g. "JANE DOE": "Land use attorney".
+KNOWN_REPS = {}
+
+
+def rep_kind(*texts):
+    """-> label like 'Engineer' if any text looks like a professional representative, else None."""
+    blob = " | ".join(t for t in texts if t)
+    if not blob:
+        return None
+    for nm, kind in KNOWN_REPS.items():
+        if nm.lower() in blob.lower():
+            return kind
+    for kind, rx in REP_KINDS:
+        if rx.search(blob):
+            return kind
+    return None
+
+
+def contact_rep(c):
+    role = (c.get("role") or "")
+    if re.search(r"(?i)^(owner|property owner|owners? of record|applicant\s*/\s*owner|owner\s*/\s*applicant)$", role):
+        return None
+    return rep_kind(role if re.search(r"(?i)agent|engineer|consult|represent|attorney|planner|architect|survey", role) else "",
+                    c.get("name"), c.get("company"), " ".join(c.get("emails") or []))
+
+
 GOV_RX = re.compile(r"\b(city of|county|board of county|school board|district|state of|town of|authority|"
                     r"department of|trustees of the internal)\b", re.I)
 
@@ -197,7 +237,7 @@ COMMON = set("""ROAD DRIVE STREET AVENUE BLVD HIGHWAY PARK LAKE LAKES NORTH SOUT
 PROPERTY PARCELS ADDITIONAL CITY COUNTY FLORIDA PLACE POINTE PLAZA CENTER COMMONS VILLAGE ESTATES PRESERVE""".split())
 
 
-def ownership_check(applicant, owners, app_owner=None, project=None):
+def ownership_check(applicant, owners, app_owner=None, project=None, kind=None):
     """-> (code, headline, detail). code in match | agent | different | unknown"""
     owner_names = [o["owner"] for o in owners] + ([app_owner] if app_owner else [])
     if not applicant:
@@ -214,20 +254,22 @@ def ownership_check(applicant, owners, app_owner=None, project=None):
         return ("unknown", "Owner of record not found", "No parcel ID or mapped location to check against.")
     ps = parties(applicant) or [applicant]
     hits = [(i, p, o) for i, p in enumerate(ps) for o in owner_names if name_match(p, o)]
+    first = ps[0]
+    kind = kind or rep_kind(applicant)
     if hits:
         i, p, o = hits[0]
-        if i == 0:
-            return ("match", "Applicant IS the owner of record", f"{p} matches owner {o}.")
-        return ("agent", "Filed by an agent for the owner of record",
-                f"{ps[0]} filed on behalf of {p}, which matches owner {o}.")
-    first = ps[0]
+        if i == 0 and not kind:
+            return ("match", "Applicant name matches owner of record",
+                    f"{p} looks like owner {o}, but this is a name match only. Check who the contact info below belongs to before reaching out.")
+        return ("agent", "Filed by a representative for the owner",
+                f"{first} filed on behalf of {p} (owner of record {o}). Their phone and email are not the owner's.")
     if GOV_RX.search(applicant) and any(GOV_RX.search(o) for o in owner_names):
         return ("match", "Government applicant on public land", f"{applicant} / {owner_names[0]}")
-    if CONSULTANT_RX.search(first):
-        return ("different", "Applicant is NOT the owner of record",
-                f"{first} appears to be a consultant or agent; the owner was not named as the applicant.")
+    if kind:
+        return ("rep", f"Applicant is a representative ({kind.lower()}), not the owner",
+                f"{first} appears to be a {kind.lower()} filing for someone else. Do not treat their phone or email as the owner's.")
     return ("different", "Applicant is NOT the owner of record",
-            "Applicant could be a contract buyer, developer or agent. Worth a call.")
+            "Applicant could be a contract buyer, developer or agent. Confirm who you are calling.")
 
 
 # ----------------------------------------------------------------- contact extraction
@@ -647,8 +689,11 @@ def market_of(county):
 
 FONT = ""
 FF = "font-family:Arial,Helvetica,sans-serif;"
-CHECK_STYLE = {"match": ("#e7f6ec", "#146c2e", "✔"), "agent": ("#e8f1fd", "#1f4fb5", "✔"),
+CHECK_STYLE = {"match": ("#e8f1fd", "#1f4fb5", "≈"), "agent": ("#fff4e0", "#9a5b00", "!"),
+               "rep": ("#fff4e0", "#9a5b00", "!"),
                "different": ("#fff4e0", "#9a5b00", "!"), "unknown": ("#eef0f3", "#475467", "?")}
+REP_TAG = ('<span style="display:inline-block;background:#fff4e0;color:#9a5b00;border:1px solid #9a5b00;font-weight:700;'
+           'font-size:12px;padding:2px 7px;border-radius:5px;white-space:nowrap">! {kind}, not the owner</span>')
 
 
 def pill(status):
@@ -755,13 +800,22 @@ def card_html(it):
                   f'font-size:13px;padding:3px 9px;border-radius:6px;{FONT}">{ico} {esc(head)}</span>'
                   f'<div style="{FONT}color:#475467;font-size:13px;margin-top:5px">{esc(detail)}</div>')
     clines = []
+    app_kind = it.get("app_kind")
+    n_rep = 0
     for c in it["contacts"]:
         if not (c["phones"] or c["emails"]) and r.get("applicant") and norm_name(c["name"]) == norm_name(r["applicant"]):
             continue
+        kind = contact_rep(c)
+        if not kind and app_kind and r.get("applicant") and (
+                norm_name(c["name"]) in norm_name(r["applicant"]) or norm_name(r["applicant"]).startswith(norm_name(c["name"]))):
+            kind = app_kind
         line = f'<b>{esc(c["name"])}</b>'
         if c.get("company"):
             line += f', {esc(c["company"])}'
         line += f' <span style="color:#667085">({esc(c["role"])})</span>'
+        if kind:
+            n_rep += 1
+            line += '<br>' + REP_TAG.format(kind=esc(kind))
         for p in c["phones"]:
             line += (f'<br>Phone: <a href="tel:{re.sub(r"[^0-9]", "", p)}" style="color:#1f4fb5;{FONT}">{esc(p)}</a>')
         for e in c["emails"]:
@@ -773,8 +827,15 @@ def card_html(it):
         clines.append(f'Email in documents: <a href="mailto:{esc(e)}" style="color:#1f4fb5;{FONT}">{esc(e)}</a>')
     contacts_html = ('<div style="height:10px;line-height:10px;font-size:1px">&nbsp;</div>'.join(clines)
                      or '<span style="color:#98a2b3">No contact info posted online</span>')
+    if n_rep:
+        contacts_html = (f'<div style="{FONT}background:#fff4e0;border:1px solid #9a5b00;border-radius:6px;padding:7px 10px;'
+                         f'color:#7a4700;font-size:13px;font-weight:700;margin-bottom:10px">'
+                         f'{"This contact is" if n_rep == 1 else "Contacts marked below are"} the owner&#39;s representative, '
+                         f'not the property owner.</div>' + contacts_html)
     applicant_html = (f"<b>{esc(r.get('applicant'))}</b>" if r.get("applicant")
                       else '<span style="color:#98a2b3">Not listed</span>')
+    if app_kind:
+        applicant_html += '<br>' + REP_TAG.format(kind=esc(app_kind))
     who_pairs = [("Applicant", applicant_html), ("Owner of record", owner_html),
                  ("Ownership check", check_html), ("Contact info", contacts_html)]
 
@@ -866,7 +927,7 @@ def build(items, run_date, market_label, map_url):
 </td></tr>
 <tr><td>{secs}</td></tr>
 <tr><td style="padding:28px 4px 4px;{FF}font-size:11px;color:#98a2b3;line-height:1.5">
-Owner of record comes from the county property appraiser parcel data. Applicant and contact info come from the public application, agenda and staff report postings. "Applicant is NOT the owner" usually means an agent, engineer or contract buyer filed the case. Contact details are only what the government posted publicly; verify before relying on them.
+Owner of record comes from the county property appraiser parcel data. Applicant and contact info come from the public application, agenda and staff report postings. A name match between the applicant and the owner of record is not proof they are the same person. Contacts tagged "not the owner" look like engineers, land use attorneys, planners or other consultants based on their role, firm name or email, so their phone and email reach the representative, not the property owner. Contact details are only what the government posted publicly; verify before relying on them.
 </td></tr>
 </table></td></tr></table></body></html>'''
     return nodash(html_out)
@@ -899,8 +960,10 @@ def build_text(items, run_date, market_label, map_url):
             for c in it["contacts"]:
                 if not (c["phones"] or c["emails"]) and r.get("applicant") and norm_name(c["name"]) == norm_name(r["applicant"]):
                     continue
+                k = contact_rep(c)
                 L.append(f"  {c['role']}: {c['name']}" + (f", {c['company']}" if c.get("company") else "")
-                         + "".join(f" | {p}" for p in c["phones"]) + "".join(f" | {e}" for e in c["emails"]))
+                         + "".join(f" | {p}" for p in c["phones"]) + "".join(f" | {e}" for e in c["emails"])
+                         + (f"  [{k.upper()}, NOT THE OWNER]" if k else ""))
             L.append(f"  Link: {r.get('url')}")
             L.append("")
         L.append("")
@@ -966,7 +1029,27 @@ def main(argv=None):
             if ap_c:
                 r = dict(r, applicant=ap_c["name"] + (f" ({ap_c['company']})" if ap_c.get("company") else ""))
                 it["rec"] = r
-        it["check"] = ownership_check(r.get("applicant"), it["owners"], it.get("app_owner"), r.get("project_name"))
+        it["app_kind"] = rep_kind(r.get("applicant")) if r.get("applicant") else None
+    # a filer flagged on one case is flagged on all of this week's cases (catches "TODD PRESSMA N" style typos)
+    known = {}
+    for it in items:
+        if it["app_kind"]:
+            ps = parties(it["rec"]["applicant"]) or [it["rec"]["applicant"]]
+            reps = [p for p in ps if rep_kind(p)]
+            rep_toks = {t for p in reps for t in re.findall(r"[a-z]{4,}", p.lower())}
+            for p in ps:
+                # the firm itself, or a person whose surname is in the firm name (TODD PRESSMAN / PRESSMAN & ASSOC.)
+                if p in reps or rep_toks & set(re.findall(r"[a-z]{4,}", p.lower())):
+                    known[re.sub(r"[^a-z]", "", p.lower())] = it["app_kind"]
+    for it in items:
+        r = it["rec"]
+        if r.get("applicant") and not it["app_kind"]:
+            for p in parties(r["applicant"]) or [r["applicant"]]:
+                k = re.sub(r"[^a-z]", "", p.lower())
+                if len(k) >= 6 and k in known:
+                    it["app_kind"] = known[k]
+                    break
+        it["check"] = ownership_check(r.get("applicant"), it["owners"], it.get("app_owner"), r.get("project_name"), it["app_kind"])
         log(f"{r['id']}: owners={len(it['owners'])} contacts={len(it['contacts'])} check={it['check'][0]}")
     items = group_companions(items)
     label = "All markets" if a.market == "all" else MARKETS[a.market]["label"]
