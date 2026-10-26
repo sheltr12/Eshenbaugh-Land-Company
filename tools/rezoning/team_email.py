@@ -645,15 +645,45 @@ def market_of(county):
     return "tampa"
 
 
-def pill(status, big=False):
-    bg, fg = STATUS_STYLE.get(status, ("#eef0f3", "#344054"))
-    fs = "13px" if big else "11px"
-    return (f'<span style="display:inline-block;background:{bg};color:{fg};font-weight:700;font-size:{fs};'
-            f'padding:3px 9px;border-radius:999px;letter-spacing:.02em;white-space:nowrap">{esc(STATUS_WORD.get(status, status)).upper()}</span>')
-
-
+FONT = ""
+FF = "font-family:Arial,Helvetica,sans-serif;"
 CHECK_STYLE = {"match": ("#e7f6ec", "#146c2e", "✔"), "agent": ("#e8f1fd", "#1f4fb5", "✔"),
                "different": ("#fff4e0", "#9a5b00", "!"), "unknown": ("#eef0f3", "#475467", "?")}
+
+
+def pill(status):
+    """Status tag that stays readable even when a mail client or printer drops backgrounds."""
+    bg, fg = STATUS_STYLE.get(status, ("#eef0f3", "#344054"))
+    return (f'<span style="display:inline-block;background:{bg};color:{fg};border:1px solid {fg};font-weight:700;'
+            f'font-size:13px;padding:4px 10px;border-radius:999px;letter-spacing:.03em;white-space:nowrap;{FONT}">'
+            f'{esc(STATUS_WORD.get(status, status)).upper()}</span>')
+
+
+def spacer(h):
+    return (f'<table width="100%" cellpadding="0" cellspacing="0"><tr>'
+            f'<td height="{h}" style="height:{h}px;line-height:{h}px;font-size:1px">&nbsp;</td></tr></table>')
+
+
+def kv_rows(pairs, bold_first=False):
+    out = []
+    for i, (label, val) in enumerate(pairs):
+        top = "" if i == 0 else "border-top:1px solid #eaecf0;"
+        weight = "font-weight:700;" if (bold_first and i == 0) else ""
+        out.append(
+            f'<tr><td width="128" valign="top" style="padding:8px 12px 8px 0;{top}color:#667085;font-size:12px;font-weight:700">{label}</td>'
+            f'<td valign="top" style="padding:8px 0;{top}font-size:14px;line-height:1.45;{weight}">{val}</td></tr>')
+    return ('<table width="100%" cellpadding="0" cellspacing="0">'
+            + "".join(out) + "</table>")
+
+
+def block_title(t):
+    return (f'<div style="{FONT}font-size:11px;font-weight:700;color:#98a2b3;letter-spacing:.1em;'
+            f'text-transform:uppercase;margin:16px 0 2px">{t}</div>')
+
+
+def link(href, label):
+    return (f'<a href="{esc(href)}" style="color:#1f4fb5;font-weight:700;text-decoration:underline;{FONT}">'
+            f'{esc(label)}</a>')
 
 
 def card_html(it):
@@ -662,38 +692,34 @@ def card_html(it):
     status = r["status"]
     accent = STATUS_STYLE.get(status, ("#eef0f3", "#475467"))[1]
     title = r.get("project_name") or r.get("address") or r.get("app_num")
-    if len(recs) == 1:
-        cases = f"#{esc(r['app_num'])} &nbsp;|&nbsp; {esc(r.get('category'))}"
-    else:
-        cases = " + ".join(f"#{esc(x['app_num'])} ({esc(x.get('category'))})" for x in recs)
-    acres = max((x.get("acres") for x in recs if x.get("acres") is not None), default=None)
-    sub = " &nbsp;|&nbsp; ".join([esc(r["jurisdiction"]), cases, f"<b>{esc(fac(acres))}</b>"])
-    status_html = pill(status, True)
-    if it.get("from_status"):
-        status_html = (f'<span style="color:#667085;font-size:12px">{esc(STATUS_WORD.get(it["from_status"], it["from_status"]))}'
-                       f' &rarr; </span>' + status_html)
-    rows = []
 
-    def row(label, val_html):
-        rows.append(f'<tr><td style="padding:3px 10px 3px 0;color:#667085;font-size:12px;vertical-align:top;'
-                    f'white-space:nowrap;width:92px">{label}</td><td style="padding:3px 0;font-size:13px;'
-                    f'color:#101828;vertical-align:top;word-break:break-word">{val_html}</td></tr>')
+    # status line
+    status_html = pill(status)
+    if it.get("from_status"):
+        status_html = (f'<span style="{FONT}color:#667085;font-size:13px">was '
+                       f'{esc(STATUS_WORD.get(it["from_status"], it["from_status"]))} &nbsp;&rarr;&nbsp; </span>' + status_html)
+
+    # case line
+    acres = max((x.get("acres") for x in recs if x.get("acres") is not None), default=None)
+    cases = "<br>".join(f"Case #{esc(x['app_num'])} &nbsp;&middot;&nbsp; {esc(x.get('category'))}" for x in recs)
+
+    # the request
     reqs = []
     for x in recs:
         for line in request_line(x):
             if line not in reqs:
                 reqs.append(line)
-    for line in reqs:
-        row("Request", esc(line))
+    req_pairs = [("Request", "<br>".join(esc(l) for l in reqs))] if reqs else []
     loc = esc(r.get("address")) if r.get("address") else ""
     if r.get("lat") is not None:
         g = f"https://www.google.com/maps?q={r['lat']},{r['lon']}"
-        loc = (loc + " &nbsp;" if loc else "") + f'<a href="{g}" style="color:#1f4fb5;font-size:12px">Google Maps</a>'
+        loc = (loc + "<br>" if loc else "") + link(g, "Open in Google Maps")
     if loc:
-        row("Location", loc)
+        req_pairs.append(("Location", loc))
     pids = list(dict.fromkeys(p for x in recs for p in (x.get("apns") or x.get("parcel_ids") or [])))
     if pids:
-        row("Parcel" + ("s" if len(pids) > 1 else ""), esc(", ".join(pids[:6]) + (f" +{len(pids) - 6} more" if len(pids) > 6 else "")))
+        extra = f" +{len(pids) - 6} more" if len(pids) > 6 else ""
+        req_pairs.append(("Parcel" + ("s" if len(pids) > 1 else ""), esc(", ".join(pids[:6]) + extra)))
     dates = []
     if r.get("filed_date"):
         dates.append(f"Filed {fdate(r['filed_date'])}")
@@ -701,11 +727,11 @@ def card_html(it):
         dates.append(f"Decided {fdate(r['decision_date'])}")
     nh = r.get("next_hearing")
     if isinstance(nh, dict) and nh.get("date") and status not in ("Approved", "Denied", "Withdrawn"):
-        dates.append(f"<b>Next hearing {fdate(nh['date'])}</b> ({esc(nh.get('body'))})")
+        dates.append(f"<b>Next hearing: {fdate(nh['date'])}, {esc(nh.get('body'))}</b>")
     if dates:
-        row("Dates", " &nbsp;|&nbsp; ".join(dates))
+        req_pairs.append(("Dates", "<br>".join(dates)))
 
-    # people box
+    # who is behind it
     code, head, detail = it["check"]
     cbg, cfg, ico = CHECK_STYLE[code]
     owners = it["owners"]
@@ -714,89 +740,88 @@ def card_html(it):
         for o in owners[:4]:
             nm = esc(o["owner"])
             if o.get("pa_url"):
-                nm = f'<a href="{esc(o["pa_url"])}" style="color:#101828;text-decoration:underline">{nm}</a>'
-            olines.append(nm + (' <span style="color:#98a2b3;font-size:11px">(parcel at mapped location)</span>'
-                                if o["how"] == "point" else ""))
+                nm = (f'<a href="{esc(o["pa_url"])}" style="color:#101828;text-decoration:underline;{FONT}">{nm}</a>')
+            if o["how"] == "point":
+                nm += ' <span style="color:#98a2b3;font-size:12px">(parcel at mapped location)</span>'
+            olines.append(nm)
         if len(owners) > 4:
             olines.append(f'<span style="color:#667085">+{len(owners) - 4} more owners</span>')
         owner_html = "<br>".join(olines)
     elif it.get("app_owner"):
-        owner_html = esc(it["app_owner"]) + ' <span style="color:#98a2b3;font-size:11px">(as listed on application)</span>'
+        owner_html = esc(it["app_owner"]) + ' <span style="color:#98a2b3;font-size:12px">(as listed on application)</span>'
     else:
         owner_html = '<span style="color:#98a2b3">Not found</span>'
+    check_html = (f'<span style="display:inline-block;background:{cbg};color:{cfg};border:1px solid {cfg};font-weight:700;'
+                  f'font-size:13px;padding:3px 9px;border-radius:6px;{FONT}">{ico} {esc(head)}</span>'
+                  f'<div style="{FONT}color:#475467;font-size:13px;margin-top:5px">{esc(detail)}</div>')
     clines = []
     for c in it["contacts"]:
         if not (c["phones"] or c["emails"]) and r.get("applicant") and norm_name(c["name"]) == norm_name(r["applicant"]):
             continue
-        bits = [f"<b>{esc(c['name'])}</b>"]
+        line = f'<b>{esc(c["name"])}</b>'
         if c.get("company"):
-            bits.append(esc(c["company"]))
-        line = f'<span style="color:#667085">{esc(c["role"])}:</span> ' + ", ".join(bits)
-        sub2 = []
+            line += f', {esc(c["company"])}'
+        line += f' <span style="color:#667085">({esc(c["role"])})</span>'
         for p in c["phones"]:
-            sub2.append(f'<a href="tel:{re.sub(r"[^0-9]", "", p)}" style="color:#1f4fb5;text-decoration:none">{esc(p)}</a>')
+            line += (f'<br>Phone: <a href="tel:{re.sub(r"[^0-9]", "", p)}" style="color:#1f4fb5;{FONT}">{esc(p)}</a>')
         for e in c["emails"]:
-            sub2.append(f'<a href="mailto:{esc(e)}" style="color:#1f4fb5;text-decoration:none">{esc(e)}</a>')
+            line += f'<br>Email: <a href="mailto:{esc(e)}" style="color:#1f4fb5;{FONT}">{esc(e)}</a>'
         if c.get("address"):
-            sub2.append(f'<span style="color:#667085">{esc(c["address"])}</span>')
-        if sub2:
-            line += "<br>" + " &nbsp;&middot;&nbsp; ".join(sub2)
-        clines.append(f'<div style="margin:0 0 6px">{line}</div>')
+            line += f'<br><span style="color:#667085">Mail: {esc(c["address"])}</span>'
+        clines.append(line)
     for e in it.get("extra_emails") or []:
-        clines.append(f'<div style="margin:0 0 6px"><span style="color:#667085">Email in documents:</span> '
-                      f'<a href="mailto:{esc(e)}" style="color:#1f4fb5;text-decoration:none">{esc(e)}</a></div>')
-    contacts_html = "".join(clines) or '<span style="color:#98a2b3">No contact info posted online</span>'
-    applicant_html = esc(r.get("applicant")) if r.get("applicant") else '<span style="color:#98a2b3">Not listed</span>'
+        clines.append(f'Email in documents: <a href="mailto:{esc(e)}" style="color:#1f4fb5;{FONT}">{esc(e)}</a>')
+    contacts_html = ('<div style="height:10px;line-height:10px;font-size:1px">&nbsp;</div>'.join(clines)
+                     or '<span style="color:#98a2b3">No contact info posted online</span>')
+    applicant_html = (f"<b>{esc(r.get('applicant'))}</b>" if r.get("applicant")
+                      else '<span style="color:#98a2b3">Not listed</span>')
+    who_pairs = [("Applicant", applicant_html), ("Owner of record", owner_html),
+                 ("Ownership check", check_html), ("Contact info", contacts_html)]
 
-    people = f'''
-<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#f8fafc;border:1px solid #e4e7ec;border-radius:8px;margin-top:10px">
-<tr><td style="padding:10px 12px">
- <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
-  <tr><td style="padding:2px 10px 4px 0;color:#667085;font-size:12px;width:92px;vertical-align:top">Applicant</td><td style="padding:2px 0 4px;font-size:13px;font-weight:700;color:#101828">{applicant_html}</td></tr>
-  <tr><td style="padding:2px 10px 4px 0;color:#667085;font-size:12px;vertical-align:top">Owner of record</td><td style="padding:2px 0 4px;font-size:13px;color:#101828">{owner_html}</td></tr>
-  <tr><td style="padding:4px 10px 6px 0;color:#667085;font-size:12px;vertical-align:top">Ownership check</td><td style="padding:4px 0 6px">
-   <span style="display:inline-block;background:{cbg};color:{cfg};font-weight:700;font-size:12px;padding:3px 9px;border-radius:6px">{ico} {esc(head)}</span>
-   <div style="color:#475467;font-size:12px;margin-top:3px">{esc(detail)}</div></td></tr>
-  <tr><td style="padding:4px 10px 2px 0;color:#667085;font-size:12px;vertical-align:top;border-top:1px solid #e4e7ec">Contacts</td><td style="padding:6px 0 0;font-size:13px;color:#101828;border-top:1px solid #e4e7ec">{contacts_html}</td></tr>
- </table>
-</td></tr></table>'''
-    btn = ""
+    # links
+    links = []
     for x in recs:
-        lab = "View application" if len(recs) == 1 else f"View {x['app_num']}"
-        btn += (f'<a href="{esc(x.get("url"))}" style="display:inline-block;background:#101828;color:#ffffff;text-decoration:none;'
-                f'font-size:12px;font-weight:700;padding:7px 12px;border-radius:6px;margin:0 6px 6px 0">{esc(lab)}</a>')
+        links.append(link(x.get("url"), "View application" if len(recs) == 1 else f"View case {x['app_num']}"))
     if r.get("docs_url") and "sharepoint" not in (r.get("docs_url") or ""):
-        btn += (f'<a href="{esc(r["docs_url"])}" style="display:inline-block;background:#ffffff;color:#101828;border:1px solid #d0d5dd;'
-                f'text-decoration:none;font-size:12px;font-weight:700;padding:6px 12px;border-radius:6px;margin:0 6px 6px 0">Staff report / agenda</a>')
+        links.append(link(r["docs_url"], "Staff report / agenda"))
+    links_html = ' <span style="color:#d0d5dd">&nbsp;|&nbsp;</span> '.join(links)
+
     return f'''
-<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#ffffff;border:1px solid #e4e7ec;border-left:5px solid {accent};border-radius:10px;margin:0 0 14px">
-<tr><td style="padding:14px 16px">
- <div style="margin:0 0 6px">{status_html}</div>
- <div style="font-size:17px;font-weight:800;color:#101828;line-height:1.3">{esc(title)}</div>
- <div style="font-size:12px;color:#475467;margin:3px 0 8px">{sub}</div>
- <table role="presentation" width="100%" cellpadding="0" cellspacing="0">{"".join(rows)}</table>
- {people}
- <div style="margin-top:12px">{btn}</div>
+<table width="100%" cellpadding="0" cellspacing="0" style="border:1px solid #d0d5dd;border-left:6px solid {accent};border-radius:10px;background:#ffffff">
+<tr><td style="padding:18px 20px 16px;color:#101828;{FF}">
+<div>{status_html}</div>
+<div style="{FONT}font-size:19px;font-weight:800;color:#101828;line-height:1.3;margin-top:10px">{esc(title)}</div>
+<div style="{FONT}font-size:13px;color:#475467;margin-top:4px;line-height:1.5">{esc(r["jurisdiction"])} &nbsp;&middot;&nbsp; <b style="color:#101828">{esc(fac(acres))}</b><br>{cases}</div>
+{block_title("The request")}
+{kv_rows(req_pairs)}
+{block_title("Who is behind it")}
+{kv_rows(who_pairs)}
+<div style="{FONT}font-size:13px;border-top:1px solid #eaecf0;padding-top:12px;margin-top:6px">{links_html}</div>
 </td></tr></table>'''
 
 
 def section_html(title, subtitle, color, items):
     if not items:
         return ""
-    body = "".join(card_html(i) for i in items)
     n_cases = sum(len(i.get("recs") or [1]) for i in items)
+    cards = spacer(14).join(card_html(i) for i in items)
     return f'''
-<tr><td style="padding:22px 0 8px">
- <div style="font-size:19px;font-weight:800;color:#101828"><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:{color};margin-right:8px"></span>{esc(title)} <span style="color:#98a2b3;font-weight:700">({n_cases} case{"s" if n_cases != 1 else ""})</span></div>
- <div style="font-size:12px;color:#667085;margin-top:2px">{esc(subtitle)}</div>
-</td></tr>
-<tr><td>{body}</td></tr>'''
+{spacer(34)}
+<table width="100%" cellpadding="0" cellspacing="0"><tr><td style="border-bottom:3px solid {color};padding:0 0 8px;{FF}">
+<span style="font-size:21px;font-weight:800;color:{color}">{esc(title)}</span>
+<span style="font-size:15px;font-weight:700;color:#98a2b3">&nbsp;&nbsp;{n_cases} case{"s" if n_cases != 1 else ""}</span>
+<div style="font-size:13px;color:#667085;margin-top:3px">{esc(subtitle)}</div>
+</td></tr></table>
+{spacer(16)}
+{cards}'''
 
 
 def tile(n, label, bg, fg):
-    return (f'<td align="center" style="padding:4px"><div style="background:{bg};border-radius:10px;padding:10px 2px">'
-            f'<div style="font-size:24px;font-weight:800;color:{fg};line-height:1">{n}</div>'
-            f'<div style="font-size:11px;font-weight:700;color:{fg};margin-top:4px;text-transform:uppercase;letter-spacing:.03em">{label}</div></div></td>')
+    return (f'<td align="center" width="20%" style="padding:3px"><table width="100%" cellpadding="0" cellspacing="0">'
+            f'<tr><td align="center" style="background:{bg};border:1px solid {fg};border-radius:10px;padding:12px 2px;{FF}">'
+            f'<div style="font-size:26px;font-weight:800;color:{fg};line-height:1">{n}</div>'
+            f'<div style="font-size:10px;font-weight:700;color:{fg};margin-top:5px;text-transform:uppercase;letter-spacing:0">{label}</div>'
+            f'</td></tr></table></td>')
 
 
 def build(items, run_date, market_label, map_url):
@@ -806,8 +831,8 @@ def build(items, run_date, market_label, map_url):
     new = [i for i in items if i["kind"] == "new"]
     for lst in list(groups.values()) + [other, new]:
         lst.sort(key=lambda i: (-(i["rec"].get("acres") or 0)))
-    d = dt.date.fromisoformat(run_date)
-    week = d.strftime("%b %-d, %Y")
+    week = dt.date.fromisoformat(run_date).strftime("%b %-d, %Y")
+
     def nc(lst):
         return sum(len(i.get("recs") or [1]) for i in lst)
     tiles = "".join([
@@ -818,51 +843,34 @@ def build(items, run_date, market_label, map_url):
         tile(nc(new), "New filings", *STATUS_STYLE["Filed"]),
     ])
     secs = "".join([
-        section_html("Approved", "Final approval by the deciding board this week.", STATUS_STYLE["Approved"][1], groups["Approved"]),
-        section_html("Denied", "Denied by the deciding board this week.", STATUS_STYLE["Denied"][1], groups["Denied"]),
-        section_html("Withdrawn", "Withdrawn, voided or closed by the applicant or county.", STATUS_STYLE["Withdrawn"][1], groups["Withdrawn"]),
+        section_html("Approved", "Final approval by the deciding board.", STATUS_STYLE["Approved"][1], groups["Approved"]),
+        section_html("Denied", "Denied by the deciding board.", STATUS_STYLE["Denied"][1], groups["Denied"]),
+        section_html("Withdrawn", "Withdrawn, voided or closed.", STATUS_STYLE["Withdrawn"][1], groups["Withdrawn"]),
         section_html("Hearing updates", "Hearings newly scheduled or continued.", STATUS_STYLE["Hearing Scheduled"][1], other),
         section_html("New filings", "Applications that appeared for the first time this week.", STATUS_STYLE["Filed"][1], new),
     ])
     if not items:
-        secs = ('<tr><td style="padding:30px 0;text-align:center;color:#667085;font-size:14px">'
-                'No decisions, status changes or new filings this week.</td></tr>')
+        secs = (spacer(30) + f'<div style="{FF}text-align:center;color:#667085;font-size:15px">'
+                'No decisions, status changes or new filings this week.</div>')
     html_out = f'''<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>
 <body style="margin:0;padding:0;background:#f2f4f7">
-<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#f2f4f7"><tr><td align="center" style="padding:20px 10px">
-<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:680px;font-family:Arial,Helvetica,sans-serif">
-<tr><td style="background:#101828;border-radius:12px 12px 0 0;padding:18px 20px;border-bottom:4px solid #ef1f25">
- <div style="font-size:12px;font-weight:700;color:#fda29b;letter-spacing:.08em;text-transform:uppercase">Eshenbaugh Land Company</div>
- <div style="font-size:22px;font-weight:800;color:#ffffff;margin-top:4px">Rezoning Update</div>
- <div style="font-size:13px;color:#d0d5dd;margin-top:2px">Week of {week} &nbsp;|&nbsp; {esc(market_label)}</div>
+<table width="100%" cellpadding="0" cellspacing="0" style="background:#f2f4f7"><tr><td align="center" style="padding:24px 12px">
+<table width="100%" cellpadding="0" cellspacing="0" style="max-width:680px">
+<tr><td style="background:#ffffff;border:1px solid #d0d5dd;border-top:6px solid #ef1f25;border-radius:10px;padding:20px 20px 14px;{FF}">
+<div style="font-size:12px;font-weight:700;color:#ef1f25;letter-spacing:.1em;text-transform:uppercase">Eshenbaugh Land Company</div>
+<div style="font-size:26px;font-weight:800;color:#101828;margin-top:6px">Rezoning Update</div>
+<div style="font-size:14px;color:#475467;margin-top:4px">Week of {week} &nbsp;&middot;&nbsp; {esc(market_label)}</div>
+{spacer(14)}
+<table width="100%" cellpadding="0" cellspacing="0"><tr>{tiles}</tr></table>
+<div style="font-size:12px;color:#667085;text-align:center;padding-top:10px">This week's decisions, hearing updates and new filings only (0.5 ac and up).<br>{link(map_url, "Open the live map")}</div>
 </td></tr>
-<tr><td style="background:#ffffff;padding:10px 12px;border-radius:0 0 12px 12px">
- <table role="presentation" width="100%" cellpadding="0" cellspacing="0"><tr>{tiles}</tr></table>
- <div style="font-size:12px;color:#667085;text-align:center;padding:6px 0 2px">Only this week's decisions, status changes and new filings (0.5 ac and up). <a href="{esc(map_url)}" style="color:#1f4fb5">Open the live map</a></div>
-</td></tr>
-<tr><td><table role="presentation" width="100%" cellpadding="0" cellspacing="0">{secs}</table></td></tr>
-<tr><td style="padding:16px 4px 4px;font-size:11px;color:#98a2b3;line-height:1.5">
- Owner of record comes from the county property appraiser parcel data; applicant and contacts come from the public application, agenda and staff report postings. "Applicant is NOT the owner" usually means an agent, engineer or contract buyer filed the case. Contact details are only what the government posted publicly. Verify before relying on them.
+<tr><td>{secs}</td></tr>
+<tr><td style="padding:28px 4px 4px;{FF}font-size:11px;color:#98a2b3;line-height:1.5">
+Owner of record comes from the county property appraiser parcel data. Applicant and contact info come from the public application, agenda and staff report postings. "Applicant is NOT the owner" usually means an agent, engineer or contract buyer filed the case. Contact details are only what the government posted publicly; verify before relying on them.
 </td></tr>
 </table></td></tr></table></body></html>'''
-    return compact(nodash(html_out))
+    return nodash(html_out)
 
-
-def compact(doc):
-    """Repeated inline styles -> classes in one <style> block (Gmail supports class selectors in head)."""
-    styles = re.findall(r' style="([^"]*)"', doc)
-    counts = {}
-    for st in styles:
-        counts[st] = counts.get(st, 0) + 1
-    names, css = {}, []
-    for st, n in sorted(counts.items(), key=lambda x: -x[1]):
-        if n >= 2 and len(st) > 12:
-            nm = f"c{len(names)}"
-            names[st] = nm
-            css.append(f".{nm}{{{st}}}")
-    doc = re.sub(r' style="([^"]*)"', lambda m: f' class="{names[m.group(1)]}"' if m.group(1) in names else m.group(0), doc)
-    doc = re.sub(r"\n\s*", "\n", doc)
-    return doc.replace("</head>", "<style>" + "".join(css) + "</style></head>", 1)
 
 
 def build_text(items, run_date, market_label, map_url):
