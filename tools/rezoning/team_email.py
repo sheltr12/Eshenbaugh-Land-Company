@@ -692,6 +692,29 @@ FF = "font-family:Arial,Helvetica,sans-serif;"
 CHECK_STYLE = {"match": ("#e8f1fd", "#1f4fb5", "≈"), "agent": ("#fff4e0", "#9a5b00", "!"),
                "rep": ("#fff4e0", "#9a5b00", "!"),
                "different": ("#fff4e0", "#9a5b00", "!"), "unknown": ("#eef0f3", "#475467", "?")}
+SITE_STYLE = {"Vacant": ("#e6f6f8", "#0b6577"), "Improved": ("#f3effe", "#5b21b6"),
+              "Partly improved": ("#f3effe", "#5b21b6"), "Unknown": ("#eef0f3", "#475467")}
+
+
+def site_of(recs):
+    """Best site_status among the cases on one card (most parcels matched wins)."""
+    ss = [x.get("site_status") for x in recs if isinstance(x.get("site_status"), dict)]
+    if not ss:
+        return None
+    return max(ss, key=lambda s: (s.get("status") != "Unknown", s.get("parcels_found") or 0))
+
+
+def site_html(recs):
+    s = site_of(recs)
+    if not s:
+        return ""
+    bg, fg = SITE_STYLE.get(s.get("status"), SITE_STYLE["Unknown"])
+    yr = f' <span style="color:#98a2b3;font-size:12px">({s["roll_year"]} tax roll)</span>' if s.get("roll_year") else ""
+    return (f'<span style="display:inline-block;background:{bg};color:{fg};border:1px solid {fg};font-weight:700;'
+            f'font-size:13px;padding:2px 9px;border-radius:6px;white-space:nowrap">{esc(s.get("status"))}</span>'
+            f'<div style="color:#475467;font-size:13px;margin-top:4px">{esc(s.get("detail"))}{yr}</div>')
+
+
 REP_TAG = ('<span style="display:inline-block;background:#fff4e0;color:#9a5b00;border:1px solid #9a5b00;font-weight:700;'
            'font-size:12px;padding:2px 7px;border-radius:5px;white-space:nowrap">! {kind}, not the owner</span>')
 
@@ -765,6 +788,9 @@ def card_html(it):
     if pids:
         extra = f" +{len(pids) - 6} more" if len(pids) > 6 else ""
         req_pairs.append(("Parcel" + ("s" if len(pids) > 1 else ""), esc(", ".join(pids[:6]) + extra)))
+    sh = site_html(recs)
+    if sh:
+        req_pairs.append(("Vacant or improved", sh))
     dates = []
     if r.get("filed_date"):
         dates.append(f"Filed {fdate(r['filed_date'])}")
@@ -954,6 +980,9 @@ def build_text(items, run_date, market_label, map_url):
                 L.append(f"  {line}")
             if r.get("address"):
                 L.append(f"  Location: {r['address']}")
+            _s = site_of(it.get("recs") or [r])
+            if _s:
+                L.append(f"  Vacant or improved: {_s.get('status')}. {_s.get('detail')}")
             L.append(f"  Applicant: {r.get('applicant') or 'Not listed'}")
             L.append("  Owner of record: " + (", ".join(o["owner"] for o in it["owners"][:4]) or it.get("app_owner") or "Not found"))
             L.append(f"  Ownership check: {it['check'][1]}. {it['check'][2]}")

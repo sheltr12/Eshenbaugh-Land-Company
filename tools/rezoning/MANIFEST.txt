@@ -39,3 +39,4 @@ rezoning_pipeline.py
 rezonings_map.html
 team_email.py
 weekly_page.py
+site_status.py

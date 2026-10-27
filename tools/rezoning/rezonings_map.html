@@ -274,6 +274,7 @@ function badgesHtml(p){
   const s=p.status||'Filed';
   return `<span class="badge cat" title="${txt(p.category)}">${catCode(p.category)}</span><span class="badge" style="background:${statusColor(s)}">${txt(STATUS_LABEL[s]||s)}</span>${isNew(p)?'<span class="badge new">NEW</span>':''}${isChanged(p)&&!isNew(p)?'<span class="badge chg">CHANGED</span>':''}`;
 }
+function siteText(p){const s=p.site_status;if(!s||!s.status)return null;return s.status+(s.detail?'. '+s.detail.replace(/\.$/,''):'')+(s.roll_year?` (${s.roll_year} tax roll)`:'')}
 function detailHtml(p){
   const nh=nextHearing(p);
   const rows=[
@@ -281,6 +282,7 @@ function detailHtml(p){
     ['Status',(STATUS_LABEL[p.status]||p.status||'')+(p.status_raw&&String(p.status_raw).toLowerCase()!==String(p.status||'').toLowerCase()?` (${p.status_raw})`:'')],
     ['Applicant',p.applicant],['Address',p.address],
     ['Acreage',fmtAcres(p.acres)+(p.acres_source==='parcels'?' (from parcel data)':'')],
+    ['Vacant or improved',siteText(p)],
     ['Zoning',(p.from_zoning||p.to_zoning)?`${p.from_zoning||'?'} → ${p.to_zoning||'?'}`:null],
     ['Future land use',(p.from_flu||p.to_flu)?`${p.from_flu||'?'} → ${p.to_flu||'?'}`:null],
     ['Filed',fmtDate(p.filed_date)],['Next hearing',nh?`${fmtDate(nh.date)}, ${nh.body}`:null],
