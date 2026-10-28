@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Lake County Vacant Land Comps &mdash; 2026-10-28</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://unpkg.com/esri-leaflet@3.0.12/dist/esri-leaflet.js"></script>
+<style>
+:root{--ink:#1a2b3c;--accent:#2e6b4f;--line:#dfe4e8;}
+*{box-sizing:border-box}
+body{margin:0;font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;color:var(--ink);background:#f6f8f9}
+header{background:var(--accent);color:#fff;padding:16px 22px}
+header h1{margin:0;font-size:19px}
+header p{margin:4px 0 0;font-size:13px;opacity:.9}
+#map{height:60vh;min-height:420px;width:100%}
+.wrap{padding:14px 18px 40px;overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:12.5px;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.08)}
+th,td{border:1px solid var(--line);padding:6px 8px;text-align:left;vertical-align:top}
+th{background:#eef3f0;position:sticky;top:0}
+tr:nth-child(even){background:#fafbfc}
+a{color:var(--accent)}
+.num{text-align:right;white-space:nowrap}
+.pop b{color:var(--accent)}
+.pop{font-size:12.5px;line-height:1.5}
+.legend{font-size:12px;color:#5a6b7a;margin:8px 0}
+.lbl{font-size:10.5px;padding:1px 4px;font-weight:600}
+.dot{display:inline-block;width:10px;height:10px;border-radius:50%;margin:0 4px 0 10px;vertical-align:middle}
+</style></head><body>
+<header><h1>Lake County Vacant Land Comps</h1><p>Run date 2026-10-28 &middot; Sale dates 2026-09-21 – 2026-09-30 (newly posted since 10/14 PA file) &middot; &gt;0.5 ac &amp; &gt;$500k &middot; 6 new comps &middot; Source: Lake County PA sales search + FieldMap GIS parcel layer</p></header>
+<div id="map"></div>
+<div class="wrap">
+<p class="legend">Click any marker for full detail. Coordinates are exact parcel centroids from the Lake County PA GIS endpoint, not geocoded addresses.<span class="dot" style="background:#1f9d55"></span>Vacant land deed<span class="dot" style="background:#e8871e"></span>Mixed deed (vacant + improved parcels &mdash; price includes improvements)</p>
+<table id="tbl"><thead><tr>
+<th>#</th><th>Sale Date</th><th>Address</th><th>Grantor (Seller)</th><th>Grantee (Buyer)</th>
+<th class="num">Price</th><th class="num">Acres</th><th class="num">$/Acre</th><th>Deed</th><th>Land Use</th><th>Zoning</th><th>Parcel ID</th><th>Book/Page</th><th>PA Page</th><th>Notes</th>
+</tr></thead><tbody></tbody></table>
+</div>
+<script>
+var comps=[{"parcel_id": "12-22-26-0500-000-10900", "property_name": "17135 ETRUSCAN LN", "address": "17135 ETRUSCAN LN", "sale_date": "Sep 30 2026", "sale_date_iso": "2026-09-30", "price": 760000, "acreage": 1.7312, "price_per_acre": 438994, "transaction_type": "Sale", "grantor": null, "grantee": "TALEONAN TRUST", "deed_type": "WD", "property_type": "Land", "zoning": null, "land_use": "Vacant Residential Lakefront", "source": "Lake County PA", "county": "Lake", "county_fips": "12069", "date_added": "2026-10-28", "lat": 28.5845162, "lon": -81.6511938, "aerial": "https://www.lakecopropappr.com/property-details.aspx?AltKey=3825503", "book_page": "6822/2307", "elc_deal": null, "comments": "Deed OR 6822/2307 (Warranty Deed); grantor not published by Lake PA. Single parcel, vacant at sale; acreage from GIS parcel polygon."}, {"parcel_id": "35-22-25-0100-000-04000", "property_name": "10525 BRONSON RD", "address": "10525 BRONSON RD", "sale_date": "Sep 25 2026", "sale_date_iso": "2026-09-25", "price": 695000, "acreage": 0.5008, "price_per_acre": 1387705, "transaction_type": "Sale", "grantor": null, "grantee": "CRUZ PABLO J & MAYDELIN CHAVEZ RODRIGUEZ", "deed_type": "WD", "property_type": "Land", "zoning": null, "land_use": "Vacant Residential", "source": "Lake County PA", "county": "Lake", "county_fips": "12069", "date_added": "2026-10-28", "lat": 28.5203217, "lon": -81.7805048, "aerial": "https://www.lakecopropappr.com/property-details.aspx?AltKey=3803382", "book_page": "6821/490", "elc_deal": null, "comments": "Deed OR 6821/490 (Warranty Deed); grantor not published by Lake PA. Single parcel, vacant at sale; acreage from GIS parcel polygon. Parcel is 0.5008 ac (marginally over 0.5 ac threshold); now improved with a 2026 SFR."}, {"parcel_id": "01-22-24-5800-025-00000", "property_name": "MCGILL RD", "address": "MCGILL RD", "sale_date": "Sep 23 2026", "sale_date_iso": "2026-09-23", "price": 535000, "acreage": 14.0723, "price_per_acre": 38018, "transaction_type": "Sale", "grantor": null, "grantee": "SSE CONTRACTING INC", "deed_type": "TD", "property_type": "Land", "zoning": null, "land_use": "Vacant Residential", "source": "Lake County PA", "county": "Lake", "county_fips": "12069", "date_added": "2026-10-28", "lat": 28.5154175, "lon": -81.8405473, "aerial": "https://www.lakecopropappr.com/property-details.aspx?AltKey=1085438", "book_page": "6818/1418", "elc_deal": null, "comments": "Deed OR 6818/1418 (Trustees Deed); grantor not published by Lake PA. Single parcel, vacant at sale; acreage from GIS parcel polygon."}, {"parcel_id": "05-22-25-0102-000-65700", "property_name": "1877 INDIAN HOUSE LAKE RD", "address": "1877 INDIAN HOUSE LAKE RD", "sale_date": "Sep 22 2026", "sale_date_iso": "2026-09-22", "price": 1072800, "acreage": 1.2121, "price_per_acre": 885058, "transaction_type": "Sale", "grantor": null, "grantee": "TRINITY FAMILY BUILDERS LLC", "deed_type": "WD", "property_type": "Land", "zoning": null, "land_use": "Vacant Residential", "source": "Lake County PA", "county": "Lake", "county_fips": "12069", "date_added": "2026-10-28", "lat": 28.6104616, "lon": -81.8401664, "aerial": "https://www.lakecopropappr.com/property-details.aspx?AltKey=3951271", "book_page": "6816/2456", "elc_deal": null, "comments": "Deed OR 6816/2456 (Warranty Deed); grantor not published by Lake PA. 10 parcels under one deed, acreage summed (1.21 ac, GIS parcel-polygon area). Also includes: 05-22-25-0102-000-80800 (Vacant Residential ~0.14 ac); 05-22-25-0102-000-80100 (Vacant Residential ~0.14 ac); 05-22-25-0102-000-74600 (Vacant Residential ~0.11 ac); 05-22-25-0102-000-63600 (Vacant Residential ~0.14 ac); 05-22-25-0102-000-70700 (Vacant Residential ~0.11 ac); 05-22-25-0102-000-70000 (Vacant Residential ~0.11 ac); 05-22-25-0102-000-69900 (Vacant Residential ~0.11 ac); 05-22-25-0102-000-69700 (Vacant Residential ~0.11 ac); 05-22-25-0102-000-68700 (Vacant Residential ~0.11 ac)."}, {"parcel_id": "01-22-24-5100-044-00001", "property_name": "STATE ROAD 33", "address": "STATE ROAD 33", "sale_date": "Sep 22 2026", "sale_date_iso": "2026-09-22", "price": 1820000, "acreage": 16.0421, "price_per_acre": 113452, "transaction_type": "Sale", "grantor": null, "grantee": "AL PARTICIPATION & INVESTMENTS CORP", "deed_type": "WD", "property_type": "Land", "zoning": null, "land_use": "Vacant Residential", "source": "Lake County PA", "county": "Lake", "county_fips": "12069", "date_added": "2026-10-28", "lat": 28.5255374, "lon": -81.8457438, "aerial": "https://www.lakecopropappr.com/property-details.aspx?AltKey=2987570", "book_page": "6817/1934", "elc_deal": null, "comments": "Deed OR 6817/1934 (Warranty Deed); grantor not published by Lake PA. 3 parcels under one deed, acreage summed (16.04 ac, GIS parcel-polygon area). Also includes: 01-22-24-5100-043-00000 (Pasture Improved Good ~9.92 ac); 01-22-24-5100-042-00000 (Manufactured Home ~4.88 ac)."}, {"parcel_id": "31-21-24-0004-000-01700", "property_name": "TUSCANOOGA RD", "address": "TUSCANOOGA RD", "sale_date": "Sep 28 2026", "sale_date_iso": "2026-09-28", "price": 4300000, "acreage": 225.3932, "price_per_acre": 19078, "transaction_type": "Sale", "grantor": null, "grantee": "GEORGE L SOUTHWORTH REVOCABLE TRUST", "deed_type": "WD", "property_type": "Land", "zoning": null, "land_use": "Pasture Improved Hay Average", "source": "Lake County PA", "county": "Lake", "county_fips": "12069", "date_added": "2026-10-28", "lat": 28.6134959, "lon": -81.9412381, "aerial": "https://www.lakecopropappr.com/property-details.aspx?AltKey=1038553", "book_page": "6822/215", "elc_deal": null, "comments": "Deed OR 6822/215 (Warranty Deed); grantor not published by Lake PA. 6 parcels under one deed, acreage summed (225.39 ac, GIS parcel-polygon area). Also includes: 32-21-24-0002-000-02400 (Pasture Improved Hay Average ~0.63 ac); 32-21-24-0003-000-02200 (Pasture Improved Hay Average ~55.17 ac); 31-21-24-0001-000-00700 (Pasture Improved Hay Average ~11.03 ac); 06-22-24-0001-000-00100 (Pasture Improved Hay Average ~39.74 ac); 05-22-24-0002-000-00500 (Pasture Improved Hay Average ~39.86 ac)."}];
+var map=L.map('map');
+L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',{maxZoom:19,attribution:'Imagery &copy; Esri, Maxar, Earthstar Geographics'}).addTo(map);
+L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}',{maxZoom:19}).addTo(map);
+L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Transportation/MapServer/tile/{z}/{y}/{x}',{maxZoom:19,opacity:0.7}).addTo(map);
+var money=function(n){return n==null?'\u2014':'$'+Number(n).toLocaleString();};
+var esc=function(s){return s==null?'\u2014':String(s).replace(/[&<>]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;'}[c];});};
+var grp=L.featureGroup().addTo(map);
+comps.forEach(function(c,i){
+  var pop='<div class="pop"><b>#'+(i+1)+' \u00b7 '+money(c.price)+'</b><br/>'+esc(c.address)+'<br/><br/>'
+   +'<b>Grantor:</b> '+esc(c.grantor||'n/a (not published by Lake PA)')+'<br/>'
+   +'<b>Grantee:</b> '+esc(c.grantee)+'<br/>'
+   +'<b>Sale date:</b> '+esc(c.sale_date)+'<br/>'
+   +'<b>Acreage:</b> '+c.acreage+' ac<br/>'
+   +'<b>$/acre:</b> '+money(c.price_per_acre)+'<br/>'
+   +'<b>Deed type:</b> '+esc(c.deed_type)+'<br/>'
+   +'<b>Land use:</b> '+esc(c.land_use)+'<br/>'
+   +'<b>Zoning:</b> '+esc(c.zoning)+'<br/>'
+   +'<b>Parcel:</b> '+esc(c.parcel_id)+'<br/>'
+   +'<b>Book/Page:</b> '+esc(c.book_page)+'<br/>'
+   +(c.comments?('<b>Notes:</b> '+esc(c.comments)+'<br/>'):'')
+   +'<a href="'+c.aerial+'" target="_blank" rel="noopener">Open PA parcel page \u2192</a></div>';
+  if(c.lat==null||c.lon==null) return;
+  var mixed=/^MIXED/.test(c.comments||'');var m=L.circleMarker([c.lat,c.lon],{radius:Math.max(7,Math.min(16,5+Math.log10(c.price)-3)),color:'#fff',weight:2,fillColor:mixed?'#e8871e':'#1f9d55',fillOpacity:.95}).addTo(grp).bindPopup(pop,{maxWidth:340});
+  m.bindTooltip('#'+(i+1)+' '+money(c.price),{permanent:comps.length<=60,direction:'top',offset:[0,-6],className:'lbl'});
+});
+if(grp.getLayers().length) map.fitBounds(grp.getBounds().pad(0.25)); else map.setView([27.95,-81.7],10);
+var tb=document.querySelector('#tbl tbody');
+comps.forEach(function(c,i){
+  var tr=document.createElement('tr');
+  tr.innerHTML='<td>'+(i+1)+'</td><td>'+esc(c.sale_date)+'</td><td>'+esc(c.address)+'</td>'
+   +'<td>'+esc(c.grantor||'n/a (not published by Lake PA)')+'</td><td>'+esc(c.grantee)+'</td>'
+   +'<td class="num">'+money(c.price)+'</td><td class="num">'+c.acreage+'</td>'
+   +'<td class="num">'+money(c.price_per_acre)+'</td><td>'+esc(c.deed_type)+'</td>'
+   +'<td>'+esc(c.land_use)+'</td><td>'+esc(c.zoning)+'</td><td>'+esc(c.parcel_id)+'</td>'
+   +'<td>'+esc(c.book_page)+'</td>'
+   +'<td><a href="'+c.aerial+'" target="_blank" rel="noopener">link</a></td>'
+   +'<td>'+esc(c.comments)+'</td>';
+  tr.style.cursor='pointer';
+  tr.onclick=function(){ if(c.lat!=null) map.setView([c.lat,c.lon],16); };
+  tb.appendChild(tr);
+});
+</script></body></html>
