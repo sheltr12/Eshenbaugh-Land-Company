@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Seminole County Vacant Land Comps &mdash; 2026-10-29</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://unpkg.com/esri-leaflet@3.0.12/dist/esri-leaflet.js"></script>
+<style>
+:root{--ink:#1a2b3c;--accent:#2e6b4f;--line:#dfe4e8;}
+*{box-sizing:border-box}
+body{margin:0;font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;color:var(--ink);background:#f6f8f9}
+header{background:var(--accent);color:#fff;padding:16px 22px}
+header h1{margin:0;font-size:19px}
+header p{margin:4px 0 0;font-size:13px;opacity:.9}
+#map{height:60vh;min-height:420px;width:100%}
+.wrap{padding:14px 18px 40px;overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:12.5px;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.08)}
+th,td{border:1px solid var(--line);padding:6px 8px;text-align:left;vertical-align:top}
+th{background:#eef3f0;position:sticky;top:0}
+tr:nth-child(even){background:#fafbfc}
+a{color:var(--accent)}
+.num{text-align:right;white-space:nowrap}
+.pop b{color:var(--accent)}
+.pop{font-size:12.5px;line-height:1.5}
+.legend{font-size:12px;color:#5a6b7a;margin:8px 0}
+</style></head><body>
+<header><h1>Seminole County Vacant Land Comps</h1><p>Run date 2026-10-29 &middot; Sale dates Oct 9-20 2026 (SCPA bulk, lookback since Jun 1; deduped) &middot; &gt;0.5 ac &amp; &gt;$500k &middot; 4 new comps &middot; Source: SCPA bulk SeminoleCounty.zip</p></header>
+<div id="map"></div>
+<div class="wrap">
+<p class="legend">Click any marker for full detail. Coordinates are exact parcel centroids from the Seminole County PA GIS endpoint, not geocoded addresses.</p>
+<table id="tbl"><thead><tr>
+<th>#</th><th>Sale Date</th><th>Address</th><th>Grantor (Seller)</th><th>Grantee (Buyer)</th>
+<th class="num">Price</th><th class="num">Acres</th><th class="num">$/Acre</th><th>Deed</th><th>Land Use</th><th>Zoning</th><th>Parcel ID</th><th>Book/Page</th><th>PA Page</th><th>Notes</th>
+</tr></thead><tbody></tbody></table>
+</div>
+<script>
+var comps=[{"parcel_id": "1120305190000002A", "property_name": "Parcel 1120305190000002A", "address": "Parcel 1120305190000002A", "sale_date": "Oct 09 2026", "sale_date_iso": "2026-10-09", "price": 1570000, "acreage": 0.995, "price_per_acre": 1577889, "transaction_type": "Sale", "grantor": null, "grantee": "FAMILY ARK INVESTMENTS LLC", "deed_type": "WD", "property_type": "Land", "zoning": "GC2", "land_use": "1013 - VAC COMM W/ SITE IMPROVEMENTS", "source": "Seminole County PA", "county": "Seminole", "county_fips": "12117", "date_added": "2026-10-29", "lat": 28.75927136, "lon": -81.28705793, "aerial": "https://scpafl.org/search/parcels/details/?PID=1120305190000002A", "book_page": "OR Book 11130 / Page 1856", "elc_deal": null, "comments": "Multi-parcel deed: 2 parcels, WD; price is for whole deed, acreage summed (0.995 ac). OR Book 11130 / Page 1856. Also includes: 112030300018B0000 (2602 - QUICK LUBE/TIRE CENTER, ~0.323 ac). Grantor not published in SCPA bulk data (see Clerk Official Records); grantee = current owner of record. CAUTION: deed includes improved quick lube parcel; price not allocated to vacant portion."}, {"parcel_id": "24203050300000240", "property_name": "5265 SPARROW TREE PT SANFORD FL 32773", "address": "5265 SPARROW TREE PT SANFORD FL 32773", "sale_date": "Oct 20 2026", "sale_date_iso": "2026-10-20", "price": 38853900, "acreage": 6.219, "price_per_acre": 6247612, "transaction_type": "Sale", "grantor": null, "grantee": "BEAZER HOMES LLC", "deed_type": "SW", "property_type": "Land", "zoning": "A-1", "land_use": "00 - VACANT RESIDENTIAL", "source": "Seminole County PA", "county": "Seminole", "county_fips": "12117", "date_added": "2026-10-29", "lat": 28.73707744, "lon": -81.26974425, "aerial": "https://scpafl.org/search/parcels/details/?PID=24203050300000240", "book_page": "OR Book 11131 / Page 652", "elc_deal": null, "comments": "Multi-parcel deed: 53 parcels, SW; price is for whole deed, acreage summed (6.219 ac). OR Book 11131 / Page 652. Also includes: 16213152600000380 (0003 - VACANT TOWNHOME, ~0.061 ac); 16213152600000350 (0003 - VACANT TOWNHOME, ~0.089 ac); 16213152600000200 (0003 - VACANT TOWNHOME, ~0.061 ac); 16213152600000460 (0003 - VACANT TOWNHOME, ~0.073 ac); 24203050300000300 (00 - VACANT RESIDENTIAL, ~0.179 ac); 16213152600000070 (0003 - VACANT TOWNHOME, ~0.058 ac); 24203050400000160 (00 - VACANT RESIDENTIAL, ~0.161 ac); 16213152600000060 (0003 - VACANT TOWNHOME, ~0.058 ac); 24203050400000060 (00 - VACANT RESIDENTIAL, ~0.131 ac); 24203050400000040 (00 - VACANT RESIDENTIAL, ~0.133 ac); 24203050300000120 (00 - VACANT RESIDENTIAL, ~0.178 ac); 24203050300000200 (00 - VACANT RESIDENTIAL, ~0.179 ac); +40 more. Grantor not published in SCPA bulk data (see Clerk Official Records); grantee = current owner of record."}, {"parcel_id": "2219295WJ00000310", "property_name": "399 MARINA LOUIS PT SANFORD FL 32771", "address": "399 MARINA LOUIS PT SANFORD FL 32771", "sale_date": "Oct 19 2026", "sale_date_iso": "2026-10-19", "price": 1575000, "acreage": 1.321, "price_per_acre": 1192279, "transaction_type": "Sale", "grantor": null, "grantee": "K HOVNANIAN AT DEER LAKES LLC", "deed_type": "SW", "property_type": "Land", "zoning": "PD", "land_use": "00 - VACANT RESIDENTIAL", "source": "Seminole County PA", "county": "Seminole", "county_fips": "12117", "date_added": "2026-10-29", "lat": 28.81834761, "lon": -81.40187065, "aerial": "https://scpafl.org/search/parcels/details/?PID=2219295WJ00000310", "book_page": "OR Book 11130 / Page 1231", "elc_deal": null, "comments": "Multi-parcel deed: 3 parcels, SW; price is for whole deed, acreage summed (1.321 ac). OR Book 11130 / Page 1231. Also includes: 2219295WJ00000290 (00 - VACANT RESIDENTIAL, ~0.473 ac); 2219295WJ00000100 (00 - VACANT RESIDENTIAL, ~0.379 ac). Grantor not published in SCPA bulk data (see Clerk Official Records); grantee = current owner of record."}, {"parcel_id": "29193051300000010", "property_name": "4660 W SR 46 SANFORD FL 32771", "address": "4660 W SR 46 SANFORD FL 32771", "sale_date": "Oct 19 2026", "sale_date_iso": "2026-10-19", "price": 4850000, "acreage": 1.986, "price_per_acre": 2442095, "transaction_type": "Sale", "grantor": null, "grantee": "HILL/GRAY SEVEN LLC", "deed_type": "SW", "property_type": "Land", "zoning": "C-2", "land_use": "1104 - CONVENIENCE STORE WITH GAS", "source": "Seminole County PA", "county": "Seminole", "county_fips": "12117", "date_added": "2026-10-29", "lat": 28.81216586, "lon": -81.33368097, "aerial": "https://scpafl.org/search/parcels/details/?PID=29193051300000010", "book_page": "OR Book 11130 / Page 1423", "elc_deal": null, "comments": "Multi-parcel deed: 2 parcels, SW; price is for whole deed, acreage summed (1.986 ac). OR Book 11130 / Page 1423. Also includes: 2919305150B000000 (9410 - VAC COMM RETENTION/CONSERVATION/ROADS/COMMON AREA, ~0.010 ac). Grantor not published in SCPA bulk data (see Clerk Official Records); grantee = current owner of record."}];
+var map=L.map('map');
+L.esri.basemapLayer('Imagery').addTo(map);
+L.esri.basemapLayer('ImageryLabels').addTo(map);
+var money=function(n){return n==null?'\u2014':'$'+Number(n).toLocaleString();};
+var esc=function(s){return s==null?'\u2014':String(s).replace(/[&<>]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;'}[c];});};
+var grp=L.featureGroup().addTo(map);
+comps.forEach(function(c,i){
+  var pop='<div class="pop"><b>#'+(i+1)+' \u00b7 '+money(c.price)+'</b><br/>'+esc(c.address)+'<br/><br/>'
+   +'<b>Grantor:</b> '+esc(c.grantor)+'<br/>'
+   +'<b>Grantee:</b> '+esc(c.grantee)+'<br/>'
+   +'<b>Sale date:</b> '+esc(c.sale_date)+'<br/>'
+   +'<b>Acreage:</b> '+c.acreage+' ac<br/>'
+   +'<b>$/acre:</b> '+money(c.price_per_acre)+'<br/>'
+   +'<b>Deed type:</b> '+esc(c.deed_type)+'<br/>'
+   +'<b>Land use:</b> '+esc(c.land_use)+'<br/>'
+   +'<b>Zoning:</b> '+esc(c.zoning)+'<br/>'
+   +'<b>Parcel:</b> '+esc(c.parcel_id)+'<br/>'
+   +'<b>Book/Page:</b> '+esc(c.book_page)+'<br/>'
+   +(c.comments?('<b>Notes:</b> '+esc(c.comments)+'<br/>'):'')
+   +'<a href="'+c.aerial+'" target="_blank" rel="noopener">Open PA parcel page \u2192</a></div>';
+  if(c.lat==null||c.lon==null) return;
+  var m=L.marker([c.lat,c.lon]).addTo(grp).bindPopup(pop,{maxWidth:340});
+  m.bindTooltip('#'+(i+1)+' '+money(c.price));
+});
+if(grp.getLayers().length) map.fitBounds(grp.getBounds().pad(0.25)); else map.setView([28.8,-81.2],9);
+var tb=document.querySelector('#tbl tbody');
+comps.forEach(function(c,i){
+  var tr=document.createElement('tr');
+  tr.innerHTML='<td>'+(i+1)+'</td><td>'+esc(c.sale_date)+'</td><td>'+esc(c.address)+'</td>'
+   +'<td>'+esc(c.grantor)+'</td><td>'+esc(c.grantee)+'</td>'
+   +'<td class="num">'+money(c.price)+'</td><td class="num">'+c.acreage+'</td>'
+   +'<td class="num">'+money(c.price_per_acre)+'</td><td>'+esc(c.deed_type)+'</td>'
+   +'<td>'+esc(c.land_use)+'</td><td>'+esc(c.zoning)+'</td><td>'+esc(c.parcel_id)+'</td>'
+   +'<td>'+esc(c.book_page)+'</td>'
+   +'<td><a href="'+c.aerial+'" target="_blank" rel="noopener">link</a></td>'
+   +'<td>'+esc(c.comments)+'</td>';
+  tr.style.cursor='pointer';
+  tr.onclick=function(){ if(c.lat!=null) map.setView([c.lat,c.lon],16); };
+  tb.appendChild(tr);
+});
+</script></body></html>
