@@ -40,3 +40,8 @@ rezonings_map.html
 team_email.py
 weekly_page.py
 site_status.py
+adapters/pinellas_common.py
+adapters/clearwater.py
+adapters/pinellas_park.py
+adapters/tarpon_springs.py
+adapters/city_of_seminole.py

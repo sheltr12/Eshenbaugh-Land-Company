@@ -281,7 +281,7 @@ GOV_MAIL = re.compile(r"(\.gov$|\.fl\.us$|\.us$|ocfl\.net$|myfloridacounty|hcfl|
                       r"brevardfl|stcloudfl|leesburgflorida|apopka\.net|clermontfl|cityoforlando\.net|"
                       r"mypinellas|scgov\.net|charlottecountyfl|mymanatee|hernandocounty|alachuacounty|"
                       r"tampagov|planhillsborough|kissimmee|wintergarden|minneola|groveland|oviedo|ocoee|"
-                      r"safety-harbor|civicclerk|accela|legistar|granicus|myfwc|swfwmd|sjrwmd|floridadep|fdot)", re.I)
+                      r"safety-harbor|myclearwater|pinellas-park|ctsfl|myseminole|civicclerk|accela|legistar|granicus|myfwc|swfwmd|sjrwmd|floridadep|fdot)", re.I)
 ROLE_LABELS = (r"Applicant\s*/\s*Owner|Owner\s*/\s*Applicant|Applicant\s*/\s*Agent|Agent\s*/\s*Applicant|"
                r"Applicant\(s\)|Applicants?|Property\s+Owners?|Owners?\s+of\s+Record|Owners?|Authorized\s+Agent|"
                r"Agent|Representative|Developer|Petitioner|Engineer\s+of\s+Record|Contact\s+Person|Consultant")
