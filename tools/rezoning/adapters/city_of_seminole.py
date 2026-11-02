@@ -111,6 +111,7 @@ def build(key, apps, today):
             pins = P.pins_in(cc.text_of_url(a["pdfVersionFullPath"]))
             if pins:
                 break
+    pins = P.valid_pins(pins)
     if not pins and addr:
         p = P.parcel_lookup(addr, "SEMINOLE") or P.parcel_lookup(addr)
         if p and p.get("pin"):

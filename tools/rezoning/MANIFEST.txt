@@ -45,3 +45,6 @@ adapters/clearwater.py
 adapters/pinellas_park.py
 adapters/tarpon_springs.py
 adapters/city_of_seminole.py
+adapters/dunedin.py
+adapters/largo.py
+adapters/st_petersburg.py

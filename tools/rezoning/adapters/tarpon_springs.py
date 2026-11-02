@@ -167,6 +167,7 @@ def build(key, c, today):
             pins = P.pins_in(cc.text_of_url(a["pdfVersionFullPath"]))
             if pins:
                 break
+    pins = P.valid_pins(pins)
     acres = info.get("acres")
     if not pins and info.get("address"):
         first_addr = re.sub(r"^(\d+)[,\s&and]+(?:\d+[,\s&and]+)*", r"\1 ", info["address"])

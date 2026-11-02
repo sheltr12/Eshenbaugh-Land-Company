@@ -122,6 +122,23 @@ def parcel_lookup(address, city=None):
     return res
 
 
+def valid_pins(pins):
+    """Keep only parcel numbers that exist in the Pinellas PA layer (PDF text can carry stale or
+    misread numbers). If the check itself fails, return the list unchanged."""
+    pins = [p for p in dict.fromkeys(pins or []) if p]
+    if not pins:
+        return []
+    try:
+        lits = ",".join("'" + p + "'" for p in pins[:50])
+        d = get(PARCELS, params={"where": f"PARCELID_DSP1 IN ({lits})", "outFields": "PARCELID_DSP1",
+                                 "returnGeometry": "false", "f": "json"}).json()
+        ok = {f["attributes"].get("PARCELID_DSP1") for f in d.get("features") or []}
+        return [p for p in pins if p in ok]
+    except Exception as e:  # noqa: BLE001
+        log("parcel check failed", e)
+        return pins
+
+
 # ------------------------------------------------------------------ CivicClerk
 class CivicClerk:
     def __init__(self, tenant):
@@ -218,7 +235,7 @@ def _ns(s):
     return re.sub(r"\s+", "", s or "").lower()
 
 
-def outcome_near(text, keys, window=4000):
+def outcome_near(text, keys, window=4000, gap=900, stop=None):
     """Find the first key (plain text, matched ignoring whitespace and case) in minutes text, then
     the first motion result after it. PDF text often loses its spaces ("toPASS"), so everything is
     compared with whitespace removed. -> 'Approved' | 'Denied' | 'Continued' | 'Withdrawn' | None"""
@@ -239,10 +256,14 @@ def outcome_near(text, keys, window=4000):
         if not me or nxt.group(1).replace(".", "-") != me.group(0).replace(".", "-"):
             seg = seg[:200 + nxt.start()]
             break
+    if stop:
+        sm = re.search(stop, seg[300:])
+        if sm:
+            seg = seg[:300 + sm.start()]
     if re.search(r"withdr[ae]wn|withdrew", seg[:800]):
         return "Withdrawn"
     mm = re.search(r"(motion|moved).{0,400}?to(pass|approve|adopt|recommendapproval|recommenddenial|deny|continue|table|"
-                   r"postpone|defer).{0,900}?(motioncarried|carried|passed|approved|motionfailed|failed|unanimous)", seg)
+                   r"postpone|defer).{0,%d}?(motioncarried|carried|passed|approved|motionfailed|failed|unanimous)" % gap, seg)
     if not mm:
         return None
     if "failed" in mm.group(3):
