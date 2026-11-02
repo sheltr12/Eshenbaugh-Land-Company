@@ -1,9 +1,9 @@
 {
  "meta": {
   "title": "ELC Rezoning Tracker",
-  "generated": "2026-11-02T18:55:35+00:00",
+  "generated": "2026-11-02T19:30:08+00:00",
   "run_date": "2026-11-02",
-  "record_count": 573,
+  "record_count": 578,
   "min_acres": 0.5,
   "categories": [
    "Rezoning",
@@ -47,11 +47,14 @@
     "Alachua County": 4,
     "City of Clearwater": 3,
     "City of Minneola": 3,
+    "City of Dunedin": 2,
     "City of Oviedo": 2,
     "City of Plant City": 2,
     "City of Safety Harbor": 2,
+    "City of St. Petersburg": 2,
     "City of Winter Garden": 2,
     "City of Kissimmee": 1,
+    "City of Largo": 1,
     "City of Temple Terrace": 1
    },
    "county": {
@@ -64,8 +67,8 @@
     "Polk": 29,
     "Brevard": 25,
     "Marion": 25,
+    "Pinellas": 25,
     "Manatee": 23,
-    "Pinellas": 20,
     "Volusia": 15,
     "Sarasota": 10,
     "Seminole": 10,
@@ -75,23 +78,23 @@
    },
    "category": {
     "PD": 222,
-    "Rezoning": 205,
-    "Comp Plan Amendment": 146
+    "Rezoning": 209,
+    "Comp Plan Amendment": 147
    },
    "status": {
-    "Filed": 193,
-    "Hearing Scheduled": 179,
-    "Approved": 127,
+    "Filed": 195,
+    "Hearing Scheduled": 180,
+    "Approved": 128,
     "Withdrawn": 36,
     "Continued": 27,
-    "Denied": 11
+    "Denied": 12
    }
   },
-  "new_this_run": 13,
-  "new_this_run_recent": 0,
+  "new_this_run": 5,
+  "new_this_run_recent": 2,
   "status_changes_this_run": 0,
-  "fetched_this_run": 21,
-  "dropped_small_this_run": 8,
+  "fetched_this_run": 8,
+  "dropped_small_this_run": 3,
   "adapter_health": [
    {
     "adapter": "accela_charlotte",
@@ -262,6 +265,18 @@
     "refresh_count": 4
    },
    {
+    "adapter": "dunedin",
+    "jurisdictions": [
+     "City of Dunedin"
+    ],
+    "status": "ok",
+    "count": 3,
+    "error": null,
+    "seconds": 54.9,
+    "since": "2026-05-06",
+    "refresh_count": 0
+   },
+   {
     "adapter": "groveland",
     "jurisdictions": [
      "City of Groveland"
@@ -320,6 +335,18 @@
     "seconds": 75.9,
     "since": "2026-10-12",
     "refresh_count": 7
+   },
+   {
+    "adapter": "largo",
+    "jurisdictions": [
+     "City of Largo"
+    ],
+    "status": "ok",
+    "count": 1,
+    "error": null,
+    "seconds": 15.9,
+    "since": "2026-05-06",
+    "refresh_count": 0
    },
    {
     "adapter": "leesburg",
@@ -481,6 +508,18 @@
     "refresh_count": 9
    },
    {
+    "adapter": "st_petersburg",
+    "jurisdictions": [
+     "City of St. Petersburg"
+    ],
+    "status": "ok",
+    "count": 4,
+    "error": null,
+    "seconds": 28.8,
+    "since": "2026-05-06",
+    "refresh_count": 0
+   },
+   {
     "adapter": "tarpon_springs",
     "jurisdictions": [
      "City of Tarpon Springs"
@@ -520,17 +559,17 @@
   "failed_sources": [],
   "enrichment": {
    "status": "ok",
-   "lookups": 19,
-   "completed": 19,
-   "located": 20,
-   "seconds": 13.0
+   "lookups": 5,
+   "completed": 5,
+   "located": 5,
+   "seconds": 6.0
   },
   "apns": {
    "status": "ok",
-   "records": 16,
+   "records": 8,
    "converted": 60,
    "unresolved": 4,
-   "seconds": 45.1
+   "seconds": 52.5
   },
   "covered_jurisdictions": [
    "Alachua County",
@@ -540,8 +579,10 @@
    "City of Apopka",
    "City of Clearwater",
    "City of Clermont",
+   "City of Dunedin",
    "City of Groveland",
    "City of Kissimmee",
+   "City of Largo",
    "City of Leesburg",
    "City of Minneola",
    "City of Ocoee",
@@ -552,6 +593,7 @@
    "City of Safety Harbor",
    "City of Seminole",
    "City of St. Cloud",
+   "City of St. Petersburg",
    "City of Tampa",
    "City of Tarpon Springs",
    "City of Temple Terrace",
@@ -585,11 +627,13 @@
    "city_of_seminole",
    "clearwater",
    "clermont",
+   "dunedin",
    "groveland",
    "hernando",
    "hillsborough",
    "kissimmee",
    "lake",
+   "largo",
    "leesburg",
    "marion",
    "minneola",
@@ -603,15 +647,16 @@
    "safety_harbor",
    "seminole",
    "st_cloud",
+   "st_petersburg",
    "tarpon_springs",
    "volusia",
    "winter_garden"
   ],
-  "located_count": 535,
+  "located_count": 539,
   "db_source": "loaded",
   "previous_run_date": "2026-11-02",
   "site_status": {
-   "checked": 13,
+   "checked": 5,
    "unknown": 1,
    "run_date": "2026-11-02",
    "source": "Florida statewide cadastral (county property appraiser tax roll)"
@@ -4464,6 +4509,72 @@
    }
   },
   {
+   "jurisdiction": "City of St. Petersburg",
+   "county": "Pinellas",
+   "app_num": "FLUM-80",
+   "category": "Rezoning",
+   "app_type": "Future Land Use Map Amendment + Zoning Map Amendment",
+   "project_name": "the southwest corner of Dr Martin Luther King Jr Street South and 6th Avenue South, just north of Booker Creek",
+   "description": "Consider an APPEAL of a Community Planning and Preservation Commission (CPPC) decision to DENY a private-initiated application requesting a text amendment to the Comprehensive Plan updating Map 4 depicting the Intown Activity Center boundary with concurrent amendments to Future Land Use and Zonin...",
+   "applicant": null,
+   "address": "the southwest corner of Dr Martin Luther King Jr Street South and 6th Avenue South, just north of Booker Creek",
+   "from_zoning": "Corridor Residential Traditional -1 (CRT-1) and Neighborhood Suburban Estate (NSE)",
+   "to_zoning": "Corridor Commercial Suburban - 1 (CCS-1) and Neighborhood Suburban Estate (NSE)",
+   "from_flu": "Planned Redevelopment - Mixed-Use (PR-MU) and Recreation / Open Space (R/OS)",
+   "to_flu": "Planned Redevelopment - Mixed-Use (PR-MU) with Intown Activity Center (AC) overlay and Recreation / Open Space (R/OS)",
+   "filed_date": "2026-10-15",
+   "status": "Denied",
+   "status_raw": "City Council 2026-10-15: denied",
+   "decision_date": "2026-10-15",
+   "url": "https://www.stpete.org/Government/Agendas%20and%20Documents/Council%20Minutes%20&%20Action%20Taken/2026/2026-10-15%20Numbered-Action%20Taken%20Agenda.pdf?t=202610191124170",
+   "docs_url": null,
+   "source": "St. Petersburg City Council agendas + Action Taken agendas (PDF)",
+   "parcel_ids": [],
+   "acres": 1.08,
+   "lat": null,
+   "lon": null,
+   "hearings": [
+    {
+     "body": "City Council (first reading)",
+     "date": "2026-10-15",
+     "result": "Denied"
+    }
+   ],
+   "acres_source": "application",
+   "location_source": null,
+   "adapter": "st_petersburg",
+   "first_seen": "2026-11-02",
+   "last_seen": "2026-11-02",
+   "status_changed": null,
+   "history": [
+    {
+     "date": "2026-11-02",
+     "status": "Denied",
+     "from": null
+    }
+   ],
+   "backfilled": false,
+   "id": "City of St. Petersburg|FLUM-80",
+   "slug": "city-of-st-petersburg-flum-80",
+   "acres_unknown": false,
+   "next_hearing": null,
+   "last_hearing": {
+    "body": "City Council (first reading)",
+    "date": "2026-10-15",
+    "result": "Denied"
+   },
+   "site_status": {
+    "status": "Unknown",
+    "detail": "No parcel number posted with the application.",
+    "parcels_found": 0,
+    "parcels_total": 0,
+    "roll_year": null,
+    "checked": "2026-11-02",
+    "ids": "",
+    "method": "none"
+   }
+  },
+  {
    "jurisdiction": "City of Minneola",
    "county": "Lake",
    "app_num": "Ordinance 2026-21",
@@ -4928,6 +5039,70 @@
     "roll_year": 2026,
     "checked": "2026-10-26",
     "ids": "027243-0000",
+    "method": "parcel id"
+   }
+  },
+  {
+   "jurisdiction": "City of Largo",
+   "county": "Pinellas",
+   "app_num": "FLUMA-26-0002",
+   "category": "Comp Plan Amendment",
+   "app_type": "Future Land Use Map Amendment",
+   "project_name": "2147 Pine Forest Dr",
+   "description": "Future Land Use Map Amendment to amend the existing Future Land Use of the Parcel from Commercial General (CG) to Institutional (I) to accommodate use of the Property for a Religious Institution/church",
+   "applicant": null,
+   "address": "2147 Pine Forest Dr Clearwater Fl 33764",
+   "from_zoning": null,
+   "to_zoning": null,
+   "from_flu": "Commercial General (CG)",
+   "to_flu": "Institutional (I)",
+   "filed_date": "2026-10-12",
+   "status": "Filed",
+   "status_raw": "In Review",
+   "decision_date": null,
+   "url": "https://cityoflargofl-energovweb.tylerhost.net/apps/selfservice/#/plan/e9744d6f-b67f-4e15-8291-a13d2df8bfd8",
+   "docs_url": null,
+   "source": "Largo EnerGov Civic Access (planning cases)",
+   "parcel_ids": [
+    "31-29-16-70344-100-1001"
+   ],
+   "acres": 2.83,
+   "lat": 27.9189106,
+   "lon": -82.73494,
+   "hearings": [],
+   "acres_source": "parcels",
+   "location_source": "parcels",
+   "adapter": "largo",
+   "first_seen": "2026-11-02",
+   "last_seen": "2026-11-02",
+   "status_changed": null,
+   "history": [
+    {
+     "date": "2026-11-02",
+     "status": "Filed",
+     "from": null
+    }
+   ],
+   "backfilled": false,
+   "id": "City of Largo|FLUMA-26-0002",
+   "slug": "city-of-largo-fluma-26-0002",
+   "acres_unknown": false,
+   "next_hearing": null,
+   "last_hearing": null,
+   "apns": [
+    "31-29-16-70344-100-1001"
+   ],
+   "apns_src": [
+    "31-29-16-70344-100-1001"
+   ],
+   "site_status": {
+    "status": "Improved",
+    "detail": "2 buildings, 27,360 sf, built 1981. Use: bowling alley, rink or arena.",
+    "parcels_found": 1,
+    "parcels_total": 1,
+    "roll_year": 2026,
+    "checked": "2026-11-02",
+    "ids": "31-29-16-70344-100-1001",
     "method": "parcel id"
    }
   },
@@ -10476,6 +10651,85 @@
     "checked": "2026-10-26",
     "ids": "",
     "method": "none"
+   }
+  },
+  {
+   "jurisdiction": "City of Dunedin",
+   "county": "Pinellas",
+   "app_num": "LUP/ZO-2026-0002",
+   "category": "Rezoning",
+   "app_type": "Land Use Plan Amendment + Rezoning",
+   "project_name": "968 Douglas Avenue",
+   "description": "Application LUP/ZO-2026-0002 - Request to rezone the 1.07-acre property located at 968 Douglas Avenue from Downtown Industrial (DI) to Downtown Core (DC). Second Reading of Ordinance 26-09 - Rezoning from Downtown Industrial (DI) to Downtown Core (DC)",
+   "applicant": null,
+   "address": "968 Douglas Avenue",
+   "from_zoning": "Downtown Industrial (DI)",
+   "to_zoning": "Downtown Core (DC)",
+   "from_flu": null,
+   "to_flu": null,
+   "filed_date": "2026-09-17",
+   "status": "Hearing Scheduled",
+   "status_raw": "City Commission 2026-10-22 held; outcome not yet posted",
+   "decision_date": null,
+   "url": "https://dunedin.granicusideas.com/meetings/1608-city-commission-regular-meeting/agenda_items/6ad25f76f2b6701042003250-3-dot-a-application-lup-slash-zo-2026-0002-request-to-rez",
+   "docs_url": "https://dunedin.granicus.com/services/legistar/download/pdf/4378157/Application_LUP-ZO-2026-0002_-_Staff_Report_-_10-22-2026_CCRM.pdf",
+   "source": "Dunedin Granicus meeting pages (Local Planning Agency + City Commission)",
+   "parcel_ids": [
+    "27-28-15-23076-013-0050"
+   ],
+   "acres": 1.07,
+   "lat": 28.014964,
+   "lon": -82.7883006,
+   "hearings": [
+    {
+     "body": "City Commission (first reading)",
+     "date": "2026-09-17",
+     "result": "Approved on first reading"
+    },
+    {
+     "body": "City Commission (second reading)",
+     "date": "2026-10-22",
+     "result": null
+    }
+   ],
+   "acres_source": "application",
+   "location_source": "parcels",
+   "adapter": "dunedin",
+   "first_seen": "2026-11-02",
+   "last_seen": "2026-11-02",
+   "status_changed": null,
+   "history": [
+    {
+     "date": "2026-11-02",
+     "status": "Hearing Scheduled",
+     "from": null
+    }
+   ],
+   "backfilled": true,
+   "id": "City of Dunedin|LUP/ZO-2026-0002",
+   "slug": "city-of-dunedin-lup-zo-2026-0002",
+   "acres_unknown": false,
+   "next_hearing": null,
+   "last_hearing": {
+    "body": "City Commission (second reading)",
+    "date": "2026-10-22",
+    "result": null
+   },
+   "apns": [
+    "27-28-15-23076-013-0050"
+   ],
+   "apns_src": [
+    "27-28-15-23076-013-0050"
+   ],
+   "site_status": {
+    "status": "Vacant",
+    "detail": "No buildings on the tax roll. Use: vacant commercial.",
+    "parcels_found": 1,
+    "parcels_total": 1,
+    "roll_year": 2026,
+    "checked": "2026-11-02",
+    "ids": "27-28-15-23076-013-0050",
+    "method": "parcel id"
    }
   },
   {
@@ -19850,6 +20104,159 @@
     "roll_year": 2026,
     "checked": "2026-10-26",
     "ids": "R26 422 19 0000 0100 0030",
+    "method": "parcel id"
+   }
+  },
+  {
+   "jurisdiction": "City of St. Petersburg",
+   "county": "Pinellas",
+   "app_num": "Ord 765-L / 800-Z",
+   "category": "Rezoning",
+   "app_type": "Future Land Use Map Amendment + Zoning Map Amendment",
+   "project_name": "3010 58th Avenue South",
+   "description": "Private initiated application for a 3.89-acre parcel located at 3010 58th Avenue South, requesting amendments to the Future Land Use and Official Zoning maps. [Quasi-judicial] (Britton Wilson) (a) ORDINANCE 765-L, amending the Future Land Use Map of the Comprehensive Plan for the City of St. Pete...",
+   "applicant": null,
+   "address": "3010 58th Avenue South",
+   "from_zoning": "Neighborhood Suburban 1 (NS-1)",
+   "to_zoning": "Neighborhood Suburban Multifamily 1 (NSM-1)",
+   "from_flu": "Residential Urban (RU)",
+   "to_flu": "Residential Medium (RM)",
+   "filed_date": "2026-08-06",
+   "status": "Approved",
+   "status_raw": "City Council 2026-08-27: Approved",
+   "decision_date": "2026-08-27",
+   "url": "https://www.stpete.org/Government/Agendas%20and%20Documents/Council%20Minutes%20&%20Action%20Taken/2026/2026-08-27%20Numbered-Action%20Taken%20Agenda.pdf?t=202609281106050",
+   "docs_url": null,
+   "source": "St. Petersburg City Council agendas + Action Taken agendas (PDF)",
+   "parcel_ids": [
+    "11-32-16-56359-001-0010"
+   ],
+   "acres": 3.89,
+   "lat": 27.7150588,
+   "lon": -82.6740738,
+   "hearings": [
+    {
+     "body": "City Council (first reading)",
+     "date": "2026-08-06",
+     "result": "Approved on first reading"
+    },
+    {
+     "body": "City Council (second reading)",
+     "date": "2026-08-27",
+     "result": "Approved"
+    }
+   ],
+   "acres_source": "application",
+   "location_source": "parcels",
+   "adapter": "st_petersburg",
+   "first_seen": "2026-11-02",
+   "last_seen": "2026-11-02",
+   "status_changed": null,
+   "history": [
+    {
+     "date": "2026-11-02",
+     "status": "Approved",
+     "from": null
+    }
+   ],
+   "backfilled": true,
+   "id": "City of St. Petersburg|Ord 765-L / 800-Z",
+   "slug": "city-of-st-petersburg-ord-765-l-800-z",
+   "acres_unknown": false,
+   "next_hearing": null,
+   "last_hearing": {
+    "body": "City Council (second reading)",
+    "date": "2026-08-27",
+    "result": "Approved"
+   },
+   "apns": [
+    "11-32-16-56359-001-0010"
+   ],
+   "apns_src": [
+    "11-32-16-56359-001-0010"
+   ],
+   "site_status": {
+    "status": "Improved",
+    "detail": "2 buildings, 30,323 sf, built 1984. Use: multifamily (10+ units).",
+    "parcels_found": 1,
+    "parcels_total": 1,
+    "roll_year": 2026,
+    "checked": "2026-11-02",
+    "ids": "11-32-16-56359-001-0010",
+    "method": "parcel id"
+   }
+  },
+  {
+   "jurisdiction": "City of Dunedin",
+   "county": "Pinellas",
+   "app_num": "LUP/ZO-2026-0001",
+   "category": "Rezoning",
+   "app_type": "Land Use Plan Amendment + Rezoning",
+   "project_name": "1241 San Christopher Drive",
+   "description": "Application LUP/ZO-2026-0001 - City-initiated Land Use Plan Amendment and Rezoning request along with a Declaration of Restrictive Covenants for the city-owned property located at 1241 San Christopher Drive. First Reading of Ordinance 26-06 - Land Use Plan Amendment from Public/Semi-Public (P/SP)...",
+   "applicant": "City of Dunedin",
+   "address": "1241 San Christopher Drive",
+   "from_zoning": "Municipal Public Lands (MPL)",
+   "to_zoning": "Form-Based Medium (FX-M)",
+   "from_flu": "Public/Semi-Public (P/SP)",
+   "to_flu": "Retail & Services (R&S)",
+   "filed_date": "2026-08-06",
+   "status": "Filed",
+   "status_raw": "City Commission 2026-08-06: Approved; next hearing not yet scheduled",
+   "decision_date": null,
+   "url": "https://dunedin.granicusideas.com/meetings/1582-city-commission-regular-meeting/agenda_items/6a6ceddd7d7965616b00705c-3-dot-a-application-lup-slash-zo-2026-0001-city-initiated",
+   "docs_url": "https://dunedin.granicus.com/services/legistar/download/pdf/4234864/Application_LUP-ZO-2026-0001_-_Staff_Report_-_08-06-2026_CCRM.pdf",
+   "source": "Dunedin Granicus meeting pages (Local Planning Agency + City Commission)",
+   "parcel_ids": [
+    "26-28-15-00000-240-0700"
+   ],
+   "acres": 1.17,
+   "lat": 28.0220913,
+   "lon": -82.7739408,
+   "hearings": [
+    {
+     "body": "City Commission (first reading)",
+     "date": "2026-08-06",
+     "result": "Approved on first reading"
+    }
+   ],
+   "acres_source": "parcels",
+   "location_source": "parcels",
+   "adapter": "dunedin",
+   "first_seen": "2026-11-02",
+   "last_seen": "2026-11-02",
+   "status_changed": null,
+   "history": [
+    {
+     "date": "2026-11-02",
+     "status": "Filed",
+     "from": null
+    }
+   ],
+   "backfilled": true,
+   "id": "City of Dunedin|LUP/ZO-2026-0001",
+   "slug": "city-of-dunedin-lup-zo-2026-0001",
+   "acres_unknown": false,
+   "next_hearing": null,
+   "last_hearing": {
+    "body": "City Commission (first reading)",
+    "date": "2026-08-06",
+    "result": "Approved on first reading"
+   },
+   "apns": [
+    "26-28-15-00000-240-0700"
+   ],
+   "apns_src": [
+    "26-28-15-00000-240-0700"
+   ],
+   "site_status": {
+    "status": "Improved",
+    "detail": "1 building, 15,750 sf, built 1975. Use: municipal owned.",
+    "parcels_found": 1,
+    "parcels_total": 1,
+    "roll_year": 2026,
+    "checked": "2026-11-02",
+    "ids": "26-28-15-00000-240-0700",
     "method": "parcel id"
    }
   },
