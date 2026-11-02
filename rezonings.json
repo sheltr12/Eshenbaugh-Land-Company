@@ -1,9 +1,9 @@
 {
  "meta": {
   "title": "ELC Rezoning Tracker",
-  "generated": "2026-11-02T14:47:52+00:00",
+  "generated": "2026-11-02T18:55:35+00:00",
   "run_date": "2026-11-02",
-  "record_count": 560,
+  "record_count": 573,
   "min_acres": 0.5,
   "categories": [
    "Rezoning",
@@ -35,6 +35,7 @@
     "Volusia County": 15,
     "City of St. Cloud": 13,
     "City of Clermont": 12,
+    "City of Pinellas Park": 10,
     "Sarasota County": 10,
     "City of Groveland": 9,
     "City of Orlando": 9,
@@ -44,6 +45,7 @@
     "City of Apopka": 7,
     "Pinellas County": 5,
     "Alachua County": 4,
+    "City of Clearwater": 3,
     "City of Minneola": 3,
     "City of Oviedo": 2,
     "City of Plant City": 2,
@@ -63,33 +65,33 @@
     "Brevard": 25,
     "Marion": 25,
     "Manatee": 23,
+    "Pinellas": 20,
     "Volusia": 15,
     "Sarasota": 10,
     "Seminole": 10,
     "Charlotte": 8,
     "Citrus": 7,
-    "Pinellas": 7,
     "Alachua": 4
    },
    "category": {
-    "PD": 217,
-    "Rezoning": 200,
-    "Comp Plan Amendment": 143
+    "PD": 222,
+    "Rezoning": 205,
+    "Comp Plan Amendment": 146
    },
    "status": {
-    "Filed": 191,
-    "Hearing Scheduled": 169,
-    "Approved": 126,
+    "Filed": 193,
+    "Hearing Scheduled": 179,
+    "Approved": 127,
     "Withdrawn": 36,
     "Continued": 27,
     "Denied": 11
    }
   },
-  "new_this_run": 26,
-  "new_this_run_recent": 21,
-  "status_changes_this_run": 32,
-  "fetched_this_run": 427,
-  "dropped_small_this_run": 12,
+  "new_this_run": 13,
+  "new_this_run_recent": 0,
+  "status_changes_this_run": 0,
+  "fetched_this_run": 21,
+  "dropped_small_this_run": 8,
   "adapter_health": [
    {
     "adapter": "accela_charlotte",
@@ -222,6 +224,30 @@
     "seconds": 91.2,
     "since": "2026-10-12",
     "refresh_count": 2
+   },
+   {
+    "adapter": "city_of_seminole",
+    "jurisdictions": [
+     "City of Seminole"
+    ],
+    "status": "ok",
+    "count": 0,
+    "error": null,
+    "seconds": 18.8,
+    "since": "2026-05-06",
+    "refresh_count": 0
+   },
+   {
+    "adapter": "clearwater",
+    "jurisdictions": [
+     "City of Clearwater"
+    ],
+    "status": "ok",
+    "count": 7,
+    "error": null,
+    "seconds": 69.9,
+    "since": "2026-05-06",
+    "refresh_count": 0
    },
    {
     "adapter": "clermont",
@@ -392,6 +418,18 @@
     "refresh_count": 0
    },
    {
+    "adapter": "pinellas_park",
+    "jurisdictions": [
+     "City of Pinellas Park"
+    ],
+    "status": "ok",
+    "count": 14,
+    "error": null,
+    "seconds": 32.9,
+    "since": "2026-05-06",
+    "refresh_count": 0
+   },
+   {
     "adapter": "plan_hillsborough",
     "jurisdictions": [
      "Hillsborough County",
@@ -443,6 +481,18 @@
     "refresh_count": 9
    },
    {
+    "adapter": "tarpon_springs",
+    "jurisdictions": [
+     "City of Tarpon Springs"
+    ],
+    "status": "ok",
+    "count": 0,
+    "error": null,
+    "seconds": 45.2,
+    "since": "2026-05-06",
+    "refresh_count": 0
+   },
+   {
     "adapter": "volusia",
     "jurisdictions": [
      "Volusia County"
@@ -470,17 +520,17 @@
   "failed_sources": [],
   "enrichment": {
    "status": "ok",
-   "lookups": 28,
-   "completed": 28,
-   "located": 29,
-   "seconds": 49.1
+   "lookups": 19,
+   "completed": 19,
+   "located": 20,
+   "seconds": 13.0
   },
   "apns": {
    "status": "ok",
-   "records": 30,
-   "converted": 86,
+   "records": 16,
+   "converted": 60,
    "unresolved": 4,
-   "seconds": 66.9
+   "seconds": 45.1
   },
   "covered_jurisdictions": [
    "Alachua County",
@@ -488,6 +538,7 @@
    "Charlotte County",
    "Citrus County",
    "City of Apopka",
+   "City of Clearwater",
    "City of Clermont",
    "City of Groveland",
    "City of Kissimmee",
@@ -496,10 +547,13 @@
    "City of Ocoee",
    "City of Orlando",
    "City of Oviedo",
+   "City of Pinellas Park",
    "City of Plant City",
    "City of Safety Harbor",
+   "City of Seminole",
    "City of St. Cloud",
    "City of Tampa",
+   "City of Tarpon Springs",
    "City of Temple Terrace",
    "City of Winter Garden",
    "Hernando County",
@@ -528,6 +582,8 @@
    "apopka",
    "brevard",
    "citrus",
+   "city_of_seminole",
+   "clearwater",
    "clermont",
    "groveland",
    "hernando",
@@ -542,19 +598,21 @@
    "orlando",
    "osceola",
    "oviedo",
+   "pinellas_park",
    "plan_hillsborough",
    "safety_harbor",
    "seminole",
    "st_cloud",
+   "tarpon_springs",
    "volusia",
    "winter_garden"
   ],
-  "located_count": 523,
+  "located_count": 535,
   "db_source": "loaded",
-  "previous_run_date": "2026-10-26",
+  "previous_run_date": "2026-11-02",
   "site_status": {
-   "checked": 29,
-   "unknown": 4,
+   "checked": 13,
+   "unknown": 1,
    "run_date": "2026-11-02",
    "source": "Florida statewide cadastral (county property appraiser tax roll)"
   }
@@ -8505,6 +8563,154 @@
    }
   },
   {
+   "jurisdiction": "City of Pinellas Park",
+   "county": "Pinellas",
+   "app_num": "PUD-0826-00007",
+   "category": "PD",
+   "app_type": "Planned Unit Development master plan",
+   "project_name": "6994 Us Highway 19 North",
+   "description": "ADOPTING A MASTER PLAN AND SUPPORTING DOCUMENTATION FOR A COMMERCIAL PLANNED UNIT DEVELOPMENT (CPUD) OVERLAY WITH UNDERLYING HEAVY COMMERCIAL (CH) ZONING ON 1.828 ACRES OF LAND GENERALLY LOCATED AT 6994 US HIGHWAY 19 NORTH, AND MORE PARTICULARLY DESCRIBED IN EXHIBIT “A”, WHICH IS ATTACHED HERETO ...",
+   "applicant": "WPG-Pinellas Park LLC",
+   "address": "6994 Us Highway 19 North",
+   "from_zoning": null,
+   "to_zoning": "CPUD with underlying HEAVY COMMERCIAL (CH)",
+   "from_flu": null,
+   "to_flu": null,
+   "filed_date": "2026-09-25",
+   "status": "Filed",
+   "status_raw": "Planning and Zoning Commission 2026-10-01: Recommended Approval; next hearing not yet scheduled",
+   "decision_date": null,
+   "url": "https://pinellasparkfl.portal.civicclerk.com/event/268/files",
+   "docs_url": "https://pinellasparkfl.api.civicclerk.com/v1/Meetings/GetMeetingFileStream(fileId=128,plainText=false)",
+   "source": "Pinellas Park CivicClerk + Legistar (P&Z Commission + City Council)",
+   "parcel_ids": [
+    "34-30-16-69966-100-0103"
+   ],
+   "acres": 1.828,
+   "lat": 27.835257,
+   "lon": -82.6819691,
+   "hearings": [
+    {
+     "body": "Planning and Zoning Commission",
+     "date": "2026-10-01",
+     "result": "Recommended Approval"
+    }
+   ],
+   "acres_source": "application",
+   "location_source": "parcels",
+   "adapter": "pinellas_park",
+   "first_seen": "2026-11-02",
+   "last_seen": "2026-11-02",
+   "status_changed": null,
+   "history": [
+    {
+     "date": "2026-11-02",
+     "status": "Filed",
+     "from": null
+    }
+   ],
+   "backfilled": true,
+   "id": "City of Pinellas Park|PUD-0826-00007",
+   "slug": "city-of-pinellas-park-pud-0826-00007",
+   "acres_unknown": false,
+   "next_hearing": null,
+   "last_hearing": {
+    "body": "Planning and Zoning Commission",
+    "date": "2026-10-01",
+    "result": "Recommended Approval"
+   },
+   "apns": [
+    "34-30-16-69966-100-0103"
+   ],
+   "apns_src": [
+    "34-30-16-69966-100-0103"
+   ],
+   "site_status": {
+    "status": "Improved",
+    "detail": "1 building, 16,417 sf, built 1996. Use: retail store.",
+    "parcels_found": 1,
+    "parcels_total": 1,
+    "roll_year": 2026,
+    "checked": "2026-11-02",
+    "ids": "34-30-16-69966-100-0103",
+    "method": "parcel id"
+   }
+  },
+  {
+   "jurisdiction": "City of Pinellas Park",
+   "county": "Pinellas",
+   "app_num": "LUPA-0126-00002",
+   "category": "Comp Plan Amendment",
+   "app_type": "Land Use Plan Map Amendment",
+   "project_name": "12360 49Th Street North",
+   "description": "AMENDING THE CITY’S OFFICIAL LAND USE PLAN MAP BY PROVIDING THE LAND USE DESIGNATION OF INDUSTRIAL LIMITED (IL) FOR CERTAIN LANDS GENERALLY LOCATED AT 12360 49TH STREET NORTH AND MORE PARTICULARLY DESCRIBED IN EXHIBIT \"A\", WHICH IS ATTACHED HERETO AND MADE A PART HEREOF; CERTIFYING CONSISTENCY WI...",
+   "applicant": "G.S.D. LIMITED LIABILITY CO.",
+   "address": "12360 49Th Street North",
+   "from_zoning": null,
+   "to_zoning": null,
+   "from_flu": null,
+   "to_flu": "INDUSTRIAL LIMITED (IL)",
+   "filed_date": "2026-09-25",
+   "status": "Filed",
+   "status_raw": "Planning and Zoning Commission 2026-10-01: Recommended Approval; next hearing not yet scheduled",
+   "decision_date": null,
+   "url": "https://pinellasparkfl.portal.civicclerk.com/event/268/files",
+   "docs_url": "https://pinellasparkfl.api.civicclerk.com/v1/Meetings/GetMeetingFileStream(fileId=128,plainText=false)",
+   "source": "Pinellas Park CivicClerk + Legistar (P&Z Commission + City Council)",
+   "parcel_ids": [
+    "09-30-16-70992-400-0405"
+   ],
+   "acres": 0.8579,
+   "lat": 27.8843678,
+   "lon": -82.7010447,
+   "hearings": [
+    {
+     "body": "Planning and Zoning Commission",
+     "date": "2026-10-01",
+     "result": "Recommended Approval"
+    }
+   ],
+   "acres_source": "application",
+   "location_source": "parcels",
+   "adapter": "pinellas_park",
+   "first_seen": "2026-11-02",
+   "last_seen": "2026-11-02",
+   "status_changed": null,
+   "history": [
+    {
+     "date": "2026-11-02",
+     "status": "Filed",
+     "from": null
+    }
+   ],
+   "backfilled": true,
+   "id": "City of Pinellas Park|LUPA-0126-00002",
+   "slug": "city-of-pinellas-park-lupa-0126-00002",
+   "acres_unknown": false,
+   "next_hearing": null,
+   "last_hearing": {
+    "body": "Planning and Zoning Commission",
+    "date": "2026-10-01",
+    "result": "Recommended Approval"
+   },
+   "apns": [
+    "09-30-16-70992-400-0405"
+   ],
+   "apns_src": [
+    "09-30-16-70992-400-0405"
+   ],
+   "site_status": {
+    "status": "Improved",
+    "detail": "2 buildings, 10,504 sf, built 1985. Use: warehouse or distribution.",
+    "parcels_found": 1,
+    "parcels_total": 1,
+    "roll_year": 2026,
+    "checked": "2026-11-02",
+    "ids": "09-30-16-70992-400-0405",
+    "method": "parcel id"
+   }
+  },
+  {
    "jurisdiction": "Pasco County",
    "county": "Pasco",
    "app_num": "MPUD-2026-00047",
@@ -10570,6 +10776,80 @@
    }
   },
   {
+   "jurisdiction": "City of Clearwater",
+   "county": "Pinellas",
+   "app_num": "LUP2026-07002",
+   "category": "Comp Plan Amendment",
+   "app_type": "Future Land Use Map Amendment",
+   "project_name": "2448 Nursery Road",
+   "description": "LUP2026-07002: Amendment to the city’s Future Land Use Map from the Residential Urban (RU) to the Residential Medium (RM) category for the property located at 2448 Nursery Road (Level Three Application)",
+   "applicant": null,
+   "address": "2448 Nursery Road",
+   "from_zoning": null,
+   "to_zoning": null,
+   "from_flu": "Residential Urban (RU)",
+   "to_flu": "Residential Medium (RM)",
+   "filed_date": "2026-09-14",
+   "status": "Hearing Scheduled",
+   "status_raw": "Community Development Board 2026-10-20 held; outcome not yet posted",
+   "decision_date": null,
+   "url": "https://clearwater.legistar.com/LegislationDetail.aspx?ID=8237310&GUID=20988C4C-497B-4433-97F3-DBBD889E021B&G=E6D8F5E1-1A25-4C36-846B-5CFB5C80AB8C",
+   "docs_url": "https://legistar2.granicus.com/clearwater/attachments/eafab477-35a6-4cbe-be5a-b97c358a111f.pdf",
+   "source": "Clearwater Legistar (Community Development Board + City Council)",
+   "parcel_ids": [
+    "19-29-16-70272-400-1000"
+   ],
+   "acres": 0.638,
+   "lat": 27.9426025,
+   "lon": -82.7367466,
+   "hearings": [
+    {
+     "body": "Community Development Board",
+     "date": "2026-10-20",
+     "result": null
+    }
+   ],
+   "acres_source": "application",
+   "location_source": "parcels",
+   "adapter": "clearwater",
+   "first_seen": "2026-11-02",
+   "last_seen": "2026-11-02",
+   "status_changed": null,
+   "history": [
+    {
+     "date": "2026-11-02",
+     "status": "Hearing Scheduled",
+     "from": null
+    }
+   ],
+   "backfilled": true,
+   "id": "City of Clearwater|LUP2026-07002",
+   "slug": "city-of-clearwater-lup2026-07002",
+   "acres_unknown": false,
+   "next_hearing": null,
+   "last_hearing": {
+    "body": "Community Development Board",
+    "date": "2026-10-20",
+    "result": null
+   },
+   "apns": [
+    "19-29-16-70272-400-1000"
+   ],
+   "apns_src": [
+    "19-29-16-70272-400-1000"
+   ],
+   "site_status": {
+    "status": "Improved",
+    "detail": "1 building, 1,822 sf, built 1953. Use: single family home.",
+    "parcels_found": 1,
+    "parcels_total": 1,
+    "roll_year": 2026,
+    "checked": "2026-11-02",
+    "ids": "19-29-16-70272-400-1000",
+    "method": "parcel id"
+   }
+  },
+  {
    "jurisdiction": "Sarasota County",
    "county": "Sarasota",
    "app_num": "PLN-REZSE-26-000024",
@@ -11827,6 +12107,248 @@
     "roll_year": 2026,
     "checked": "2026-10-26",
     "ids": "0284100004|0284100001",
+    "method": "parcel id"
+   }
+  },
+  {
+   "jurisdiction": "City of Pinellas Park",
+   "county": "Pinellas",
+   "app_num": "REZ-2025-00006",
+   "category": "Rezoning",
+   "app_type": "Zoning Map Amendment",
+   "project_name": "7650 58Th Street North",
+   "description": "Amending the city's official zoning map by providing for a change in the zoning district from mixed use (mxd-2) to town center (tc) for a certain parcel of land generally located at 7650 58th street north; certifying consistency with the city's adopted comprehensive plan; providing for repeal of ...",
+   "applicant": "CITY OF PINELLAS PARK",
+   "address": "7650 58Th Street North",
+   "from_zoning": "MIXED USE (MXD-2)",
+   "to_zoning": "TOWN CENTER (TC)",
+   "from_flu": null,
+   "to_flu": null,
+   "filed_date": "2026-09-04",
+   "status": "Hearing Scheduled",
+   "status_raw": "City Council 2026-10-20 held; outcome not yet posted",
+   "decision_date": null,
+   "url": "https://pinellasparkfl.portal.civicclerk.com/event/282/files",
+   "docs_url": "https://pinellasparkfl.api.civicclerk.com/v1/Meetings/GetMeetingFileStream(fileId=139,plainText=false)",
+   "source": "Pinellas Park CivicClerk + Legistar (P&Z Commission + City Council)",
+   "parcel_ids": [
+    "28-30-16-71064-010-0010"
+   ],
+   "acres": 3.4623,
+   "lat": 27.8410079,
+   "lon": -82.7136631,
+   "hearings": [
+    {
+     "body": "Planning and Zoning Commission",
+     "date": "2026-09-10",
+     "result": null
+    },
+    {
+     "body": "City Council (first reading)",
+     "date": "2026-10-20",
+     "result": null
+    }
+   ],
+   "acres_source": "application",
+   "location_source": "parcels",
+   "adapter": "pinellas_park",
+   "first_seen": "2026-11-02",
+   "last_seen": "2026-11-02",
+   "status_changed": null,
+   "history": [
+    {
+     "date": "2026-11-02",
+     "status": "Hearing Scheduled",
+     "from": null
+    }
+   ],
+   "backfilled": true,
+   "id": "City of Pinellas Park|REZ-2025-00006",
+   "slug": "city-of-pinellas-park-rez-2025-00006",
+   "acres_unknown": false,
+   "next_hearing": null,
+   "last_hearing": {
+    "body": "City Council (first reading)",
+    "date": "2026-10-20",
+    "result": null
+   },
+   "apns": [
+    "28-30-16-71064-010-0010"
+   ],
+   "apns_src": [
+    "28-30-16-71064-010-0010"
+   ],
+   "site_status": {
+    "status": "Improved",
+    "detail": "2 buildings, 80,257 sf, built 2011. Use: multifamily (10+ units).",
+    "parcels_found": 1,
+    "parcels_total": 1,
+    "roll_year": 2026,
+    "checked": "2026-11-02",
+    "ids": "28-30-16-71064-010-0010",
+    "method": "parcel id"
+   }
+  },
+  {
+   "jurisdiction": "City of Pinellas Park",
+   "county": "Pinellas",
+   "app_num": "REZ-2025-00005",
+   "category": "Rezoning",
+   "app_type": "Zoning Map Amendment",
+   "project_name": "5495 Park Boulevard",
+   "description": "AMENDING THE CITY’S OFFICIAL ZONING MAP BY PROVIDING FOR A CHANGE IN THE ZONING DISTRICT FROM MIXED USE (MXD-2) TO TOWN CENTER (TC) FOR CERTAIN PARCELS OF LAND GENERALLY LOCATED AT 5495 PARK BOULEVARD; CERTIFYING CONSISTENCY WITH THE CITY’S ADOPTED COMPREHENSIVE PLAN; PROVIDING FOR REPEAL OF ORDI...",
+   "applicant": "City of Pinellas Park",
+   "address": "5495 Park Boulevard",
+   "from_zoning": "MIXED USE (MXD-2)",
+   "to_zoning": "TOWN CENTER (TC)",
+   "from_flu": null,
+   "to_flu": null,
+   "filed_date": "2026-09-04",
+   "status": "Hearing Scheduled",
+   "status_raw": "City Council 2026-10-20 held; outcome not yet posted",
+   "decision_date": null,
+   "url": "https://pinellasparkfl.portal.civicclerk.com/event/282/files",
+   "docs_url": "https://pinellasparkfl.api.civicclerk.com/v1/Meetings/GetMeetingFileStream(fileId=139,plainText=false)",
+   "source": "Pinellas Park CivicClerk + Legistar (P&Z Commission + City Council)",
+   "parcel_ids": [
+    "28-30-16-71064-045-0040"
+   ],
+   "acres": 2.2499,
+   "lat": 27.839719,
+   "lon": -82.7081478,
+   "hearings": [
+    {
+     "body": "Planning and Zoning Commission",
+     "date": "2026-09-10",
+     "result": null
+    },
+    {
+     "body": "City Council (first reading)",
+     "date": "2026-10-20",
+     "result": null
+    }
+   ],
+   "acres_source": "application",
+   "location_source": "parcels",
+   "adapter": "pinellas_park",
+   "first_seen": "2026-11-02",
+   "last_seen": "2026-11-02",
+   "status_changed": null,
+   "history": [
+    {
+     "date": "2026-11-02",
+     "status": "Hearing Scheduled",
+     "from": null
+    }
+   ],
+   "backfilled": true,
+   "id": "City of Pinellas Park|REZ-2025-00005",
+   "slug": "city-of-pinellas-park-rez-2025-00005",
+   "acres_unknown": false,
+   "next_hearing": null,
+   "last_hearing": {
+    "body": "City Council (first reading)",
+    "date": "2026-10-20",
+    "result": null
+   },
+   "apns": [
+    "28-30-16-71064-045-0040"
+   ],
+   "apns_src": [
+    "28-30-16-71064-045-0040"
+   ],
+   "site_status": {
+    "status": "Improved",
+    "detail": "4 buildings, 43,714 sf, built 1977. Use: church.",
+    "parcels_found": 1,
+    "parcels_total": 1,
+    "roll_year": 2026,
+    "checked": "2026-11-02",
+    "ids": "28-30-16-71064-045-0040",
+    "method": "parcel id"
+   }
+  },
+  {
+   "jurisdiction": "City of Pinellas Park",
+   "county": "Pinellas",
+   "app_num": "PUD-0526-00006",
+   "category": "PD",
+   "app_type": "Planned Unit Development master plan",
+   "project_name": "7725 78Th Street North",
+   "description": "ADOPTING A REVISED MASTER PLAN CONTROLLING DEVELOPMENT OF A MIXED USE PLANNED UNIT DEVELOPMENT (MUPUD) OVERLAY WITH UNDERLYING GENERAL COMMERICAL (B-1) ZONING ON 5.98 ACRES OF LAND GENERALLY LOCATED AT 7725 78TH STREET NORTH, AND MORE PARTICULARLY DESCRIBED IN EXHIBIT \"A\" WHICH IS ATTACHED HERETO...",
+   "applicant": "Gulf Coast Consulting, Inc.",
+   "address": "7725 78Th Street North",
+   "from_zoning": null,
+   "to_zoning": "GENERAL COMMERICAL (B-1)",
+   "from_flu": null,
+   "to_flu": null,
+   "filed_date": "2026-09-04",
+   "status": "Hearing Scheduled",
+   "status_raw": "City Council 2026-10-20 held; outcome not yet posted",
+   "decision_date": null,
+   "url": "https://pinellasparkfl.portal.civicclerk.com/event/282/files",
+   "docs_url": "https://pinellasparkfl.api.civicclerk.com/v1/Meetings/GetMeetingFileStream(fileId=139,plainText=false)",
+   "source": "Pinellas Park CivicClerk + Legistar (P&Z Commission + City Council)",
+   "parcel_ids": [
+    "30-30-16-71100-155-0010"
+   ],
+   "acres": 5.98,
+   "lat": 27.8415149,
+   "lon": -82.7449889,
+   "hearings": [
+    {
+     "body": "Planning and Zoning Commission",
+     "date": "2026-09-10",
+     "result": null
+    },
+    {
+     "body": "City Council (first reading)",
+     "date": "2026-10-06",
+     "result": "Approved on first reading"
+    },
+    {
+     "body": "City Council (second reading)",
+     "date": "2026-10-20",
+     "result": null
+    }
+   ],
+   "acres_source": "application",
+   "location_source": "parcels",
+   "adapter": "pinellas_park",
+   "first_seen": "2026-11-02",
+   "last_seen": "2026-11-02",
+   "status_changed": null,
+   "history": [
+    {
+     "date": "2026-11-02",
+     "status": "Hearing Scheduled",
+     "from": null
+    }
+   ],
+   "backfilled": true,
+   "id": "City of Pinellas Park|PUD-0526-00006",
+   "slug": "city-of-pinellas-park-pud-0526-00006",
+   "acres_unknown": false,
+   "next_hearing": null,
+   "last_hearing": {
+    "body": "City Council (second reading)",
+    "date": "2026-10-20",
+    "result": null
+   },
+   "apns": [
+    "30-30-16-71100-155-0010"
+   ],
+   "apns_src": [
+    "30-30-16-71100-155-0010"
+   ],
+   "site_status": {
+    "status": "Improved",
+    "detail": "2 buildings, 17,922 sf, built 2007. Use: club or lodge.",
+    "parcels_found": 1,
+    "parcels_total": 1,
+    "roll_year": 2026,
+    "checked": "2026-11-02",
+    "ids": "30-30-16-71100-155-0010",
     "method": "parcel id"
    }
   },
@@ -23204,6 +23726,90 @@
    }
   },
   {
+   "jurisdiction": "City of Pinellas Park",
+   "county": "Pinellas",
+   "app_num": "PUD-0526-00005 / REZ-2026-00001",
+   "category": "PD",
+   "app_type": "Planned Unit Development master plan",
+   "project_name": "9308 60Th Street North",
+   "description": "AMENDING THE CITY’S OFFICIAL ZONING MAP BY PROVIDING FOR A CHANGE IN THE ZONING DISTRICT FOR A CERTAIN PARCEL OF LAND GENERALLY LOCATED AT 9308 60TH STREET NORTH AND MORE PARTICULARLY DESCRIBED IN EXHIBIT \"A\", WHICH IS ATTACHED HERETO AND MADE A PART HEREOF; CHANGING THE ZONING DISTRICT FROM FARM...",
+   "applicant": "Macfarlane, Ferguson & McMullen, P.A.",
+   "address": "9308 60Th Street North",
+   "from_zoning": "FARM (F)",
+   "to_zoning": "RURAL RESIDENTIAL (RR) AND ADOPTING MASTER PLAN AND SUPPORTING DOCUMENTATION",
+   "from_flu": null,
+   "to_flu": null,
+   "filed_date": "2026-07-22",
+   "status": "Hearing Scheduled",
+   "status_raw": "City Council 2026-09-03 held; outcome not yet posted",
+   "decision_date": null,
+   "url": "https://pinellasparkfl.portal.civicclerk.com/event/179/files",
+   "docs_url": "https://pinellasparkfl.api.civicclerk.com/v1/Meetings/GetMeetingFileStream(fileId=70,plainText=false)",
+   "source": "Pinellas Park CivicClerk + Legistar (P&Z Commission + City Council)",
+   "parcel_ids": [
+    "20-30-16-69804-400-3508"
+   ],
+   "acres": 1.85,
+   "lat": 27.8565154,
+   "lon": -82.7167869,
+   "hearings": [
+    {
+     "body": "Planning and Zoning Commission",
+     "date": "2026-08-06",
+     "result": null
+    },
+    {
+     "body": "City Council (first reading)",
+     "date": "2026-08-25",
+     "result": "Approved on first reading"
+    },
+    {
+     "body": "City Council (second reading)",
+     "date": "2026-09-03",
+     "result": null
+    }
+   ],
+   "acres_source": "application",
+   "location_source": "parcels",
+   "adapter": "pinellas_park",
+   "first_seen": "2026-11-02",
+   "last_seen": "2026-11-02",
+   "status_changed": null,
+   "history": [
+    {
+     "date": "2026-11-02",
+     "status": "Hearing Scheduled",
+     "from": null
+    }
+   ],
+   "backfilled": true,
+   "id": "City of Pinellas Park|PUD-0526-00005 / REZ-2026-00001",
+   "slug": "city-of-pinellas-park-pud-0526-00005-rez-2026-00001",
+   "acres_unknown": false,
+   "next_hearing": null,
+   "last_hearing": {
+    "body": "City Council (second reading)",
+    "date": "2026-09-03",
+    "result": null
+   },
+   "apns": [
+    "20-30-16-69804-400-3508"
+   ],
+   "apns_src": [
+    "20-30-16-69804-400-3508"
+   ],
+   "site_status": {
+    "status": "Improved",
+    "detail": "1 building, 1,655 sf, built 1971. Use: single family home.",
+    "parcels_found": 1,
+    "parcels_total": 1,
+    "roll_year": 2026,
+    "checked": "2026-11-02",
+    "ids": "20-30-16-69804-400-3508",
+    "method": "parcel id"
+   }
+  },
+  {
    "jurisdiction": "Seminole County",
    "county": "Seminole",
    "app_num": "26-20500007",
@@ -23338,6 +23944,80 @@
     "checked": "2026-10-26",
     "ids": "332528000001200000",
     "method": "parcel id"
+   }
+  },
+  {
+   "jurisdiction": "City of Clearwater",
+   "county": "Pinellas",
+   "app_num": "ANX2026-05007",
+   "category": "Rezoning",
+   "app_type": "Annexation with initial Future Land Use and Zoning Atlas designation",
+   "project_name": "603 South Bayview Avenue",
+   "description": "Approve the Annexation, initial Future Land Use Map designation of US 19 Regional Center (US 19-RC) and initial Zoning Atlas designation of US 19 (US 19) District for 603 South Bayview Avenue, and pass Ordinances 9913-26, 9914-26, and 9915-26 on first reading. (ANX2026-05007)",
+   "applicant": null,
+   "address": "603 South Bayview Avenue",
+   "from_zoning": null,
+   "to_zoning": "US 19 (US 19) District",
+   "from_flu": null,
+   "to_flu": "US 19 Regional Center (US 19-RC)",
+   "filed_date": "2026-07-21",
+   "status": "Hearing Scheduled",
+   "status_raw": "City Council (first reading) 2026-08-20: Approved; next City Council (second reading) 2026-11-05",
+   "decision_date": null,
+   "url": "https://clearwater.legistar.com/LegislationDetail.aspx?ID=8159437&GUID=7929388E-A97A-46CF-A47B-39636C5E61DF&G=E6D8F5E1-1A25-4C36-846B-5CFB5C80AB8C",
+   "docs_url": "https://legistar2.granicus.com/clearwater/attachments/3df43542-1b5f-4253-8464-a88d54845a21.pdf",
+   "source": "Clearwater Legistar (Community Development Board + City Council)",
+   "parcel_ids": [],
+   "acres": null,
+   "lat": null,
+   "lon": null,
+   "hearings": [
+    {
+     "body": "City Council (first reading)",
+     "date": "2026-08-20",
+     "result": "Approved on first reading"
+    },
+    {
+     "body": "City Council (second reading)",
+     "date": "2026-11-05",
+     "result": null
+    }
+   ],
+   "acres_source": null,
+   "location_source": null,
+   "adapter": "clearwater",
+   "first_seen": "2026-11-02",
+   "last_seen": "2026-11-02",
+   "status_changed": null,
+   "history": [
+    {
+     "date": "2026-11-02",
+     "status": "Hearing Scheduled",
+     "from": null
+    }
+   ],
+   "backfilled": true,
+   "id": "City of Clearwater|ANX2026-05007",
+   "slug": "city-of-clearwater-anx2026-05007",
+   "acres_unknown": true,
+   "next_hearing": {
+    "body": "City Council (second reading)",
+    "date": "2026-11-05"
+   },
+   "last_hearing": {
+    "body": "City Council (first reading)",
+    "date": "2026-08-20",
+    "result": "Approved on first reading"
+   },
+   "site_status": {
+    "status": "Unknown",
+    "detail": "No parcel number posted with the application.",
+    "parcels_found": 0,
+    "parcels_total": 0,
+    "roll_year": null,
+    "checked": "2026-11-02",
+    "ids": "",
+    "method": "none"
    }
   },
   {
@@ -30420,6 +31100,85 @@
    }
   },
   {
+   "jurisdiction": "City of Pinellas Park",
+   "county": "Pinellas",
+   "app_num": "PUD-0226-00003",
+   "category": "PD",
+   "app_type": "Planned Unit Development master plan",
+   "project_name": "3355 70Th Avenue North",
+   "description": "ADOPTING A MASTER PLAN AND SUPPORTING DOCUMENTATION FOR A RESIDENTIAL PLANNED UNIT DEVELOPMENT (RPUD) OVERLAY WITH UNDERLYING DUPLEX RESIDENTIAL DISTRICT (R-4) ZONING ON 0.69 ACRES OF LAND GENERALLY LOCATED AT 3355 70TH AVENUE NORTH, AND MORE PARTICULARLY DESCRIBED IN EXHIBIT “A”, WHICH IS ATTACH...",
+   "applicant": "Gulf Coast Consulting, Inc.",
+   "address": "3355 70Th Avenue North",
+   "from_zoning": null,
+   "to_zoning": "RPUD with underlying DUPLEX RESIDENTIAL DISTRICT (R-4)",
+   "from_flu": null,
+   "to_flu": null,
+   "filed_date": "2026-06-18",
+   "status": "Approved",
+   "status_raw": "City Council 2026-08-25: Approved",
+   "decision_date": "2026-08-25",
+   "url": "https://pinellaspark.legistar.com/LegislationDetail.aspx?ID=7209",
+   "docs_url": null,
+   "source": "Pinellas Park CivicClerk + Legistar (P&Z Commission + City Council)",
+   "parcel_ids": [
+    "26-30-16-00000-330-0800"
+   ],
+   "acres": 0.69,
+   "lat": 27.8358424,
+   "lon": -82.6790714,
+   "hearings": [
+    {
+     "body": "Planning and Zoning Commission",
+     "date": "2026-07-02",
+     "result": null
+    },
+    {
+     "body": "City Council (second reading)",
+     "date": "2026-08-25",
+     "result": "Approved"
+    }
+   ],
+   "acres_source": "application",
+   "location_source": "parcels",
+   "adapter": "pinellas_park",
+   "first_seen": "2026-11-02",
+   "last_seen": "2026-11-02",
+   "status_changed": null,
+   "history": [
+    {
+     "date": "2026-11-02",
+     "status": "Approved",
+     "from": null
+    }
+   ],
+   "backfilled": true,
+   "id": "City of Pinellas Park|PUD-0226-00003",
+   "slug": "city-of-pinellas-park-pud-0226-00003",
+   "acres_unknown": false,
+   "next_hearing": null,
+   "last_hearing": {
+    "body": "City Council (second reading)",
+    "date": "2026-08-25",
+    "result": "Approved"
+   },
+   "apns": [
+    "26-30-16-00000-330-0800"
+   ],
+   "apns_src": [
+    "26-30-16-00000-330-0800"
+   ],
+   "site_status": {
+    "status": "Improved",
+    "detail": "1 building, 1,174 sf, built 1979. Use: single family home.",
+    "parcels_found": 1,
+    "parcels_total": 1,
+    "roll_year": 2026,
+    "checked": "2026-11-02",
+    "ids": "26-30-16-00000-330-0800",
+    "method": "parcel id"
+   }
+  },
+  {
    "jurisdiction": "Volusia County",
    "county": "Volusia",
    "app_num": "26 113094 000 00 PUD",
@@ -35874,6 +36633,80 @@
    }
   },
   {
+   "jurisdiction": "City of Pinellas Park",
+   "county": "Pinellas",
+   "app_num": "LUPA-0625-00006",
+   "category": "Comp Plan Amendment",
+   "app_type": "Land Use Plan Map Amendment",
+   "project_name": "6868 118Th Avenue North",
+   "description": "AMENDING THE CITY’S OFFICIAL LAND USE PLAN MAP BY PROVIDING THE LAND USE DESIGNATION OF INDUSTRIAL LIMITED (IL) FOR CERTAIN LANDS GENERALLY LOCATED AT 6868 118TH AVENUE NORTH AND MORE PARTICULARLY DESCRIBED IN EXHIBIT \"A\", WHICH IS ATTACHED HERETO AND MADE A PART HEREOF; CERTIFYING CONSISTENCY WI...",
+   "applicant": "118th Avenue Acquisition, LLC",
+   "address": "6868 118Th Avenue North",
+   "from_zoning": null,
+   "to_zoning": null,
+   "from_flu": null,
+   "to_flu": "INDUSTRIAL LIMITED (IL)",
+   "filed_date": "2026-05-27",
+   "status": "Hearing Scheduled",
+   "status_raw": "City Council 2026-06-23 held; outcome not yet posted",
+   "decision_date": null,
+   "url": "https://pinellaspark.legistar.com/LegislationDetail.aspx?ID=7146",
+   "docs_url": null,
+   "source": "Pinellas Park CivicClerk + Legistar (P&Z Commission + City Council)",
+   "parcel_ids": [
+    "18-30-16-69768-100-0302"
+   ],
+   "acres": 4.648,
+   "lat": 27.8783642,
+   "lon": -82.7345266,
+   "hearings": [
+    {
+     "body": "City Council (second reading)",
+     "date": "2026-06-23",
+     "result": null
+    }
+   ],
+   "acres_source": "application",
+   "location_source": "parcels",
+   "adapter": "pinellas_park",
+   "first_seen": "2026-11-02",
+   "last_seen": "2026-11-02",
+   "status_changed": null,
+   "history": [
+    {
+     "date": "2026-11-02",
+     "status": "Hearing Scheduled",
+     "from": null
+    }
+   ],
+   "backfilled": true,
+   "id": "City of Pinellas Park|LUPA-0625-00006",
+   "slug": "city-of-pinellas-park-lupa-0625-00006",
+   "acres_unknown": false,
+   "next_hearing": null,
+   "last_hearing": {
+    "body": "City Council (second reading)",
+    "date": "2026-06-23",
+    "result": null
+   },
+   "apns": [
+    "18-30-16-69768-100-0302"
+   ],
+   "apns_src": [
+    "18-30-16-69768-100-0302"
+   ],
+   "site_status": {
+    "status": "Improved",
+    "detail": "2 buildings, 54,897 sf, built 1995. Use: warehouse or distribution.",
+    "parcels_found": 1,
+    "parcels_total": 1,
+    "roll_year": 2026,
+    "checked": "2026-11-02",
+    "ids": "18-30-16-69768-100-0302",
+    "method": "parcel id"
+   }
+  },
+  {
    "jurisdiction": "Volusia County",
    "county": "Volusia",
    "app_num": "26 111483 000 00 RZ",
@@ -36660,6 +37493,164 @@
     "roll_year": 2026,
     "checked": "2026-10-26",
     "ids": "104611-0000",
+    "method": "parcel id"
+   }
+  },
+  {
+   "jurisdiction": "City of Pinellas Park",
+   "county": "Pinellas",
+   "app_num": "REZ-2026-00003",
+   "category": "Rezoning",
+   "app_type": "Zoning Map Amendment",
+   "project_name": null,
+   "description": "AMENDING THE CITY’S OFFICIAL ZONING MAP BY PROVIDING FOR A CHANGE IN THE ZONING DISTRICT FROM SINGLE-FAMILY RESIDENTIAL (R-1) AND TOWN CENTER (TC) TO A UNIFIED TC DESIGNATION FOR A CERTAIN PARCEL OF LAND GENERALLY LOCATED AT PARCEL ID 28-30-16-94914-000-0010 AND MORE PARTICULARLY DESCRIBED IN EXH...",
+   "applicant": "David Swaggerty",
+   "address": null,
+   "from_zoning": "SINGLE-FAMILY RESIDENTIAL (R-1) AND TOWN CENTER (TC)",
+   "to_zoning": "UNIFIED TC",
+   "from_flu": null,
+   "to_flu": null,
+   "filed_date": "2026-05-21",
+   "status": "Hearing Scheduled",
+   "status_raw": "City Council 2026-07-21 held; outcome not yet posted",
+   "decision_date": null,
+   "url": "https://pinellaspark.legistar.com/LegislationDetail.aspx?ID=7155",
+   "docs_url": null,
+   "source": "Pinellas Park CivicClerk + Legistar (P&Z Commission + City Council)",
+   "parcel_ids": [
+    "28-30-16-94914-000-0010"
+   ],
+   "acres": 0.84,
+   "lat": 27.8424615,
+   "lon": -82.7037079,
+   "hearings": [
+    {
+     "body": "Planning and Zoning Commission",
+     "date": "2026-06-04",
+     "result": null
+    },
+    {
+     "body": "City Council (second reading)",
+     "date": "2026-07-21",
+     "result": null
+    }
+   ],
+   "acres_source": "parcels",
+   "location_source": "parcels",
+   "adapter": "pinellas_park",
+   "first_seen": "2026-11-02",
+   "last_seen": "2026-11-02",
+   "status_changed": null,
+   "history": [
+    {
+     "date": "2026-11-02",
+     "status": "Hearing Scheduled",
+     "from": null
+    }
+   ],
+   "backfilled": true,
+   "id": "City of Pinellas Park|REZ-2026-00003",
+   "slug": "city-of-pinellas-park-rez-2026-00003",
+   "acres_unknown": false,
+   "next_hearing": null,
+   "last_hearing": {
+    "body": "City Council (second reading)",
+    "date": "2026-07-21",
+    "result": null
+   },
+   "apns": [
+    "28-30-16-94914-000-0010"
+   ],
+   "apns_src": [
+    "28-30-16-94914-000-0010"
+   ],
+   "site_status": {
+    "status": "Improved",
+    "detail": "2 buildings, 7,240 sf, built 2005. Use: professional services building.",
+    "parcels_found": 1,
+    "parcels_total": 1,
+    "roll_year": 2026,
+    "checked": "2026-11-02",
+    "ids": "28-30-16-94914-000-0010",
+    "method": "parcel id"
+   }
+  },
+  {
+   "jurisdiction": "City of Pinellas Park",
+   "county": "Pinellas",
+   "app_num": "PUD-0326-00004",
+   "category": "PD",
+   "app_type": "Planned Unit Development master plan",
+   "project_name": null,
+   "description": "ADOPTING A REVISED MASTER PLAN CONTROLLING DEVELOPMENT OF A COMMERCIAL PLANNED UNIT DEVELOPMENT (CPUD), WITH UNDERLYING GENERAL COMMERCIAL (B-1) ZONING ON A 0.56 ACRE PARCEL OF LAND LOCATED AT PARCEL NO. 33-30-16-40913-000-0020, ON LAND MORE PARTICULARLY DESCRIBED IN EXHIBIT \"A\" WHICH IS ATTACHED...",
+   "applicant": "Northside Engineering LLC",
+   "address": null,
+   "from_zoning": null,
+   "to_zoning": "CPUD with underlying GENERAL COMMERCIAL (B-1)",
+   "from_flu": null,
+   "to_flu": null,
+   "filed_date": "2026-05-21",
+   "status": "Hearing Scheduled",
+   "status_raw": "City Council 2026-08-11 held; outcome not yet posted",
+   "decision_date": null,
+   "url": "https://pinellaspark.legistar.com/LegislationDetail.aspx?ID=7189",
+   "docs_url": null,
+   "source": "Pinellas Park CivicClerk + Legistar (P&Z Commission + City Council)",
+   "parcel_ids": [
+    "33-30-16-40913-000-0020"
+   ],
+   "acres": 0.56,
+   "lat": 27.8339544,
+   "lon": -82.6993624,
+   "hearings": [
+    {
+     "body": "Planning and Zoning Commission",
+     "date": "2026-06-04",
+     "result": null
+    },
+    {
+     "body": "City Council (second reading)",
+     "date": "2026-08-11",
+     "result": null
+    }
+   ],
+   "acres_source": "application",
+   "location_source": "parcels",
+   "adapter": "pinellas_park",
+   "first_seen": "2026-11-02",
+   "last_seen": "2026-11-02",
+   "status_changed": null,
+   "history": [
+    {
+     "date": "2026-11-02",
+     "status": "Hearing Scheduled",
+     "from": null
+    }
+   ],
+   "backfilled": true,
+   "id": "City of Pinellas Park|PUD-0326-00004",
+   "slug": "city-of-pinellas-park-pud-0326-00004",
+   "acres_unknown": false,
+   "next_hearing": null,
+   "last_hearing": {
+    "body": "City Council (second reading)",
+    "date": "2026-08-11",
+    "result": null
+   },
+   "apns": [
+    "33-30-16-40913-000-0020"
+   ],
+   "apns_src": [
+    "33-30-16-40913-000-0020"
+   ],
+   "site_status": {
+    "status": "Vacant",
+    "detail": "No buildings on the tax roll. Use: vacant commercial.",
+    "parcels_found": 1,
+    "parcels_total": 1,
+    "roll_year": 2026,
+    "checked": "2026-11-02",
+    "ids": "33-30-16-40913-000-0020",
     "method": "parcel id"
    }
   },
@@ -39080,6 +40071,88 @@
     "roll_year": 2026,
     "checked": "2026-10-26",
     "ids": "362630495000011020",
+    "method": "parcel id"
+   }
+  },
+  {
+   "jurisdiction": "City of Clearwater",
+   "county": "Pinellas",
+   "app_num": "ANX2026-02004",
+   "category": "Rezoning",
+   "app_type": "Annexation with initial Future Land Use and Zoning Atlas designation",
+   "project_name": "1399 Pineapple Lane",
+   "description": "Approve the annexation for 1399 Pineapple Lane and pass Ordinance 9896-26 on first reading. (ANX2026-02004)",
+   "applicant": null,
+   "address": "1399 Pineapple Lane",
+   "from_zoning": null,
+   "to_zoning": null,
+   "from_flu": null,
+   "to_flu": null,
+   "filed_date": "2026-05-07",
+   "status": "Hearing Scheduled",
+   "status_raw": "City Council (first reading) 2026-06-04: Approved; next City Council (second reading) 2026-11-05",
+   "decision_date": null,
+   "url": "https://clearwater.legistar.com/LegislationDetail.aspx?ID=8032421&GUID=1CEA88F5-4A52-4877-85DF-400892C124F4&G=E6D8F5E1-1A25-4C36-846B-5CFB5C80AB8C",
+   "docs_url": "https://legistar2.granicus.com/clearwater/attachments/cfa7bf4f-10d2-4274-8771-28e54b4922c9.pdf",
+   "source": "Clearwater Legistar (Community Development Board + City Council)",
+   "parcel_ids": [
+    "08-29-16-00000-240-0100"
+   ],
+   "acres": 3.4073,
+   "lat": 27.9786397,
+   "lon": -82.7238461,
+   "hearings": [
+    {
+     "body": "City Council (first reading)",
+     "date": "2026-06-04",
+     "result": "Approved on first reading"
+    },
+    {
+     "body": "City Council (second reading)",
+     "date": "2026-11-05",
+     "result": null
+    }
+   ],
+   "acres_source": "application",
+   "location_source": "parcels",
+   "adapter": "clearwater",
+   "first_seen": "2026-11-02",
+   "last_seen": "2026-11-02",
+   "status_changed": null,
+   "history": [
+    {
+     "date": "2026-11-02",
+     "status": "Hearing Scheduled",
+     "from": null
+    }
+   ],
+   "backfilled": true,
+   "id": "City of Clearwater|ANX2026-02004",
+   "slug": "city-of-clearwater-anx2026-02004",
+   "acres_unknown": false,
+   "next_hearing": {
+    "body": "City Council (second reading)",
+    "date": "2026-11-05"
+   },
+   "last_hearing": {
+    "body": "City Council (first reading)",
+    "date": "2026-06-04",
+    "result": "Approved on first reading"
+   },
+   "apns": [
+    "08-29-16-00000-240-0100"
+   ],
+   "apns_src": [
+    "08-29-16-00000-240-0100"
+   ],
+   "site_status": {
+    "status": "Vacant",
+    "detail": "No buildings on the tax roll. Use: vacant governmental.",
+    "parcels_found": 1,
+    "parcels_total": 1,
+    "roll_year": 2026,
+    "checked": "2026-11-02",
+    "ids": "08-29-16-00000-240-0100",
     "method": "parcel id"
    }
   },
