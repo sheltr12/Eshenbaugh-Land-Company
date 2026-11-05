@@ -44,10 +44,12 @@ FILTER_JS = """<script>
   function active(){ var o = document.getElementById('orlando'); return (o && !o.hidden) ? 'orlando' : 'tampa'; }
   function cardsOf(panel){ return Array.prototype.filter.call(panel.querySelectorAll('table'), function(t){
       return (t.getAttribute('style') || '').indexOf('border-left:6px solid') >= 0; }); }
+  function hdrOf(card){ return Array.prototype.find.call(card.querySelectorAll('div'), function(x){
+      return (x.getAttribute('style') || '').indexOf('line-height:1.5') >= 0 && x.textContent.indexOf('\\u00b7') >= 0; }); }
   function jurOf(card){ var d = Array.prototype.find.call(card.querySelectorAll('div'), function(x){
       return (x.getAttribute('style') || '').indexOf('line-height:1.5') >= 0 && x.textContent.indexOf('\\u00b7') >= 0; });
     return d ? d.textContent.split('\\u00b7')[0].replace(/\\s+/g,' ').trim() : ''; }
-  function casesOf(card){ var m = card.textContent.match(/Case #/g); return m ? m.length : 1; }
+  function casesOf(card){ var d = hdrOf(card); var m = (d ? d.textContent : card.textContent).match(/Case #/g); return m ? m.length : 1; }
   function countyOf(j){ return COUNTY[j] || j.replace(/^City of /,'').replace(/ County$/,''); }
   function matches(card, f){ if(!f) return true; var j = card.dataset.jur;
     return f.indexOf('county:') === 0 ? countyOf(j) === f.slice(7) : j === f; }

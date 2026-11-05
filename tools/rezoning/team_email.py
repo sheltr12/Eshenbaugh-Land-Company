@@ -668,13 +668,91 @@ def fac(a):
     return f"{a:,.0f} ac" if a >= 100 else f"{a:,.2f}".rstrip("0").rstrip(".") + " ac"
 
 
-def request_line(r):
+# ----------------------------------------------------------------- application description
+DESC_MAX = 300  # characters shown before the "Read full description" toggle
+_ABBR = re.compile(r"(?:\b(?:St|Sec|No|Nos|Inc|Co|Corp|Ltd|Dr|Rd|Ave|Blvd|Ln|Hwy|Mr|Mrs|Ms|Jr|Sr|approx|Approx|U\.S|S\.R|C\.R|ft|sq|Ph|vs|etc)|\b[A-Z])\.$")
+
+
+def clean_desc(d):
+    """Posted description with whitespace tidied and stock openers removed (wording otherwise unchanged)."""
+    d = re.sub(r"\s+", " ", html.unescape(str(d or ""))).strip()
+    d = re.sub(r"(?i)^this is (?:a|an) ", "", d)
+    d = re.sub(r"(?i)^an ordinance of the (?:city council of the |city commission of the |board of county commissioners of )?"
+               r"(?:city|town|village|county) of [^,]{2,40},\s*florida,?\s*", "", d)
+    d = re.sub(r"(?i)^providing for (?:a |an )?", "", d)
+    return d[:1].upper() + d[1:] if d else d
+
+
+def synopsis(d, limit=DESC_MAX):
+    """(short text, was_shortened). Keeps whole leading sentences up to the limit; a single very long
+    sentence is cut at a clause break. No rewording."""
+    d = clean_desc(d)
+    if len(d) <= limit:
+        return d, False
+    sents = []
+    for p in re.split(r"(?<=[.;!?])\s+(?=[A-Z(\"“])", d):
+        if sents and _ABBR.search(sents[-1]):
+            sents[-1] += " " + p
+        else:
+            sents.append(p)
+    out = ""
+    for s in sents:
+        if not out:
+            out = s
+        elif len(out) + 1 + len(s) <= limit:
+            out += " " + s
+        else:
+            break
+    if len(out) > limit + 40:
+        cut = out[:limit]
+        i = max(cut.rfind(", "), cut.rfind("; "))
+        out = (cut[:i] if i > limit * 0.5 else cut.rsplit(" ", 1)[0]).rstrip(",;: ") + "..."
+    return out, out.rstrip(".") != d.rstrip(".")
+
+
+def _norm_txt(s):
+    return re.sub(r"[^a-z0-9]+", " ", str(s or "").lower()).strip()
+
+
+def case_descriptions(recs, title, reqs):
+    """Unique (app_num, synopsis, shortened, full_text) for the cases on one card; skips descriptions
+    that only repeat the card title or the zoning / land use line."""
+    out, seen = [], set()
+    for x in recs:
+        d = x.get("description")
+        nd = _norm_txt(d)
+        if not nd or nd in _norm_txt(title) or any(nd in _norm_txt(l) for l in reqs):
+            continue
+        syn, cut = synopsis(d)
+        if _norm_txt(syn) in seen:
+            continue
+        seen.add(_norm_txt(syn))
+        out.append((x.get("app_num"), syn, cut, clean_desc(d)))
+    return out
+
+
+def desc_html(descs):
+    blocks = []
+    for app, syn, cut, full in descs:
+        b = (f'<b>Case #{esc(app)}:</b> ' if len(descs) > 1 else "") + esc(syn)
+        if cut:
+            rest, label = full, "Read full description"
+            if not syn.endswith("...") and full.startswith(syn) and full[len(syn):].strip():
+                rest, label = full[len(syn):].strip(), "Read the rest"
+            b += (f'<details style="margin-top:6px"><summary style="{FONT}cursor:pointer;color:#1f4fb5;font-size:13px">'
+                  f'{label}</summary><div style="{FONT}margin-top:6px;color:#344054;font-size:13px;'
+                  f'line-height:1.45">{esc(rest)}</div></details>')
+        blocks.append(b)
+    return '<div style="height:8px;line-height:8px;font-size:1px">&nbsp;</div>'.join(blocks)
+
+
+def request_line(r, include_desc=True):
     parts = []
     if r.get("from_zoning") or r.get("to_zoning"):
         parts.append(f"Zoning: {r.get('from_zoning') or '?'} → {r.get('to_zoning') or '?'}")
     if r.get("from_flu") or r.get("to_flu"):
         parts.append(f"Future land use: {r.get('from_flu') or '?'} → {r.get('to_flu') or '?'}")
-    if not parts and r.get("description"):
+    if include_desc and not parts and r.get("description"):
         d = r["description"]
         parts.append(d if len(d) <= 220 else d[:217].rsplit(" ", 1)[0] + "...")
     return parts
@@ -774,10 +852,13 @@ def card_html(it):
     # the request
     reqs = []
     for x in recs:
-        for line in request_line(x):
+        for line in request_line(x, include_desc=False):
             if line not in reqs:
                 reqs.append(line)
-    req_pairs = [("Request", "<br>".join(esc(l) for l in reqs))] if reqs else []
+    descs = case_descriptions(recs, title, reqs)
+    req_pairs = [("Description", desc_html(descs))] if descs else []
+    if reqs:
+        req_pairs.append(("Request", "<br>".join(esc(l) for l in reqs)))
     loc = esc(r.get("address")) if r.get("address") else ""
     if r.get("lat") is not None:
         g = f"https://www.google.com/maps?q={r['lat']},{r['lon']}"
@@ -976,8 +1057,10 @@ def build_text(items, run_date, market_label, map_url):
             r = it["rec"]
             nums = " + #".join(x["app_num"] for x in it.get("recs") or [r])
             L.append(f"* {r.get('project_name') or r.get('app_num')}  [{r['jurisdiction']} #{nums}]  {fac(r.get('acres'))}")
-            for line in request_line(r):
+            for line in request_line(r, include_desc=False):
                 L.append(f"  {line}")
+            for _app, _syn, _cut, _full in case_descriptions(it.get("recs") or [r], r.get("project_name") or r.get("address") or r.get("app_num"), request_line(r, include_desc=False)):
+                L.append(f"  Description: {_syn}")
             if r.get("address"):
                 L.append(f"  Location: {r['address']}")
             _s = site_of(it.get("recs") or [r])
