@@ -48,6 +48,22 @@ button{border:1px solid #cbd5df;background:#fff;color:var(--elc-ink);border-radi
 #juris-menu label:hover{background:#f1f5f9}#juris-menu .jm-count{margin-left:auto;color:var(--elc-muted);font-size:10px}
 #juris-menu .jm-actions{display:flex;gap:6px;padding:4px 4px 6px;border-bottom:1px solid var(--elc-line);margin-bottom:4px}
 #juris-menu .jm-actions button{padding:4px 7px;font-size:10px}
+/* filed month / year multi-select */
+#month-wrap{position:relative}
+#month-btn{width:100%;margin-top:4px;text-align:left;font-weight:400;font-size:12px;padding:7px 26px 7px 9px;position:relative;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-transform:none;letter-spacing:0}
+#month-btn:after{content:"";position:absolute;right:10px;top:50%;margin-top:-2px;border:4px solid transparent;border-top-color:#475467}
+#month-btn.on{border-color:var(--elc-red);color:#b42318;font-weight:800;background:#fff7f7}
+#month-menu{display:none;position:absolute;right:0;top:100%;margin-top:3px;width:262px;max-width:86vw;max-height:340px;overflow:auto;background:#fff;border:1px solid #cbd5df;border-radius:9px;box-shadow:0 8px 24px rgba(0,0,0,.18);z-index:2000;padding:6px}
+#month-menu.open{display:block}
+#month-menu label{display:flex;align-items:center;gap:6px;padding:5px 6px;border-radius:6px;font-size:12px;font-weight:400;text-transform:none;letter-spacing:0;color:var(--elc-ink);cursor:pointer}
+#month-menu label:hover{background:#f1f5f9}#month-menu .jm-count{margin-left:auto;color:var(--elc-muted);font-size:10px}
+#month-menu .mm-presets{display:flex;flex-wrap:wrap;gap:5px;padding:4px 4px 7px;border-bottom:1px solid var(--elc-line);margin-bottom:4px}
+#month-menu .mm-presets button{padding:4px 7px;font-size:10px}#month-menu .mm-presets button.on{background:#fff1f1;border-color:var(--elc-red);color:#b42318}
+#month-menu .mm-year{border-bottom:1px solid #eef2f6;padding:2px 0 4px}#month-menu .mm-year:last-child{border-bottom:0}
+#month-menu label.mm-ylabel{font-weight:800}
+#month-menu .mm-months{display:grid;grid-template-columns:1fr 1fr 1fr;gap:0 2px;padding-left:14px}
+#month-menu .mm-months label{padding:4px 4px;font-size:11.5px}
+#month-menu .mm-note{font-size:10px;color:var(--elc-muted);padding:6px 6px 2px;line-height:1.35}
 details#more{grid-column:1/-1;border-top:1px dashed var(--elc-line);padding-top:6px}
 details#more summary{font-size:10px;font-weight:800;text-transform:uppercase;color:var(--elc-muted);letter-spacing:.04em;cursor:pointer;list-style:none}
 details#more summary::-webkit-details-marker{display:none}
@@ -135,9 +151,10 @@ details#more summary:before{content:"+ "}details#more[open] summary:before{conte
     <div id="filters">
       <label class="filter-wide">Search Applications<input id="search-filter" type="search" placeholder="App #, applicant, project, address, parcel number..."></label>
       <div class="f-adv"><span class="flabel">Jurisdiction</span><div id="juris-wrap"><button type="button" id="juris-btn">All jurisdictions</button><div id="juris-menu"></div></div></div>
+      <div class="f-adv"><span class="flabel">Filed</span><div id="month-wrap"><button type="button" id="month-btn" title="Filter by the month and year filed">All months</button><div id="month-menu"></div></div></div>
       <label class="f-adv">Status<select id="status-filter"><option value="all">All statuses</option><option value="open">Open (not decided)</option></select></label>
       <label class="f-adv">Category<select id="category-filter"><option value="all">All categories</option><option value="Rezoning">Rezoning</option><option value="PD">PD</option><option value="Comp Plan Amendment">Comp Plan Amendment</option></select></label>
-      <label class="f-adv">Sort<select id="sort-filter"><option value="filed_desc">Filed date, newest</option><option value="filed_asc">Filed date, oldest</option><option value="acres_desc">Acres, largest</option><option value="hearing_asc">Next hearing, soonest</option><option value="changed_desc">Recently changed</option></select></label>
+      <label class="f-adv filter-wide">Sort<select id="sort-filter"><option value="filed_desc">Filed date, newest</option><option value="filed_asc">Filed date, oldest</option><option value="acres_desc">Acres, largest</option><option value="hearing_asc">Next hearing, soonest</option><option value="changed_desc">Recently changed</option></select></label>
       <div id="toggles">
         <label class="chip" id="chip-new"><input type="checkbox" id="new-filter">New this week</label>
         <label class="chip" id="chip-chg"><input type="checkbox" id="changed-filter">Changed this week</label>
@@ -168,7 +185,7 @@ const STATUS_COLOR={'Filed':'#1f6feb','Hearing Scheduled':'#f59e0b','Continued':
 const STATUS_LABEL={'Filed':'Filed / In review','Hearing Scheduled':'Hearing scheduled','Continued':'Continued','Approved':'Approved','Denied':'Denied','Withdrawn':'Withdrawn'};
 const CAT_CODE={'Rezoning':'R','PD':'PD','Comp Plan Amendment':'CPA'};
 const CLOSED=new Set(['Approved','Denied','Withdrawn']);
-let RECORDS=[],META={},filtered=[],map,markersLayer,RUN_DATE=null,TODAY=null;const markerByIndex=new Map(),rowByIndex=new Map();let selectedJuris=new Set();let allJuris=[];
+let RECORDS=[],META={},filtered=[],map,markersLayer,RUN_DATE=null,TODAY=null;const markerByIndex=new Map(),rowByIndex=new Map();let selectedJuris=new Set();let allJuris=[];let selectedMonths=new Set(),monthPreset=null,monthKeys=[];
 
 function hasValue(v){return v!==null&&v!==undefined&&String(v).trim()!==''}
 function escapeHtml(s){return String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]))}
@@ -246,11 +263,79 @@ function populateFilters(){
 }
 function updateJurisBtn(){const b=document.getElementById('juris-btn');const n=selectedJuris.size;b.textContent=n===0?'All jurisdictions':n===1?[...selectedJuris][0]:`${n} jurisdictions`}
 
+const MON=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+const PRESETS=[['this','This month'],['3','Last 3 months'],['6','Last 6 months'],['year','This year']];const PRESET_LABEL=Object.fromEntries(PRESETS);
+function monthKey(p){const s=String(p.filed_date||p.first_seen||'');return /^\d{4}-\d{2}/.test(s)?s.slice(0,7):'unknown'}
+function monthName(k,withYear=true){if(k==='unknown')return 'Date unknown';const [y,m]=k.split('-');return MON[Number(m)-1]+(withYear?' '+y:'')}
+function shiftMonth(y,m,d){const t=y*12+m+d;return [Math.floor(t/12),t%12]}
+function keyOf(y,m){return y+'-'+String(m+1).padStart(2,'0')}
+function presetKeys(pr){
+  const ref=new Date(TODAY||Date.now()),y=ref.getFullYear(),m=ref.getMonth(),out=[];
+  if(pr==='year'){for(let i=0;i<=m;i++)out.push(keyOf(y,i));return out}
+  const n=pr==='this'?1:Number(pr);for(let i=0;i<n;i++){const [yy,mm]=shiftMonth(y,m,-i);out.push(keyOf(yy,mm))}return out;
+}
+function monthLabel(){
+  if(!selectedMonths.size)return '';
+  if(monthPreset){const ref=new Date(TODAY||Date.now());return PRESET_LABEL[monthPreset]+(monthPreset==='year'?' ('+ref.getFullYear()+')':monthPreset==='this'?' ('+monthName(keyOf(ref.getFullYear(),ref.getMonth()))+')':'')}
+  const unk=selectedMonths.has('unknown');
+  const sel=monthKeys.filter(k=>k!=='unknown'&&selectedMonths.has(k)).sort();
+  let s;
+  if(!sel.length)s='';
+  else if(sel.length===1)s=monthName(sel[0]);
+  else{
+    const avail=monthKeys.filter(k=>k!=='unknown').sort(),i0=avail.indexOf(sel[0]),i1=avail.indexOf(sel[sel.length-1]);
+    const run=i1-i0+1===sel.length;
+    if(run){const a=sel[0],b=sel[sel.length-1];s=a.slice(0,4)===b.slice(0,4)?`${monthName(a,false)} to ${monthName(b)}`:`${monthName(a)} to ${monthName(b)}`}
+    else s=`${sel.length} months`;
+  }
+  return unk?(s?s+' + date unknown':'Date unknown'):s;
+}
+function syncMonths(){
+  const menu=document.getElementById('month-menu');
+  menu.querySelectorAll('input[data-month]').forEach(i=>i.checked=selectedMonths.has(i.value));
+  menu.querySelectorAll('input[data-year]').forEach(i=>{const ms=[...menu.querySelectorAll(`input[data-month][data-y="${i.dataset.year}"]`)];const n=ms.filter(x=>x.checked).length;i.checked=n>0&&n===ms.length;i.indeterminate=n>0&&n<ms.length});
+  menu.querySelectorAll('.mm-presets button[data-preset]').forEach(b=>b.classList.toggle('on',b.dataset.preset===monthPreset));
+  const btn=document.getElementById('month-btn'),lab=monthLabel();
+  btn.textContent=lab?'Filed: '+lab:'All months';btn.classList.toggle('on',!!lab);btn.title=lab?'Filed: '+lab:'Filter by the month and year filed';
+}
+function populateMonths(){
+  const counts={};RECORDS.forEach(p=>{const k=monthKey(p);counts[k]=(counts[k]||0)+1});
+  monthKeys=Object.keys(counts).sort();
+  const years=[...new Set(monthKeys.filter(k=>k!=='unknown').map(k=>k.slice(0,4)))].sort().reverse();
+  const menu=document.getElementById('month-menu');
+  let html='<div class="mm-presets">'+PRESETS.map(([k,v])=>`<button type="button" data-preset="${k}">${v}</button>`).join('')+'<button type="button" data-preset="clear">Clear</button></div>';
+  years.forEach(y=>{
+    const ks=monthKeys.filter(k=>k.slice(0,4)===y);const tot=ks.reduce((a,k)=>a+counts[k],0);
+    html+=`<div class="mm-year"><label class="mm-ylabel"><input type="checkbox" data-year="${y}">${y}<span class="jm-count">${tot.toLocaleString()}</span></label><div class="mm-months">`+
+      ks.map(k=>`<label title="${monthName(k)}: ${counts[k]} filed"><input type="checkbox" data-month="1" data-y="${y}" value="${k}">${monthName(k,false)}<span class="jm-count">${counts[k]}</span></label>`).join('')+'</div></div>';
+  });
+  if(counts.unknown)html+=`<div class="mm-year"><label><input type="checkbox" data-month="1" data-y="unknown" value="unknown">Date unknown<span class="jm-count">${counts.unknown}</span></label></div>`;
+  html+='<div class="mm-note">Uses the date filed. Cities that post only council agendas use the date the case first appeared on an agenda.</div>';
+  menu.innerHTML=html;
+  menu.addEventListener('change',e=>{
+    const t=e.target;if(t.type!=='checkbox')return;
+    if(t.dataset.year){menu.querySelectorAll(`input[data-month][data-y="${t.dataset.year}"]`).forEach(i=>t.checked?selectedMonths.add(i.value):selectedMonths.delete(i.value))}
+    else t.checked?selectedMonths.add(t.value):selectedMonths.delete(t.value);
+    monthPreset=null;syncMonths();applyFilters();
+  });
+  menu.querySelectorAll('.mm-presets button').forEach(b=>b.addEventListener('click',e=>{
+    e.stopPropagation();const pr=b.dataset.preset;selectedMonths.clear();
+    if(pr==='clear'||pr===monthPreset){monthPreset=null}else{presetKeys(pr).forEach(k=>selectedMonths.add(k));monthPreset=pr}
+    syncMonths();applyFilters();
+  }));
+  const btn=document.getElementById('month-btn');
+  btn.addEventListener('click',e=>{e.stopPropagation();document.getElementById('juris-menu').classList.remove('open');menu.classList.toggle('open')});
+  document.getElementById('juris-btn').addEventListener('click',()=>menu.classList.remove('open'));
+  document.addEventListener('click',e=>{if(!document.getElementById('month-wrap').contains(e.target))menu.classList.remove('open')});
+  syncMonths();
+}
+
 function passesFilters(p){
   const st=document.getElementById('status-filter').value,cat=document.getElementById('category-filter').value,q=document.getElementById('search-filter').value.trim().toLowerCase();
   const minAc=parseFloat(document.getElementById('acres-filter').value),unk=document.getElementById('unk-filter').value;
   const from=dateOnly(document.getElementById('from-filter').value),to=dateOnly(document.getElementById('to-filter').value);
   if(selectedJuris.size&&!selectedJuris.has(p.jurisdiction||'Unknown'))return false;
+  if(selectedMonths.size&&!selectedMonths.has(monthKey(p)))return false;
   if(st==='open'&&CLOSED.has(p.status))return false;if(st!=='all'&&st!=='open'&&p.status!==st)return false;
   if(cat!=='all'&&p.category!==cat)return false;
   if(!hasValue(p.acres)){if(unk==='hide')return false}else if(!Number.isNaN(minAc)&&Number(p.acres)<minAc)return false;
@@ -354,7 +439,7 @@ function updateViewList(){
   const ve=document.getElementById('view-empty');if(ve)ve.style.display=(vo&&filtered.length&&!shown)?'':'none';
   document.getElementById('count').innerHTML=vo
     ?`<span>${shown.toLocaleString()} in current map view</span><span>${filtered.length.toLocaleString()} match filters</span>`
-    :`<span>${filtered.length.toLocaleString()} applications shown</span>${noLoc?`<span>${noLoc.toLocaleString()} not mapped</span>`:''}`;
+    :`<span>${filtered.length.toLocaleString()} applications shown${selectedMonths.size?', filed '+escapeHtml(monthLabel().replace(/^(This|Last|Date)/,w=>w.toLowerCase())):''}</span>${noLoc?`<span>${noLoc.toLocaleString()} not mapped</span>`:''}`;
   document.getElementById('sum-total').textContent=shown.toLocaleString();document.getElementById('sum-new').textContent=nNew.toLocaleString();document.getElementById('sum-hear').textContent=nHear.toLocaleString();document.getElementById('sum-appr').textContent=nAppr.toLocaleString();
 }
 function setupViewToggle(){
@@ -440,9 +525,10 @@ function resetFilters(){
   ['search-filter','acres-filter','from-filter','to-filter'].forEach(id=>document.getElementById(id).value='');
   [['new-filter','chip-new'],['changed-filter','chip-chg'],['hearing-filter','chip-hear']].forEach(([id,chip])=>{document.getElementById(id).checked=false;document.getElementById(chip).classList.remove('on')});
   document.getElementById('view-filter').checked=false;document.getElementById('view-toggle').classList.remove('on');
-  selectedJuris.clear();document.querySelectorAll('#juris-menu input').forEach(i=>i.checked=false);updateJurisBtn();applyFilters();
+  selectedJuris.clear();document.querySelectorAll('#juris-menu input').forEach(i=>i.checked=false);updateJurisBtn();
+  selectedMonths.clear();monthPreset=null;syncMonths();applyFilters();
 }
-(async function init(){await loadData();initMap();populateFilters();setupAddressSearchControls();setupPanelToggle();setupViewToggle();applyFilters()})();
+(async function init(){await loadData();initMap();populateFilters();populateMonths();setupAddressSearchControls();setupPanelToggle();setupViewToggle();applyFilters()})();
 </script>
 </body>
 </html>
