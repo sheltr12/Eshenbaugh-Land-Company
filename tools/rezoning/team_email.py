@@ -1115,18 +1115,36 @@ def main(argv=None):
     ap.add_argument("--market", default="all", choices=["all"] + list(MARKETS))
     ap.add_argument("--map-url", default=MAP_URL)
     ap.add_argument("--budget", type=int, default=900, help="seconds for owner + contact lookups")
+    ap.add_argument("--window-days", type=int, default=7,
+                    help="include every new filing and status change dated in the last N days (run date included), "
+                         "from each record's first_seen and status history, so mid-week runs do not hide activity. "
+                         "0 = only what this run's digest found")
     a = ap.parse_args(argv)
     db = json.load(open(os.path.join(a.out_dir, "rezonings.json")))
     recs = {r["id"]: r for r in db["records"]}
-    dg = json.load(open(os.path.join(a.out_dir, f"rezoning-digest-{a.run_date}.json")))
     items = []
-    for county, lst in (dg.get("new_filings") or {}).items():
-        for x in lst:
+    if a.window_days > 0:
+        cut = (dt.date.fromisoformat(a.run_date) - dt.timedelta(days=a.window_days - 1)).isoformat()
+        end = a.run_date
+        for r in db["records"]:
+            fs = r.get("first_seen") or ""
+            if cut <= fs <= end and not r.get("backfilled"):
+                items.append({"kind": "new", "rec": r})
+                continue
+            ch = [h for h in (r.get("history") or []) if h.get("from") and cut <= (h.get("date") or "") <= end]
+            if ch and ch[0]["from"] != r.get("status"):
+                items.append({"kind": "change", "rec": r, "from_status": ch[0]["from"]})
+        log(f"window {cut} to {end}: {sum(1 for i in items if i['kind'] == 'new')} new, "
+            f"{sum(1 for i in items if i['kind'] == 'change')} status changes")
+    else:
+        dg = json.load(open(os.path.join(a.out_dir, f"rezoning-digest-{a.run_date}.json")))
+        for county, lst in (dg.get("new_filings") or {}).items():
+            for x in lst:
+                if x["id"] in recs:
+                    items.append({"kind": "new", "rec": recs[x["id"]]})
+        for x in dg.get("status_changes") or []:
             if x["id"] in recs:
-                items.append({"kind": "new", "rec": recs[x["id"]]})
-    for x in dg.get("status_changes") or []:
-        if x["id"] in recs:
-            items.append({"kind": "change", "rec": recs[x["id"]], "from_status": x.get("from_status")})
+                items.append({"kind": "change", "rec": recs[x["id"]], "from_status": x.get("from_status")})
     if a.market != "all":
         items = [i for i in items if market_of(i["rec"].get("county")) == a.market]
     os.environ.setdefault("RZ_PARCEL_CACHE", os.path.join(a.out_dir, "owner_cache.json"))
