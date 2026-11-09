@@ -472,6 +472,104 @@ def run_adapters(adapters, db_records, known_juris, covered_adapters, run_date, 
     return results, health
 
 
+
+# ---------------------------------------------------------------- parcel by site address
+# Some city sources post a street address but no parcel number. For those records only, look up
+# the parcel in the Florida Statewide Cadastral layer by county + site address (PHY_ADDR1) and
+# keep it only when exactly one parcel matches. Nothing is geocoded.
+SW_QUERY = ("https://services9.arcgis.com/Gh9awoU677aKree0/arcgis/rest/services/"
+            "Florida_Statewide_Cadastral/FeatureServer/0/query")
+FDOR_CO_NO = {"Alachua": 11, "Brevard": 15, "Charlotte": 18, "Citrus": 19, "Hernando": 37,
+              "Hillsborough": 39, "Lake": 45, "Manatee": 51, "Marion": 52, "Orange": 58,
+              "Osceola": 59, "Pasco": 61, "Pinellas": 62, "Polk": 63, "Sarasota": 68,
+              "Seminole": 69, "Volusia": 74}
+_ADDR_SKIP = {"N", "S", "E", "W", "NE", "NW", "SE", "SW", "NORTH", "SOUTH", "EAST", "WEST", "ST", "STREET",
+              "RD", "ROAD", "AVE", "AVENUE", "BLVD", "DR", "DRIVE", "LN", "LANE", "CT", "WAY", "HWY",
+              "PKWY", "PL", "CIR", "TRL", "TER", "US", "SR", "CR", "FL", "FLORIDA", "THE", "OF"}
+
+
+def _addr_query(where):
+    import urllib.parse
+    import urllib.request
+    url = SW_QUERY + "?" + urllib.parse.urlencode({"where": where, "outFields": "PARCEL_ID,PHY_ADDR1,PHY_CITY",
+                                                   "returnGeometry": "false", "f": "json",
+                                                   "resultRecordCount": 20})
+    req = urllib.request.Request(url, headers={"User-Agent": "ELC-RezoningTracker/1.0"})
+    with urllib.request.urlopen(req, timeout=60) as fh:
+        return json.load(fh).get("features") or []
+
+
+_ORD = {"FIRST": "1ST", "SECOND": "2ND", "THIRD": "3RD", "FOURTH": "4TH", "FIFTH": "5TH", "SIXTH": "6TH",
+        "SEVENTH": "7TH", "EIGHTH": "8TH", "NINTH": "9TH", "TENTH": "10TH"}
+_DIRS = {"NORTH": "N", "SOUTH": "S", "EAST": "E", "WEST": "W", "N": "N", "S": "S", "E": "E", "W": "W",
+         "NE": "NE", "NW": "NW", "SE": "SE", "SW": "SW"}
+
+
+def _street_parts(addr):
+    """'1255 East Altamonte Drive' -> ('1255', 'E', ['ALTAMONTE', ...]); None if no house number."""
+    first = re.split(r"[;,(]| and | & ", addr.upper())[0]
+    m = re.match(r"\s*(\d+)[A-Z]?\s+(.+)", first)
+    if not m:
+        return None
+    toks = [_ORD.get(t, t) for t in re.findall(r"[A-Z0-9]+", m.group(2))]
+    d = _DIRS.get(toks[0]) if toks and len(toks) > 1 else None
+    rest = toks[1:] if d else toks
+    names = [t for t in rest if t not in _ADDR_SKIP]
+    return (m.group(1), d, names) if names else None
+
+
+def parcels_by_address(records, existing, budget=900):
+    """Fill parcel_ids from the site address for records that have neither parcel_ids nor lat/lon.
+    Kept only when exactly one parcel in the county has that house number and street name."""
+    t0, looked, found, cache = time.time(), 0, 0, {}
+    for r in records:
+        if r.get("parcel_ids") or r.get("lat") is not None or not r.get("address"):
+            continue
+        co = FDOR_CO_NO.get(r.get("county") or "")
+        old = existing.get(rec_id(r))
+        if old and old.get("parcel_ids_source") == "site address" and old.get("parcel_ids"):
+            r["parcel_ids"], r["parcel_ids_source"] = list(old["parcel_ids"]), "site address"
+            found += 1
+            continue
+        parts = _street_parts(r["address"])
+        if not co or not parts:
+            continue
+        num, d, names = parts
+        ck = (co, num, d, tuple(names))
+        if ck not in cache:
+            if time.time() - t0 > budget:
+                continue
+            looked += 1
+            city = re.sub(r"^(City|Town) of ", "", r.get("jurisdiction") or "").upper()
+            pids = []
+            for where in ([f"CO_NO={co} AND PHY_ADDR1 LIKE '{num} {d} {names[0]}%'"] if d else []) + \
+                         [f"CO_NO={co} AND PHY_ADDR1 LIKE '{num} {names[0]}%'", f"CO_NO={co} AND PHY_ADDR1 LIKE '{num} %'"]:
+                try:
+                    feats = _addr_query(where)
+                except Exception as e:  # noqa: BLE001
+                    log(f"address lookup failed for {r.get('app_num')}: {e}")
+                    feats = []
+                time.sleep(0.3)
+                ok = []
+                for f in feats:
+                    a = f["attributes"]
+                    words = set(re.findall(r"[A-Z0-9]+", (a.get("PHY_ADDR1") or "").upper()))
+                    if names[0] in words or any(n in words for n in names):
+                        ok.append(a)
+                if len(ok) > 1 and city:
+                    ok = [a for a in ok if (a.get("PHY_CITY") or "").upper().startswith(city[:6])] or ok
+                pids = sorted({(a.get("PARCEL_ID") or "").strip() for a in ok} - {""})
+                if pids:
+                    break
+            cache[ck] = pids if len(pids) == 1 else []
+        if cache[ck]:
+            r["parcel_ids"], r["parcel_ids_source"] = list(cache[ck]), "site address"
+            found += 1
+    info = {"looked_up": looked, "matched": found, "seconds": round(time.time() - t0, 1)}
+    log(f"parcels by address: {info}")
+    return info
+
+
 # ---------------------------------------------------------------- enrichment
 def enrich(records, existing, timeout, workdir, parcels_dir=HERE):
     """Fill lat/lon (and acres if missing) from parcels.site for records lacking geometry."""
@@ -1018,6 +1116,11 @@ def main(argv=None):
     fetched = len(fresh)
     fresh = [r for r in fresh if r["category"] in CATEGORIES]
     existing = {r.get("id") or rec_id(r): r for r in db_records if r.get("jurisdiction")}
+    try:
+        addr_info = parcels_by_address(fresh, existing)
+    except Exception as e:  # noqa: BLE001
+        addr_info = {"status": "failed", "error": str(e)[:300]}
+        log(f"address lookup crashed: {e}")
     try:
         enrich_info = enrich(fresh, existing, a.enrich_timeout, workdir, a.parcels_dir)
     except Exception as e:  # noqa: BLE001

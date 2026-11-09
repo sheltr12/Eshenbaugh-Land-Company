@@ -1131,6 +1131,14 @@ def main(argv=None):
             if cut <= fs <= end and not r.get("backfilled"):
                 items.append({"kind": "new", "rec": r})
                 continue
+            if cut <= fs <= end and r.get("backfilled"):
+                # older case from a newly added source: no history yet, so include it only when a
+                # decision or a hearing is dated inside the window
+                dd = r.get("decision_date") or ""
+                hd = [h.get("date") or "" for h in (r.get("hearings") or [])]
+                if (r.get("status") in ("Approved", "Denied") and cut <= dd <= end) or any(cut <= d <= end for d in hd):
+                    items.append({"kind": "change", "rec": r, "from_status": None})
+                continue
             ch = [h for h in (r.get("history") or []) if h.get("from") and cut <= (h.get("date") or "") <= end]
             if ch and ch[0]["from"] != r.get("status"):
                 items.append({"kind": "change", "rec": r, "from_status": ch[0]["from"]})
