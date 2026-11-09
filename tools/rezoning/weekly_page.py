@@ -4,9 +4,15 @@
 Run after team_email.py has been run with --market tampa and --market orlando:
   python3 weekly_page.py --out-dir ~/rz/out --run-date 2026-11-02
 
-Writes:
-  out/weekly-page-<date>.html      page content for the permanent Claude page (no doctype; the Artifact tool wraps it)
+Writes (default, split mode):
+  out/weekly-page-<date>.html      small page shell for the permanent Claude page (no doctype; the Artifact tool wraps it).
+                                   It holds the tabs, filter, styles and scripts, and loads the week's cards from week.json.
+                                   The shell is the same every week unless this script changes, so a run only has to read
+                                   a small live page before republishing.
+  out/week-<date>.json             this week's content: {"week", "tampa", "orlando", "county_map"}. Publish it as the
+                                   artifact's supporting file "week.json" (Artifact publish: files={"week.json": <path>}).
   out/advisors-email-<date>.json   {"subject", "body", "htmlBody", "counts"} for the Gmail send
+With --single, writes the old one-file page instead (all cards inline; no week JSON).
 Prints "done: ..." at the end. No em dashes anywhere.
 """
 import argparse, collections, html, json, os, re, sys, datetime as dt
@@ -36,6 +42,7 @@ FILTER_HTML = """<div class="filter"><label for="jfilter">Show</label>
 FILTER_JS = """<script>
 (function(){
   var COUNTY = __COUNTY_MAP__;
+  if (window.__ELC_WEEK && window.__ELC_WEEK.county_map) COUNTY = window.__ELC_WEEK.county_map;
   var sel = document.getElementById('jfilter'), clr = document.getElementById('jclear'), note = document.getElementById('jnote');
   var bar = document.querySelector('.bar');
   var state = {tampa:'', orlando:''};
@@ -162,6 +169,33 @@ SECTION_JS = """<script>
 """
 
 
+LOADER_JS = """<script>
+(function(){
+  function msg(t){ var p = document.getElementById('tampa');
+    p.innerHTML = '<div style="max-width:680px;margin:32px auto;padding:20px;background:#fff;border:1px solid #d0d5dd;'
+      + 'border-radius:10px;font:15px Arial,Helvetica,sans-serif;color:#475467;text-align:center">' + t + '</div>'; }
+  function runDeferred(){
+    document.querySelectorAll('script[type="text/x-elc-after"]').forEach(function(s){
+      var n = document.createElement('script'); n.text = s.text; s.parentNode.replaceChild(n, s); }); }
+  msg('Loading this week\\'s update...');
+  fetch('week.json', {cache: 'no-store'}).then(function(r){
+    if (!r.ok) throw new Error('HTTP ' + r.status); return r.json();
+  }).then(function(d){
+    window.__ELC_WEEK = d;
+    document.getElementById('tampa').innerHTML = d.tampa || '';
+    document.getElementById('orlando').innerHTML = d.orlando || '';
+    runDeferred();
+  }).catch(function(){ msg('This week\\'s update could not load. Reload the page to try again.'); });
+})();
+</script>
+"""
+
+
+def defer(js):
+    """Mark the page scripts to run only after the loader has put the cards in place."""
+    return js.replace("<script>", '<script type="text/x-elc-after">')
+
+
 def body_of(path):
     h = open(path, encoding="utf-8").read()
     m = re.search(r"<body[^>]*>(.*)</body>", h, re.S)
@@ -201,6 +235,7 @@ def main(argv=None):
     ap = argparse.ArgumentParser()
     ap.add_argument("--out-dir", required=True)
     ap.add_argument("--run-date", required=True)
+    ap.add_argument("--single", action="store_true", help="write the old one-file page (cards inline)")
     a = ap.parse_args(argv)
     od, d = os.path.expanduser(a.out_dir), a.run_date
     week = dt.date.fromisoformat(d).strftime("%b %-d, %Y")
@@ -213,10 +248,11 @@ def main(argv=None):
         bodies[key] = body_of(hp)
         counts[key] = market_counts(json.load(open(jp)))
 
+    split = not a.single
     page = (HEAD + '<div class="wrap" id="tampa" role="tabpanel" aria-labelledby="tab-tampa">'
-            + bodies["tampa"] + "</div>\n"
+            + ("" if split else bodies["tampa"]) + "</div>\n"
             + '<div class="wrap" id="orlando" role="tabpanel" aria-labelledby="tab-orlando" hidden>'
-            + bodies["orlando"] + "</div>\n" + TAIL)
+            + ("" if split else bodies["orlando"]) + "</div>\n" + (defer(TAIL) if split else TAIL))
     county_map = {}
     try:
         for r in json.load(open(os.path.join(od, "rezonings.json")))["records"]:
@@ -229,11 +265,20 @@ def main(argv=None):
     if FILTER_HTML not in page:
         sys.exit("could not place the county filter in the page")
     page = page.replace("</style>", section_css() + "</style>", 1)
-    page += SECTION_JS.replace("__SECTION_LABELS__", json.dumps({k: v[3] for k, v in SECTION_COLORS.items()}))
-    page += FILTER_JS.replace("__COUNTY_MAP__", json.dumps(county_map, sort_keys=True))
+    sec_js = SECTION_JS.replace("__SECTION_LABELS__", json.dumps({k: v[3] for k, v in SECTION_COLORS.items()}))
+    if split:
+        page += defer(sec_js) + defer(FILTER_JS.replace("__COUNTY_MAP__", "{}")) + LOADER_JS
+    else:
+        page += sec_js + FILTER_JS.replace("__COUNTY_MAP__", json.dumps(county_map, sort_keys=True))
     page = page.replace("\u2014", ", ")
     pp = os.path.join(od, f"weekly-page-{d}.html")
     open(pp, "w", encoding="utf-8").write(page)
+    wp = None
+    if split:
+        wk = {"week": week, "run_date": d, "county_map": county_map,
+              "tampa": bodies["tampa"].replace("\u2014", ", "), "orlando": bodies["orlando"].replace("\u2014", ", ")}
+        wp = os.path.join(od, f"week-{d}.json")
+        json.dump(wk, open(wp, "w", encoding="utf-8"), ensure_ascii=False)
 
     tot = {k: sum(counts[m][k] for m in counts) for k in ("decisions", "new", "hearing_updates")}
     subject = (f'Rezoning Update, week of {week}: {plural(tot["decisions"], "decision", "decisions")}, '
@@ -266,7 +311,8 @@ def main(argv=None):
         out[k] = out[k].replace("\u2014", ", ")
     ep = os.path.join(od, f"advisors-email-{d}.json")
     json.dump(out, open(ep, "w", encoding="utf-8"), indent=1)
-    print(f"done: {pp} ({len(page):,} bytes), {ep}; subject={subject!r}")
+    extra = f", {wp} ({os.path.getsize(wp):,} bytes, publish as week.json)" if wp else ""
+    print(f"done: {pp} ({len(page):,} bytes){extra}, {ep}; subject={subject!r}")
 
 
 if __name__ == "__main__":
