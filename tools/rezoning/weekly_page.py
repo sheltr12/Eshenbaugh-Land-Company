@@ -22,7 +22,7 @@ MAP_URL = "https://sheltr12.github.io/Eshenbaugh-Land-Company/rezonings_map.html
 MARKETS = [("tampa", "Tampa", ""), ("orlando", "Orlando", "Includes Lake County. ")]
 
 HEAD = '<title>ELC Weekly Rezoning Update</title>\n<meta name="robots" content="noindex,nofollow">\n<style>\n:root{--bg:#f2f4f7;--card:#ffffff;--ink:#101828;--muted:#475467;--line:#d0d5dd;--red:#c4161c;color-scheme:light}\nbody{margin:0;padding:0;background:var(--bg);color:var(--ink);font-family:Arial,Helvetica,sans-serif}\n.bar{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);border-bottom:1px solid var(--line)}\nbody::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}\n.tabs{max-width:680px;margin:0 auto;display:flex;gap:8px;padding:12px 12px 0}\n.tab{flex:1;appearance:none;border:1px solid var(--line);border-bottom:none;background:#e4e7ec;color:var(--muted);font:700 15px Arial,Helvetica,sans-serif;padding:12px 8px;border-radius:10px 10px 0 0;cursor:pointer}\n.tab small{display:block;font-weight:400;font-size:12px;margin-top:3px}\n.tab[aria-selected="true"]{background:var(--card);color:var(--red);border-color:var(--line);box-shadow:inset 0 3px 0 var(--red)}\n.tab:focus-visible{outline:3px solid var(--red);outline-offset:2px}\n.wrap{overflow-x:clip}\n.jump{cursor:pointer;transition:transform .12s ease,box-shadow .12s ease}\n.jump:hover{transform:translateY(-2px);box-shadow:0 4px 10px rgba(16,24,40,.12)}\n.jump:focus-visible{outline:3px solid var(--red);outline-offset:2px}\n.jump-zero{opacity:.55}\n.sec-target{scroll-margin-top:96px}\n@media (prefers-reduced-motion:reduce){.jump{transition:none}.jump:hover{transform:none}}\n</style>\n<div class="bar"><div class="tabs" role="tablist" aria-label="Market">\n<button class="tab" role="tab" id="tab-tampa" aria-controls="tampa" aria-selected="true">Tampa<small>Tampa Bay, Nature Coast, SW Florida</small></button>\n<button class="tab" role="tab" id="tab-orlando" aria-controls="orlando" aria-selected="false">Orlando<small>Orlando and Central Florida, incl. Lake County</small></button>\n</div></div>\n'
-TAIL = "<script>\n(function(){\n  const ids=['tampa','orlando'];\n  function show(id,push){ if(!ids.includes(id)) id='tampa';\n    ids.forEach(k=>{document.getElementById(k).hidden=(k!==id);document.getElementById('tab-'+k).setAttribute('aria-selected',k===id?'true':'false');});\n    if(push){try{history.replaceState(null,'','#'+id)}catch(e){}} }\n  ids.forEach(k=>document.getElementById('tab-'+k).addEventListener('click',()=>{show(k,true);window.scrollTo(0,0);}));\n  show((location.hash||'').replace('#',''),false);\n  window.addEventListener('hashchange',()=>show(location.hash.replace('#',''),false));\n})();\n</script>\n<script>\n(function(){\n  const labels=['approved','denied','withdrawn','hearing updates','new filings'];\n  const reduce=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;\n  ['tampa','orlando'].forEach(function(id){\n    const panel=document.getElementById(id); if(!panel) return;\n    const heads={};\n    panel.querySelectorAll('span').forEach(function(s){\n      const st=s.getAttribute('style')||'';\n      if(st.indexOf('font-size:21px')<0) return;\n      const key=s.textContent.trim().toLowerCase();\n      if(labels.indexOf(key)<0||heads[key]) return;\n      const t=s.closest('table')||s; t.classList.add('sec-target'); heads[key]=t;\n    });\n    panel.querySelectorAll('td').forEach(function(td){\n      const divs=td.querySelectorAll(':scope > div'); if(divs.length!==2) return;\n      const key=divs[1].textContent.trim().toLowerCase(); if(labels.indexOf(key)<0) return;\n      const target=heads[key];\n      if(!target){ td.classList.add('jump-zero'); td.title='None this week'; return; }\n      td.classList.add('jump'); td.setAttribute('role','button'); td.setAttribute('tabindex','0');\n      td.setAttribute('aria-label','Jump to '+divs[1].textContent.trim());\n      const go=function(){ target.scrollIntoView({behavior:reduce?'auto':'smooth',block:'start'}); };\n      td.addEventListener('click',go);\n      td.addEventListener('keydown',function(e){ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); go(); } });\n    });\n  });\n})();\n</script>\n"
+TAIL = "<script>\n(function(){\n  const ids=['tampa','orlando'];\n  function show(id,push){ if(!ids.includes(id)) id='tampa';\n    ids.forEach(k=>{document.getElementById(k).hidden=(k!==id);document.getElementById('tab-'+k).setAttribute('aria-selected',k===id?'true':'false');});\n    if(push){try{history.replaceState(null,'','#'+id)}catch(e){}} }\n  ids.forEach(k=>document.getElementById('tab-'+k).addEventListener('click',()=>{show(k,true);window.scrollTo(0,0);}));\n  show((location.hash||'').replace('#','').split('-')[0],false);\n  window.addEventListener('hashchange',()=>show(location.hash.replace('#','').split('-')[0],false));\n})();\n</script>\n<script>\n(function(){\n  const labels=['approved','denied','withdrawn','hearing updates','new filings'];\n  const reduce=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;\n  ['tampa','orlando'].forEach(function(id){\n    const panel=document.getElementById(id); if(!panel) return;\n    const heads={};\n    panel.querySelectorAll('span').forEach(function(s){\n      const st=s.getAttribute('style')||'';\n      if(st.indexOf('font-size:21px')<0) return;\n      const key=s.textContent.trim().toLowerCase();\n      if(labels.indexOf(key)<0||heads[key]) return;\n      const t=s.closest('table')||s; t.classList.add('sec-target'); heads[key]=t;\n    });\n    panel.querySelectorAll('td').forEach(function(td){\n      const divs=td.querySelectorAll(':scope > div'); if(divs.length!==2) return;\n      const key=divs[1].textContent.trim().toLowerCase(); if(labels.indexOf(key)<0) return;\n      const target=heads[key];\n      if(!target){ td.classList.add('jump-zero'); td.title='None this week'; return; }\n      td.classList.add('jump'); td.setAttribute('role','button'); td.setAttribute('tabindex','0');\n      td.setAttribute('aria-label','Jump to '+divs[1].textContent.trim());\n      const go=function(){ target.scrollIntoView({behavior:reduce?'auto':'smooth',block:'start'}); };\n      td.addEventListener('click',go);\n      td.addEventListener('keydown',function(e){ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); go(); } });\n    });\n  });\n})();\n</script>\n"
 
 FILTER_CSS = """.filter{max-width:680px;margin:0 auto;padding:10px 12px 10px;display:flex;gap:8px;align-items:center;flex-wrap:wrap;background:var(--card);border:1px solid var(--line);border-top:none}
 .filter label{font:700 12px Arial,Helvetica,sans-serif;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
@@ -49,14 +49,17 @@ FILTER_JS = """<script>
   function setMargin(){ var h = (bar ? bar.getBoundingClientRect().height : 90) + 12;
     document.querySelectorAll('.sec-target').forEach(function(t){ t.style.scrollMarginTop = h + 'px'; }); }
   function active(){ var o = document.getElementById('orlando'); return (o && !o.hidden) ? 'orlando' : 'tampa'; }
-  function cardsOf(panel){ return Array.prototype.filter.call(panel.querySelectorAll('table'), function(t){
+  function cardsOf(panel){ var cv = panel.querySelector('.view-coming');
+    if (cv && !cv.hidden) return Array.prototype.slice.call(cv.querySelectorAll('.cu-row'));
+    var root = panel.querySelector('.view-cases') || panel;
+    return Array.prototype.filter.call(root.querySelectorAll('table'), function(t){
       return (t.getAttribute('style') || '').indexOf('border-left:6px solid') >= 0; }); }
   function hdrOf(card){ return Array.prototype.find.call(card.querySelectorAll('div'), function(x){
       return (x.getAttribute('style') || '').indexOf('line-height:1.5') >= 0 && x.textContent.indexOf('\\u00b7') >= 0; }); }
   function jurOf(card){ var d = Array.prototype.find.call(card.querySelectorAll('div'), function(x){
       return (x.getAttribute('style') || '').indexOf('line-height:1.5') >= 0 && x.textContent.indexOf('\\u00b7') >= 0; });
     return d ? d.textContent.split('\\u00b7')[0].replace(/\\s+/g,' ').trim() : ''; }
-  function casesOf(card){ var d = hdrOf(card); var m = (d ? d.textContent : card.textContent).match(/Case #/g); return m ? m.length : 1; }
+  function casesOf(card){ if (card.classList.contains('cu-row')) return 1; var d = hdrOf(card); var m = (d ? d.textContent : card.textContent).match(/Case #/g); return m ? m.length : 1; }
   function countyOf(j){ return COUNTY[j] || j.replace(/^City of /,'').replace(/ County$/,''); }
   function matches(card, f){ if(!f) return true; var j = card.dataset.jur;
     return f.indexOf('county:') === 0 ? countyOf(j) === f.slice(7) : j === f; }
@@ -76,6 +79,7 @@ FILTER_JS = """<script>
       h += '</optgroup>';
     });
     sel.innerHTML = h; sel.value = state[id] || '';
+    if (sel.value !== (state[id] || '')) { state[id] = ''; sel.value = ''; }
   }
   function apply(){
     var id = active(), panel = document.getElementById(id), f = state[id] || '', cards = cardsOf(panel);
@@ -96,6 +100,11 @@ FILTER_JS = """<script>
       var key = d[1].textContent.trim().toLowerCase(), n = counts[key] || 0;
       d[0].textContent = n; td.classList.toggle('jump-zero', n === 0); td.classList.toggle('jump', n > 0);
       td.title = n === 0 ? 'None for this selection' : ''; td.tabIndex = n === 0 ? -1 : 0; });
+    panel.querySelectorAll('.cu-sec').forEach(function(sec){
+      sec.querySelectorAll('.cu-group').forEach(function(g){
+        var n = Array.prototype.filter.call(g.querySelectorAll('.cu-row'), function(r){ return !r.hidden; }).length;
+        g.hidden = (n === 0); var c = g.querySelector('.cu-count'); if (c) c.textContent = n; }); });
+    panel.querySelectorAll('.glance').forEach(function(g){ g.hidden = !!f; });
     clr.hidden = !f;
     note.textContent = f ? 'Showing ' + sel.options[sel.selectedIndex].text.replace(/ \\(\\d+\\)$/,'') + ' only. Counts above reflect this filter.' : '';
     setMargin();
@@ -105,6 +114,7 @@ FILTER_JS = """<script>
   document.querySelectorAll('.tab').forEach(function(t){ t.addEventListener('click', function(){ build(active()); apply(); }); });
   window.addEventListener('hashchange', function(){ build(active()); apply(); });
   window.addEventListener('resize', setMargin);
+  window.__elcRefresh = function(){ build(active()); apply(); };
   build(active()); apply();
 })();
 </script>
@@ -182,8 +192,16 @@ LOADER_JS = """<script>
     if (!r.ok) throw new Error('HTTP ' + r.status); return r.json();
   }).then(function(d){
     window.__ELC_WEEK = d;
-    document.getElementById('tampa').innerHTML = d.tampa || '';
-    document.getElementById('orlando').innerHTML = d.orlando || '';
+    ['tampa','orlando'].forEach(function(id){
+      var p = document.getElementById(id), coming = d[id + '_coming'];
+      if (!coming) { p.innerHTML = d[id] || ''; return; }
+      p.innerHTML = '<div class="views" role="tablist" aria-label="View">'
+        + '<button type="button" role="tab" data-view="cases" aria-selected="true">Cases <small>this week</small></button>'
+        + '<button type="button" role="tab" data-view="coming" aria-selected="false">Coming up <small>next 21 days</small></button></div>'
+        + '<div class="view-cases">' + (d[id] || '') + '</div><div class="view-coming" hidden>' + coming + '</div>';
+      var head = p.querySelector('.view-cases td[style*="border-top:6px solid"]');
+      if (head && d[id + '_glance']) head.insertAdjacentHTML('beforeend', d[id + '_glance']);
+    });
     runDeferred();
   }).catch(function(){ msg('This week\\'s update could not load. Reload the page to try again.'); });
 })();
@@ -265,9 +283,20 @@ def main(argv=None):
     if FILTER_HTML not in page:
         sys.exit("could not place the county filter in the page")
     page = page.replace("</style>", section_css() + "</style>", 1)
+    extras = {}
+    if split:
+        try:
+            import page_extras as PX  # noqa: E402
+            import team_email as TE  # noqa: E402
+            page = page.replace("</style>", PX.EXTRA_CSS + "</style>", 1)
+            for key, _, _ in MARKETS:
+                extras[key] = PX.build(od, d, key, TE.market_of)
+        except Exception as e:  # noqa: BLE001
+            print(f"warning: extra views skipped ({e})", file=sys.stderr)
+            extras = {}
     sec_js = SECTION_JS.replace("__SECTION_LABELS__", json.dumps({k: v[3] for k, v in SECTION_COLORS.items()}))
     if split:
-        page += defer(sec_js) + defer(FILTER_JS.replace("__COUNTY_MAP__", "{}")) + LOADER_JS
+        page += defer(sec_js) + (PX.VIEW_JS if extras else "") + defer(FILTER_JS.replace("__COUNTY_MAP__", "{}")) + LOADER_JS
     else:
         page += sec_js + FILTER_JS.replace("__COUNTY_MAP__", json.dumps(county_map, sort_keys=True))
     page = page.replace("\u2014", ", ")
@@ -277,6 +306,8 @@ def main(argv=None):
     if split:
         wk = {"week": week, "run_date": d, "county_map": county_map,
               "tampa": bodies["tampa"].replace("\u2014", ", "), "orlando": bodies["orlando"].replace("\u2014", ", ")}
+        for key, (g, c, st) in extras.items():
+            wk[key + "_glance"], wk[key + "_coming"], wk[key + "_coming_stats"] = g, c, st
         wp = os.path.join(od, f"week-{d}.json")
         json.dump(wk, open(wp, "w", encoding="utf-8"), ensure_ascii=False)
 
@@ -287,12 +318,21 @@ def main(argv=None):
     blocks = []
     for key, name, note in MARKETS:
         c = counts[key]
-        txt += [f"{name}: {note}{line(c)}", f"{PAGE_URL}#{key}", ""]
+        txt += [f"{name}: {note}{line(c)}", f"{PAGE_URL}#{key}"]
+        cst = extras.get(key, (None, None, None))[2]
+        if cst:
+            txt += [f"Coming up: {cst['hearings_21d']} hearings in the next 21 days, {cst['stalled']} stalled cases, "
+                    f"{cst['denied_90d']} denials in the last 90 days", f"{PAGE_URL}#{key}-coming"]
+        txt += [""]
         blocks.append(
             f'<table cellpadding="0" cellspacing="0" style="margin:18px 0 0"><tr><td style="border:2px solid #c4161c;'
             f'border-radius:6px;padding:10px 16px;background:#fff5f5"><a href="{PAGE_URL}#{key}" style="color:#c4161c;'
             f'font-weight:700;font-size:15px;text-decoration:underline">Open {name} update</a></td></tr></table>'
-            f'<p style="margin:6px 0 0;color:#475467">{html.escape(note + line(c))}</p>')
+            f'<p style="margin:6px 0 0;color:#475467">{html.escape(note + line(c))}</p>'
+            + (lambda cst: (f'<p style="margin:4px 0 0;color:#475467">Coming up: '
+                            f'<a href="{PAGE_URL}#{key}-coming" style="color:#c4161c;font-weight:700;text-decoration:underline">'
+                            f'{cst["hearings_21d"]} hearings in the next 21 days</a>, {cst["stalled"]} stalled cases, '
+                            f'{cst["denied_90d"]} denials in the last 90 days</p>') if cst else "")(extras.get(key, (None, None, None))[2]))
     txt += ["Each tab has one card per application showing The request and Who is behind it. "
             "Contacts tagged \"not the owner\" are engineers, attorneys, planners or other representatives.", "",
             f"Live map: {MAP_URL}"]

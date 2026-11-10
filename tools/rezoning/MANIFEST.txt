@@ -85,3 +85,4 @@ adapters/venice.py
 adapters/bradenton.py
 adapters/ocala.py
 adapters/north_port.py
+page_extras.py
