@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Lake County Vacant Land Comps &mdash; 2026-11-11</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://unpkg.com/esri-leaflet@3.0.12/dist/esri-leaflet.js"></script>
+<style>
+:root{--ink:#1a2b3c;--accent:#2e6b4f;--line:#dfe4e8;}
+*{box-sizing:border-box}
+body{margin:0;font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;color:var(--ink);background:#f6f8f9}
+header{background:var(--accent);color:#fff;padding:16px 22px}
+header h1{margin:0;font-size:19px}
+header p{margin:4px 0 0;font-size:13px;opacity:.9}
+#map{height:60vh;min-height:420px;width:100%}
+.wrap{padding:14px 18px 40px;overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:12.5px;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.08)}
+th,td{border:1px solid var(--line);padding:6px 8px;text-align:left;vertical-align:top}
+th{background:#eef3f0;position:sticky;top:0}
+tr:nth-child(even){background:#fafbfc}
+a{color:var(--accent)}
+.num{text-align:right;white-space:nowrap}
+.pop b{color:var(--accent)}
+.pop{font-size:12.5px;line-height:1.5}
+.legend{font-size:12px;color:#5a6b7a;margin:8px 0}
+</style></head><body>
+<header><h1>Lake County Vacant Land Comps</h1><p>Run date 2026-11-11 &middot; Sale dates Jul 13 2026 to Sep 15 2026 (posted after 10/14 PA bulk file; not previously in DB) &middot; &gt;0.5 ac &amp; &gt;$500k &middot; 3 new comps &middot; Source: Lake County PA sales search + Lake County GIS</p></header>
+<div id="map"></div>
+<div class="wrap">
+<p class="legend">Click any marker for full detail. Coordinates are exact parcel centroids from the Lake County PA GIS endpoint, not geocoded addresses.</p>
+<table id="tbl"><thead><tr>
+<th>#</th><th>Sale Date</th><th>Address</th><th>Grantor (Seller)</th><th>Grantee (Buyer)</th>
+<th class="num">Price</th><th class="num">Acres</th><th class="num">$/Acre</th><th>Deed</th><th>Land Use</th><th>Zoning</th><th>Parcel ID</th><th>Book/Page</th><th>PA Page</th><th>Notes</th>
+</tr></thead><tbody></tbody></table>
+</div>
+<script>
+var comps=[{"parcel_id": "32-21-26-0030-000-14600", "property_name": "1475 CADENCE ST, MINNEOLA FL 34715", "address": "1475 CADENCE ST, MINNEOLA FL 34715", "sale_date": "Sep 15 2026", "sale_date_iso": "2026-09-15", "price": 951600, "acreage": 1.1153, "price_per_acre": 853223, "transaction_type": "Sale", "grantor": "MRP HDFB LLC", "grantee": "DREAM FINDERS HOMES LLC", "deed_type": "WD", "property_type": "Land", "zoning": "PUD-R", "land_use": "Vacant Residential", "source": "Lake County PA", "county": "Lake", "county_fips": "12069", "date_added": "2026-11-11", "lat": 28.5963436, "lon": -81.713761, "aerial": "https://www.lakecopropappr.com/property-details.aspx?AltKey=3959978", "book_page": "6817/73", "elc_deal": null, "comments": "Deed OR 6817/73 (Warranty Deed, Qualified, Vacant at sale). Builder lot takedown (finished-lot purchase) from land banker MRP HDFB LLC. Grantor = prior owner of record per Lake County GIS parcel layer (Lake PA does not publish grantor). 7 parcels under one deed (same OR book/page confirmed on each PA record), acreage summed (1.12 ac, GIS parcel-polygon area). Also includes: 32-21-26-0025-000-11710 (Vacant Residential ~0.17 ac); 32-21-26-0030-000-14510 (Vacant Residential ~0.14 ac); 32-21-26-0030-000-14560 (Vacant Residential ~0.14 ac); 32-21-26-0030-000-14550 (Vacant Residential ~0.14 ac); 32-21-26-0030-000-14490 (Vacant Residential ~0.14 ac); 32-21-26-0030-000-15850 (Vacant Residential ~0.12 ac)."}, {"parcel_id": "07-15-27-0100-000-03102", "property_name": "STATE ROAD 40, ASTOR FL 32102", "address": "STATE ROAD 40, ASTOR FL 32102", "sale_date": "Aug 15 2026", "sale_date_iso": "2026-08-15", "price": 550000, "acreage": 15.7985, "price_per_acre": 34813, "transaction_type": "Sale", "grantor": "FORNACE DONALD J", "grantee": "INTER-VISION HOMES INC", "deed_type": "WD", "property_type": "Land", "zoning": "PUD", "land_use": "Vacant Residential", "source": "Lake County PA", "county": "Lake", "county_fips": "12069", "date_added": "2026-11-11", "lat": 29.1646695, "lon": -81.5377302, "aerial": "https://www.lakecopropappr.com/property-details.aspx?AltKey=1355338", "book_page": "6822/172", "elc_deal": null, "comments": "Deed OR 6822/172 (Warranty Deed, Qualified, Vacant at sale). Grantor = prior owner of record per Lake County GIS parcel layer (Lake PA does not publish grantor). Single parcel; acreage from GIS parcel polygon (15.80 ac)."}, {"parcel_id": "09-22-26-1200-026-00000", "property_name": "PALOMA RD, CLERMONT FL 34711", "address": "PALOMA RD, CLERMONT FL 34711", "sale_date": "Jul 13 2026", "sale_date_iso": "2026-07-13", "price": 750000, "acreage": 9.1883, "price_per_acre": 81626, "transaction_type": "Sale", "grantor": "BMR CLERMONT LLC", "grantee": "ADVENTIST HEALTH SYSTEM/SUNBELT INC", "deed_type": "WD", "property_type": "Land", "zoning": "AR", "land_use": "Timber S I 70", "source": "Lake County PA", "county": "Lake", "county_fips": "12069", "date_added": "2026-11-11", "lat": 28.5437307, "lon": -81.7203719, "aerial": "https://www.lakecopropappr.com/property-details.aspx?AltKey=1795079", "book_page": "6778/1268", "elc_deal": null, "comments": "Deed OR 6778/1268 (Warranty Deed, Unqualified, Vacant at sale). Grantor = prior owner of record per Lake County GIS parcel layer (Lake PA does not publish grantor). Single parcel; acreage from GIS parcel polygon (9.19 ac). PA coded this sale UNQUALIFIED (may not be arms-length). Recorded/posted late (not in the 10/14/2026 PA bulk sales file)."}];
+var map=L.map('map');
+L.esri.basemapLayer('Imagery').addTo(map);
+L.esri.basemapLayer('ImageryLabels').addTo(map);
+var money=function(n){return n==null?'\u2014':'$'+Number(n).toLocaleString();};
+var esc=function(s){return s==null?'\u2014':String(s).replace(/[&<>]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;'}[c];});};
+var grp=L.featureGroup().addTo(map);
+comps.forEach(function(c,i){
+  var pop='<div class="pop"><b>#'+(i+1)+' \u00b7 '+money(c.price)+'</b><br/>'+esc(c.address)+'<br/><br/>'
+   +'<b>Grantor:</b> '+esc(c.grantor)+'<br/>'
+   +'<b>Grantee:</b> '+esc(c.grantee)+'<br/>'
+   +'<b>Sale date:</b> '+esc(c.sale_date)+'<br/>'
+   +'<b>Acreage:</b> '+c.acreage+' ac<br/>'
+   +'<b>$/acre:</b> '+money(c.price_per_acre)+'<br/>'
+   +'<b>Deed type:</b> '+esc(c.deed_type)+'<br/>'
+   +'<b>Land use:</b> '+esc(c.land_use)+'<br/>'
+   +'<b>Zoning:</b> '+esc(c.zoning)+'<br/>'
+   +'<b>Parcel:</b> '+esc(c.parcel_id)+'<br/>'
+   +'<b>Book/Page:</b> '+esc(c.book_page)+'<br/>'
+   +(c.comments?('<b>Notes:</b> '+esc(c.comments)+'<br/>'):'')
+   +'<a href="'+c.aerial+'" target="_blank" rel="noopener">Open PA parcel page \u2192</a></div>';
+  if(c.lat==null||c.lon==null) return;
+  var m=L.marker([c.lat,c.lon]).addTo(grp).bindPopup(pop,{maxWidth:340});
+  m.bindTooltip('#'+(i+1)+' '+money(c.price));
+});
+if(grp.getLayers().length) map.fitBounds(grp.getBounds().pad(0.25)); else map.setView([28.8,-81.2],9);
+var tb=document.querySelector('#tbl tbody');
+comps.forEach(function(c,i){
+  var tr=document.createElement('tr');
+  tr.innerHTML='<td>'+(i+1)+'</td><td>'+esc(c.sale_date)+'</td><td>'+esc(c.address)+'</td>'
+   +'<td>'+esc(c.grantor)+'</td><td>'+esc(c.grantee)+'</td>'
+   +'<td class="num">'+money(c.price)+'</td><td class="num">'+c.acreage+'</td>'
+   +'<td class="num">'+money(c.price_per_acre)+'</td><td>'+esc(c.deed_type)+'</td>'
+   +'<td>'+esc(c.land_use)+'</td><td>'+esc(c.zoning)+'</td><td>'+esc(c.parcel_id)+'</td>'
+   +'<td>'+esc(c.book_page)+'</td>'
+   +'<td><a href="'+c.aerial+'" target="_blank" rel="noopener">link</a></td>'
+   +'<td>'+esc(c.comments)+'</td>';
+  tr.style.cursor='pointer';
+  tr.onclick=function(){ if(c.lat!=null) map.setView([c.lat,c.lon],16); };
+  tb.appendChild(tr);
+});
+</script></body></html>
