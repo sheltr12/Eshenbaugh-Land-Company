@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Manatee County Vacant Land Comps &mdash; 2026-11-17</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://unpkg.com/esri-leaflet@3.0.12/dist/esri-leaflet.js"></script>
+<style>
+:root{--ink:#1a2b3c;--accent:#2e6b4f;--line:#dfe4e8;}
+*{box-sizing:border-box}
+body{margin:0;font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;color:var(--ink);background:#f6f8f9}
+header{background:var(--accent);color:#fff;padding:16px 22px}
+header h1{margin:0;font-size:19px}
+header p{margin:4px 0 0;font-size:13px;opacity:.9}
+#map{height:60vh;min-height:420px;width:100%}
+.wrap{padding:14px 18px 40px;overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:12.5px;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.08)}
+th,td{border:1px solid var(--line);padding:6px 8px;text-align:left;vertical-align:top}
+th{background:#eef3f0;position:sticky;top:0}
+tr:nth-child(even){background:#fafbfc}
+a{color:var(--accent)}
+.num{text-align:right;white-space:nowrap}
+.pop b{color:var(--accent)}
+.pop{font-size:12.5px;line-height:1.5}
+.legend{font-size:12px;color:#5a6b7a;margin:8px 0}
+.lbl{font-size:10.5px;padding:1px 4px;font-weight:600}
+.dot{display:inline-block;width:10px;height:10px;border-radius:50%;margin:0 4px 0 10px;vertical-align:middle}
+</style></head><body>
+<header><h1>Manatee County Vacant Land Comps</h1><p>Run date 2026-11-17 &middot; Sale dates 2026-09-04 to 2026-09-28 &middot; &gt;0.5 ac &amp; &gt;$500k &middot; 4 new comps &middot; Source: Manatee County PA sales file + PA GIS</p></header>
+<div id="map"></div>
+<div class="wrap">
+<p class="legend">Click any marker for full detail. Coordinates are exact parcel centroids from the Manatee County PA GIS endpoint, not geocoded addresses.<span class="dot" style="background:#1f9d55"></span>Vacant land deed<span class="dot" style="background:#e8871e"></span>Mixed deed (vacant + improved parcels &mdash; price includes improvements)</p>
+<table id="tbl"><thead><tr>
+<th>#</th><th>Sale Date</th><th>Address</th><th>Grantor (Seller)</th><th>Grantee (Buyer)</th>
+<th class="num">Price</th><th class="num">Acres</th><th class="num">$/Acre</th><th>Deed</th><th>Land Use</th><th>Zoning</th><th>Parcel ID</th><th>Book/Page</th><th>PA Page</th><th>Notes</th>
+</tr></thead><tbody></tbody></table>
+</div>
+<script>
+var comps=[{"parcel_id": "586180659", "property_name": "7621 BUFFET BIGHT CT, LAKEWOOD RANCH, FL 34202", "address": "7621 BUFFET BIGHT CT, LAKEWOOD RANCH, FL 34202", "sale_date": "Sep 04 2026", "sale_date_iso": "2026-09-04", "price": 887400, "acreage": 1.0331, "price_per_acre": 858968, "transaction_type": "Sale", "grantor": "TPG AG EHC III (LEN) MULTI STATE 2 LLC", "grantee": "LENNAR HOMES LLC", "deed_type": "SW", "property_type": "Land", "zoning": null, "land_use": "Vacant Residential Platted (1554)", "source": "Manatee County PA", "county": "Manatee", "county_fips": "12081", "date_added": "2026-11-17", "lat": 27.4042041, "lon": -82.3531511, "aerial": "https://www.manateepao.gov/parcel/?parid=586180659", "book_page": "202641110966", "elc_deal": null, "comments": "6 parcels under one deed (Instrument 202641110966); summed acreage 1.0331. Primary 586180659. Also incl: 586180609 (Vacant Residential Platted ~0.1774ac); 586181859 (Vacant Residential Platted ~0.185ac); 586184109 (Vacant Residential Platted ~0.1696ac); 586184159 (Vacant Residential Platted ~0.1552ac); 586184209 (Vacant Residential Platted ~0.1552ac) Homebuilder lot takedown."}, {"parcel_id": "305959659", "property_name": "18519 GRAZING HILLS PL, LAKEWOOD RANCH, FL 34211", "address": "18519 GRAZING HILLS PL, LAKEWOOD RANCH, FL 34211", "sale_date": "Sep 28 2026", "sale_date_iso": "2026-09-28", "price": 7843000, "acreage": 8.5491, "price_per_acre": 917407, "transaction_type": "Sale", "grantor": "FORESTAR (USA) REAL ESTATE GROUP INC", "grantee": "D R HORTON INC", "deed_type": "SW", "property_type": "Land", "zoning": null, "land_use": "Vacant Residential Platted (1554)", "source": "Manatee County PA", "county": "Manatee", "county_fips": "12081", "date_added": "2026-11-17", "lat": 27.4701447, "lon": -82.3498187, "aerial": "https://www.manateepao.gov/parcel/?parid=305959659", "book_page": "202641113084", "elc_deal": null, "comments": "61 parcels under one deed (Instrument 202641113084); summed acreage 8.5491. Primary 305959659. Also incl: 305952259 (Vacant Residential Platted ~0.0758ac); 305952309 (Vacant Residential Platted ~0.0505ac); 305952359 (Vacant Residential Platted ~0.0505ac); 305952409 (Vacant Residential Platted ~0.0505ac); 305952459 (Vacant Residential Platted ~0.0505ac); 305952509 (Vacant Residential Platted ~0.076ac); 305953859 (Vacant Residential Platted ~0.1485ac); 305953909 (Vacant Residential Platted ~0.142ac) (+52 more) Homebuilder lot takedown."}, {"parcel_id": "500260009", "property_name": "12314 WHITE BLOSSOM CT, PARRISH, FL 34219", "address": "12314 WHITE BLOSSOM CT, PARRISH, FL 34219", "sale_date": "Sep 28 2026", "sale_date_iso": "2026-09-28", "price": 1337700, "acreage": 1.451, "price_per_acre": 921916, "transaction_type": "Sale", "grantor": "HDP CROSSCREEK II LLC", "grantee": "DRB GROUP FLORIDA LLC", "deed_type": "SW", "property_type": "Land", "zoning": null, "land_use": "Vacant Residential Platted (1554)", "source": "Manatee County PA", "county": "Manatee", "county_fips": "12081", "date_added": "2026-11-17", "lat": 27.5422, "lon": -82.4212994, "aerial": "https://www.manateepao.gov/parcel/?parid=500260009", "book_page": "202641114058", "elc_deal": null, "comments": "5 parcels under one deed (Instrument 202641114058); summed acreage 1.451. Primary 500260009. Also incl: 500259859 (Vacant Residential Platted ~0.2894ac); 500259909 (Vacant Residential Platted ~0.2897ac); 500259959 (Vacant Residential Platted ~0.2901ac); 500260059 (Vacant Residential Platted ~0.2739ac) Homebuilder lot takedown."}, {"parcel_id": "5164547809", "property_name": "5127 WORTHING ST, BRADENTON, FL 34210", "address": "5127 WORTHING ST, BRADENTON, FL 34210", "sale_date": "Sep 28 2026", "sale_date_iso": "2026-09-28", "price": 1411700, "acreage": 1.6833, "price_per_acre": 838650, "transaction_type": "Sale", "grantor": "CORTEZ75W INVESTORS LLC", "grantee": "CARDEL FL HOMES LLC", "deed_type": "SW", "property_type": "Land", "zoning": null, "land_use": "Vacant Residential Platted (1554)", "source": "Manatee County PA", "county": "Manatee", "county_fips": "12081", "date_added": "2026-11-17", "lat": 27.451386, "lon": -82.6435869, "aerial": "https://www.manateepao.gov/parcel/?parid=5164547809", "book_page": "202641112754", "elc_deal": null, "comments": "10 parcels under one deed (Instrument 202641112754); summed acreage 1.6833. Primary 5164547809. Also incl: 5164543509 (Vacant Residential Platted ~0.1653ac); 5164543609 (Vacant Residential Platted ~0.1653ac); 5164543759 (Vacant Residential Platted ~0.1653ac); 5164546859 (Vacant Residential Platted ~0.1653ac); 5164546909 (Vacant Residential Platted ~0.1653ac); 5164546959 (Vacant Residential Platted ~0.1653ac); 5164547009 (Vacant Residential Platted ~0.1653ac); 5164547059 (Vacant Residential Platted ~0.1653ac) (+1 more) Homebuilder lot takedown."}];
+var map=L.map('map');
+L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',{maxZoom:19,attribution:'Imagery &copy; Esri, Maxar, Earthstar Geographics'}).addTo(map);
+L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}',{maxZoom:19}).addTo(map);
+L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Transportation/MapServer/tile/{z}/{y}/{x}',{maxZoom:19,opacity:0.7}).addTo(map);
+var money=function(n){return n==null?'\u2014':'$'+Number(n).toLocaleString();};
+var esc=function(s){return s==null?'\u2014':String(s).replace(/[&<>]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;'}[c];});};
+var grp=L.featureGroup().addTo(map);
+comps.forEach(function(c,i){
+  var pop='<div class="pop"><b>#'+(i+1)+' \u00b7 '+money(c.price)+'</b><br/>'+esc(c.address)+'<br/><br/>'
+   +'<b>Grantor:</b> '+esc(c.grantor)+'<br/>'
+   +'<b>Grantee:</b> '+esc(c.grantee)+'<br/>'
+   +'<b>Sale date:</b> '+esc(c.sale_date)+'<br/>'
+   +'<b>Acreage:</b> '+c.acreage+' ac<br/>'
+   +'<b>$/acre:</b> '+money(c.price_per_acre)+'<br/>'
+   +'<b>Deed type:</b> '+esc(c.deed_type)+'<br/>'
+   +'<b>Land use:</b> '+esc(c.land_use)+'<br/>'
+   +'<b>Zoning:</b> '+esc(c.zoning)+'<br/>'
+   +'<b>Parcel:</b> '+esc(c.parcel_id)+'<br/>'
+   +'<b>Book/Page:</b> '+esc(c.book_page)+'<br/>'
+   +(c.comments?('<b>Notes:</b> '+esc(c.comments)+'<br/>'):'')
+   +'<a href="'+c.aerial+'" target="_blank" rel="noopener">Open PA parcel page \u2192</a></div>';
+  if(c.lat==null||c.lon==null) return;
+  var mixed=/^MIXED/.test(c.comments||'');var m=L.circleMarker([c.lat,c.lon],{radius:Math.max(7,Math.min(16,5+Math.log10(c.price)-3)),color:'#fff',weight:2,fillColor:mixed?'#e8871e':'#1f9d55',fillOpacity:.95}).addTo(grp).bindPopup(pop,{maxWidth:340});
+  m.bindTooltip('#'+(i+1)+' '+money(c.price),{permanent:comps.length<=60,direction:'top',offset:[0,-6],className:'lbl'});
+});
+if(grp.getLayers().length) map.fitBounds(grp.getBounds().pad(0.25)); else map.setView([27.95,-81.7],10);
+var tb=document.querySelector('#tbl tbody');
+comps.forEach(function(c,i){
+  var tr=document.createElement('tr');
+  tr.innerHTML='<td>'+(i+1)+'</td><td>'+esc(c.sale_date)+'</td><td>'+esc(c.address)+'</td>'
+   +'<td>'+esc(c.grantor)+'</td><td>'+esc(c.grantee)+'</td>'
+   +'<td class="num">'+money(c.price)+'</td><td class="num">'+c.acreage+'</td>'
+   +'<td class="num">'+money(c.price_per_acre)+'</td><td>'+esc(c.deed_type)+'</td>'
+   +'<td>'+esc(c.land_use)+'</td><td>'+esc(c.zoning)+'</td><td>'+esc(c.parcel_id)+'</td>'
+   +'<td>'+esc(c.book_page)+'</td>'
+   +'<td><a href="'+c.aerial+'" target="_blank" rel="noopener">link</a></td>'
+   +'<td>'+esc(c.comments)+'</td>';
+  tr.style.cursor='pointer';
+  tr.onclick=function(){ if(c.lat!=null) map.setView([c.lat,c.lon],16); };
+  tb.appendChild(tr);
+});
+</script></body></html>
