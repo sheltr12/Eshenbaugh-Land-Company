@@ -1,9 +1,9 @@
 {
  "meta": {
   "title": "ELC Rezoning Tracker",
-  "generated": "2026-11-23T14:37:58+00:00",
+  "generated": "2026-11-23T17:21:54+00:00",
   "run_date": "2026-11-23",
-  "record_count": 776,
+  "record_count": 778,
   "min_acres": 0.5,
   "categories": [
    "Rezoning",
@@ -24,8 +24,8 @@
     "Orange County": 53,
     "Pasco County": 53,
     "Osceola County": 47,
+    "City of Tampa": 36,
     "Hernando County": 35,
-    "City of Tampa": 34,
     "Polk County": 32,
     "Brevard County": 29,
     "Marion County": 25,
@@ -87,7 +87,7 @@
     "City of Temple Terrace": 1
    },
    "county": {
-    "Hillsborough": 137,
+    "Hillsborough": 139,
     "Lake": 74,
     "Orange": 73,
     "Volusia": 66,
@@ -106,34 +106,34 @@
     "Alachua": 8
    },
    "category": {
-    "PD": 285,
-    "Rezoning": 276,
+    "PD": 286,
+    "Rezoning": 277,
     "Comp Plan Amendment": 215
    },
    "status": {
-    "Filed": 252,
-    "Hearing Scheduled": 215,
-    "Approved": 214,
+    "Filed": 251,
+    "Approved": 224,
+    "Hearing Scheduled": 208,
     "Withdrawn": 42,
     "Continued": 36,
     "Denied": 17
    }
   },
-  "new_this_run": 17,
-  "new_this_run_recent": 16,
-  "status_changes_this_run": 40,
-  "fetched_this_run": 356,
-  "dropped_small_this_run": 7,
+  "new_this_run": 2,
+  "new_this_run_recent": 2,
+  "status_changes_this_run": 13,
+  "fetched_this_run": 200,
+  "dropped_small_this_run": 8,
   "adapter_health": [
    {
     "adapter": "accela_charlotte",
     "jurisdictions": [
      "Charlotte County"
     ],
-    "status": "failed",
-    "count": 0,
-    "error": "accela_core.Blocked: 429 at https://aca-prod.accela.com/BOCC/Cap/CapHome.aspx?module=Planning&TabName=Planning",
-    "seconds": 25.0,
+    "status": "ok",
+    "count": 10,
+    "error": null,
+    "seconds": 723.0,
     "since": "2026-11-02",
     "refresh_count": 10
    },
@@ -142,10 +142,10 @@
     "jurisdictions": [
      "Manatee County"
     ],
-    "status": "failed",
-    "count": 0,
-    "error": "accela_core.Blocked: 429 at https://aca-prod.accela.com/MANATEE/Cap/CapHome.aspx?module=Planning&TabName=Planning",
-    "seconds": 10.9,
+    "status": "ok",
+    "count": 19,
+    "error": null,
+    "seconds": 1232.3,
     "since": "2026-11-02",
     "refresh_count": 23
    },
@@ -154,34 +154,22 @@
     "jurisdictions": [
      "Pasco County"
     ],
-    "status": "failed",
-    "count": 0,
-    "error": "accela_core.Blocked: 429 at https://aca-prod.accela.com/PASCO/Cap/CapHome.aspx?module=Planning&TabName=Planning",
-    "seconds": 33.9,
+    "status": "ok",
+    "count": 42,
+    "error": null,
+    "seconds": 1735.3,
     "since": "2026-11-02",
     "refresh_count": 42
-   },
-   {
-    "adapter": "accela_pinellas",
-    "jurisdictions": [
-     "Pinellas County"
-    ],
-    "status": "failed",
-    "count": 0,
-    "error": "accela_core.Blocked: 429 at https://aca-prod.accela.com/PINELLAS/Cap/CapHome.aspx?module=Planning&TabName=Planning",
-    "seconds": 1.1,
-    "since": "2026-11-02",
-    "refresh_count": 5
    },
    {
     "adapter": "accela_polk",
     "jurisdictions": [
      "Polk County"
     ],
-    "status": "failed",
-    "count": 0,
-    "error": "accela_core.Blocked: 429 at https://aca-prod.accela.com/POLKCO/Cap/CapHome.aspx?module=LandDev&TabName=LandDev",
-    "seconds": 1.1,
+    "status": "ok",
+    "count": 26,
+    "error": null,
+    "seconds": 900.3,
     "since": "2026-11-02",
     "refresh_count": 26
    },
@@ -190,10 +178,10 @@
     "jurisdictions": [
      "Sarasota County"
     ],
-    "status": "failed",
-    "count": 0,
-    "error": "accela_core.Blocked: 429 at https://aca-prod.accela.com/SARASOTACO/Cap/CapHome.aspx?module=Planning&TabName=Planning",
-    "seconds": 29.4,
+    "status": "ok",
+    "count": 10,
+    "error": null,
+    "seconds": 127.8,
     "since": "2026-11-02",
     "refresh_count": 9
    },
@@ -202,82 +190,22 @@
     "jurisdictions": [
      "City of Tampa"
     ],
-    "status": "failed",
-    "count": 0,
-    "error": "accela_core.Blocked: 429 at https://aca-prod.accela.com/TAMPA/Cap/CapHome.aspx?module=Planning&TabName=Planning",
-    "seconds": 31.3,
+    "status": "ok",
+    "count": 29,
+    "error": null,
+    "seconds": 307.2,
     "since": "2026-11-02",
     "refresh_count": 23
-   },
-   {
-    "adapter": "alachua",
-    "jurisdictions": [
-     "Alachua County"
-    ],
-    "status": "ok",
-    "count": 5,
-    "error": null,
-    "seconds": 2.2,
-    "since": "2026-11-02",
-    "refresh_count": 5
-   },
-   {
-    "adapter": "altamonte_springs",
-    "jurisdictions": [
-     "City of Altamonte Springs"
-    ],
-    "status": "ok",
-    "count": 0,
-    "error": null,
-    "seconds": 13.7,
-    "since": "2026-11-02",
-    "refresh_count": 0
-   },
-   {
-    "adapter": "apopka",
-    "jurisdictions": [
-     "City of Apopka"
-    ],
-    "status": "ok",
-    "count": 2,
-    "error": null,
-    "seconds": 91.2,
-    "since": "2026-11-02",
-    "refresh_count": 2
-   },
-   {
-    "adapter": "auburndale",
-    "jurisdictions": [
-     "City of Auburndale"
-    ],
-    "status": "ok",
-    "count": 0,
-    "error": null,
-    "seconds": 10.0,
-    "since": "2026-11-02",
-    "refresh_count": 0
-   },
-   {
-    "adapter": "bartow",
-    "jurisdictions": [
-     "City of Bartow"
-    ],
-    "status": "ok",
-    "count": 2,
-    "error": null,
-    "seconds": 97.4,
-    "since": "2026-11-02",
-    "refresh_count": 2
    },
    {
     "adapter": "bradenton",
     "jurisdictions": [
      "City of Bradenton"
     ],
-    "status": "failed",
-    "count": 0,
-    "error": "accela_core.Blocked: 429 at https://aca-prod.accela.com/BRADENTON/Cap/CapDetail.aspx?Module=Planning&TabName=Planning&capID1=REC26&capID2=00000&capID3=006MK&agencyCode=BRADENTON&IsToShowInspection=",
-    "seconds": 23.3,
+    "status": "ok",
+    "count": 2,
+    "error": null,
+    "seconds": 54.7,
     "since": "2026-11-02",
     "refresh_count": 2
    },
@@ -286,776 +214,64 @@
     "jurisdictions": [
      "Brevard County"
     ],
-    "status": "failed",
-    "count": 0,
-    "error": "accela_core.Blocked: 429 at https://aca-prod.accela.com/BREVARD/Cap/CapHome.aspx?module=Development&TabName=Development",
-    "seconds": 22.8,
+    "status": "ok",
+    "count": 22,
+    "error": null,
+    "seconds": 846.7,
     "since": "2026-11-02",
     "refresh_count": 20
-   },
-   {
-    "adapter": "brooksville",
-    "jurisdictions": [
-     "City of Brooksville"
-    ],
-    "status": "ok",
-    "count": 0,
-    "error": null,
-    "seconds": 30.4,
-    "since": "2026-11-02",
-    "refresh_count": 0
-   },
-   {
-    "adapter": "citrus",
-    "jurisdictions": [
-     "Citrus County"
-    ],
-    "status": "ok",
-    "count": 6,
-    "error": null,
-    "seconds": 99.9,
-    "since": "2026-11-02",
-    "refresh_count": 5
-   },
-   {
-    "adapter": "city_of_alachua",
-    "jurisdictions": [
-     "City of Alachua"
-    ],
-    "status": "ok",
-    "count": 1,
-    "error": null,
-    "seconds": 54.3,
-    "since": "2026-11-02",
-    "refresh_count": 1
-   },
-   {
-    "adapter": "city_of_sarasota",
-    "jurisdictions": [
-     "City of Sarasota"
-    ],
-    "status": "ok",
-    "count": 3,
-    "error": null,
-    "seconds": 116.1,
-    "since": "2026-11-02",
-    "refresh_count": 3
-   },
-   {
-    "adapter": "city_of_seminole",
-    "jurisdictions": [
-     "City of Seminole"
-    ],
-    "status": "ok",
-    "count": 0,
-    "error": null,
-    "seconds": 13.3,
-    "since": "2026-11-02",
-    "refresh_count": 0
-   },
-   {
-    "adapter": "clearwater",
-    "jurisdictions": [
-     "City of Clearwater"
-    ],
-    "status": "ok",
-    "count": 4,
-    "error": null,
-    "seconds": 24.2,
-    "since": "2026-11-02",
-    "refresh_count": 3
-   },
-   {
-    "adapter": "clermont",
-    "jurisdictions": [
-     "City of Clermont"
-    ],
-    "status": "ok",
-    "count": 8,
-    "error": null,
-    "seconds": 82.2,
-    "since": "2026-11-02",
-    "refresh_count": 8
-   },
-   {
-    "adapter": "dade_city",
-    "jurisdictions": [
-     "City of Dade City"
-    ],
-    "status": "ok",
-    "count": 7,
-    "error": null,
-    "seconds": 32.0,
-    "since": "2026-11-02",
-    "refresh_count": 5
-   },
-   {
-    "adapter": "davenport",
-    "jurisdictions": [
-     "City of Davenport"
-    ],
-    "status": "ok",
-    "count": 0,
-    "error": null,
-    "seconds": 14.6,
-    "since": "2026-11-02",
-    "refresh_count": 0
-   },
-   {
-    "adapter": "daytona_beach",
-    "jurisdictions": [
-     "City of Daytona Beach"
-    ],
-    "status": "ok",
-    "count": 17,
-    "error": null,
-    "seconds": 49.5,
-    "since": "2026-11-02",
-    "refresh_count": 16
-   },
-   {
-    "adapter": "deland",
-    "jurisdictions": [
-     "City of DeLand"
-    ],
-    "status": "ok",
-    "count": 13,
-    "error": null,
-    "seconds": 371.4,
-    "since": "2026-11-02",
-    "refresh_count": 11
-   },
-   {
-    "adapter": "deltona",
-    "jurisdictions": [
-     "City of Deltona"
-    ],
-    "status": "ok",
-    "count": 5,
-    "error": null,
-    "seconds": 35.9,
-    "since": "2026-11-02",
-    "refresh_count": 4
-   },
-   {
-    "adapter": "dunedin",
-    "jurisdictions": [
-     "City of Dunedin"
-    ],
-    "status": "ok",
-    "count": 2,
-    "error": null,
-    "seconds": 84.4,
-    "since": "2026-11-02",
-    "refresh_count": 2
-   },
-   {
-    "adapter": "eustis",
-    "jurisdictions": [
-     "City of Eustis"
-    ],
-    "status": "ok",
-    "count": 3,
-    "error": null,
-    "seconds": 71.2,
-    "since": "2026-11-02",
-    "refresh_count": 3
-   },
-   {
-    "adapter": "gainesville",
-    "jurisdictions": [
-     "City of Gainesville"
-    ],
-    "status": "ok",
-    "count": 0,
-    "error": null,
-    "seconds": 25.0,
-    "since": "2026-11-02",
-    "refresh_count": 0
-   },
-   {
-    "adapter": "groveland",
-    "jurisdictions": [
-     "City of Groveland"
-    ],
-    "status": "ok",
-    "count": 6,
-    "error": null,
-    "seconds": 262.8,
-    "since": "2026-11-02",
-    "refresh_count": 6
-   },
-   {
-    "adapter": "haines_city",
-    "jurisdictions": [
-     "City of Haines City"
-    ],
-    "status": "ok",
-    "count": 2,
-    "error": null,
-    "seconds": 27.9,
-    "since": "2026-11-02",
-    "refresh_count": 2
-   },
-   {
-    "adapter": "hernando",
-    "jurisdictions": [
-     "Hernando County"
-    ],
-    "status": "ok",
-    "count": 25,
-    "error": null,
-    "seconds": 79.1,
-    "since": "2026-11-02",
-    "refresh_count": 23
-   },
-   {
-    "adapter": "hillsborough",
-    "jurisdictions": [
-     "Hillsborough County"
-    ],
-    "status": "ok",
-    "count": 76,
-    "error": null,
-    "seconds": 73.5,
-    "since": "2026-11-02",
-    "refresh_count": 70
-   },
-   {
-    "adapter": "kissimmee",
-    "jurisdictions": [
-     "City of Kissimmee"
-    ],
-    "status": "ok",
-    "count": 1,
-    "error": null,
-    "seconds": 39.1,
-    "since": "2026-11-02",
-    "refresh_count": 1
-   },
-   {
-    "adapter": "lake",
-    "jurisdictions": [
-     "Lake County"
-    ],
-    "status": "ok",
-    "count": 11,
-    "error": null,
-    "seconds": 64.9,
-    "since": "2026-11-02",
-    "refresh_count": 12
-   },
-   {
-    "adapter": "lake_mary",
-    "jurisdictions": [
-     "City of Lake Mary"
-    ],
-    "status": "ok",
-    "count": 0,
-    "error": null,
-    "seconds": 26.6,
-    "since": "2026-11-02",
-    "refresh_count": 0
-   },
-   {
-    "adapter": "lake_wales",
-    "jurisdictions": [
-     "City of Lake Wales"
-    ],
-    "status": "ok",
-    "count": 7,
-    "error": null,
-    "seconds": 60.7,
-    "since": "2026-11-02",
-    "refresh_count": 7
-   },
-   {
-    "adapter": "lakeland",
-    "jurisdictions": [
-     "City of Lakeland"
-    ],
-    "status": "ok",
-    "count": 4,
-    "error": null,
-    "seconds": 81.3,
-    "since": "2026-11-02",
-    "refresh_count": 4
-   },
-   {
-    "adapter": "largo",
-    "jurisdictions": [
-     "City of Largo"
-    ],
-    "status": "ok",
-    "count": 1,
-    "error": null,
-    "seconds": 15.1,
-    "since": "2026-11-02",
-    "refresh_count": 1
-   },
-   {
-    "adapter": "leesburg",
-    "jurisdictions": [
-     "City of Leesburg"
-    ],
-    "status": "ok",
-    "count": 14,
-    "error": null,
-    "seconds": 149.9,
-    "since": "2026-11-02",
-    "refresh_count": 12
-   },
-   {
-    "adapter": "marion",
-    "jurisdictions": [
-     "Marion County"
-    ],
-    "status": "ok",
-    "count": 11,
-    "error": null,
-    "seconds": 58.9,
-    "since": "2026-11-02",
-    "refresh_count": 11
-   },
-   {
-    "adapter": "mascotte",
-    "jurisdictions": [
-     "City of Mascotte"
-    ],
-    "status": "ok",
-    "count": 2,
-    "error": null,
-    "seconds": 52.0,
-    "since": "2026-11-02",
-    "refresh_count": 2
-   },
-   {
-    "adapter": "melbourne",
-    "jurisdictions": [
-     "City of Melbourne"
-    ],
-    "status": "ok",
-    "count": 3,
-    "error": null,
-    "seconds": 106.2,
-    "since": "2026-11-02",
-    "refresh_count": 3
-   },
-   {
-    "adapter": "minneola",
-    "jurisdictions": [
-     "City of Minneola"
-    ],
-    "status": "ok",
-    "count": 3,
-    "error": null,
-    "seconds": 41.8,
-    "since": "2026-11-02",
-    "refresh_count": 3
-   },
-   {
-    "adapter": "mount_dora",
-    "jurisdictions": [
-     "City of Mount Dora"
-    ],
-    "status": "ok",
-    "count": 0,
-    "error": null,
-    "seconds": 55.3,
-    "since": "2026-11-02",
-    "refresh_count": 0
-   },
-   {
-    "adapter": "new_port_richey",
-    "jurisdictions": [
-     "City of New Port Richey"
-    ],
-    "status": "ok",
-    "count": 0,
-    "error": null,
-    "seconds": 1.9,
-    "since": "2026-11-02",
-    "refresh_count": 4
    },
    {
     "adapter": "north_port",
     "jurisdictions": [
      "City of North Port"
     ],
-    "status": "failed",
-    "count": 0,
-    "error": "accela_core.Blocked: 429 at https://aca-prod.accela.com/NORTHPORT/Cap/CapDetail.aspx?Module=Planning&TabName=Planning&capID1=REC26&capID2=00000&capID3=00N63&agencyCode=NORTHPORT&IsToShowInspection=",
-    "seconds": 33.8,
-    "since": "2026-11-02",
-    "refresh_count": 4
-   },
-   {
-    "adapter": "ocala",
-    "jurisdictions": [
-     "City of Ocala"
-    ],
     "status": "ok",
     "count": 4,
     "error": null,
-    "seconds": 21.1,
+    "seconds": 80.6,
     "since": "2026-11-02",
     "refresh_count": 4
-   },
-   {
-    "adapter": "ocoee",
-    "jurisdictions": [
-     "City of Ocoee"
-    ],
-    "status": "ok",
-    "count": 0,
-    "error": null,
-    "seconds": 79.7,
-    "since": "2026-11-02",
-    "refresh_count": 0
-   },
-   {
-    "adapter": "orange",
-    "jurisdictions": [
-     "Orange County"
-    ],
-    "status": "ok",
-    "count": 17,
-    "error": null,
-    "seconds": 29.6,
-    "since": "2026-11-02",
-    "refresh_count": 17
-   },
-   {
-    "adapter": "orlando",
-    "jurisdictions": [
-     "City of Orlando"
-    ],
-    "status": "ok",
-    "count": 6,
-    "error": null,
-    "seconds": 205.8,
-    "since": "2026-11-02",
-    "refresh_count": 3
-   },
-   {
-    "adapter": "ormond_beach",
-    "jurisdictions": [
-     "City of Ormond Beach"
-    ],
-    "status": "ok",
-    "count": 3,
-    "error": null,
-    "seconds": 21.0,
-    "since": "2026-11-02",
-    "refresh_count": 3
    },
    {
     "adapter": "osceola",
     "jurisdictions": [
      "Osceola County"
     ],
-    "status": "failed",
-    "count": 0,
-    "error": "accela_core.Blocked: 429 at https://aca-prod.accela.com/OSCEOLA/Cap/CapHome.aspx?module=Planning&TabName=Planning",
-    "seconds": 16.1,
+    "status": "ok",
+    "count": 35,
+    "error": null,
+    "seconds": 717.5,
     "since": "2026-11-02",
     "refresh_count": 34
-   },
-   {
-    "adapter": "oviedo",
-    "jurisdictions": [
-     "City of Oviedo"
-    ],
-    "status": "ok",
-    "count": 1,
-    "error": null,
-    "seconds": 33.7,
-    "since": "2026-11-02",
-    "refresh_count": 1
-   },
-   {
-    "adapter": "palm_bay",
-    "jurisdictions": [
-     "City of Palm Bay"
-    ],
-    "status": "ok",
-    "count": 1,
-    "error": null,
-    "seconds": 144.2,
-    "since": "2026-11-02",
-    "refresh_count": 1
-   },
-   {
-    "adapter": "palmetto",
-    "jurisdictions": [
-     "City of Palmetto"
-    ],
-    "status": "ok",
-    "count": 0,
-    "error": null,
-    "seconds": 27.8,
-    "since": "2026-11-02",
-    "refresh_count": 0
-   },
-   {
-    "adapter": "pinellas_park",
-    "jurisdictions": [
-     "City of Pinellas Park"
-    ],
-    "status": "ok",
-    "count": 9,
-    "error": null,
-    "seconds": 46.9,
-    "since": "2026-11-02",
-    "refresh_count": 9
-   },
-   {
-    "adapter": "plan_hillsborough",
-    "jurisdictions": [
-     "Hillsborough County",
-     "City of Tampa",
-     "City of Plant City",
-     "City of Temple Terrace"
-    ],
-    "status": "ok",
-    "count": 19,
-    "error": null,
-    "seconds": 6.9,
-    "since": "2026-11-02",
-    "refresh_count": 18
-   },
-   {
-    "adapter": "port_orange",
-    "jurisdictions": [
-     "City of Port Orange"
-    ],
-    "status": "ok",
-    "count": 2,
-    "error": null,
-    "seconds": 98.3,
-    "since": "2026-11-02",
-    "refresh_count": 2
-   },
-   {
-    "adapter": "punta_gorda",
-    "jurisdictions": [
-     "City of Punta Gorda"
-    ],
-    "status": "ok",
-    "count": 0,
-    "error": null,
-    "seconds": 1.8,
-    "since": "2026-11-02",
-    "refresh_count": 0
-   },
-   {
-    "adapter": "safety_harbor",
-    "jurisdictions": [
-     "City of Safety Harbor"
-    ],
-    "status": "ok",
-    "count": 2,
-    "error": null,
-    "seconds": 40.3,
-    "since": "2026-11-02",
-    "refresh_count": 2
-   },
-   {
-    "adapter": "sanford",
-    "jurisdictions": [
-     "City of Sanford"
-    ],
-    "status": "ok",
-    "count": 3,
-    "error": null,
-    "seconds": 17.4,
-    "since": "2026-11-02",
-    "refresh_count": 3
-   },
-   {
-    "adapter": "seminole",
-    "jurisdictions": [
-     "Seminole County"
-    ],
-    "status": "ok",
-    "count": 8,
-    "error": null,
-    "seconds": 24.7,
-    "since": "2026-11-02",
-    "refresh_count": 8
-   },
-   {
-    "adapter": "st_cloud",
-    "jurisdictions": [
-     "City of St. Cloud"
-    ],
-    "status": "ok",
-    "count": 9,
-    "error": null,
-    "seconds": 58.6,
-    "since": "2026-11-02",
-    "refresh_count": 9
-   },
-   {
-    "adapter": "st_petersburg",
-    "jurisdictions": [
-     "City of St. Petersburg"
-    ],
-    "status": "ok",
-    "count": 0,
-    "error": null,
-    "seconds": 10.7,
-    "since": "2026-11-02",
-    "refresh_count": 0
-   },
-   {
-    "adapter": "tarpon_springs",
-    "jurisdictions": [
-     "City of Tarpon Springs"
-    ],
-    "status": "ok",
-    "count": 1,
-    "error": null,
-    "seconds": 28.7,
-    "since": "2026-11-02",
-    "refresh_count": 0
-   },
-   {
-    "adapter": "tavares",
-    "jurisdictions": [
-     "City of Tavares"
-    ],
-    "status": "ok",
-    "count": 7,
-    "error": null,
-    "seconds": 46.5,
-    "since": "2026-11-02",
-    "refresh_count": 7
-   },
-   {
-    "adapter": "titusville",
-    "jurisdictions": [
-     "City of Titusville"
-    ],
-    "status": "ok",
-    "count": 4,
-    "error": null,
-    "seconds": 101.9,
-    "since": "2026-11-02",
-    "refresh_count": 4
-   },
-   {
-    "adapter": "venice",
-    "jurisdictions": [
-     "City of Venice"
-    ],
-    "status": "ok",
-    "count": 3,
-    "error": null,
-    "seconds": 19.7,
-    "since": "2026-11-02",
-    "refresh_count": 3
-   },
-   {
-    "adapter": "volusia",
-    "jurisdictions": [
-     "Volusia County"
-    ],
-    "status": "ok",
-    "count": 13,
-    "error": null,
-    "seconds": 166.6,
-    "since": "2026-11-02",
-    "refresh_count": 13
-   },
-   {
-    "adapter": "west_melbourne",
-    "jurisdictions": [
-     "City of West Melbourne"
-    ],
-    "status": "ok",
-    "count": 0,
-    "error": null,
-    "seconds": 30.2,
-    "since": "2026-11-02",
-    "refresh_count": 0
-   },
-   {
-    "adapter": "winter_garden",
-    "jurisdictions": [
-     "City of Winter Garden"
-    ],
-    "status": "ok",
-    "count": 0,
-    "error": null,
-    "seconds": 81.4,
-    "since": "2026-11-02",
-    "refresh_count": 0
    },
    {
     "adapter": "winter_haven",
     "jurisdictions": [
      "City of Winter Haven"
     ],
-    "status": "failed",
-    "count": 0,
-    "error": "RuntimeError: no Winter Haven meetings found on Granicus",
-    "seconds": 1.3,
+    "status": "ok",
+    "count": 1,
+    "error": null,
+    "seconds": 33.6,
     "since": "2026-11-02",
     "refresh_count": 1
-   },
-   {
-    "adapter": "winter_springs",
-    "jurisdictions": [
-     "City of Winter Springs"
-    ],
-    "status": "ok",
-    "count": 0,
-    "error": null,
-    "seconds": 5.5,
-    "since": "2026-11-02",
-    "refresh_count": 0
-   },
-   {
-    "adapter": "zephyrhills",
-    "jurisdictions": [
-     "City of Zephyrhills"
-    ],
-    "status": "ok",
-    "count": 0,
-    "error": null,
-    "seconds": 31.9,
-    "since": "2026-11-02",
-    "refresh_count": 0
    }
   ],
-  "failed_sources": [
-   "accela_charlotte",
-   "accela_manatee",
-   "accela_pasco",
-   "accela_pinellas",
-   "accela_polk",
-   "accela_sarasota",
-   "accela_tampa",
-   "bradenton",
-   "brevard",
-   "north_port",
-   "osceola",
-   "winter_haven"
-  ],
+  "failed_sources": [],
   "enrichment": {
    "status": "ok",
    "lookups": 11,
    "completed": 11,
-   "located": 13,
-   "seconds": 12.5
+   "located": 11,
+   "seconds": 9.5
   },
   "apns": {
    "status": "ok",
-   "records": 26,
-   "converted": 88,
+   "records": 11,
+   "converted": 72,
    "unresolved": 8,
-   "seconds": 64.3
+   "seconds": 45.3
   },
   "covered_jurisdictions": [
    "Alachua County",
@@ -1212,12 +428,12 @@
    "winter_springs",
    "zephyrhills"
   ],
-  "located_count": 714,
+  "located_count": 716,
   "db_source": "loaded",
-  "previous_run_date": "2026-11-16",
+  "previous_run_date": "2026-11-23",
   "site_status": {
-   "checked": 20,
-   "unknown": 2,
+   "checked": 3,
+   "unknown": 0,
    "run_date": "2026-11-23",
    "source": "Florida statewide cadastral (county property appraiser tax roll)"
   }
@@ -2499,6 +1715,76 @@
    }
   },
   {
+   "jurisdiction": "City of Tampa",
+   "county": "Hillsborough",
+   "app_num": "REZ-27-0000018",
+   "category": "PD",
+   "app_type": "Rezoning (Site-Plan Controlled)",
+   "project_name": null,
+   "description": "Rezone 0.57 ac from RS-50 to PD; proposed use: Assembly Space",
+   "applicant": "Collis Ivery (Tampa Alumni Guide Right Foundation Inc)",
+   "address": "3412 E Lake Ave, Tampa, FL 33610",
+   "from_zoning": "RS-50",
+   "to_zoning": "PD",
+   "from_flu": null,
+   "to_flu": null,
+   "filed_date": "2026-11-17",
+   "status": "Filed",
+   "status_raw": "Open",
+   "decision_date": null,
+   "url": "https://aca-prod.accela.com/TAMPA/Cap/CapDetail.aspx?Module=Planning&TabName=Planning&capID1=26CAP&capID2=00000&capID3=02YN7&agencyCode=TAMPA&IsToShowInspection=",
+   "docs_url": null,
+   "source": "City of Tampa Accela",
+   "parcel_ids": [
+    "173646-0000",
+    "173617-0000",
+    "173603-0000"
+   ],
+   "acres": 0.57,
+   "lat": 27.9782652,
+   "lon": -82.4213744,
+   "hearings": [],
+   "acres_source": "application",
+   "location_source": "parcels",
+   "adapter": "accela_tampa",
+   "first_seen": "2026-11-23",
+   "last_seen": "2026-11-23",
+   "status_changed": null,
+   "history": [
+    {
+     "date": "2026-11-23",
+     "status": "Filed",
+     "from": null
+    }
+   ],
+   "backfilled": false,
+   "id": "City of Tampa|REZ-27-0000018",
+   "slug": "city-of-tampa-rez-27-0000018",
+   "acres_unknown": false,
+   "next_hearing": null,
+   "last_hearing": null,
+   "apns": [
+    "A-08-29-19-4N3-000000-00028.0",
+    "A-08-29-19-4N2-000002-00012.0",
+    "A-08-29-19-4N2-000001-00001.0"
+   ],
+   "apns_src": [
+    "173646-0000",
+    "173617-0000",
+    "173603-0000"
+   ],
+   "site_status": {
+    "status": "Vacant",
+    "detail": "No buildings on the tax roll. Main use: nonprofit or charitable.",
+    "parcels_found": 3,
+    "parcels_total": 3,
+    "roll_year": 2026,
+    "checked": "2026-11-23",
+    "ids": "173646-0000|173617-0000|173603-0000",
+    "method": "parcel id"
+   }
+  },
+  {
    "jurisdiction": "City of New Port Richey",
    "county": "Pasco",
    "app_num": "Ordinance No. 2026-2362",
@@ -2854,6 +2140,70 @@
    }
   },
   {
+   "jurisdiction": "City of Tampa",
+   "county": "Hillsborough",
+   "app_num": "REZ-27-0000017",
+   "category": "PD",
+   "app_type": "Rezoning (Site-Plan Controlled)",
+   "project_name": null,
+   "description": "Rezone 4.03 ac from RS-50 to PD; proposed use: Place of Religious Assembly & Office, Professional",
+   "applicant": "St. John Greek Orthodox Church",
+   "address": "2418 W Swann Ave, Tampa, FL 33609",
+   "from_zoning": "RS-50",
+   "to_zoning": "PD",
+   "from_flu": null,
+   "to_flu": null,
+   "filed_date": "2026-11-16",
+   "status": "Filed",
+   "status_raw": "Open",
+   "decision_date": null,
+   "url": "https://aca-prod.accela.com/TAMPA/Cap/CapDetail.aspx?Module=Planning&TabName=Planning&capID1=26CAP&capID2=00000&capID3=02YE7&agencyCode=TAMPA&IsToShowInspection=",
+   "docs_url": null,
+   "source": "City of Tampa Accela",
+   "parcel_ids": [
+    "117387-0000"
+   ],
+   "acres": 4.03,
+   "lat": 27.9365203,
+   "lon": -82.4845685,
+   "hearings": [],
+   "acres_source": "application",
+   "location_source": "parcels",
+   "adapter": "accela_tampa",
+   "first_seen": "2026-11-23",
+   "last_seen": "2026-11-23",
+   "status_changed": null,
+   "history": [
+    {
+     "date": "2026-11-23",
+     "status": "Filed",
+     "from": null
+    }
+   ],
+   "backfilled": false,
+   "id": "City of Tampa|REZ-27-0000017",
+   "slug": "city-of-tampa-rez-27-0000017",
+   "acres_unknown": false,
+   "next_hearing": null,
+   "last_hearing": null,
+   "apns": [
+    "A-26-29-18-3OQ-000000-00001.0"
+   ],
+   "apns_src": [
+    "117387-0000"
+   ],
+   "site_status": {
+    "status": "Improved",
+    "detail": "5 buildings, 49,612 sf, built 2002. Use: church.",
+    "parcels_found": 1,
+    "parcels_total": 1,
+    "roll_year": 2026,
+    "checked": "2026-11-23",
+    "ids": "117387-0000",
+    "method": "parcel id"
+   }
+  },
+  {
    "jurisdiction": "City of Sarasota",
    "county": "Sarasota",
    "app_num": "26-REN-05",
@@ -3200,7 +2550,7 @@
    "location_source": "parcels",
    "adapter": "accela_charlotte",
    "first_seen": "2026-11-16",
-   "last_seen": "2026-11-16",
+   "last_seen": "2026-11-23",
    "status_changed": null,
    "history": [
     {
@@ -3276,7 +2626,7 @@
    "location_source": "parcels",
    "adapter": "accela_charlotte",
    "first_seen": "2026-11-16",
-   "last_seen": "2026-11-16",
+   "last_seen": "2026-11-23",
    "status_changed": null,
    "history": [
     {
@@ -3317,6 +2667,76 @@
    }
   },
   {
+   "jurisdiction": "Pasco County",
+   "county": "Pasco",
+   "app_num": "MPUD-2026-00051",
+   "category": "PD",
+   "app_type": "Rezoning (MPUD)",
+   "project_name": "Hawes MPUD Substantial Amendment",
+   "description": "The applicant proposes a substantial amendment to the existing Hawes MPUD (Parcel Nos. 07-25-21-0000-00500-0000; 07-25-21-0000-01000-0010; 07-25-21-0000-01000-0000) to allow for the development of a maximum of the following dwelling units: 48 Platted Townhomes 615 Multi-Family Apartments",
+   "applicant": "Jocelyn F Taylor (Barbara L. Wilhite, P.A.)",
+   "address": null,
+   "from_zoning": "MPUD",
+   "to_zoning": "MPUD",
+   "from_flu": null,
+   "to_flu": null,
+   "filed_date": "2026-11-13",
+   "status": "Filed",
+   "status_raw": "Fees Due",
+   "decision_date": null,
+   "url": "https://aca-prod.accela.com/PASCO/Cap/CapDetail.aspx?Module=Planning&TabName=Planning&capID1=REC26&capID2=00000&capID3=027PJ&agencyCode=PASCO&IsToShowInspection=",
+   "docs_url": null,
+   "source": "Pasco Accela",
+   "parcel_ids": [
+    "07-25-21-0000-01000-0010",
+    "07-25-21-0000-00500-0000",
+    "07-25-21-0000-01000-0000"
+   ],
+   "acres": 88.6,
+   "lat": 28.3260589,
+   "lon": -82.2484941,
+   "hearings": [],
+   "acres_source": "application",
+   "location_source": "parcels",
+   "adapter": "accela_pasco",
+   "first_seen": "2026-11-09",
+   "last_seen": "2026-11-23",
+   "status_changed": null,
+   "history": [
+    {
+     "date": "2026-11-09",
+     "status": "Filed",
+     "from": null
+    }
+   ],
+   "backfilled": false,
+   "id": "Pasco County|MPUD-2026-00051",
+   "slug": "pasco-county-mpud-2026-00051",
+   "acres_unknown": false,
+   "next_hearing": null,
+   "last_hearing": null,
+   "apns": [
+    "07-25-21-0000-01000-0010",
+    "07-25-21-0000-00500-0000",
+    "07-25-21-0000-01000-0000"
+   ],
+   "apns_src": [
+    "07-25-21-0000-01000-0010",
+    "07-25-21-0000-00500-0000",
+    "07-25-21-0000-01000-0000"
+   ],
+   "site_status": {
+    "status": "Vacant",
+    "detail": "No buildings on the tax roll. Main use: acreage, not agricultural.",
+    "parcels_found": 3,
+    "parcels_total": 3,
+    "roll_year": 2026,
+    "checked": "2026-11-09",
+    "ids": "07-25-21-0000-01000-0010|07-25-21-0000-00500-0000|07-25-21-0000-01000-0000",
+    "method": "parcel id"
+   }
+  },
+  {
    "jurisdiction": "City of Tampa",
    "county": "Hillsborough",
    "app_num": "REZ-27-0000015",
@@ -3332,7 +2752,7 @@
    "to_flu": null,
    "filed_date": "2026-11-13",
    "status": "Filed",
-   "status_raw": "Open",
+   "status_raw": "In Process",
    "decision_date": null,
    "url": "https://aca-prod.accela.com/TAMPA/Cap/CapDetail.aspx?Module=Planning&TabName=Planning&capID1=26CAP&capID2=00000&capID3=02Y1V&agencyCode=TAMPA&IsToShowInspection=",
    "docs_url": null,
@@ -3369,7 +2789,7 @@
    "location_source": "parcels",
    "adapter": "accela_tampa",
    "first_seen": "2026-11-16",
-   "last_seen": "2026-11-16",
+   "last_seen": "2026-11-23",
    "status_changed": null,
    "history": [
     {
@@ -3459,7 +2879,7 @@
    "to_flu": null,
    "filed_date": "2026-11-13",
    "status": "Filed",
-   "status_raw": "Open",
+   "status_raw": "In Process",
    "decision_date": null,
    "url": "https://aca-prod.accela.com/TAMPA/Cap/CapDetail.aspx?Module=Planning&TabName=Planning&capID1=26CAP&capID2=00000&capID3=02XWO&agencyCode=TAMPA&IsToShowInspection=",
    "docs_url": null,
@@ -3476,7 +2896,7 @@
    "location_source": "parcels",
    "adapter": "accela_tampa",
    "first_seen": "2026-11-16",
-   "last_seen": "2026-11-16",
+   "last_seen": "2026-11-23",
    "status_changed": null,
    "history": [
     {
@@ -3782,7 +3202,7 @@
    "location_source": "parcels",
    "adapter": "brevard",
    "first_seen": "2026-10-26",
-   "last_seen": "2026-11-16",
+   "last_seen": "2026-11-23",
    "status_changed": null,
    "history": [
     {
@@ -3829,8 +3249,8 @@
    "from_flu": null,
    "to_flu": null,
    "filed_date": "2026-11-11",
-   "status": "Filed",
-   "status_raw": "Awaiting Client Reply",
+   "status": "Hearing Scheduled",
+   "status_raw": "In Process",
    "decision_date": null,
    "url": "https://aca-prod.accela.com/TAMPA/Cap/CapDetail.aspx?Module=Planning&TabName=Planning&capID1=26CAP&capID2=00000&capID3=02XIN&agencyCode=TAMPA&IsToShowInspection=",
    "docs_url": null,
@@ -3841,25 +3261,39 @@
    "acres": 28.67,
    "lat": 27.9541207,
    "lon": -82.4324636,
-   "hearings": [],
+   "hearings": [
+    {
+     "body": "City Council",
+     "date": "2027-03-11",
+     "result": null
+    }
+   ],
    "acres_source": "application",
    "location_source": "parcels",
    "adapter": "accela_tampa",
    "first_seen": "2026-11-16",
-   "last_seen": "2026-11-16",
-   "status_changed": null,
+   "last_seen": "2026-11-23",
+   "status_changed": "2026-11-23",
    "history": [
     {
      "date": "2026-11-16",
      "status": "Filed",
      "from": null
+    },
+    {
+     "date": "2026-11-23",
+     "status": "Hearing Scheduled",
+     "from": "Filed"
     }
    ],
    "backfilled": false,
    "id": "City of Tampa|REZ-27-0000013",
    "slug": "city-of-tampa-rez-27-0000013",
    "acres_unknown": false,
-   "next_hearing": null,
+   "next_hearing": {
+    "body": "City Council",
+    "date": "2027-03-11"
+   },
    "last_hearing": null,
    "apns": [
     "A-17-29-19-ZZZ-000005-92510.0"
@@ -3894,7 +3328,7 @@
    "to_flu": null,
    "filed_date": "2026-11-10",
    "status": "Filed",
-   "status_raw": "Awaiting Documents",
+   "status_raw": "Sufficiency Review",
    "decision_date": null,
    "url": "https://aca-prod.accela.com/OSCEOLA/Cap/CapDetail.aspx?Module=Zoning&TabName=Zoning&capID1=CPL26&capID2=00000&capID3=04495&agencyCode=OSCEOLA&IsToShowInspection=",
    "docs_url": null,
@@ -3910,7 +3344,7 @@
    "location_source": "parcels",
    "adapter": "osceola",
    "first_seen": "2026-11-16",
-   "last_seen": "2026-11-16",
+   "last_seen": "2026-11-23",
    "status_changed": null,
    "history": [
     {
@@ -4276,76 +3710,6 @@
   {
    "jurisdiction": "Pasco County",
    "county": "Pasco",
-   "app_num": "MPUD-2026-00051",
-   "category": "PD",
-   "app_type": "Rezoning (MPUD)",
-   "project_name": "Hawes MPUD Substantial Amendment",
-   "description": "The applicant proposes a substantial amendment to the existing Hawes MPUD (Parcel Nos. 07-25-21-0000-00500-0000; 07-25-21-0000-01000-0010; 07-25-21-0000-01000-0000) to allow for the development of a maximum of the following dwelling units: 48 Platted Townhomes 615 Multi-Family Apartments",
-   "applicant": "Jocelyn F Taylor (Barbara L. Wilhite, P.A.)",
-   "address": null,
-   "from_zoning": "MPUD",
-   "to_zoning": "MPUD",
-   "from_flu": null,
-   "to_flu": null,
-   "filed_date": "2026-11-09",
-   "status": "Filed",
-   "status_raw": "Fees Due",
-   "decision_date": null,
-   "url": "https://aca-prod.accela.com/PASCO/Cap/CapDetail.aspx?Module=Planning&TabName=Planning&capID1=REC26&capID2=00000&capID3=027PJ&agencyCode=PASCO&IsToShowInspection=",
-   "docs_url": null,
-   "source": "Pasco Accela",
-   "parcel_ids": [
-    "07-25-21-0000-01000-0010",
-    "07-25-21-0000-00500-0000",
-    "07-25-21-0000-01000-0000"
-   ],
-   "acres": 88.6,
-   "lat": 28.3260589,
-   "lon": -82.2484941,
-   "hearings": [],
-   "acres_source": "application",
-   "location_source": "parcels",
-   "adapter": "accela_pasco",
-   "first_seen": "2026-11-09",
-   "last_seen": "2026-11-16",
-   "status_changed": null,
-   "history": [
-    {
-     "date": "2026-11-09",
-     "status": "Filed",
-     "from": null
-    }
-   ],
-   "backfilled": false,
-   "id": "Pasco County|MPUD-2026-00051",
-   "slug": "pasco-county-mpud-2026-00051",
-   "acres_unknown": false,
-   "next_hearing": null,
-   "last_hearing": null,
-   "apns": [
-    "07-25-21-0000-01000-0010",
-    "07-25-21-0000-00500-0000",
-    "07-25-21-0000-01000-0000"
-   ],
-   "apns_src": [
-    "07-25-21-0000-01000-0010",
-    "07-25-21-0000-00500-0000",
-    "07-25-21-0000-01000-0000"
-   ],
-   "site_status": {
-    "status": "Vacant",
-    "detail": "No buildings on the tax roll. Main use: acreage, not agricultural.",
-    "parcels_found": 3,
-    "parcels_total": 3,
-    "roll_year": 2026,
-    "checked": "2026-11-09",
-    "ids": "07-25-21-0000-01000-0010|07-25-21-0000-00500-0000|07-25-21-0000-01000-0000",
-    "method": "parcel id"
-   }
-  },
-  {
-   "jurisdiction": "Pasco County",
-   "county": "Pasco",
    "app_num": "COMPPL-2026-00020",
    "category": "Comp Plan Amendment",
    "app_type": "Comprehensive Plan Amendment",
@@ -4375,7 +3739,7 @@
    "location_source": "parcels",
    "adapter": "accela_pasco",
    "first_seen": "2026-11-09",
-   "last_seen": "2026-11-16",
+   "last_seen": "2026-11-23",
    "status_changed": null,
    "history": [
     {
@@ -4493,6 +3857,70 @@
    ]
   },
   {
+   "jurisdiction": "Pasco County",
+   "county": "Pasco",
+   "app_num": "REZONE-2026-00020",
+   "category": "Rezoning",
+   "app_type": "Rezoning (Standard Euclidean)",
+   "project_name": "RZ-7979 Townsend and Newsome",
+   "description": "This is a County Initiated Rezoning to remove the conditions of approval on the subject parcels.",
+   "applicant": "Rama Hiba (Pasco County)",
+   "address": "39107 TOWNSEND ROAD DADE CITY FL 33525",
+   "from_zoning": "A-R with Conditions",
+   "to_zoning": "AR",
+   "from_flu": null,
+   "to_flu": null,
+   "filed_date": "2026-11-06",
+   "status": "Filed",
+   "status_raw": "In Review",
+   "decision_date": null,
+   "url": "https://aca-prod.accela.com/PASCO/Cap/CapDetail.aspx?Module=Planning&TabName=Planning&capID1=REC26&capID2=00000&capID3=0274B&agencyCode=PASCO&IsToShowInspection=",
+   "docs_url": null,
+   "source": "Pasco Accela",
+   "parcel_ids": [
+    "13-25-21-0010-05700-0010"
+   ],
+   "acres": 2.19,
+   "lat": 28.3107029,
+   "lon": -82.1697102,
+   "hearings": [],
+   "acres_source": "parcels",
+   "location_source": "parcels",
+   "adapter": "accela_pasco",
+   "first_seen": "2026-11-09",
+   "last_seen": "2026-11-23",
+   "status_changed": null,
+   "history": [
+    {
+     "date": "2026-11-09",
+     "status": "Filed",
+     "from": null
+    }
+   ],
+   "backfilled": false,
+   "id": "Pasco County|REZONE-2026-00020",
+   "slug": "pasco-county-rezone-2026-00020",
+   "acres_unknown": false,
+   "next_hearing": null,
+   "last_hearing": null,
+   "apns": [
+    "13-25-21-0010-05700-0010"
+   ],
+   "apns_src": [
+    "13-25-21-0010-05700-0010"
+   ],
+   "site_status": {
+    "status": "Improved",
+    "detail": "1 building, 3,189 sf, built 2014. Use: single family home.",
+    "parcels_found": 1,
+    "parcels_total": 1,
+    "roll_year": 2026,
+    "checked": "2026-11-09",
+    "ids": "13-25-21-0010-05700-0010",
+    "method": "parcel id"
+   }
+  },
+  {
    "jurisdiction": "Brevard County",
    "county": "Brevard",
    "app_num": "26Z00058",
@@ -4508,7 +3936,7 @@
    "to_flu": null,
    "filed_date": "2026-11-06",
    "status": "Filed",
-   "status_raw": "Need Additional Info",
+   "status_raw": "Received",
    "decision_date": null,
    "url": "https://aca-prod.accela.com/BREVARD/Cap/CapDetail.aspx?Module=Development&TabName=Development&capID1=26ZON&capID2=00000&capID3=00537&agencyCode=BREVARD&IsToShowInspection=",
    "docs_url": null,
@@ -4524,7 +3952,7 @@
    "location_source": "parcels",
    "adapter": "brevard",
    "first_seen": "2026-11-09",
-   "last_seen": "2026-11-16",
+   "last_seen": "2026-11-23",
    "status_changed": null,
    "history": [
     {
@@ -4572,23 +4000,24 @@
    "to_flu": null,
    "filed_date": "2026-11-06",
    "status": "Filed",
-   "status_raw": "Received",
+   "status_raw": "Need Additional Info",
    "decision_date": null,
    "url": "https://aca-prod.accela.com/BREVARD/Cap/CapDetail.aspx?Module=Development&TabName=Development&capID1=26ZON&capID2=00000&capID3=00535&agencyCode=BREVARD&IsToShowInspection=",
    "docs_url": null,
    "source": "Brevard Accela (Development) + Legistar (P&Z/LPA, special district boards, BOCC)",
    "parcel_ids": [
+    "2511103",
     "2511119"
    ],
    "acres": 5.0,
-   "lat": 28.2952196,
-   "lon": -80.6996857,
+   "lat": 28.2956832,
+   "lon": -80.6998596,
    "hearings": [],
    "acres_source": "application",
    "location_source": "parcels",
    "adapter": "brevard",
    "first_seen": "2026-11-09",
-   "last_seen": "2026-11-16",
+   "last_seen": "2026-11-23",
    "status_changed": null,
    "history": [
     {
@@ -4604,19 +4033,21 @@
    "next_hearing": null,
    "last_hearing": null,
    "apns": [
+    "25-36-23-00-256",
     "25-36-23-00-500"
    ],
    "apns_src": [
+    "2511103",
     "2511119"
    ],
    "site_status": {
     "status": "Vacant",
-    "detail": "No buildings on the tax roll. Use: vacant commercial.",
-    "parcels_found": 1,
-    "parcels_total": 1,
+    "detail": "No buildings on the tax roll. Main use: mixed use (store and office or residential).",
+    "parcels_found": 2,
+    "parcels_total": 2,
     "roll_year": 2026,
-    "checked": "2026-11-09",
-    "ids": "2511119",
+    "checked": "2026-11-23",
+    "ids": "2511103|2511119",
     "method": "parcel id"
    }
   },
@@ -4652,7 +4083,7 @@
    "location_source": "parcels",
    "adapter": "brevard",
    "first_seen": "2026-11-09",
-   "last_seen": "2026-11-16",
+   "last_seen": "2026-11-23",
    "status_changed": null,
    "history": [
     {
@@ -4716,7 +4147,7 @@
    "location_source": "parcels",
    "adapter": "brevard",
    "first_seen": "2026-11-09",
-   "last_seen": "2026-11-16",
+   "last_seen": "2026-11-23",
    "status_changed": null,
    "history": [
     {
@@ -4788,7 +4219,7 @@
     },
     {
      "body": "BOCC",
-     "date": "2027-03-16",
+     "date": "2027-04-06",
      "result": null
     }
    ],
@@ -4796,7 +4227,7 @@
    "location_source": "parcels",
    "adapter": "accela_polk",
    "first_seen": "2026-11-09",
-   "last_seen": "2026-11-16",
+   "last_seen": "2026-11-23",
    "status_changed": "2026-11-09",
    "history": [
     {
@@ -4884,7 +4315,7 @@
    "location_source": "parcels",
    "adapter": "accela_polk",
    "first_seen": "2026-11-09",
-   "last_seen": "2026-11-16",
+   "last_seen": "2026-11-23",
    "status_changed": "2026-11-09",
    "history": [
     {
@@ -4921,70 +4352,6 @@
     "roll_year": 2026,
     "checked": "2026-11-09",
     "ids": "23-27-34-000000-024100",
-    "method": "parcel id"
-   }
-  },
-  {
-   "jurisdiction": "Pasco County",
-   "county": "Pasco",
-   "app_num": "REZONE-2026-00020",
-   "category": "Rezoning",
-   "app_type": "Rezoning (Standard Euclidean)",
-   "project_name": "RZ-7979 Townsend and Newsome",
-   "description": "This is a County Initiated Rezoning to remove the conditions of approval on the subject parcels.",
-   "applicant": "Rama Hiba (Pasco County)",
-   "address": "39107 TOWNSEND ROAD DADE CITY FL 33525",
-   "from_zoning": "A-R with Conditions",
-   "to_zoning": "AR",
-   "from_flu": null,
-   "to_flu": null,
-   "filed_date": "2026-11-05",
-   "status": "Filed",
-   "status_raw": "In Review",
-   "decision_date": null,
-   "url": "https://aca-prod.accela.com/PASCO/Cap/CapDetail.aspx?Module=Planning&TabName=Planning&capID1=REC26&capID2=00000&capID3=0274B&agencyCode=PASCO&IsToShowInspection=",
-   "docs_url": null,
-   "source": "Pasco Accela",
-   "parcel_ids": [
-    "13-25-21-0010-05700-0010"
-   ],
-   "acres": 2.19,
-   "lat": 28.3107029,
-   "lon": -82.1697102,
-   "hearings": [],
-   "acres_source": "parcels",
-   "location_source": "parcels",
-   "adapter": "accela_pasco",
-   "first_seen": "2026-11-09",
-   "last_seen": "2026-11-16",
-   "status_changed": null,
-   "history": [
-    {
-     "date": "2026-11-09",
-     "status": "Filed",
-     "from": null
-    }
-   ],
-   "backfilled": false,
-   "id": "Pasco County|REZONE-2026-00020",
-   "slug": "pasco-county-rezone-2026-00020",
-   "acres_unknown": false,
-   "next_hearing": null,
-   "last_hearing": null,
-   "apns": [
-    "13-25-21-0010-05700-0010"
-   ],
-   "apns_src": [
-    "13-25-21-0010-05700-0010"
-   ],
-   "site_status": {
-    "status": "Improved",
-    "detail": "1 building, 3,189 sf, built 2014. Use: single family home.",
-    "parcels_found": 1,
-    "parcels_total": 1,
-    "roll_year": 2026,
-    "checked": "2026-11-09",
-    "ids": "13-25-21-0010-05700-0010",
     "method": "parcel id"
    }
   },
@@ -5575,6 +4942,70 @@
    }
   },
   {
+   "jurisdiction": "Pasco County",
+   "county": "Pasco",
+   "app_num": "REZONE-2026-00019",
+   "category": "Rezoning",
+   "app_type": "Rezoning (Standard Euclidean)",
+   "project_name": "RZ-7978 The Reserves At Hudson Lake",
+   "description": "RZ-7978 The Reserves At Hudson Lake",
+   "applicant": "Dilip Agarwal (DENTON COMMONS HOLDINGS LLC)",
+   "address": null,
+   "from_zoning": "AR",
+   "to_zoning": "MF-2",
+   "from_flu": null,
+   "to_flu": null,
+   "filed_date": "2026-11-03",
+   "status": "Filed",
+   "status_raw": "In Review",
+   "decision_date": null,
+   "url": "https://aca-prod.accela.com/PASCO/Cap/CapDetail.aspx?Module=Planning&TabName=Planning&capID1=REC26&capID2=00000&capID3=024XC&agencyCode=PASCO&IsToShowInspection=",
+   "docs_url": null,
+   "source": "Pasco Accela",
+   "parcel_ids": [
+    "24-24-16-0050-00D00-0130"
+   ],
+   "acres": 9.67,
+   "lat": 28.3878421,
+   "lon": -82.6623787,
+   "hearings": [],
+   "acres_source": "application",
+   "location_source": "parcels",
+   "adapter": "accela_pasco",
+   "first_seen": "2026-11-02",
+   "last_seen": "2026-11-23",
+   "status_changed": null,
+   "history": [
+    {
+     "date": "2026-11-02",
+     "status": "Filed",
+     "from": null
+    }
+   ],
+   "backfilled": false,
+   "id": "Pasco County|REZONE-2026-00019",
+   "slug": "pasco-county-rezone-2026-00019",
+   "acres_unknown": false,
+   "next_hearing": null,
+   "last_hearing": null,
+   "apns": [
+    "24-24-16-0050-00D00-0130"
+   ],
+   "apns_src": [
+    "24-24-16-0050-00D00-0130"
+   ],
+   "site_status": {
+    "status": "Vacant",
+    "detail": "No buildings on the tax roll. Use: vacant residential.",
+    "parcels_found": 1,
+    "parcels_total": 1,
+    "roll_year": 2026,
+    "checked": "2026-11-02",
+    "ids": "24-24-16-0050-00D00-0130",
+    "method": "parcel id"
+   }
+  },
+  {
    "jurisdiction": "City of Alachua",
    "county": "Alachua",
    "app_num": "PR26-0004",
@@ -5699,7 +5130,7 @@
    "location_source": "parcels",
    "adapter": "accela_polk",
    "first_seen": "2026-11-05",
-   "last_seen": "2026-11-16",
+   "last_seen": "2026-11-23",
    "status_changed": "2026-11-09",
    "history": [
     {
@@ -6096,7 +5527,7 @@
    "location_source": "parcels",
    "adapter": "accela_pasco",
    "first_seen": "2026-10-26",
-   "last_seen": "2026-11-16",
+   "last_seen": "2026-11-23",
    "status_changed": null,
    "history": [
     {
@@ -6160,7 +5591,7 @@
    "location_source": "parcels",
    "adapter": "osceola",
    "first_seen": "2026-11-02",
-   "last_seen": "2026-11-16",
+   "last_seen": "2026-11-23",
    "status_changed": null,
    "history": [
     {
@@ -6224,7 +5655,7 @@
    "location_source": "parcels",
    "adapter": "osceola",
    "first_seen": "2026-11-02",
-   "last_seen": "2026-11-16",
+   "last_seen": "2026-11-23",
    "status_changed": null,
    "history": [
     {
@@ -6713,6 +6144,94 @@
    }
   },
   {
+   "jurisdiction": "Polk County",
+   "county": "Polk",
+   "app_num": "LDCPAS-2026-22",
+   "category": "Comp Plan Amendment",
+   "app_type": "BOCC-CPA Small - CPA Small Scale Or EAR",
+   "project_name": "Galloway OC CPA",
+   "description": "Applicant requests a Small-Scale Land Use Amendment from RL-1 to OC on approximately 0.58 Acres.",
+   "applicant": "Sarah Case (Next Level Planning & Permitting)",
+   "address": "1207 N GALLOWAY RD LAKELAND FL 33809",
+   "from_zoning": null,
+   "to_zoning": null,
+   "from_flu": "RL-1",
+   "to_flu": "OC",
+   "filed_date": "2026-10-29",
+   "status": "Hearing Scheduled",
+   "status_raw": "In Review",
+   "decision_date": null,
+   "url": "https://aca-prod.accela.com/POLKCO/Cap/CapDetail.aspx?Module=LandDev&TabName=LandDev&capID1=REC26&capID2=00000&capID3=017QX&agencyCode=POLKCO&IsToShowInspection=",
+   "docs_url": null,
+   "source": "Polk Accela",
+   "parcel_ids": [
+    "23-28-09-000000-022100"
+   ],
+   "acres": 0.58,
+   "lat": 28.0583834,
+   "lon": -82.0073097,
+   "hearings": [
+    {
+     "body": "DRC",
+     "date": "2026-12-03",
+     "result": null
+    },
+    {
+     "body": "Planning Commission",
+     "date": "2027-02-03",
+     "result": null
+    },
+    {
+     "body": "BOCC",
+     "date": "2027-03-16",
+     "result": null
+    }
+   ],
+   "acres_source": "application",
+   "location_source": "parcels",
+   "adapter": "accela_polk",
+   "first_seen": "2026-11-02",
+   "last_seen": "2026-11-23",
+   "status_changed": "2026-11-09",
+   "history": [
+    {
+     "date": "2026-11-02",
+     "status": "Filed",
+     "from": null
+    },
+    {
+     "date": "2026-11-09",
+     "status": "Hearing Scheduled",
+     "from": "Filed"
+    }
+   ],
+   "backfilled": false,
+   "id": "Polk County|LDCPAS-2026-22",
+   "slug": "polk-county-ldcpas-2026-22",
+   "acres_unknown": false,
+   "next_hearing": {
+    "body": "DRC",
+    "date": "2026-12-03"
+   },
+   "last_hearing": null,
+   "apns": [
+    "23-28-09-000000-022100"
+   ],
+   "apns_src": [
+    "23-28-09-000000-022100"
+   ],
+   "site_status": {
+    "status": "Improved",
+    "detail": "1 building, 1,475 sf, built 1964. Use: single family home.",
+    "parcels_found": 1,
+    "parcels_total": 1,
+    "roll_year": 2026,
+    "checked": "2026-11-02",
+    "ids": "23-28-09-000000-022100",
+    "method": "parcel id"
+   }
+  },
+  {
    "jurisdiction": "Pasco County",
    "county": "Pasco",
    "app_num": "MPUD-2026-00048",
@@ -6744,7 +6263,7 @@
    "location_source": "parcels",
    "adapter": "accela_pasco",
    "first_seen": "2026-10-26",
-   "last_seen": "2026-11-16",
+   "last_seen": "2026-11-23",
    "status_changed": null,
    "history": [
     {
@@ -7319,94 +6838,6 @@
    }
   },
   {
-   "jurisdiction": "Polk County",
-   "county": "Polk",
-   "app_num": "LDCPAS-2026-22",
-   "category": "Comp Plan Amendment",
-   "app_type": "BOCC-CPA Small - CPA Small Scale Or EAR",
-   "project_name": "Galloway OC CPA",
-   "description": "Applicant requests a Small-Scale Land Use Amendment from RL-1 to OC on approximately 0.58 Acres.",
-   "applicant": "Sarah Case (Next Level Planning & Permitting)",
-   "address": "1207 N GALLOWAY RD LAKELAND FL 33809",
-   "from_zoning": null,
-   "to_zoning": null,
-   "from_flu": "RL-1",
-   "to_flu": "OC",
-   "filed_date": "2026-10-28",
-   "status": "Hearing Scheduled",
-   "status_raw": "In Review",
-   "decision_date": null,
-   "url": "https://aca-prod.accela.com/POLKCO/Cap/CapDetail.aspx?Module=LandDev&TabName=LandDev&capID1=REC26&capID2=00000&capID3=017QX&agencyCode=POLKCO&IsToShowInspection=",
-   "docs_url": null,
-   "source": "Polk Accela",
-   "parcel_ids": [
-    "23-28-09-000000-022100"
-   ],
-   "acres": 0.58,
-   "lat": 28.0583834,
-   "lon": -82.0073097,
-   "hearings": [
-    {
-     "body": "DRC",
-     "date": "2026-12-03",
-     "result": null
-    },
-    {
-     "body": "Planning Commission",
-     "date": "2027-02-03",
-     "result": null
-    },
-    {
-     "body": "BOCC",
-     "date": "2027-03-16",
-     "result": null
-    }
-   ],
-   "acres_source": "application",
-   "location_source": "parcels",
-   "adapter": "accela_polk",
-   "first_seen": "2026-11-02",
-   "last_seen": "2026-11-16",
-   "status_changed": "2026-11-09",
-   "history": [
-    {
-     "date": "2026-11-02",
-     "status": "Filed",
-     "from": null
-    },
-    {
-     "date": "2026-11-09",
-     "status": "Hearing Scheduled",
-     "from": "Filed"
-    }
-   ],
-   "backfilled": false,
-   "id": "Polk County|LDCPAS-2026-22",
-   "slug": "polk-county-ldcpas-2026-22",
-   "acres_unknown": false,
-   "next_hearing": {
-    "body": "DRC",
-    "date": "2026-12-03"
-   },
-   "last_hearing": null,
-   "apns": [
-    "23-28-09-000000-022100"
-   ],
-   "apns_src": [
-    "23-28-09-000000-022100"
-   ],
-   "site_status": {
-    "status": "Improved",
-    "detail": "1 building, 1,475 sf, built 1964. Use: single family home.",
-    "parcels_found": 1,
-    "parcels_total": 1,
-    "roll_year": 2026,
-    "checked": "2026-11-02",
-    "ids": "23-28-09-000000-022100",
-    "method": "parcel id"
-   }
-  },
-  {
    "jurisdiction": "Pasco County",
    "county": "Pasco",
    "app_num": "MPUD-2026-00050",
@@ -7662,7 +7093,7 @@
    "location_source": "parcels",
    "adapter": "brevard",
    "first_seen": "2026-10-26",
-   "last_seen": "2026-11-16",
+   "last_seen": "2026-11-23",
    "status_changed": null,
    "history": [
     {
@@ -7691,70 +7122,6 @@
     "roll_year": 2026,
     "checked": "2026-10-26",
     "ids": "2108095",
-    "method": "parcel id"
-   }
-  },
-  {
-   "jurisdiction": "Pasco County",
-   "county": "Pasco",
-   "app_num": "REZONE-2026-00019",
-   "category": "Rezoning",
-   "app_type": "Rezoning (Standard Euclidean)",
-   "project_name": "RZ-7978 The Reserves At Hudson Lake",
-   "description": "RZ-7978 The Reserves At Hudson Lake",
-   "applicant": "Dilip Agarwal (DENTON COMMONS HOLDINGS LLC)",
-   "address": null,
-   "from_zoning": "AR",
-   "to_zoning": "MF-2",
-   "from_flu": null,
-   "to_flu": null,
-   "filed_date": "2026-10-27",
-   "status": "Filed",
-   "status_raw": "In Review",
-   "decision_date": null,
-   "url": "https://aca-prod.accela.com/PASCO/Cap/CapDetail.aspx?Module=Planning&TabName=Planning&capID1=REC26&capID2=00000&capID3=024XC&agencyCode=PASCO&IsToShowInspection=",
-   "docs_url": null,
-   "source": "Pasco Accela",
-   "parcel_ids": [
-    "24-24-16-0050-00D00-0130"
-   ],
-   "acres": 9.67,
-   "lat": 28.3878421,
-   "lon": -82.6623787,
-   "hearings": [],
-   "acres_source": "application",
-   "location_source": "parcels",
-   "adapter": "accela_pasco",
-   "first_seen": "2026-11-02",
-   "last_seen": "2026-11-16",
-   "status_changed": null,
-   "history": [
-    {
-     "date": "2026-11-02",
-     "status": "Filed",
-     "from": null
-    }
-   ],
-   "backfilled": false,
-   "id": "Pasco County|REZONE-2026-00019",
-   "slug": "pasco-county-rezone-2026-00019",
-   "acres_unknown": false,
-   "next_hearing": null,
-   "last_hearing": null,
-   "apns": [
-    "24-24-16-0050-00D00-0130"
-   ],
-   "apns_src": [
-    "24-24-16-0050-00D00-0130"
-   ],
-   "site_status": {
-    "status": "Vacant",
-    "detail": "No buildings on the tax roll. Use: vacant residential.",
-    "parcels_found": 1,
-    "parcels_total": 1,
-    "roll_year": 2026,
-    "checked": "2026-11-02",
-    "ids": "24-24-16-0050-00D00-0130",
     "method": "parcel id"
    }
   },
@@ -7794,7 +7161,7 @@
     "2306810009000-0398180204"
    ],
    "first_seen": "2026-10-15",
-   "last_seen": "2026-11-16",
+   "last_seen": "2026-11-23",
    "status_changed": null,
    "history": [
     {
@@ -8012,7 +7379,7 @@
    "location_source": "parcels",
    "adapter": "osceola",
    "first_seen": "2026-11-02",
-   "last_seen": "2026-11-16",
+   "last_seen": "2026-11-23",
    "status_changed": null,
    "history": [
     {
@@ -8076,7 +7443,7 @@
    "location_source": "parcels",
    "adapter": "accela_charlotte",
    "first_seen": "2026-11-02",
-   "last_seen": "2026-11-16",
+   "last_seen": "2026-11-23",
    "status_changed": null,
    "history": [
     {
@@ -8188,7 +7555,7 @@
    "to_flu": null,
    "filed_date": "2026-10-23",
    "status": "Filed",
-   "status_raw": "Sent to Applicant for Review",
+   "status_raw": "Sufficiency Review Version 2",
    "decision_date": null,
    "url": "https://aca-prod.accela.com/MANATEE/Cap/CapDetail.aspx?Module=Planning&TabName=Planning&capID1=REC26&capID2=00000&capID3=00N63&agencyCode=MANATEE&IsToShowInspection=",
    "docs_url": null,
@@ -8204,7 +7571,7 @@
    "location_source": "parcels",
    "adapter": "accela_manatee",
    "first_seen": "2026-10-15",
-   "last_seen": "2026-11-16",
+   "last_seen": "2026-11-23",
    "status_changed": null,
    "history": [
     {
@@ -8348,7 +7715,7 @@
    "location_source": "parcels",
    "adapter": "north_port",
    "first_seen": "2026-11-09",
-   "last_seen": "2026-11-16",
+   "last_seen": "2026-11-23",
    "status_changed": null,
    "history": [
     {
@@ -8808,7 +8175,7 @@
    "location_source": "parcels",
    "adapter": "accela_pasco",
    "first_seen": "2026-10-26",
-   "last_seen": "2026-11-16",
+   "last_seen": "2026-11-23",
    "status_changed": null,
    "history": [
     {
@@ -8858,7 +8225,7 @@
    "to_flu": null,
    "filed_date": "2026-10-21",
    "status": "Filed",
-   "status_raw": "In Review",
+   "status_raw": "Awaiting Revisions",
    "decision_date": null,
    "url": "https://aca-prod.accela.com/OSCEOLA/Cap/CapDetail.aspx?Module=Zoning&TabName=Zoning&capID1=CPL26&capID2=00000&capID3=04289&agencyCode=OSCEOLA&IsToShowInspection=",
    "docs_url": null,
@@ -8875,7 +8242,7 @@
    "location_source": "parcels",
    "adapter": "osceola",
    "first_seen": "2026-10-26",
-   "last_seen": "2026-11-16",
+   "last_seen": "2026-11-23",
    "status_changed": null,
    "history": [
     {
@@ -8941,7 +8308,7 @@
    "location_source": null,
    "adapter": "accela_manatee",
    "first_seen": "2026-10-26",
-   "last_seen": "2026-11-16",
+   "last_seen": "2026-11-23",
    "status_changed": null,
    "history": [
     {
@@ -9245,7 +8612,7 @@
    "location_source": "parcels",
    "adapter": "north_port",
    "first_seen": "2026-11-09",
-   "last_seen": "2026-11-16",
+   "last_seen": "2026-11-23",
    "status_changed": null,
    "history": [
     {
@@ -9385,7 +8752,7 @@
    "to_flu": null,
    "filed_date": "2026-10-20",
    "status": "Filed",
-   "status_raw": "Returned to Applicant",
+   "status_raw": "Completeness Review Version 2",
    "decision_date": null,
    "url": "https://aca-prod.accela.com/MANATEE/Cap/CapDetail.aspx?Module=Planning&TabName=Planning&capID1=REC26&capID2=00000&capID3=01IKV&agencyCode=MANATEE&IsToShowInspection=",
    "docs_url": null,
@@ -9401,7 +8768,7 @@
    "location_source": "parcels",
    "adapter": "accela_manatee",
    "first_seen": "2026-10-26",
-   "last_seen": "2026-11-16",
+   "last_seen": "2026-11-23",
    "status_changed": null,
    "history": [
     {
@@ -10033,7 +9400,7 @@
    "location_source": "parcels",
    "adapter": "accela_tampa",
    "first_seen": "2026-10-16",
-   "last_seen": "2026-11-16",
+   "last_seen": "2026-11-23",
    "status_changed": "2026-11-02",
    "history": [
     {
@@ -10108,7 +9475,7 @@
    "location_source": "parcels",
    "adapter": "north_port",
    "first_seen": "2026-11-09",
-   "last_seen": "2026-11-16",
+   "last_seen": "2026-11-23",
    "status_changed": null,
    "history": [
     {
@@ -10181,7 +9548,7 @@
    "location_source": "parcels",
    "adapter": "north_port",
    "first_seen": "2026-11-09",
-   "last_seen": "2026-11-16",
+   "last_seen": "2026-11-23",
    "status_changed": null,
    "history": [
     {
@@ -10474,7 +9841,7 @@
    "to_flu": null,
    "filed_date": "2026-10-19",
    "status": "Filed",
-   "status_raw": "Completeness Review",
+   "status_raw": "Returned to Applicant",
    "decision_date": null,
    "url": "https://aca-prod.accela.com/MANATEE/Cap/CapDetail.aspx?Module=Planning&TabName=Planning&capID1=REC26&capID2=00000&capID3=01I6O&agencyCode=MANATEE&IsToShowInspection=",
    "docs_url": null,
@@ -10490,7 +9857,7 @@
    "location_source": "parcels",
    "adapter": "accela_manatee",
    "first_seen": "2026-10-20",
-   "last_seen": "2026-11-16",
+   "last_seen": "2026-11-23",
    "status_changed": null,
    "history": [
     {
@@ -10558,7 +9925,7 @@
     "1959510109000-0663165888"
    ],
    "first_seen": "2026-10-15",
-   "last_seen": "2026-11-16",
+   "last_seen": "2026-11-23",
    "status_changed": null,
    "history": [
     {
@@ -10924,9 +10291,9 @@
    "county": "Manatee",
    "app_num": "PLN2608-0070",
    "category": "Rezoning",
-   "app_type": "A10 - Zoning Atlas Amendment - Standard",
+   "app_type": "A10 - Zoning Atlas Amendment - Limited",
    "project_name": "**RR - CR** Holcomb Manor",
-   "description": "Rezone from RSF-6 to RMF-12/H/L; Residential; case Z-26-07",
+   "description": "Rezone from RSF-6 to RMF-12/H/L; Residential; case ZL-26-07",
    "applicant": "Stephen Rinehart",
    "address": "2003 51ST AVE E BRADENTON 34203",
    "from_zoning": "RSF-6",
@@ -10951,7 +10318,7 @@
    "location_source": "parcels",
    "adapter": "accela_manatee",
    "first_seen": "2026-10-15",
-   "last_seen": "2026-11-16",
+   "last_seen": "2026-11-23",
    "status_changed": null,
    "history": [
     {
@@ -11465,7 +10832,7 @@
    "to_flu": null,
    "filed_date": "2026-10-13",
    "status": "Filed",
-   "status_raw": "Sufficiency Review Version 2",
+   "status_raw": "Sent to Applicant for Review",
    "decision_date": null,
    "url": "https://aca-prod.accela.com/MANATEE/Cap/CapDetail.aspx?Module=Planning&TabName=Planning&capID1=REC26&capID2=00000&capID3=01A1L&agencyCode=MANATEE&IsToShowInspection=",
    "docs_url": null,
@@ -11481,7 +10848,7 @@
    "location_source": "parcels",
    "adapter": "accela_manatee",
    "first_seen": "2026-10-15",
-   "last_seen": "2026-11-16",
+   "last_seen": "2026-11-23",
    "status_changed": null,
    "history": [
     {
@@ -12353,7 +11720,7 @@
    "location_source": "parcels",
    "adapter": "accela_tampa",
    "first_seen": "2026-10-15",
-   "last_seen": "2026-11-16",
+   "last_seen": "2026-11-23",
    "status_changed": null,
    "history": [
     {
@@ -12562,7 +11929,7 @@
    "location_source": "parcels",
    "adapter": "accela_charlotte",
    "first_seen": "2026-10-15",
-   "last_seen": "2026-11-16",
+   "last_seen": "2026-11-23",
    "status_changed": null,
    "history": [
     {
@@ -12626,7 +11993,7 @@
    "location_source": "parcels",
    "adapter": "accela_charlotte",
    "first_seen": "2026-10-15",
-   "last_seen": "2026-11-16",
+   "last_seen": "2026-11-23",
    "status_changed": null,
    "history": [
     {
@@ -14282,7 +13649,7 @@
    "location_source": "parcels",
    "adapter": "accela_charlotte",
    "first_seen": "2026-10-15",
-   "last_seen": "2026-11-16",
+   "last_seen": "2026-11-23",
    "status_changed": null,
    "history": [
     {
@@ -14330,7 +13697,7 @@
    "to_flu": null,
    "filed_date": "2026-10-06",
    "status": "Hearing Scheduled",
-   "status_raw": "City Commission (second reading) 2026-11-23",
+   "status_raw": "City Commission (second reading) 2026-11-23 held; minutes not yet posted",
    "decision_date": null,
    "url": "https://winterhaven-fl.granicus.com/AgendaViewer.php?view_id=1&event_id=346",
    "docs_url": "https://winterhaven-fl.granicus.com/services/legistar/download/pdf/4486289/Summary_-_Ordinance_O-26-24.pdf",
@@ -14363,7 +13730,7 @@
    "adapter": "winter_haven",
    "parcel_ids_source": "site address",
    "first_seen": "2026-11-09",
-   "last_seen": "2026-11-16",
+   "last_seen": "2026-11-23",
    "status_changed": null,
    "history": [
     {
@@ -14409,7 +13776,7 @@
    "category": "PD",
    "app_type": "Planned Development (Major Amendment)",
    "project_name": "Food Truck Heaven Addition",
-   "description": "Major Amendment - to amend PD to allocate new area for 7 food trucks within the existing parking area.",
+   "description": "Major Amendment: The applicant is requesting to amend the Planned Development (PD) to designate an additional area within the existing parking area for seven (7) food trucks, thereby expanding the previously approved food truck area. This amendment will not increase the total number of food trucks permitted within the PD, which will remain capped at fifty (50).",
    "applicant": null,
    "address": "5401 IRLO BRONSON MEM HWY, KISSIMMEE FL 34746",
    "from_zoning": null,
@@ -14418,7 +13785,7 @@
    "to_flu": null,
    "filed_date": "2026-10-05",
    "status": "Filed",
-   "status_raw": "Sufficiency Review",
+   "status_raw": "In Review",
    "decision_date": null,
    "url": "https://aca-prod.accela.com/OSCEOLA/Cap/CapDetail.aspx?Module=Zoning&TabName=Zoning&capID1=CPL26&capID2=00000&capID3=04077&agencyCode=OSCEOLA&IsToShowInspection=",
    "docs_url": null,
@@ -14434,7 +13801,7 @@
    "location_source": "parcels",
    "adapter": "osceola",
    "first_seen": "2026-10-16",
-   "last_seen": "2026-11-16",
+   "last_seen": "2026-11-23",
    "status_changed": null,
    "history": [
     {
@@ -14498,7 +13865,7 @@
    "location_source": "parcels",
    "adapter": "accela_manatee",
    "first_seen": "2026-10-15",
-   "last_seen": "2026-11-16",
+   "last_seen": "2026-11-23",
    "status_changed": null,
    "history": [
     {
@@ -14562,7 +13929,7 @@
    "location_source": "parcels",
    "adapter": "accela_manatee",
    "first_seen": "2026-10-15",
-   "last_seen": "2026-11-16",
+   "last_seen": "2026-11-23",
    "status_changed": null,
    "history": [
     {
@@ -14642,7 +14009,7 @@
    "location_source": "parcels",
    "adapter": "accela_polk",
    "first_seen": "2026-10-15",
-   "last_seen": "2026-11-16",
+   "last_seen": "2026-11-23",
    "status_changed": null,
    "history": [
     {
@@ -15440,7 +14807,7 @@
    "location_source": "parcels",
    "adapter": "accela_tampa",
    "first_seen": "2026-10-15",
-   "last_seen": "2026-11-16",
+   "last_seen": "2026-11-23",
    "status_changed": null,
    "history": [
     {
@@ -15725,7 +15092,7 @@
    "location_source": "parcels",
    "adapter": "brevard",
    "first_seen": "2026-10-16",
-   "last_seen": "2026-11-16",
+   "last_seen": "2026-11-23",
    "status_changed": null,
    "history": [
     {
@@ -15800,7 +15167,7 @@
    "location_source": "parcels",
    "adapter": "accela_polk",
    "first_seen": "2026-10-15",
-   "last_seen": "2026-11-16",
+   "last_seen": "2026-11-23",
    "status_changed": null,
    "history": [
     {
@@ -15877,7 +15244,7 @@
    "location_source": "parcels",
    "adapter": "accela_polk",
    "first_seen": "2026-10-15",
-   "last_seen": "2026-11-16",
+   "last_seen": "2026-11-23",
    "status_changed": null,
    "history": [
     {
@@ -15945,7 +15312,7 @@
    "location_source": "parcels",
    "adapter": "accela_manatee",
    "first_seen": "2026-10-15",
-   "last_seen": "2026-11-16",
+   "last_seen": "2026-11-23",
    "status_changed": null,
    "history": [
     {
@@ -16009,7 +15376,7 @@
    "location_source": "parcels",
    "adapter": "accela_manatee",
    "first_seen": "2026-10-15",
-   "last_seen": "2026-11-16",
+   "last_seen": "2026-11-23",
    "status_changed": null,
    "history": [
     {
@@ -16270,7 +15637,7 @@
    "to_flu": null,
    "filed_date": "2026-09-25",
    "status": "Filed",
-   "status_raw": "Sufficiency Plan Review",
+   "status_raw": "Formal Plan Review",
    "decision_date": null,
    "url": "https://aca-prod.accela.com/SARASOTACO/Cap/CapDetail.aspx?Module=Planning&TabName=Planning&capID1=REC26&capID2=00000&capID3=01DI5&agencyCode=SARASOTACO&IsToShowInspection=",
    "docs_url": null,
@@ -16287,7 +15654,7 @@
    "location_source": "parcels",
    "adapter": "accela_sarasota",
    "first_seen": "2026-10-15",
-   "last_seen": "2026-11-16",
+   "last_seen": "2026-11-23",
    "status_changed": null,
    "history": [
     {
@@ -16353,7 +15720,7 @@
    "location_source": "parcels",
    "adapter": "accela_sarasota",
    "first_seen": "2026-10-15",
-   "last_seen": "2026-11-16",
+   "last_seen": "2026-11-23",
    "status_changed": null,
    "history": [
     {
@@ -16423,7 +15790,7 @@
    "location_source": "parcels",
    "adapter": "accela_pasco",
    "first_seen": "2026-10-15",
-   "last_seen": "2026-11-16",
+   "last_seen": "2026-11-23",
    "status_changed": null,
    "history": [
     {
@@ -16938,7 +16305,7 @@
    "location_source": "parcels",
    "adapter": "accela_pasco",
    "first_seen": "2026-10-15",
-   "last_seen": "2026-11-16",
+   "last_seen": "2026-11-23",
    "status_changed": null,
    "history": [
     {
@@ -17811,7 +17178,7 @@
    "location_source": "parcels",
    "adapter": "accela_tampa",
    "first_seen": "2026-10-15",
-   "last_seen": "2026-11-16",
+   "last_seen": "2026-11-23",
    "status_changed": null,
    "history": [
     {
@@ -17887,7 +17254,7 @@
    "location_source": "parcels",
    "adapter": "accela_tampa",
    "first_seen": "2026-10-15",
-   "last_seen": "2026-11-16",
+   "last_seen": "2026-11-23",
    "status_changed": null,
    "history": [
     {
@@ -17968,7 +17335,7 @@
    "location_source": "parcels",
    "adapter": "accela_tampa",
    "first_seen": "2026-10-15",
-   "last_seen": "2026-11-16",
+   "last_seen": "2026-11-23",
    "status_changed": null,
    "history": [
     {
@@ -18045,7 +17412,7 @@
    "location_source": "parcels",
    "adapter": "accela_tampa",
    "first_seen": "2026-10-15",
-   "last_seen": "2026-11-16",
+   "last_seen": "2026-11-23",
    "status_changed": null,
    "history": [
     {
@@ -18096,7 +17463,7 @@
    "to_flu": null,
    "filed_date": "2026-09-22",
    "status": "Filed",
-   "status_raw": "Sufficiency Plan Review",
+   "status_raw": "Revisions Required",
    "decision_date": null,
    "url": "https://aca-prod.accela.com/SARASOTACO/Cap/CapDetail.aspx?Module=Planning&TabName=Planning&capID1=REC26&capID2=00000&capID3=01CP7&agencyCode=SARASOTACO&IsToShowInspection=",
    "docs_url": null,
@@ -18112,7 +17479,7 @@
    "location_source": "parcels",
    "adapter": "accela_sarasota",
    "first_seen": "2026-10-15",
-   "last_seen": "2026-11-16",
+   "last_seen": "2026-11-23",
    "status_changed": null,
    "history": [
     {
@@ -18176,7 +17543,7 @@
    "location_source": "parcels",
    "adapter": "accela_pasco",
    "first_seen": "2026-10-15",
-   "last_seen": "2026-11-16",
+   "last_seen": "2026-11-23",
    "status_changed": null,
    "history": [
     {
@@ -18659,7 +18026,7 @@
    "location_source": "parcels",
    "adapter": "accela_polk",
    "first_seen": "2026-10-15",
-   "last_seen": "2026-11-16",
+   "last_seen": "2026-11-23",
    "status_changed": null,
    "history": [
     {
@@ -18730,7 +18097,7 @@
    "location_source": "parcels",
    "adapter": "accela_pasco",
    "first_seen": "2026-10-15",
-   "last_seen": "2026-11-16",
+   "last_seen": "2026-11-23",
    "status_changed": null,
    "history": [
     {
@@ -18877,7 +18244,7 @@
    "location_source": "parcels",
    "adapter": "accela_pasco",
    "first_seen": "2026-10-15",
-   "last_seen": "2026-11-16",
+   "last_seen": "2026-11-23",
    "status_changed": null,
    "history": [
     {
@@ -19192,7 +18559,7 @@
    "location_source": "parcels",
    "adapter": "accela_sarasota",
    "first_seen": "2026-10-15",
-   "last_seen": "2026-11-16",
+   "last_seen": "2026-11-23",
    "status_changed": null,
    "history": [
     {
@@ -19258,7 +18625,7 @@
    "location_source": "parcels",
    "adapter": "accela_manatee",
    "first_seen": "2026-10-15",
-   "last_seen": "2026-11-16",
+   "last_seen": "2026-11-23",
    "status_changed": null,
    "history": [
     {
@@ -19752,7 +19119,7 @@
    "location_source": "parcels",
    "adapter": "accela_sarasota",
    "first_seen": "2026-10-15",
-   "last_seen": "2026-11-16",
+   "last_seen": "2026-11-23",
    "status_changed": null,
    "history": [
     {
@@ -19982,7 +19349,7 @@
    "location_source": "parcels",
    "adapter": "brevard",
    "first_seen": "2026-10-16",
-   "last_seen": "2026-11-16",
+   "last_seen": "2026-11-23",
    "status_changed": "2026-11-16",
    "history": [
     {
@@ -20206,7 +19573,7 @@
    "location_source": "parcels",
    "adapter": "osceola",
    "first_seen": "2026-10-16",
-   "last_seen": "2026-11-16",
+   "last_seen": "2026-11-23",
    "status_changed": null,
    "history": [
     {
@@ -20291,7 +19658,7 @@
    "location_source": "parcels",
    "adapter": "accela_polk",
    "first_seen": "2026-10-15",
-   "last_seen": "2026-11-16",
+   "last_seen": "2026-11-23",
    "status_changed": null,
    "history": [
     {
@@ -21285,7 +20652,7 @@
    "location_source": "parcels",
    "adapter": "brevard",
    "first_seen": "2026-10-16",
-   "last_seen": "2026-11-16",
+   "last_seen": "2026-11-23",
    "status_changed": "2026-11-05",
    "history": [
     {
@@ -21359,7 +20726,7 @@
    "location_source": "parcels",
    "adapter": "accela_sarasota",
    "first_seen": "2026-10-15",
-   "last_seen": "2026-11-16",
+   "last_seen": "2026-11-23",
    "status_changed": null,
    "history": [
     {
@@ -21684,7 +21051,7 @@
    "location_source": "parcels",
    "adapter": "accela_sarasota",
    "first_seen": "2026-10-15",
-   "last_seen": "2026-11-16",
+   "last_seen": "2026-11-23",
    "status_changed": null,
    "history": [
     {
@@ -21769,7 +21136,7 @@
    "location_source": "parcels",
    "adapter": "accela_sarasota",
    "first_seen": "2026-10-15",
-   "last_seen": "2026-11-16",
+   "last_seen": "2026-11-23",
    "status_changed": null,
    "history": [
     {
@@ -21863,7 +21230,7 @@
    "location_source": "parcels",
    "adapter": "accela_polk",
    "first_seen": "2026-10-15",
-   "last_seen": "2026-11-16",
+   "last_seen": "2026-11-23",
    "status_changed": null,
    "history": [
     {
@@ -21950,7 +21317,7 @@
    "location_source": "parcels",
    "adapter": "accela_polk",
    "first_seen": "2026-10-15",
-   "last_seen": "2026-11-16",
+   "last_seen": "2026-11-23",
    "status_changed": null,
    "history": [
     {
@@ -23000,13 +22367,18 @@
      "body": "BOCC",
      "date": "2027-01-19",
      "result": null
+    },
+    {
+     "body": "BOCC",
+     "date": "2027-03-16",
+     "result": null
     }
    ],
    "acres_source": "application",
    "location_source": "parcels",
    "adapter": "accela_polk",
    "first_seen": "2026-10-15",
-   "last_seen": "2026-11-16",
+   "last_seen": "2026-11-23",
    "status_changed": null,
    "history": [
     {
@@ -23077,7 +22449,7 @@
    "location_source": "parcels",
    "adapter": "osceola",
    "first_seen": "2026-10-16",
-   "last_seen": "2026-11-16",
+   "last_seen": "2026-11-23",
    "status_changed": null,
    "history": [
     {
@@ -23222,7 +22594,7 @@
    "location_source": "parcels",
    "adapter": "accela_pasco",
    "first_seen": "2026-10-15",
-   "last_seen": "2026-11-16",
+   "last_seen": "2026-11-23",
    "status_changed": null,
    "history": [
     {
@@ -23286,7 +22658,7 @@
    "location_source": "parcels",
    "adapter": "osceola",
    "first_seen": "2026-10-16",
-   "last_seen": "2026-11-16",
+   "last_seen": "2026-11-23",
    "status_changed": null,
    "history": [
     {
@@ -23531,7 +22903,7 @@
    "location_source": "parcels",
    "adapter": "osceola",
    "first_seen": "2026-10-16",
-   "last_seen": "2026-11-16",
+   "last_seen": "2026-11-23",
    "status_changed": null,
    "history": [
     {
@@ -23601,7 +22973,7 @@
    "location_source": "parcels",
    "adapter": "osceola",
    "first_seen": "2026-10-16",
-   "last_seen": "2026-11-16",
+   "last_seen": "2026-11-23",
    "status_changed": null,
    "history": [
     {
@@ -24196,7 +23568,7 @@
    "location_source": "parcels",
    "adapter": "brevard",
    "first_seen": "2026-10-16",
-   "last_seen": "2026-11-16",
+   "last_seen": "2026-11-23",
    "status_changed": "2026-11-02",
    "history": [
     {
@@ -24280,7 +23652,7 @@
    "location_source": "parcels",
    "adapter": "brevard",
    "first_seen": "2026-10-16",
-   "last_seen": "2026-11-16",
+   "last_seen": "2026-11-23",
    "status_changed": "2026-11-02",
    "history": [
     {
@@ -24353,7 +23725,7 @@
    "location_source": "parcels",
    "adapter": "osceola",
    "first_seen": "2026-10-16",
-   "last_seen": "2026-11-16",
+   "last_seen": "2026-11-23",
    "status_changed": null,
    "history": [
     {
@@ -25106,7 +24478,7 @@
    "location_source": "parcels",
    "adapter": "osceola",
    "first_seen": "2026-10-16",
-   "last_seen": "2026-11-16",
+   "last_seen": "2026-11-23",
    "status_changed": null,
    "history": [
     {
@@ -25380,8 +24752,8 @@
    "from_flu": null,
    "to_flu": null,
    "filed_date": "2026-08-25",
-   "status": "Filed",
-   "status_raw": "Pending DRC",
+   "status": "Hearing Scheduled",
+   "status_raw": "Pending PC",
    "decision_date": null,
    "url": "https://aca-prod.accela.com/OSCEOLA/Cap/CapDetail.aspx?Module=Zoning&TabName=Zoning&capID1=CPL26&capID2=00000&capID3=03577&agencyCode=OSCEOLA&IsToShowInspection=",
    "docs_url": null,
@@ -25392,25 +24764,39 @@
    "acres": 2.28,
    "lat": 28.201828,
    "lon": -81.2504141,
-   "hearings": [],
+   "hearings": [
+    {
+     "body": "Planning Commission",
+     "date": "2026-12-03",
+     "result": null
+    }
+   ],
    "acres_source": "parcels",
    "location_source": "parcels",
    "adapter": "osceola",
    "first_seen": "2026-10-16",
-   "last_seen": "2026-11-16",
-   "status_changed": null,
+   "last_seen": "2026-11-23",
+   "status_changed": "2026-11-23",
    "history": [
     {
      "date": "2026-10-16",
      "status": "Filed",
      "from": null
+    },
+    {
+     "date": "2026-11-23",
+     "status": "Hearing Scheduled",
+     "from": "Filed"
     }
    ],
    "backfilled": true,
    "id": "Osceola County|ZMA26-0044",
    "slug": "osceola-county-zma26-0044",
    "acres_unknown": false,
-   "next_hearing": null,
+   "next_hearing": {
+    "body": "Planning Commission",
+    "date": "2026-12-03"
+   },
    "last_hearing": null,
    "apns": [
     "30-26-31-5070-0001-0045"
@@ -25477,7 +24863,7 @@
    "location_source": "parcels",
    "adapter": "accela_polk",
    "first_seen": "2026-10-15",
-   "last_seen": "2026-11-16",
+   "last_seen": "2026-11-23",
    "status_changed": null,
    "history": [
     {
@@ -25548,7 +24934,7 @@
    "location_source": "parcels",
    "adapter": "accela_pasco",
    "first_seen": "2026-10-15",
-   "last_seen": "2026-11-16",
+   "last_seen": "2026-11-23",
    "status_changed": null,
    "history": [
     {
@@ -25613,7 +24999,7 @@
    "location_source": "parcels",
    "adapter": "accela_sarasota",
    "first_seen": "2026-10-15",
-   "last_seen": "2026-11-16",
+   "last_seen": "2026-11-23",
    "status_changed": null,
    "history": [
     {
@@ -25679,7 +25065,7 @@
    "location_source": "parcels",
    "adapter": "accela_pasco",
    "first_seen": "2026-10-15",
-   "last_seen": "2026-11-16",
+   "last_seen": "2026-11-23",
    "status_changed": null,
    "history": [
     {
@@ -25745,7 +25131,7 @@
    "location_source": "parcels",
    "adapter": "accela_pasco",
    "first_seen": "2026-10-15",
-   "last_seen": "2026-11-16",
+   "last_seen": "2026-11-23",
    "status_changed": null,
    "history": [
     {
@@ -25813,7 +25199,7 @@
    "location_source": "parcels",
    "adapter": "accela_manatee",
    "first_seen": "2026-10-15",
-   "last_seen": "2026-11-16",
+   "last_seen": "2026-11-23",
    "status_changed": null,
    "history": [
     {
@@ -25883,7 +25269,7 @@
    "location_source": "parcels",
    "adapter": "accela_tampa",
    "first_seen": "2026-10-15",
-   "last_seen": "2026-11-16",
+   "last_seen": "2026-11-23",
    "status_changed": null,
    "history": [
     {
@@ -25951,7 +25337,7 @@
    "location_source": "parcels",
    "adapter": "accela_pasco",
    "first_seen": "2026-10-15",
-   "last_seen": "2026-11-16",
+   "last_seen": "2026-11-23",
    "status_changed": null,
    "history": [
     {
@@ -26022,7 +25408,7 @@
    "location_source": "parcels",
    "adapter": "accela_pasco",
    "first_seen": "2026-10-15",
-   "last_seen": "2026-11-16",
+   "last_seen": "2026-11-23",
    "status_changed": null,
    "history": [
     {
@@ -26096,7 +25482,7 @@
    "location_source": "parcels",
    "adapter": "osceola",
    "first_seen": "2026-10-16",
-   "last_seen": "2026-11-16",
+   "last_seen": "2026-11-23",
    "status_changed": null,
    "history": [
     {
@@ -26166,7 +25552,7 @@
    "location_source": "parcels",
    "adapter": "accela_tampa",
    "first_seen": "2026-10-15",
-   "last_seen": "2026-11-16",
+   "last_seen": "2026-11-23",
    "status_changed": null,
    "history": [
     {
@@ -26298,7 +25684,7 @@
    "location_source": "parcels",
    "adapter": "accela_pasco",
    "first_seen": "2026-10-15",
-   "last_seen": "2026-11-16",
+   "last_seen": "2026-11-23",
    "status_changed": null,
    "history": [
     {
@@ -26364,7 +25750,7 @@
    "location_source": "parcels",
    "adapter": "accela_pasco",
    "first_seen": "2026-10-15",
-   "last_seen": "2026-11-16",
+   "last_seen": "2026-11-23",
    "status_changed": null,
    "history": [
     {
@@ -26428,7 +25814,7 @@
    "location_source": "parcels",
    "adapter": "osceola",
    "first_seen": "2026-10-16",
-   "last_seen": "2026-11-16",
+   "last_seen": "2026-11-23",
    "status_changed": "2026-10-26",
    "history": [
     {
@@ -27748,7 +27134,7 @@
    "location_source": "parcels",
    "adapter": "accela_pasco",
    "first_seen": "2026-10-15",
-   "last_seen": "2026-11-16",
+   "last_seen": "2026-11-23",
    "status_changed": null,
    "history": [
     {
@@ -27822,7 +27208,7 @@
    "location_source": "parcels",
    "adapter": "osceola",
    "first_seen": "2026-10-16",
-   "last_seen": "2026-11-16",
+   "last_seen": "2026-11-23",
    "status_changed": "2026-11-02",
    "history": [
     {
@@ -28399,7 +27785,7 @@
    "location_source": "parcels",
    "adapter": "osceola",
    "first_seen": "2026-10-16",
-   "last_seen": "2026-11-16",
+   "last_seen": "2026-11-23",
    "status_changed": null,
    "history": [
     {
@@ -28535,7 +27921,7 @@
    "location_source": "parcels",
    "adapter": "osceola",
    "first_seen": "2026-10-16",
-   "last_seen": "2026-11-16",
+   "last_seen": "2026-11-23",
    "status_changed": null,
    "history": [
     {
@@ -28599,7 +27985,7 @@
    "location_source": "parcels",
    "adapter": "osceola",
    "first_seen": "2026-10-16",
-   "last_seen": "2026-11-16",
+   "last_seen": "2026-11-23",
    "status_changed": null,
    "history": [
     {
@@ -29235,7 +28621,7 @@
    "location_source": "parcels",
    "adapter": "brevard",
    "first_seen": "2026-10-16",
-   "last_seen": "2026-11-16",
+   "last_seen": "2026-11-23",
    "status_changed": "2026-11-16",
    "history": [
     {
@@ -29313,7 +28699,7 @@
    "location_source": "parcels",
    "adapter": "accela_charlotte",
    "first_seen": "2026-10-15",
-   "last_seen": "2026-11-16",
+   "last_seen": "2026-11-23",
    "status_changed": null,
    "history": [
     {
@@ -29393,7 +28779,7 @@
    "location_source": "parcels",
    "adapter": "accela_polk",
    "first_seen": "2026-10-15",
-   "last_seen": "2026-11-16",
+   "last_seen": "2026-11-23",
    "status_changed": null,
    "history": [
     {
@@ -29543,7 +28929,7 @@
    "location_source": "parcels",
    "adapter": "accela_pasco",
    "first_seen": "2026-10-15",
-   "last_seen": "2026-11-16",
+   "last_seen": "2026-11-23",
    "status_changed": null,
    "history": [
     {
@@ -29608,7 +28994,7 @@
    "location_source": "parcels",
    "adapter": "osceola",
    "first_seen": "2026-10-16",
-   "last_seen": "2026-11-16",
+   "last_seen": "2026-11-23",
    "status_changed": null,
    "history": [
     {
@@ -29685,7 +29071,7 @@
    "location_source": "parcels",
    "adapter": "accela_polk",
    "first_seen": "2026-10-15",
-   "last_seen": "2026-11-16",
+   "last_seen": "2026-11-23",
    "status_changed": "2026-11-05",
    "history": [
     {
@@ -29779,7 +29165,7 @@
    "location_source": "parcels",
    "adapter": "accela_polk",
    "first_seen": "2026-10-15",
-   "last_seen": "2026-11-16",
+   "last_seen": "2026-11-23",
    "status_changed": null,
    "history": [
     {
@@ -29871,7 +29257,7 @@
    "location_source": "parcels",
    "adapter": "accela_polk",
    "first_seen": "2026-10-15",
-   "last_seen": "2026-11-16",
+   "last_seen": "2026-11-23",
    "status_changed": "2026-11-05",
    "history": [
     {
@@ -29965,7 +29351,7 @@
    "location_source": "parcels",
    "adapter": "accela_polk",
    "first_seen": "2026-10-15",
-   "last_seen": "2026-11-16",
+   "last_seen": "2026-11-23",
    "status_changed": null,
    "history": [
     {
@@ -30036,7 +29422,7 @@
    "location_source": "parcels",
    "adapter": "accela_pasco",
    "first_seen": "2026-10-15",
-   "last_seen": "2026-11-16",
+   "last_seen": "2026-11-23",
    "status_changed": null,
    "history": [
     {
@@ -30179,7 +29565,7 @@
    "to_flu": null,
    "filed_date": "2026-08-06",
    "status": "Filed",
-   "status_raw": "Completeness Review Version 1",
+   "status_raw": "Returned to Applicant",
    "decision_date": null,
    "url": "https://aca-prod.accela.com/MANATEE/Cap/CapDetail.aspx?Module=Planning&TabName=Planning&capID1=REC26&capID2=00000&capID3=00Y6N&agencyCode=MANATEE&IsToShowInspection=",
    "docs_url": null,
@@ -30201,7 +29587,7 @@
     "7980000060000-0532295845"
    ],
    "first_seen": "2026-10-15",
-   "last_seen": "2026-11-16",
+   "last_seen": "2026-11-23",
    "status_changed": null,
    "history": [
     {
@@ -31219,7 +30605,7 @@
    "location_source": "parcels",
    "adapter": "accela_manatee",
    "first_seen": "2026-10-15",
-   "last_seen": "2026-11-16",
+   "last_seen": "2026-11-23",
    "status_changed": null,
    "history": [
     {
@@ -32018,7 +31404,7 @@
    "location_source": "parcels",
    "adapter": "accela_pasco",
    "first_seen": "2026-10-15",
-   "last_seen": "2026-11-16",
+   "last_seen": "2026-11-23",
    "status_changed": null,
    "history": [
     {
@@ -33153,7 +32539,7 @@
    "location_source": "parcels",
    "adapter": "accela_charlotte",
    "first_seen": "2026-10-15",
-   "last_seen": "2026-11-16",
+   "last_seen": "2026-11-23",
    "status_changed": null,
    "history": [
     {
@@ -33223,7 +32609,7 @@
    "location_source": "parcels",
    "adapter": "accela_charlotte",
    "first_seen": "2026-10-15",
-   "last_seen": "2026-11-16",
+   "last_seen": "2026-11-23",
    "status_changed": null,
    "history": [
     {
@@ -33443,7 +32829,7 @@
    "location_source": "parcels",
    "adapter": "brevard",
    "first_seen": "2026-10-16",
-   "last_seen": "2026-11-16",
+   "last_seen": "2026-11-23",
    "status_changed": "2026-11-16",
    "history": [
     {
@@ -33522,7 +32908,7 @@
    "location_source": "parcels",
    "adapter": "osceola",
    "first_seen": "2026-10-16",
-   "last_seen": "2026-11-16",
+   "last_seen": "2026-11-23",
    "status_changed": null,
    "history": [
     {
@@ -33596,7 +32982,7 @@
    "location_source": "parcels",
    "adapter": "accela_tampa",
    "first_seen": "2026-10-15",
-   "last_seen": "2026-11-16",
+   "last_seen": "2026-11-23",
    "status_changed": null,
    "history": [
     {
@@ -34214,7 +33600,7 @@
    "to_flu": null,
    "filed_date": "2026-07-30",
    "status": "Filed",
-   "status_raw": "Pending Payment",
+   "status_raw": "Need Additional Info",
    "decision_date": null,
    "url": "https://aca-prod.accela.com/BREVARD/Cap/CapDetail.aspx?Module=Development&TabName=Development&capID1=26ZON&capID2=00000&capID3=00348&agencyCode=BREVARD&IsToShowInspection=",
    "docs_url": null,
@@ -34231,7 +33617,7 @@
    "location_source": "parcels",
    "adapter": "brevard",
    "first_seen": "2026-10-16",
-   "last_seen": "2026-11-16",
+   "last_seen": "2026-11-23",
    "status_changed": null,
    "history": [
     {
@@ -34294,7 +33680,7 @@
    "location_source": "parcels",
    "adapter": "brevard",
    "first_seen": "2026-10-16",
-   "last_seen": "2026-11-16",
+   "last_seen": "2026-11-23",
    "status_changed": null,
    "history": [
     {
@@ -34435,9 +33821,9 @@
    "from_flu": null,
    "to_flu": null,
    "filed_date": "2026-07-29",
-   "status": "Hearing Scheduled",
-   "status_raw": "Pending DRC",
-   "decision_date": null,
+   "status": "Approved",
+   "status_raw": "Approved (BCC 2026-11-16: ADOPTED.)",
+   "decision_date": "2026-11-16",
    "url": "https://aca-prod.accela.com/OSCEOLA/Cap/CapDetail.aspx?Module=Zoning&TabName=Zoning&capID1=CPL26&capID2=00000&capID3=02895&agencyCode=OSCEOLA&IsToShowInspection=",
    "docs_url": "https://docs.osceola.org/OnBaseAgendaOnline/Documents/DownloadFile/Attachment_%20ZMA26-0036%20Staff%20Report.pdf.pdf?documentType=1&meetingId=2193&itemId=51090&publishId=52806&isSection=False&isAttachment=True",
    "source": "Osceola Accela + OnBase Agenda Online (PC / BCC)",
@@ -34456,15 +33842,15 @@
     {
      "body": "BOCC",
      "date": "2026-11-16",
-     "result": null
+     "result": "Approved"
     }
    ],
    "acres_source": "application",
    "location_source": "parcels",
    "adapter": "osceola",
    "first_seen": "2026-10-16",
-   "last_seen": "2026-11-16",
-   "status_changed": "2026-11-02",
+   "last_seen": "2026-11-23",
+   "status_changed": "2026-11-23",
    "history": [
     {
      "date": "2026-10-16",
@@ -34475,6 +33861,11 @@
      "date": "2026-11-02",
      "status": "Hearing Scheduled",
      "from": "Filed"
+    },
+    {
+     "date": "2026-11-23",
+     "status": "Approved",
+     "from": "Hearing Scheduled"
     }
    ],
    "backfilled": true,
@@ -34485,7 +33876,7 @@
    "last_hearing": {
     "body": "BOCC",
     "date": "2026-11-16",
-    "result": null
+    "result": "Approved"
    },
    "apns": [
     "06-27-31-3049-0001-0130"
@@ -34621,7 +34012,7 @@
    "location_source": "parcels",
    "adapter": "accela_tampa",
    "first_seen": "2026-10-15",
-   "last_seen": "2026-11-16",
+   "last_seen": "2026-11-23",
    "status_changed": null,
    "history": [
     {
@@ -34925,7 +34316,7 @@
    "location_source": "parcels",
    "adapter": "accela_pasco",
    "first_seen": "2026-10-15",
-   "last_seen": "2026-11-16",
+   "last_seen": "2026-11-23",
    "status_changed": null,
    "history": [
     {
@@ -35157,7 +34548,7 @@
    "location_source": "parcels",
    "adapter": "osceola",
    "first_seen": "2026-10-16",
-   "last_seen": "2026-11-16",
+   "last_seen": "2026-11-23",
    "status_changed": null,
    "history": [
     {
@@ -35205,7 +34596,7 @@
    "to_flu": null,
    "filed_date": "2026-07-23",
    "status": "Filed",
-   "status_raw": "Completeness Review",
+   "status_raw": "Sufficiency Review Version 1",
    "decision_date": null,
    "url": "https://aca-prod.accela.com/MANATEE/Cap/CapDetail.aspx?Module=Planning&TabName=Planning&capID1=REC26&capID2=00000&capID3=012M1&agencyCode=MANATEE&IsToShowInspection=",
    "docs_url": null,
@@ -35221,7 +34612,7 @@
    "location_source": "parcels",
    "adapter": "accela_manatee",
    "first_seen": "2026-10-15",
-   "last_seen": "2026-11-16",
+   "last_seen": "2026-11-23",
    "status_changed": null,
    "history": [
     {
@@ -35975,7 +35366,7 @@
    "jurisdiction": "City of Bradenton",
    "county": "Manatee",
    "app_num": "PLN-ZON-26-0002",
-   "category": "PD",
+   "category": "Rezoning",
    "app_type": "Zoning Map Amendment (Ordinance 4070)",
    "project_name": "GT Bray Park",
    "description": "A REQUEST TO AMEND THE CITY OF BRADENTON LAND USE ATLAS; TO DESIGNATE CERTAIN LAND GENERALLY LOCATED APPROXIMATELY 1,200 FEET EAST OF THE INTERSECTION OF 59TH STREET WEST AND 33RD AVENUE DRIVE WEST, IDENTIFIED AS PARCEL “A” IN A FEE SIMPLE DEED OF THE MANATEE COUNTY OFFICIAL RECORDS; BOOK 1043, PAGE 1914, AND MORE PARTICULARLY DESCRIBED HEREIN, CONTAINING 0.62 ACRES TOTAL AND OWNED BY THE CITY OF BRADENTON, UNDER THE PLANNED DEVELOPMENT PROJECT ZONING CATEGORY.",
@@ -35990,7 +35381,7 @@
    "status_raw": "Scheduled-City Council",
    "decision_date": null,
    "url": "https://aca-prod.accela.com/BRADENTON/Cap/CapDetail.aspx?Module=Planning&TabName=Planning&capID1=REC26&capID2=00000&capID3=006MK&agencyCode=BRADENTON&IsToShowInspection=",
-   "docs_url": "https://s3.amazonaws.com/granicus_production_attachments/cityofbradenton/c8fb1e0e078eeb04877cb28be582f9ee0.html",
+   "docs_url": "https://s3.amazonaws.com/granicus_production_attachments/cityofbradenton/26c78588be2b5bfad3fcf1dc564be18a0.html",
    "source": "Bradenton Accela + Granicus agendas",
    "parcel_ids": [
     "5110200002"
@@ -35999,6 +35390,11 @@
    "lat": 27.4736455,
    "lon": -82.6165196,
    "hearings": [
+    {
+     "body": "Planning Commission",
+     "date": "2026-09-16",
+     "result": null
+    },
     {
      "body": "City Council",
      "date": "2026-10-14",
@@ -36014,7 +35410,7 @@
    "location_source": "parcels",
    "adapter": "bradenton",
    "first_seen": "2026-11-09",
-   "last_seen": "2026-11-16",
+   "last_seen": "2026-11-23",
    "status_changed": null,
    "history": [
     {
@@ -36069,7 +35465,7 @@
    "status_raw": "Scheduled-City Council",
    "decision_date": null,
    "url": "https://aca-prod.accela.com/BRADENTON/Cap/CapDetail.aspx?Module=Planning&TabName=Planning&capID1=REC26&capID2=00000&capID3=006MJ&agencyCode=BRADENTON&IsToShowInspection=",
-   "docs_url": "https://s3.amazonaws.com/granicus_production_attachments/cityofbradenton/c8fb1e0e078eeb04877cb28be582f9ee0.html",
+   "docs_url": "https://s3.amazonaws.com/granicus_production_attachments/cityofbradenton/26c78588be2b5bfad3fcf1dc564be18a0.html",
    "source": "Bradenton Accela + Granicus agendas",
    "parcel_ids": [
     "5110200002"
@@ -36098,7 +35494,7 @@
    "location_source": "parcels",
    "adapter": "bradenton",
    "first_seen": "2026-11-09",
-   "last_seen": "2026-11-16",
+   "last_seen": "2026-11-23",
    "status_changed": null,
    "history": [
     {
@@ -36555,7 +35951,7 @@
    "location_source": "parcels",
    "adapter": "accela_tampa",
    "first_seen": "2026-10-15",
-   "last_seen": "2026-11-16",
+   "last_seen": "2026-11-23",
    "status_changed": null,
    "history": [
     {
@@ -36753,9 +36149,9 @@
    "from_flu": null,
    "to_flu": null,
    "filed_date": "2026-07-21",
-   "status": "Hearing Scheduled",
-   "status_raw": "Pending BCC",
-   "decision_date": null,
+   "status": "Approved",
+   "status_raw": "Approved (BCC 2026-11-16: ADOPTED.)",
+   "decision_date": "2026-11-16",
    "url": "https://aca-prod.accela.com/OSCEOLA/Cap/CapDetail.aspx?Module=Zoning&TabName=Zoning&capID1=CPL26&capID2=00000&capID3=02756&agencyCode=OSCEOLA&IsToShowInspection=",
    "docs_url": "https://docs.osceola.org/OnBaseAgendaOnline/Documents/DownloadFile/Attachment_%20ZMA26-0034%20Staff%20Report.pdf.pdf?documentType=1&meetingId=2193&itemId=51089&publishId=52776&isSection=False&isAttachment=True",
    "source": "Osceola Accela + OnBase Agenda Online (PC / BCC)",
@@ -36774,20 +36170,25 @@
     {
      "body": "BOCC",
      "date": "2026-11-16",
-     "result": null
+     "result": "Approved"
     }
    ],
    "acres_source": "application",
    "location_source": "parcels",
    "adapter": "osceola",
    "first_seen": "2026-10-16",
-   "last_seen": "2026-11-16",
-   "status_changed": null,
+   "last_seen": "2026-11-23",
+   "status_changed": "2026-11-23",
    "history": [
     {
      "date": "2026-10-16",
      "status": "Hearing Scheduled",
      "from": null
+    },
+    {
+     "date": "2026-11-23",
+     "status": "Approved",
+     "from": "Hearing Scheduled"
     }
    ],
    "backfilled": true,
@@ -36798,7 +36199,7 @@
    "last_hearing": {
     "body": "BOCC",
     "date": "2026-11-16",
-    "result": null
+    "result": "Approved"
    },
    "apns": [
     "33-25-28-0000-0120-0000"
@@ -37084,7 +36485,7 @@
    "location_source": "parcels",
    "adapter": "brevard",
    "first_seen": "2026-10-16",
-   "last_seen": "2026-11-16",
+   "last_seen": "2026-11-23",
    "status_changed": "2026-10-20",
    "history": [
     {
@@ -37883,7 +37284,7 @@
    "location_source": "parcels",
    "adapter": "accela_tampa",
    "first_seen": "2026-10-15",
-   "last_seen": "2026-11-16",
+   "last_seen": "2026-11-23",
    "status_changed": null,
    "history": [
     {
@@ -38588,7 +37989,7 @@
    "location_source": "parcels",
    "adapter": "accela_pasco",
    "first_seen": "2026-10-15",
-   "last_seen": "2026-11-16",
+   "last_seen": "2026-11-23",
    "status_changed": null,
    "history": [
     {
@@ -38657,7 +38058,7 @@
    "location_source": "parcels",
    "adapter": "accela_pasco",
    "first_seen": "2026-10-15",
-   "last_seen": "2026-11-16",
+   "last_seen": "2026-11-23",
    "status_changed": null,
    "history": [
     {
@@ -38923,7 +38324,7 @@
    "location_source": "parcels",
    "adapter": "accela_pasco",
    "first_seen": "2026-10-15",
-   "last_seen": "2026-11-16",
+   "last_seen": "2026-11-23",
    "status_changed": null,
    "history": [
     {
@@ -39311,7 +38712,7 @@
    "location_source": "parcels",
    "adapter": "accela_pasco",
    "first_seen": "2026-10-15",
-   "last_seen": "2026-11-16",
+   "last_seen": "2026-11-23",
    "status_changed": null,
    "history": [
     {
@@ -39360,9 +38761,9 @@
    "from_flu": null,
    "to_flu": null,
    "filed_date": "2026-07-10",
-   "status": "Hearing Scheduled",
-   "status_raw": "Pending BCC",
-   "decision_date": null,
+   "status": "Approved",
+   "status_raw": "Pending BCC (BCC 2026-11-16: ADOPTED.)",
+   "decision_date": "2026-11-16",
    "url": "https://aca-prod.accela.com/OSCEOLA/Cap/CapDetail.aspx?Module=Zoning&TabName=Zoning&capID1=CPL26&capID2=00000&capID3=02630&agencyCode=OSCEOLA&IsToShowInspection=",
    "docs_url": "https://docs.osceola.org/OnBaseAgendaOnline/Documents/DownloadFile/Attachment_%20ZMA26-0033%20Staff%20Report.pdf.pdf?documentType=1&meetingId=2193&itemId=51088&publishId=52772&isSection=False&isAttachment=True",
    "source": "Osceola Accela + OnBase Agenda Online (PC / BCC)",
@@ -39381,20 +38782,25 @@
     {
      "body": "BOCC",
      "date": "2026-11-16",
-     "result": null
+     "result": "Approved"
     }
    ],
    "acres_source": "application",
    "location_source": "parcels",
    "adapter": "osceola",
    "first_seen": "2026-10-16",
-   "last_seen": "2026-11-16",
-   "status_changed": null,
+   "last_seen": "2026-11-23",
+   "status_changed": "2026-11-23",
    "history": [
     {
      "date": "2026-10-16",
      "status": "Hearing Scheduled",
      "from": null
+    },
+    {
+     "date": "2026-11-23",
+     "status": "Approved",
+     "from": "Hearing Scheduled"
     }
    ],
    "backfilled": true,
@@ -39405,7 +38811,7 @@
    "last_hearing": {
     "body": "BOCC",
     "date": "2026-11-16",
-    "result": null
+    "result": "Approved"
    },
    "apns": [
     "01-25-30-0000-0061-0000"
@@ -39857,7 +39263,7 @@
    "location_source": "parcels",
    "adapter": "accela_pasco",
    "first_seen": "2026-10-15",
-   "last_seen": "2026-11-16",
+   "last_seen": "2026-11-23",
    "status_changed": "2026-10-26",
    "history": [
     {
@@ -40542,7 +39948,7 @@
    "location_source": "parcels",
    "adapter": "accela_tampa",
    "first_seen": "2026-10-15",
-   "last_seen": "2026-11-16",
+   "last_seen": "2026-11-23",
    "status_changed": null,
    "history": [
     {
@@ -40736,7 +40142,7 @@
    "to_flu": null,
    "filed_date": "2026-07-07",
    "status": "Approved",
-   "status_raw": "Approved for Hearing",
+   "status_raw": "Closed-Approved",
    "decision_date": "2026-11-03",
    "url": "https://aca-prod.accela.com/POLKCO/Cap/CapDetail.aspx?Module=LandDev&TabName=LandDev&capID1=REC26&capID2=00000&capID3=00OS4&agencyCode=POLKCO&IsToShowInspection=",
    "docs_url": null,
@@ -40768,7 +40174,7 @@
    "location_source": "parcels",
    "adapter": "accela_polk",
    "first_seen": "2026-10-15",
-   "last_seen": "2026-11-16",
+   "last_seen": "2026-11-23",
    "status_changed": "2026-11-05",
    "history": [
     {
@@ -40824,7 +40230,7 @@
    "from_flu": null,
    "to_flu": null,
    "filed_date": "2026-07-07",
-   "status": "Hearing Scheduled",
+   "status": "Filed",
    "status_raw": "Approved for Hearing",
    "decision_date": null,
    "url": "https://aca-prod.accela.com/POLKCO/Cap/CapDetail.aspx?Module=LandDev&TabName=LandDev&capID1=REC26&capID2=00000&capID3=00O2X&agencyCode=POLKCO&IsToShowInspection=",
@@ -40862,13 +40268,18 @@
    "location_source": "parcels",
    "adapter": "accela_polk",
    "first_seen": "2026-10-15",
-   "last_seen": "2026-11-16",
-   "status_changed": null,
+   "last_seen": "2026-11-23",
+   "status_changed": "2026-11-23",
    "history": [
     {
      "date": "2026-10-15",
      "status": "Hearing Scheduled",
      "from": null
+    },
+    {
+     "date": "2026-11-23",
+     "status": "Filed",
+     "from": "Hearing Scheduled"
     }
    ],
    "backfilled": true,
@@ -41975,7 +41386,7 @@
    "location_source": "parcels",
    "adapter": "accela_polk",
    "first_seen": "2026-10-15",
-   "last_seen": "2026-11-16",
+   "last_seen": "2026-11-23",
    "status_changed": null,
    "history": [
     {
@@ -44837,7 +44248,7 @@
    "location_source": "parcels",
    "adapter": "accela_polk",
    "first_seen": "2026-10-15",
-   "last_seen": "2026-11-16",
+   "last_seen": "2026-11-23",
    "status_changed": "2026-11-05",
    "history": [
     {
@@ -44910,7 +44321,7 @@
    "location_source": "parcels",
    "adapter": "accela_pasco",
    "first_seen": "2026-10-15",
-   "last_seen": "2026-11-16",
+   "last_seen": "2026-11-23",
    "status_changed": null,
    "history": [
     {
@@ -46421,9 +45832,9 @@
    "from_flu": null,
    "to_flu": null,
    "filed_date": "2026-06-18",
-   "status": "Hearing Scheduled",
-   "status_raw": "Pending BCC",
-   "decision_date": null,
+   "status": "Approved",
+   "status_raw": "Approved (BCC 2026-11-16: ADOPTED.)",
+   "decision_date": "2026-11-16",
    "url": "https://aca-prod.accela.com/OSCEOLA/Cap/CapDetail.aspx?Module=Zoning&TabName=Zoning&capID1=CPL26&capID2=00000&capID3=02453&agencyCode=OSCEOLA&IsToShowInspection=",
    "docs_url": "https://docs.osceola.org/OnBaseAgendaOnline/Documents/DownloadFile/Attachment_%20ZMA26-0031%20STAFF%20REPORT.pdf.pdf?documentType=1&meetingId=2193&itemId=51087&publishId=52802&isSection=False&isAttachment=True",
    "source": "Osceola Accela + OnBase Agenda Online (PC / BCC)",
@@ -46442,15 +45853,15 @@
     {
      "body": "BOCC",
      "date": "2026-11-16",
-     "result": null
+     "result": "Approved"
     }
    ],
    "acres_source": "application",
    "location_source": "parcels",
    "adapter": "osceola",
    "first_seen": "2026-10-16",
-   "last_seen": "2026-11-16",
-   "status_changed": "2026-10-26",
+   "last_seen": "2026-11-23",
+   "status_changed": "2026-11-23",
    "history": [
     {
      "date": "2026-10-16",
@@ -46461,6 +45872,11 @@
      "date": "2026-10-26",
      "status": "Hearing Scheduled",
      "from": "Filed"
+    },
+    {
+     "date": "2026-11-23",
+     "status": "Approved",
+     "from": "Hearing Scheduled"
     }
    ],
    "backfilled": true,
@@ -46471,7 +45887,7 @@
    "last_hearing": {
     "body": "BOCC",
     "date": "2026-11-16",
-    "result": null
+    "result": "Approved"
    },
    "apns": [
     "02-25-27-3160-000C-0132"
@@ -46921,7 +46337,7 @@
    "location_source": "parcels",
    "adapter": "accela_pasco",
    "first_seen": "2026-10-15",
-   "last_seen": "2026-11-16",
+   "last_seen": "2026-11-23",
    "status_changed": null,
    "history": [
     {
@@ -47008,7 +46424,7 @@
    "location_source": "parcels",
    "adapter": "accela_pasco",
    "first_seen": "2026-10-15",
-   "last_seen": "2026-11-16",
+   "last_seen": "2026-11-23",
    "status_changed": null,
    "history": [
     {
@@ -47082,7 +46498,7 @@
    "location_source": "parcels",
    "adapter": "osceola",
    "first_seen": "2026-10-16",
-   "last_seen": "2026-11-16",
+   "last_seen": "2026-11-23",
    "status_changed": null,
    "history": [
     {
@@ -47225,7 +46641,7 @@
    "location_source": "parcels",
    "adapter": "accela_pasco",
    "first_seen": "2026-10-15",
-   "last_seen": "2026-11-16",
+   "last_seen": "2026-11-23",
    "status_changed": null,
    "history": [
     {
@@ -47272,9 +46688,9 @@
    "from_flu": null,
    "to_flu": null,
    "filed_date": "2026-06-16",
-   "status": "Filed",
-   "status_raw": "In Process",
-   "decision_date": null,
+   "status": "Approved",
+   "status_raw": "Complete",
+   "decision_date": "2026-11-12",
    "url": "https://aca-prod.accela.com/TAMPA/Cap/CapDetail.aspx?Module=Planning&TabName=Planning&capID1=26CAP&capID2=00000&capID3=01S87&agencyCode=TAMPA&IsToShowInspection=",
    "docs_url": null,
    "source": "City of Tampa Accela",
@@ -47288,15 +46704,15 @@
     {
      "body": "City Council",
      "date": "2026-11-12",
-     "result": null
+     "result": "Approved"
     }
    ],
    "acres_source": "application",
    "location_source": "parcels",
    "adapter": "accela_tampa",
    "first_seen": "2026-10-15",
-   "last_seen": "2026-11-16",
-   "status_changed": "2026-11-16",
+   "last_seen": "2026-11-23",
+   "status_changed": "2026-11-23",
    "history": [
     {
      "date": "2026-10-15",
@@ -47307,6 +46723,11 @@
      "date": "2026-11-16",
      "status": "Filed",
      "from": "Hearing Scheduled"
+    },
+    {
+     "date": "2026-11-23",
+     "status": "Approved",
+     "from": "Filed"
     }
    ],
    "backfilled": true,
@@ -47317,7 +46738,7 @@
    "last_hearing": {
     "body": "City Council",
     "date": "2026-11-12",
-    "result": null
+    "result": "Approved"
    },
    "apns": [
     "A-18-29-19-4WO-000064-00002.0"
@@ -48287,7 +47708,7 @@
    "location_source": "parcels",
    "adapter": "brevard",
    "first_seen": "2026-10-16",
-   "last_seen": "2026-11-16",
+   "last_seen": "2026-11-23",
    "status_changed": null,
    "history": [
     {
@@ -48338,9 +47759,9 @@
    "from_flu": "Low Density Residential (LDR)",
    "to_flu": "Industrial (IND)",
    "filed_date": "2026-06-12",
-   "status": "Hearing Scheduled",
-   "status_raw": "Submitted",
-   "decision_date": null,
+   "status": "Approved",
+   "status_raw": "Submitted (BCC 2026-11-16: ADOPTED.)",
+   "decision_date": "2026-11-16",
    "url": "https://aca-prod.accela.com/OSCEOLA/Cap/CapDetail.aspx?Module=Planning&TabName=Planning&capID1=REC26&capID2=00000&capID3=00JML&agencyCode=OSCEOLA&IsToShowInspection=",
    "docs_url": "https://docs.osceola.org/OnBaseAgendaOnline/Documents/DownloadFile/Attachment_%20CPA26-0004%20-staff%20report%20rev%2011.10.2026.pdf.pdf?documentType=1&meetingId=2193&itemId=51083&publishId=52787&isSection=False&isAttachment=True",
    "source": "Osceola Accela + OnBase Agenda Online (PC / BCC)",
@@ -48359,15 +47780,15 @@
     {
      "body": "BOCC",
      "date": "2026-11-16",
-     "result": null
+     "result": "Approved"
     }
    ],
    "acres_source": "application",
    "location_source": "parcels",
    "adapter": "osceola",
    "first_seen": "2026-10-16",
-   "last_seen": "2026-11-16",
-   "status_changed": "2026-11-02",
+   "last_seen": "2026-11-23",
+   "status_changed": "2026-11-23",
    "history": [
     {
      "date": "2026-10-16",
@@ -48378,6 +47799,11 @@
      "date": "2026-11-02",
      "status": "Hearing Scheduled",
      "from": "Filed"
+    },
+    {
+     "date": "2026-11-23",
+     "status": "Approved",
+     "from": "Hearing Scheduled"
     }
    ],
    "backfilled": true,
@@ -48388,7 +47814,7 @@
    "last_hearing": {
     "body": "BOCC",
     "date": "2026-11-16",
-    "result": null
+    "result": "Approved"
    },
    "apns": [
     "01-26-28-4456-0001-0010"
@@ -49648,7 +49074,7 @@
    "location_source": "parcels",
    "adapter": "osceola",
    "first_seen": "2026-10-16",
-   "last_seen": "2026-11-16",
+   "last_seen": "2026-11-23",
    "status_changed": null,
    "history": [
     {
@@ -49800,7 +49226,7 @@
    "location_source": "parcels",
    "adapter": "accela_tampa",
    "first_seen": "2026-10-15",
-   "last_seen": "2026-11-16",
+   "last_seen": "2026-11-23",
    "status_changed": null,
    "history": [
     {
@@ -49884,7 +49310,7 @@
    "location_source": "parcels",
    "adapter": "brevard",
    "first_seen": "2026-10-16",
-   "last_seen": "2026-11-16",
+   "last_seen": "2026-11-23",
    "status_changed": null,
    "history": [
     {
@@ -50151,7 +49577,7 @@
    "location_source": "parcels",
    "adapter": "accela_polk",
    "first_seen": "2026-10-15",
-   "last_seen": "2026-11-16",
+   "last_seen": "2026-11-23",
    "status_changed": null,
    "history": [
     {
@@ -50297,7 +49723,7 @@
    "location_source": "parcels",
    "adapter": "accela_pasco",
    "first_seen": "2026-10-15",
-   "last_seen": "2026-11-16",
+   "last_seen": "2026-11-23",
    "status_changed": "2026-11-02",
    "history": [
     {
@@ -50370,7 +49796,7 @@
    "location_source": "parcels",
    "adapter": "accela_manatee",
    "first_seen": "2026-10-15",
-   "last_seen": "2026-11-16",
+   "last_seen": "2026-11-23",
    "status_changed": null,
    "history": [
     {
@@ -50539,7 +49965,7 @@
    "location_source": "parcels",
    "adapter": "accela_polk",
    "first_seen": "2026-10-15",
-   "last_seen": "2026-11-16",
+   "last_seen": "2026-11-23",
    "status_changed": null,
    "history": [
     {
@@ -52950,9 +52376,9 @@
    "from_flu": null,
    "to_flu": null,
    "filed_date": "2026-05-29",
-   "status": "Hearing Scheduled",
-   "status_raw": "Pending BCC",
-   "decision_date": null,
+   "status": "Approved",
+   "status_raw": "Pending BCC (BCC 2026-11-16: ADOPTED.)",
+   "decision_date": "2026-11-16",
    "url": "https://aca-prod.accela.com/OSCEOLA/Cap/CapDetail.aspx?Module=Zoning&TabName=Zoning&capID1=CPL26&capID2=00000&capID3=02265&agencyCode=OSCEOLA&IsToShowInspection=",
    "docs_url": "https://docs.osceola.org/OnBaseAgendaOnline/Documents/DownloadFile/Attachment_%20ZMA26-0026%20Final%20Staff%20Report%2010.22.pdf.pdf?documentType=1&meetingId=2193&itemId=51086&publishId=52798&isSection=False&isAttachment=True",
    "source": "Osceola Accela + OnBase Agenda Online (PC / BCC)",
@@ -52972,15 +52398,15 @@
     {
      "body": "BOCC",
      "date": "2026-11-16",
-     "result": null
+     "result": "Approved"
     }
    ],
    "acres_source": "application",
    "location_source": "parcels",
    "adapter": "osceola",
    "first_seen": "2026-10-16",
-   "last_seen": "2026-11-16",
-   "status_changed": "2026-11-02",
+   "last_seen": "2026-11-23",
+   "status_changed": "2026-11-23",
    "history": [
     {
      "date": "2026-10-16",
@@ -52991,6 +52417,11 @@
      "date": "2026-11-02",
      "status": "Hearing Scheduled",
      "from": "Filed"
+    },
+    {
+     "date": "2026-11-23",
+     "status": "Approved",
+     "from": "Hearing Scheduled"
     }
    ],
    "backfilled": true,
@@ -53001,7 +52432,7 @@
    "last_hearing": {
     "body": "BOCC",
     "date": "2026-11-16",
-    "result": null
+    "result": "Approved"
    },
    "apns": [
     "06-26-28-0000-0080-0000",
@@ -53037,9 +52468,9 @@
    "from_flu": "Low Density Residential (LDR)",
    "to_flu": "Medium Density and Intensity (MDI)",
    "filed_date": "2026-05-29",
-   "status": "Hearing Scheduled",
-   "status_raw": "Revisions Received",
-   "decision_date": null,
+   "status": "Approved",
+   "status_raw": "Revisions Received (BCC 2026-11-16: ADOPTED.)",
+   "decision_date": "2026-11-16",
    "url": "https://aca-prod.accela.com/OSCEOLA/Cap/CapDetail.aspx?Module=Planning&TabName=Planning&capID1=REC26&capID2=00000&capID3=00I4H&agencyCode=OSCEOLA&IsToShowInspection=",
    "docs_url": "https://docs.osceola.org/OnBaseAgendaOnline/Documents/DownloadFile/Attachment_%20CPA26-0003%20Final%20Staff%20Report%20Rev%201.pdf.pdf?documentType=1&meetingId=2193&itemId=51085&publishId=52794&isSection=False&isAttachment=True",
    "source": "Osceola Accela + OnBase Agenda Online (PC / BCC)",
@@ -53058,7 +52489,7 @@
     {
      "body": "BOCC",
      "date": "2026-11-16",
-     "result": null
+     "result": "Approved"
     },
     {
      "body": "Planning Commission",
@@ -53070,8 +52501,8 @@
    "location_source": "parcels",
    "adapter": "osceola",
    "first_seen": "2026-10-16",
-   "last_seen": "2026-11-16",
-   "status_changed": "2026-11-02",
+   "last_seen": "2026-11-23",
+   "status_changed": "2026-11-23",
    "history": [
     {
      "date": "2026-10-16",
@@ -53082,6 +52513,11 @@
      "date": "2026-11-02",
      "status": "Hearing Scheduled",
      "from": "Filed"
+    },
+    {
+     "date": "2026-11-23",
+     "status": "Approved",
+     "from": "Hearing Scheduled"
     }
    ],
    "backfilled": true,
@@ -53143,7 +52579,7 @@
    "location_source": "parcels",
    "adapter": "accela_manatee",
    "first_seen": "2026-10-15",
-   "last_seen": "2026-11-16",
+   "last_seen": "2026-11-23",
    "status_changed": null,
    "history": [
     {
@@ -53213,7 +52649,7 @@
    "location_source": "parcels",
    "adapter": "accela_tampa",
    "first_seen": "2026-10-15",
-   "last_seen": "2026-11-16",
+   "last_seen": "2026-11-23",
    "status_changed": "2026-11-16",
    "history": [
     {
@@ -53606,7 +53042,7 @@
    "location_source": "parcels",
    "adapter": "accela_pasco",
    "first_seen": "2026-10-15",
-   "last_seen": "2026-11-16",
+   "last_seen": "2026-11-23",
    "status_changed": null,
    "history": [
     {
@@ -54015,7 +53451,7 @@
    "location_source": "parcels",
    "adapter": "accela_polk",
    "first_seen": "2026-10-15",
-   "last_seen": "2026-11-16",
+   "last_seen": "2026-11-23",
    "status_changed": "2026-10-26",
    "history": [
     {
@@ -54590,7 +54026,7 @@
    "location_source": "parcels",
    "adapter": "accela_tampa",
    "first_seen": "2026-10-15",
-   "last_seen": "2026-11-16",
+   "last_seen": "2026-11-23",
    "status_changed": null,
    "history": [
     {
@@ -54641,9 +54077,9 @@
    "from_flu": null,
    "to_flu": null,
    "filed_date": "2026-05-21",
-   "status": "Filed",
-   "status_raw": "In Process",
-   "decision_date": null,
+   "status": "Approved",
+   "status_raw": "Complete",
+   "decision_date": "2026-10-08",
    "url": "https://aca-prod.accela.com/TAMPA/Cap/CapDetail.aspx?Module=Planning&TabName=Planning&capID1=26CAP&capID2=00000&capID3=00SAS&agencyCode=TAMPA&IsToShowInspection=",
    "docs_url": null,
    "source": "City of Tampa Accela",
@@ -54657,20 +54093,25 @@
     {
      "body": "City Council",
      "date": "2026-10-08",
-     "result": null
+     "result": "Approved"
     }
    ],
    "acres_source": "application",
    "location_source": "parcels",
    "adapter": "accela_tampa",
    "first_seen": "2026-10-15",
-   "last_seen": "2026-11-16",
-   "status_changed": null,
+   "last_seen": "2026-11-23",
+   "status_changed": "2026-11-23",
    "history": [
     {
      "date": "2026-10-15",
      "status": "Filed",
      "from": null
+    },
+    {
+     "date": "2026-11-23",
+     "status": "Approved",
+     "from": "Filed"
     }
    ],
    "backfilled": true,
@@ -54681,7 +54122,7 @@
    "last_hearing": {
     "body": "City Council",
     "date": "2026-10-08",
-    "result": null
+    "result": "Approved"
    },
    "apns": [
     "A-35-28-18-3H0-000010-00040.0"
@@ -55451,7 +54892,7 @@
    "location_source": "parcels",
    "adapter": "accela_pasco",
    "first_seen": "2026-10-15",
-   "last_seen": "2026-11-16",
+   "last_seen": "2026-11-23",
    "status_changed": null,
    "history": [
     {
@@ -56163,7 +55604,7 @@
    "location_source": "parcels",
    "adapter": "osceola",
    "first_seen": "2026-10-16",
-   "last_seen": "2026-11-16",
+   "last_seen": "2026-11-23",
    "status_changed": null,
    "history": [
     {
@@ -56986,7 +56427,7 @@
    "location_source": "parcels",
    "adapter": "accela_pasco",
    "first_seen": "2026-10-15",
-   "last_seen": "2026-11-16",
+   "last_seen": "2026-11-23",
    "status_changed": null,
    "history": [
     {
@@ -57522,7 +56963,7 @@
    "location_source": "parcels",
    "adapter": "accela_polk",
    "first_seen": "2026-10-15",
-   "last_seen": "2026-11-16",
+   "last_seen": "2026-11-23",
    "status_changed": null,
    "history": [
     {
@@ -57590,7 +57031,7 @@
    "location_source": "parcels",
    "adapter": "accela_pasco",
    "first_seen": "2026-10-15",
-   "last_seen": "2026-11-16",
+   "last_seen": "2026-11-23",
    "status_changed": null,
    "history": [
     {
@@ -58689,7 +58130,7 @@
    "location_source": "parcels",
    "adapter": "accela_pasco",
    "first_seen": "2026-10-15",
-   "last_seen": "2026-11-16",
+   "last_seen": "2026-11-23",
    "status_changed": null,
    "history": [
     {
@@ -59389,7 +58830,7 @@
    "location_source": "parcels",
    "adapter": "brevard",
    "first_seen": "2026-10-16",
-   "last_seen": "2026-11-16",
+   "last_seen": "2026-11-23",
    "status_changed": null,
    "history": [
     {
@@ -60062,7 +59503,7 @@
    "location_source": "parcels",
    "adapter": "brevard",
    "first_seen": "2026-10-16",
-   "last_seen": "2026-11-16",
+   "last_seen": "2026-11-23",
    "status_changed": null,
    "history": [
     {
@@ -60506,7 +59947,7 @@
    "location_source": "parcels",
    "adapter": "accela_pasco",
    "first_seen": "2026-10-15",
-   "last_seen": "2026-11-16",
+   "last_seen": "2026-11-23",
    "status_changed": "2026-11-05",
    "history": [
     {
@@ -60675,7 +60116,7 @@
    "location_source": "parcels",
    "adapter": "accela_tampa",
    "first_seen": "2026-10-15",
-   "last_seen": "2026-11-16",
+   "last_seen": "2026-11-23",
    "status_changed": null,
    "history": [
     {
@@ -60743,7 +60184,7 @@
    "location_source": "parcels",
    "adapter": "accela_pasco",
    "first_seen": "2026-10-15",
-   "last_seen": "2026-11-16",
+   "last_seen": "2026-11-23",
    "status_changed": null,
    "history": [
     {
@@ -60809,7 +60250,7 @@
    "location_source": "parcels",
    "adapter": "accela_charlotte",
    "first_seen": "2026-10-15",
-   "last_seen": "2026-11-16",
+   "last_seen": "2026-11-23",
    "status_changed": null,
    "history": [
     {
@@ -61255,9 +60696,9 @@
    "from_flu": null,
    "to_flu": null,
    "filed_date": "2026-04-21",
-   "status": "Hearing Scheduled",
-   "status_raw": "Awaiting Revisions",
-   "decision_date": null,
+   "status": "Approved",
+   "status_raw": "Awaiting Revisions (BCC 2026-11-16: ADOPTED.)",
+   "decision_date": "2026-11-16",
    "url": "https://aca-prod.accela.com/OSCEOLA/Cap/CapDetail.aspx?Module=Zoning&TabName=Zoning&capID1=CPL26&capID2=00000&capID3=01861&agencyCode=OSCEOLA&IsToShowInspection=",
    "docs_url": "https://docs.osceola.org/OnBaseAgendaOnline/Documents/DownloadFile/Attachment_%20PD26-00015%20STAFF%20REPORT%20final%2011.10.2026.pdf.pdf?documentType=1&meetingId=2193&itemId=51084&publishId=52789&isSection=False&isAttachment=True",
    "source": "Osceola Accela + OnBase Agenda Online (PC / BCC)",
@@ -61276,15 +60717,15 @@
     {
      "body": "BOCC",
      "date": "2026-11-16",
-     "result": null
+     "result": "Approved"
     }
    ],
    "acres_source": "application",
    "location_source": "parcels",
    "adapter": "osceola",
    "first_seen": "2026-10-16",
-   "last_seen": "2026-11-16",
-   "status_changed": "2026-11-02",
+   "last_seen": "2026-11-23",
+   "status_changed": "2026-11-23",
    "history": [
     {
      "date": "2026-10-16",
@@ -61295,6 +60736,11 @@
      "date": "2026-11-02",
      "status": "Hearing Scheduled",
      "from": "Filed"
+    },
+    {
+     "date": "2026-11-23",
+     "status": "Approved",
+     "from": "Hearing Scheduled"
     }
    ],
    "backfilled": true,
@@ -61305,7 +60751,7 @@
    "last_hearing": {
     "body": "BOCC",
     "date": "2026-11-16",
-    "result": null
+    "result": "Approved"
    },
    "apns": [
     "01-26-28-4200-0007-0050"
