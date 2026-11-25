@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Lake County Vacant Land Comps &mdash; 2026-11-25</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://unpkg.com/esri-leaflet@3.0.12/dist/esri-leaflet.js"></script>
+<style>
+:root{--ink:#1a2b3c;--accent:#2e6b4f;--line:#dfe4e8;}
+*{box-sizing:border-box}
+body{margin:0;font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;color:var(--ink);background:#f6f8f9}
+header{background:var(--accent);color:#fff;padding:16px 22px}
+header h1{margin:0;font-size:19px}
+header p{margin:4px 0 0;font-size:13px;opacity:.9}
+#map{height:60vh;min-height:420px;width:100%}
+.wrap{padding:14px 18px 40px;overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:12.5px;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.08)}
+th,td{border:1px solid var(--line);padding:6px 8px;text-align:left;vertical-align:top}
+th{background:#eef3f0;position:sticky;top:0}
+tr:nth-child(even){background:#fafbfc}
+a{color:var(--accent)}
+.num{text-align:right;white-space:nowrap}
+.pop b{color:var(--accent)}
+.pop{font-size:12.5px;line-height:1.5}
+.legend{font-size:12px;color:#5a6b7a;margin:8px 0}
+</style></head><body>
+<header><h1>Lake County Vacant Land Comps</h1><p>Run date 2026-11-25 &middot; Sales newly posted to the Lake County PA 11/18&ndash;11/25/2026 (sale dates Oct 16&ndash;19 2026) &middot; &gt;0.5 ac &amp; &gt;$500k &middot; 2 new comps &middot; Source: Lake County PA sales search + Lake County GIS</p></header>
+<div id="map"></div>
+<div class="wrap">
+<p class="legend">Click any marker for full detail. Coordinates are exact parcel centroids from the Lake County PA GIS endpoint, not geocoded addresses.</p>
+<table id="tbl"><thead><tr>
+<th>#</th><th>Sale Date</th><th>Address</th><th>Grantor (Seller)</th><th>Grantee (Buyer)</th>
+<th class="num">Price</th><th class="num">Acres</th><th class="num">$/Acre</th><th>Deed</th><th>Land Use</th><th>Zoning</th><th>Parcel ID</th><th>Book/Page</th><th>PA Page</th><th>Notes</th>
+</tr></thead><tbody></tbody></table>
+</div>
+<script>
+var comps=[{"parcel_id": "15-23-26-0010-000-04300", "property_name": "5307 HAVEN VIEW DR, CLERMONT FL 34714", "address": "5307 HAVEN VIEW DR, CLERMONT FL 34714", "sale_date": "Oct 16 2026", "sale_date_iso": "2026-10-16", "price": 1027900, "acreage": 1.435, "price_per_acre": 716307, "transaction_type": "Sale", "grantor": "SSP-HS LOT OPTION A POOL 01 LP", "grantee": "LENNAR HOMES LLC", "deed_type": "WD", "property_type": "Land", "zoning": null, "land_use": "Vacant Residential (0000) - platted single-family lots", "source": "Lake County PA", "county": "Lake", "county_fips": "12069", "date_added": "2026-11-25", "lat": 28.4810902, "lon": -81.6987963, "aerial": "https://www.lakecopropappr.com/property-details.aspx?AltKey=3962253", "book_page": "6836/242", "elc_deal": null, "comments": "Deed OR 6836/242 (Warranty Deed, Qualified, Vacant at sale; same OR book/page confirmed on PA sales histories). Builder lot takedown: 13 platted lots in Sanctuary at Wellness Ridge Phase 1 (PB 88 PG 23-47), City of Clermont, conveyed under one deed; ~$79,069/lot. Acreage summed from GIS parcel polygons (1.435 ac; PA assesses each as 1 lot). Grantor = land-bank owner of record per Lake County GIS (Lake PA does not publish grantor); seller acquired the phase 11/26/2024 for $21,955,500 (OR 6438/1584). Also includes: 15-23-26-0010-000-02700 (5371 HAVEN VIEW DR, 0.139 ac), 15-23-26-0010-000-04400 (5303 HAVEN VIEW DR, 0.143 ac), 15-23-26-0010-000-04500 (5299 HAVEN VIEW DR, 0.143 ac), 15-23-26-0010-000-04600 (5295 HAVEN VIEW DR, 0.147 ac), 15-23-26-0010-000-30500 (5362 WHISPERING GARDEN WAY, 0.093 ac), 15-23-26-0010-000-30600 (5358 WHISPERING GARDEN WAY, 0.069 ac), 15-23-26-0010-000-30700 (5354 WHISPERING GARDEN WAY, 0.069 ac), 15-23-26-0010-000-30800 (5350 WHISPERING GARDEN WAY, 0.105 ac), 15-23-26-0010-000-31300 (5381 TEMPEST WAY, 0.096 ac), 15-23-26-0010-000-31400 (5385 TEMPEST WAY, 0.068 ac), 15-23-26-0010-000-31500 (5389 TEMPEST WAY, 0.068 ac), 15-23-26-0010-000-31600 (5393 TEMPEST WAY, 0.143 ac). Zoning not returned by county/city GIS layers (City of Clermont PUD). Sale dated Oct 16 2026; first appeared in PA sales search this week."}, {"parcel_id": "12-23-26-0100-000-00800", "property_name": "COLT LN, WINTER GARDEN FL 34787", "address": "COLT LN, WINTER GARDEN FL 34787", "sale_date": "Oct 19 2026", "sale_date_iso": "2026-10-19", "price": 1000000, "acreage": 5.075, "price_per_acre": 197054, "transaction_type": "Sale", "grantor": "LANDTR LLC TRUSTEE", "grantee": "ADAMS AARON W & MELISSA S", "deed_type": "WD", "property_type": "Land", "zoning": "A", "land_use": "Vacant Residential (0000)", "source": "Lake County PA", "county": "Lake", "county_fips": "12069", "date_added": "2026-11-25", "lat": 28.4992943, "lon": -81.6647058, "aerial": "https://www.lakecopropappr.com/property-details.aspx?AltKey=3847464", "book_page": "6836/441", "elc_deal": null, "comments": "Deed OR 6836/441 (Warranty Deed, Qualified). Single parcel: Lot 8, Avalon Hills (PB 57 PG 42-44), unincorporated Lake County near Winter Garden. Acreage = GIS parcel polygon 5.075 ac (PA assessed 5.11 ac). PA sales history codes the sale 'Improved', but the 2026 roll shows land use Vacant Residential, zero buildings, no building or misc-improvement value (GIS Vacant=Yes) - treated as a vacant estate-lot sale; verify before relying on it. Grantor = prior owner of record per Lake County GIS (Lake PA does not publish grantor). Sale dated Oct 19 2026; first appeared in PA sales search this week."}];
+var map=L.map('map');
+L.esri.basemapLayer('Imagery').addTo(map);
+L.esri.basemapLayer('ImageryLabels').addTo(map);
+var money=function(n){return n==null?'\u2014':'$'+Number(n).toLocaleString();};
+var esc=function(s){return s==null?'\u2014':String(s).replace(/[&<>]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;'}[c];});};
+var grp=L.featureGroup().addTo(map);
+comps.forEach(function(c,i){
+  var pop='<div class="pop"><b>#'+(i+1)+' \u00b7 '+money(c.price)+'</b><br/>'+esc(c.address)+'<br/><br/>'
+   +'<b>Grantor:</b> '+esc(c.grantor)+'<br/>'
+   +'<b>Grantee:</b> '+esc(c.grantee)+'<br/>'
+   +'<b>Sale date:</b> '+esc(c.sale_date)+'<br/>'
+   +'<b>Acreage:</b> '+c.acreage+' ac<br/>'
+   +'<b>$/acre:</b> '+money(c.price_per_acre)+'<br/>'
+   +'<b>Deed type:</b> '+esc(c.deed_type)+'<br/>'
+   +'<b>Land use:</b> '+esc(c.land_use)+'<br/>'
+   +'<b>Zoning:</b> '+esc(c.zoning)+'<br/>'
+   +'<b>Parcel:</b> '+esc(c.parcel_id)+'<br/>'
+   +'<b>Book/Page:</b> '+esc(c.book_page)+'<br/>'
+   +(c.comments?('<b>Notes:</b> '+esc(c.comments)+'<br/>'):'')
+   +'<a href="'+c.aerial+'" target="_blank" rel="noopener">Open PA parcel page \u2192</a></div>';
+  if(c.lat==null||c.lon==null) return;
+  var m=L.marker([c.lat,c.lon]).addTo(grp).bindPopup(pop,{maxWidth:340});
+  m.bindTooltip('#'+(i+1)+' '+money(c.price));
+});
+if(grp.getLayers().length) map.fitBounds(grp.getBounds().pad(0.25)); else map.setView([28.8,-81.2],9);
+var tb=document.querySelector('#tbl tbody');
+comps.forEach(function(c,i){
+  var tr=document.createElement('tr');
+  tr.innerHTML='<td>'+(i+1)+'</td><td>'+esc(c.sale_date)+'</td><td>'+esc(c.address)+'</td>'
+   +'<td>'+esc(c.grantor)+'</td><td>'+esc(c.grantee)+'</td>'
+   +'<td class="num">'+money(c.price)+'</td><td class="num">'+c.acreage+'</td>'
+   +'<td class="num">'+money(c.price_per_acre)+'</td><td>'+esc(c.deed_type)+'</td>'
+   +'<td>'+esc(c.land_use)+'</td><td>'+esc(c.zoning)+'</td><td>'+esc(c.parcel_id)+'</td>'
+   +'<td>'+esc(c.book_page)+'</td>'
+   +'<td><a href="'+c.aerial+'" target="_blank" rel="noopener">link</a></td>'
+   +'<td>'+esc(c.comments)+'</td>';
+  tr.style.cursor='pointer';
+  tr.onclick=function(){ if(c.lat!=null) map.setView([c.lat,c.lon],16); };
+  tb.appendChild(tr);
+});
+</script></body></html>
